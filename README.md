@@ -15,7 +15,7 @@ It focuses on the following things:
 - Breaking bugfixes
   - There are bugs in original Ambermoon that fixing them would change the game experience. For example spell/monster elements. They were part of Ambermoon but because of a bug they did not work or not as they were intended.
 
-As the game is an extension of the original game, it should also be playable on the Amiga. So this Mod will mostly add things that can be added though data and not code. So there will be no new fancy windows or completely new game features.
+As the game is an extension of the original game, it should also be playable on the Amiga. So this Mod will mostly add things that can be added through data and not code changes. So there will be no new fancy windows or completely new game features.
 
 This also means that the game size has to be kept quiet low. So don't expect huge new graphics etc. Visual changes might be mostly done through different palettes.
 
