@@ -5,7 +5,7 @@ This project will be the first Mod for Ambermoon.
 It focuses on the following things:
 - Balance the game (characters, spells, monsters, item placement and amount, etc)
   - For example making some characters more valuable like Selena, Leonaria or Targor
-  - Avoid obsolete things like rations/food dealers, blacksmiths, sages, ropes, finding/disarming traps, search skill, etc.
+  - Avoid obsolete things like rations/food dealers, blacksmiths, sages, ropes, finding/disarming traps, search skill, etc by making them useful again
 - Add new content
   - Quests
   - Places (especially on the two moons and useless islands)
@@ -17,7 +17,7 @@ It focuses on the following things:
 
 As the game is an extension of the original game, it should also be playable on the Amiga. So this Mod will mostly add things that can be added though data and not code. So there will be no new fancy windows or completely new game features.
 
-This also means that the game size has to be kept quiet low. So don't expect huge new graphics etc. Visual changes might be mostly done though different palettes.
+This also means that the game size has to be kept quiet low. So don't expect huge new graphics etc. Visual changes might be mostly done through different palettes.
 
 
 My exact plans are not revealed yet. ;) But I promise it will be a cool addition.
