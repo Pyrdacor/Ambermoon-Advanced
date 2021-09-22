@@ -66,3 +66,24 @@
 ## Chest_data.amb
 
 - Replace Shortsword in Grandpa's cellar with Dagger. Change byte 0x4B27 to 0xB6 (chest index 123).
+
+
+## Monster_char_data.amb
+
+- Change exp of Pond Lizard from 10 to 15. Change byte 0x21 in sub-file 001 to 0x0F.
+- Change exp of Bandit from 45 to 50. Change byte 0x21 in sub-file 009 to 0x32.
+
+
+## NPC_char.amb
+
+- Added new NPC "Kasimir" (new sub-file 036)
+
+
+## NPC_texts.amb
+
+- Added new NPC texts for Kasimir (new sub-file 036)
+
+
+## 2Map_data.amb
+
+- Added new NPC "Kasimir" to map file 173 (Town House) at tile 18, 4.

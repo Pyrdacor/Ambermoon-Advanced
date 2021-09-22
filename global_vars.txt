@@ -1,3 +1,10 @@
+New:
+
+- 53: Talked to Kasimir once
+- 54: Gave food to Kasimir
+
+
+
 First Free: 53
 
 Used:
