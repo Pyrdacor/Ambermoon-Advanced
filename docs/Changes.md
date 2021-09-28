@@ -71,6 +71,7 @@ The english version can then be done by diffs or adding the files.
 - Reduce weight of bolts from 350 to 100. Change word 0x50302 / 0x53052 | 0x4FA8E / 0x527DE to 0x0064.
 - Reduce weight of magic arrows from 125 to 10. Change byte 0x509CF / 0x5371F | 0x5015B / 0x52EAB to 0x0A.
 - Added item "TAGEBUCH" / "DIARY" which is a text scroll with item index 403 (0x193) via ItemEditor.
+- Changed price for the 3 Lyramion plants (255, 317, 344) to 0 via ItemEditor.
 
 
 ## Chest_data.amb
