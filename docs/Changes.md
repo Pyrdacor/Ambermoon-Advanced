@@ -1,3 +1,7 @@
+Note: The changes are only done to the german files. The only exception are the executables which are fixed both.
+The english version can then be done by diffs or adding the files.
+
+
 ## Party_char.amb
 
 - Changed max ATT of hero from 80 to 85. Change byte 0x00BF from 0x50 to 0x55.
@@ -44,6 +48,10 @@
 - Change Targor APRPerLevel value to 16. This keeps end APR at 4. Change byte 0x22F7 to 0x10.
 - Change Leonaria APRPerLevel value to 16. This keeps end APR at 4. Change byte 0x25B7 to 0x10.
 - Change Gryban start APR to 3. Change byte 0x27BD to 0x03.
+- Change max strength of Selena to 40. Change byte 0x153F to 0x28.
+- Change max attack skill of Selena to 80. Change byte 0x158F to 0x50.
+- Change current attack skill of Selena to 45. Change byte 0x158D to 0x2D.
+
 
 ## AM2_CPU / AM2_BLIT (german | english)
 
@@ -62,10 +70,13 @@
 - Reduce weight of arrows from 150 to 15. Change byte 0x502C7 / 0x53017 | 0x4FA53 / 0x527A3 to 0x0F.
 - Reduce weight of bolts from 350 to 100. Change word 0x50302 / 0x53052 | 0x4FA8E / 0x527DE to 0x0064.
 - Reduce weight of magic arrows from 125 to 10. Change byte 0x509CF / 0x5371F | 0x5015B / 0x52EAB to 0x0A.
+- Added item "TAGEBUCH" / "DIARY" which is a text scroll with item index 403 (0x193) via ItemEditor.
+
 
 ## Chest_data.amb
 
 - Replace Shortsword in Grandpa's cellar with Dagger. Change byte 0x4B27 to 0xB6 (chest index 123).
+- Replace Rope in the chest in your own room by the new diary item. Change byte 0x0660 from 0x00 to 0x01 and byte 0x0661 from 0x8A to 0x93.
 
 
 ## Monster_char_data.amb
@@ -87,3 +98,8 @@
 ## 2Map_data.amb
 
 - Added new NPC "Kasimir" to map file 173 (Town House) at tile 18, 4.
+
+
+## Object_texts.amb
+
+- Added new text 004.005 for the diary item.
