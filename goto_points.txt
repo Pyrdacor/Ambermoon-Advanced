@@ -1,0 +1,4 @@
+2 is free and fits into Spannenberg -> architect
+17 is free and fits into Spannenberg -> pet shop
+
+Then all till and including 78 are used so next should be 79.
