@@ -1,0 +1,3 @@
+Add condition switch in grandpa's cellar and secret room to teleport to renovated house.
+Add events for garden, wind gate and cave at NPC Karl.
+Add pet shop with NPCs and quests.
