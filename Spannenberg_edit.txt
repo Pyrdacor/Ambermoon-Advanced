@@ -1,0 +1,47 @@
+Coordinates are 0-based!
+
+Map size 31x31
+
+68: Door
+6C: Wall
+6E: Window
+
+Remove block 2,24 (empty block)
+- Change byte 0x0720 from 0x6D to 0x00
+Remove block 2,25 (empty block)
+- Change byte 0x075E from 0xFF to 0x00
+Remove block 2,26 (empty block)
+- Change byte 0x079C from 0xFF to 0x00
+Remove block 3,26 (empty block)
+- Change byte 0x079E from 0xFF to 0x00
+
+Edit block 3,25
+- Wall (normal house wall image) -> Change byte 0x0760 from 0xFF to 0x6C
+Edit block 4,25
+- Wall (normal house wall image) -> Change byte 0x0762 from 0xFF to 0x6D
+Editblock 4,26
+- Wall (door image) -> Change byte 0x07A0 from 0xFF to 0x68
+- Automap type "Open Door"
+- Event which teleports to new 2D map (Nachlassverwalter) -> Change byte 0x07A1 from 0x00 to 0x2A
+Edit block 2,27
+- Wall (normal house wall image) -> Change byte 0x07DA from 0xFF to 0x6D
+Edit block 3,27
+- Wall (normal house wall image) -> Change byte 0x07DC from 0xFF to 0x6C
+Edit block 4,27
+- Wall (normal house wall image) -> Change byte 0x07DE from 0xFF to 0x6D
+
+Edit block 16, 23
+- Wall (door image) -> Change byte 0x06FE from 0x6B to 0x68
+- Automap type "Open Door"
+- Event which teleports to new 2D map (Tierhändler)
+
+
+Add goto-point for both new doors.
+
+Increase amount: Change byte 0x0CE5 from 0x10 to 0x12
+Architect point: 4,27
+- Add 20 bytes at 0x0E26
+- 04 1B 01 02 + 16 bytes for name
+Pet shop point: 17,23
+- Add 20 bytes at 0x0E3A
+- 11 17 02 10 + 16 bytes for name

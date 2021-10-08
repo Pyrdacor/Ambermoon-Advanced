@@ -2,8 +2,17 @@ New:
 
 - 53: Talked to Kasimir once
 - 54: Gave food to Kasimir
+- 224: Has shown testament to Karl
+- 225: Has renovated house
+- 226: Has added summer house
+- 227: Has added wind gate
+- 228: Has added cave
+- 229: Has created a wind chain
 
 
+
+Eventbit 21903 is set when you first entered Dor Kiredon.
+So it basically is "you were on the forest moon".
 
 First Free: 53
 
