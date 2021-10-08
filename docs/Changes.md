@@ -98,7 +98,7 @@ The english version can then be done by diffs or adding the files.
 
 ## 2Map_data.amb
 
-- Added new NPC "Kasimir" to map file 173 (Town House) at tile 18, 4.
+- Added new NPC "Kasimir" to map file 273 (Town House) at tile 18, 4.
 
 
 ## Object_texts.amb
