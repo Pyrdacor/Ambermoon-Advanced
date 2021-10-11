@@ -33,7 +33,7 @@ Edit block 4,27
 Edit block 16, 23
 - Wall (door image) -> Change byte 0x06FE from 0x6B to 0x68
 - Automap type "Open Door"
-- Event which teleports to new 2D map (Tierhändler)
+- Event which teleports to new 2D map (Tierhändler) -> Change byte 0x06FF from 0x00 to 0x2B
 
 
 Add goto-point for both new doors.
