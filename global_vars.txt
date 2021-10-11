@@ -8,6 +8,8 @@ New:
 - 227: Has added wind gate
 - 228: Has added cave
 - 229: Has created a wind chain
+- 230: Has bought cat
+- 231: Has bought dog
 
 
 
