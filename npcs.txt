@@ -1,5 +1,5 @@
-36 - Kasimir (tomcat)
-37 - Karl (architect)
+36 - Kasimir (tomcat) -> map 273
+37 - Karl (architect) -> map 456
 
 He can add stuff to your house after you show him the testament.
 - Garden - 5000 gold: Adds some flowers to the garden.
@@ -9,3 +9,8 @@ He can add stuff to your house after you show him the testament.
 
 Map 408 (the wind shrine) has a new event to set global var 229 to 1 if you craft a wind chain.
 The 3rd project is only available then.
+
+
+38 - Your Cat -> map 458
+39 - Your Dog -> map 458
+40 - Ferdinand (pet seller) -> map 457
