@@ -10,6 +10,9 @@ New:
 - 229: Has created a wind chain
 - 230: Has bought cat
 - 231: Has bought dog
+- 232: Has become friend with cat
+- 233: Has become friend with dog
+- 234: Rewarded by Ferdinand for pet carring
 
 
 
