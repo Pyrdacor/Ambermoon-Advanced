@@ -1,6 +1,6 @@
 # Your Cave
 
-Karl the architect creates this cave for you when you pay him 12000 gold.
+Karl the architect creates this cave for you when you pay him 15000 gold.
 This is only possible after you visited Dor Kiredon on the forest moon.
 The cave is located to the east of your house at the north end of the garden.
 
@@ -16,6 +16,122 @@ some fake walls. You can also use the shovel to dig holes.
 At the end you can find a chest. It contains Karl's Ring which grants 25 Swim, 1 Damage,
 25 Luck and Magic Defense Level 3.
 
+```
+Your Cave - Upper Level
++----------------+
+|O   |           |
++--+ | --+----+ ++
+|  $ |  O|O      |
+| ++-+--++----++ |
+| |     |     ++ |
+|   | | |L O|    |
+|#+-+-+ +---+--+-+
+|!|O|O  |O    C|O|
+|-+ +---+-++-+-+ |
+|         ++ $ # |
+|#--+-+-+    |C+ |
+|  !|O| +-----++#|
++---+ |       |! |
+|  L| +-+ +-+ +--+
+|!  $ |C   O|   O|
++---+X+-----+----+
+
+O: Hole down
+L: Ladder down
+!: Lever
+$: Moveable wall (removed by lever)
+#: Fake wall
+C: Chest (1x Rope)
+L: Chest (1x Levitation spell, 1 Healing Potion II)
+
+Your Cave - Lower Level
++----------------+
+|O               |
+| +----+-+-+#+-+ |
+| |! B |O$ | |!| |
+| $    +-+     | |
+|$+-+ -+ +--+--+ |
+|   |    S O|T # |
+|$+$+------+--+--+
+| |O O   O # !| O|
+|$+--------+--+#-+
+| $              |
+|$+---+-+---+ |  |
+| $  O|!|   | +- | 
+| +-+ | | | +#+  |
+| |L| +#+ | | | -+
+|   |     |O|!| O|
++---+-----+-+-+--+
+
+O: Hole up
+L: Ladder up
+!: Lever
+$: Moveable wall (removed by lever)
+#: Fake wall
+S: Spider web (needs torch)
+T: Chest (3x Torch)
+B: Boss room (text event)
+```
+
+Labdata 2
+---------
+Walls:
+- 1: Plain wall
+- 2: Wall with rock 1
+- 3: Wall with rock 2
+- 4: Wall with rock 3
+- 5: Wall with rock 4
+- 6: Wall with all 4 rocks
+- 7: Fake wall (blocks sight)
+- 8: Fake wall (does not block sight)
+- 9: Spider web (player can pass)
+- 10: Broken spider web (player and monsters can pass)
+- 11: Spider web (player can not pass)
+- 14: Open door
+- Rest not relevant
+Objects infos:
+- 8: Small stone
+- 9: Hanging brown stuff (small)
+- 10: Hanging brown stuff (large)
+- 11: Barrel
+- 12: Stone pile
+- 13: Lizard
+- 14: Spider (small)
+- 18: Ceiling stone
+- 22: Ladder down
+- 23: Hole down
+- 24: Ladder up
+- 25: Hole up
+- 26: Lever (left)
+- 27: Lever (right)
+- 29: Pile of trash
+- 30: Wooden chest
+- 31: Bigger rock
+- 32: Medium rock
+- 33: Spider (large)
+- 34: Spider (ceiling)
+- 35: Spider (tiny)
+- 36: Earth pillar
+Objects:
+- 9: Stones
+- 10: Hanging brown stuff (small)
+- 11: Barrel
+- 12: Pile of stones
+- 13: Lizard
+- 14: Spider (small)
+- 19: Bats
+- 20: Ladder down
+- 21: Ladder up
+- 22: Lever (left)
+- 23: Lever (right)
+- 24: Pile of trash
+- 25: Wooden chest
+- 26: Spider (large)
+- 27: Spider (ceiling)
+- 28: Spider (tiny)
+- 29: Earth pillar
+- We add 30: Hole down
+- And 31: Hole up
 
 # Hidden Sea Cave
 

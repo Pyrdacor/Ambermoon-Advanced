@@ -1,3 +1,1 @@
-Adjust text indices for 458 map events.
-Add events for garden, wind gate and cave at NPC Karl.
-Add pet shop with NPCs and quests.
+Add events for cave at NPC Karl.
