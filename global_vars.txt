@@ -4,7 +4,7 @@ New:
 - 54: Gave food to Kasimir
 - 224: Has shown testament to Karl
 - 225: Has renovated house
-- 226: Has added summer house
+- 226: unused
 - 227: Has added wind gate
 - 228: Has added cave
 - 229: Has created a wind chain

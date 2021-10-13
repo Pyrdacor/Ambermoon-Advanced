@@ -3,7 +3,7 @@
 
 He can add stuff to your house after you show him the testament.
 - Garden - 5000 gold: Adds some flowers to the garden.
-- Renovation - 7500 gold: Transforms granda's sleeping room into a new room.
+- Renovation - 7500 gold: Transforms grandpa's house and also makes it possible to get pets.
 - Wind gate - 10000 gold: Adds a wind gate near the house. (Only if you have created the wind chain).
 - Cave - 12000 gold: Adds a cave entrance near the house with a new dungeon. (Only if you were on the forest moon before).
 
