@@ -24,12 +24,12 @@ Your Cave - Upper Level
 |  $ |  O|O      |
 | ++-+--++----++ |
 | |     |     ++ |
-|   | | |L O|    |
+|   | | |! O|    |
 |#+-+-+ +---+--+-+
 |!|O|O  |O    C|O|
 |-+ +---+-++-+-+ |
 |         ++ $ # |
-|#--+-+-+    |C+ |
+|#--+-+-+    |C| |
 |  !|O| +-----++#|
 +---+ |       |! |
 |  L| +-+ +-+ +--+
@@ -112,6 +112,8 @@ Objects infos:
 - 34: Spider (ceiling)
 - 35: Spider (tiny)
 - 36: Earth pillar
+- We add 37: Bigger hole down
+- And 38: Bigger hole up
 Objects:
 - 9: Stones
 - 10: Hanging brown stuff (small)
