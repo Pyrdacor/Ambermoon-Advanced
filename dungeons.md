@@ -1,20 +1,20 @@
 # Your Cave
 
 Karl the architect creates this cave for you when you pay him 15000 gold.
-This is only possible after you visited Dor Kiredon on the forest moon.
-The cave is located to the east of your house at the north end of the garden.
+This is only possible after you unlocked the treasure room in the old dwarf mine.
+The cave is located to the east of your house at the north end of the garden/field.
 
 The cave has 2 levels. You enter at the top level. There are many holes you
 can reach which lead to the lower level. You will need ropes and/or levitation
-to proceed. But from every lower room you can access one of two corridors back
+to proceed. But from every lower room you can access a corridor back
 to a ladder which leads to the upper level and eventually back to the cave entrance.
 
-The corridor is accessed by moving a wall by pulling a lever. The rooms above the
-two ladders also need a lever to connect to the cave entrance room. There are also
-some fake walls. You can also use the shovel to dig holes.
+The corridor is accessed by moving a wall by pulling a lever. The room above the
+ladder also needs a lever to connect to the cave entrance room. There are also
+some fake walls.
 
 At the end you can find a chest. It contains Karl's Ring which grants 25 Swim, 1 Damage,
-25 Luck and Magic Defense Level 3.
+25 Luck and Magic Defense Level 3. There is a big spider boss.
 
 ```
 Your Cave - Upper Level
@@ -308,6 +308,11 @@ He has the following attributes and battle skills:
 His base damage is 50 and his variable damage 35.
 His magic attack level is max so you can't avoid the damage.
 
+After killing the boss in the upper level,
+the floor breaks and you fall two stories down.
+The floor also breaks in the ground level.
+A new level is revealed. You enter a small corridor
+with many doors.
 
 ### NPCs
 
