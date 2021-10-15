@@ -43,7 +43,7 @@ $: Moveable wall (removed by lever)
 #: Fake wall
 C: Chest (1x Rope)
 L: Chest (1x Levitation spell, 1 Healing Potion II)
-X: Spawn)
+X: Exit
 
 Your Cave - Lower Level
 +----------------+
@@ -70,7 +70,7 @@ L: Ladder up
 $: Moveable wall (removed by lever)
 #: Fake wall
 S: Spider web (needs torch)
-T: Chest (3x Torch)
+T: Chest (barrel, 3x Torch)
 B: Boss room (text event)
 o: Ceiling hole is only added by an event
 ```
