@@ -268,23 +268,26 @@ The chests in the upper level just contain:
 
 The chest in the upper level's central room instead contains the key to the boss room.
 
-The end boss drops the unique item set for the adventurer. The equipment is not breakable.
+The first end boss drops the first part of the unique item set for the adventurer. The equipment is not breakable.
 - Adventurer's Sword
   Atk: 15, Def: 0, Hands: 1, Spell: Windhowler (**)
   Str +5, Atk +15, Magic Attack Level max
+-  Adventurer's Suit
+  Atk: 0, Def: 12, Spell: None
+  Sta +5, Search +15, Magic Defense Level 3
+
+The second end boss drops the second part of the unique item set.
 - Adventurer's Bow
   Atk: 15, Def: 0, Hands: 1, Spell: Magic Projectile (**)
   Str +5, Atk +15, Magic Attack Level max
-- Adventurer's Suit
-  Atk: 0, Def: 12, Spell: None
-  Sta +5, Search +15, Magic Defense Level 3
 - Adventurer's Shoes
   Atk: 0, Def: 5, Spell: Haste (25)
   Spd + 5, Swi +99
   
-The boss casts Thunderstorm and Whirlwind and attacks with the adventurer's bow and magic arrows.
+The first boss casts Thunderstorm and Whirlwind and attacks with the adventurer's bow and magic arrows.
+He has a huge amount of SP. He also has a Scimitar. He switches to it after he runs out of arrows.
 He has 51 of them and he has 3 attacks per round so he can attack 17 rounds at max. Then he switches
-to the sword.
+to the Scimitar.
 
 He has the following attributes and battle skills:
 
