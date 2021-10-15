@@ -222,15 +222,15 @@ You can use the shovel at several places and access chests. Mostly junk or gold 
 rare items as well.
 
 #### Lower Level
-<img src="file:///C:/Users/Alpapa/Documents/Projects/Ambermoon-Advanced/Vielauge's Castle Level 0.png"
-     alt="Vielauge's Castle Level 0"
-     style="image-rendering: pixelated; width:320px" />
-	 
+
+![Manyeyes' Castle - Level 0](Vielauge0.png)
+
 #### Upper Level
-<img src="file:///C:/Users/Alpapa/Documents/Projects/Ambermoon-Advanced/Vielauge's Castle Level 1.png"
-     alt="Vielauge's Castle Level 1"
-     style="image-rendering: pixelated; width:320px" />
-	 
+![Manyeyes' Castle - Level 1](Vielauge1.png)
+
+### Underground Level
+![Manyeyes' Castle - Level -1](Vielauge-1.png)
+
 #### Legend:
 - Black: Walls
 - Red: Monsters
