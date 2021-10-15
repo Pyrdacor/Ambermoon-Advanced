@@ -23,11 +23,11 @@ Your Cave - Upper Level
 +--+ | --+----+ ++
 |  $ |  O|O      |
 | ++-+--++----++ |
-| |     |     ++ |
+| |     $     ++ |
 |   | | |! O|    |
 |#+-+-+ +---+--+-+
 |!|O|O  |O    C|O|
-|-+ +---+-++-+-+ |
+|-+$+---+-++-+-+ |
 |         ++ $ # |
 |#--+-+-+    |C| |
 |  !|O| +-----++#|
@@ -43,12 +43,13 @@ $: Moveable wall (removed by lever)
 #: Fake wall
 C: Chest (1x Rope)
 L: Chest (1x Levitation spell, 1 Healing Potion II)
+X: Spawn)
 
 Your Cave - Lower Level
 +----------------+
 |O               |
 | +----+-+-+#+-+ |
-| |! B |O$ | |!| |
+| |! B |O$o| |!| |
 | $    +-+     | |
 |$+-+ -+ +--+--+ |
 |   |    S O|T # |
@@ -71,6 +72,7 @@ $: Moveable wall (removed by lever)
 S: Spider web (needs torch)
 T: Chest (3x Torch)
 B: Boss room (text event)
+o: Ceiling hole is only added by an event
 ```
 
 Labdata 2

@@ -1,1 +1,6 @@
 Add events for cave at NPC Karl.
+
+EventEditor should add automap types for events for 3D maps only.
+Reorder in EventEditor.
+
+Disable the one rope event at map 459 (5, 11) and activate it by the lever.
