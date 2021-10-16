@@ -215,7 +215,7 @@ just disappears. You then enter the castle. It has only two levels. The upper le
 crushed and in ruins (it looks like the ancient ruins) so you see the sky. There are
 many undeads in the castle. And many walls that can be removed by touching them. You
 finally reach the upper level. There awaits a strong undead banshee. It drops a powerful
-amulet and again a Ring of Sobek.
+amulet and again a Ring of Sobek. After the boss fight you will reveal a new level.
 
 Someone in the inn also says that there are many treasures buried in the sands of the cave.
 You can use the shovel at several places and access chests. Mostly junk or gold but some
@@ -308,11 +308,20 @@ He has the following attributes and battle skills:
 His base damage is 50 and his variable damage 35.
 His magic attack level is max so you can't avoid the damage.
 
-After killing the boss in the upper level,
-the floor breaks and you fall two stories down.
-The floor also breaks in the ground level.
-A new level is revealed. You enter a small corridor
-with many doors.
+After killing the boss in the upper level, the floor breaks and you fall two stories down.
+The floor also breaks in the ground level. A new level is revealed.
+You enter a small corridor with 8 doors. 5 only lead to monster fights.
+One is a dead end for now and one has a lever behind a fake wall. It opens a wall in one
+of the 5 monster rooms (a big room with a pillar in the center). From there you can reach
+two new levers. One opens a wall nearby which only holds a monster but also removes a wall
+in front of a chest later in the dungeon, the other one opens a wall in the dead end room.
+There you will come to a door and a small corridor behind.
+There are two more doors. The left one just has a wall directly behind it.
+The right one has a lever which removes that wall. There is another lever which removes
+the wall between the two rooms and even more walls to reveal the second end boss.
+After killing him another wall disappears which reveals a ladder. This leads to the level
+above. In this room is again a lever to remove a wall to the entrance hall and also unlocks
+the large entrance door of the castle.
 
 ### NPCs
 
