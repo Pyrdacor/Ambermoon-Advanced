@@ -50,10 +50,10 @@ Your Cave - Lower Level
 |O               |
 | +----+-+-+#+-+ |
 | |! B |O$o| |!| |
-| $    +-+     | |
+| $   K+-+     | |
 |$+-+ -+ +--+--+ |
 |   |    S O|T # |
-|$+$+------+--+--+
+| +$+------+--+--+
 | |O O   O # !| O|
 |$+--------+--+#-+
 | $              |
@@ -73,6 +73,7 @@ S: Spider web (needs torch)
 T: Chest (barrel, 3x Torch)
 B: Boss room (text event)
 o: Ceiling hole is only added by an event
+K: Loot with Karl's remains and ring
 ```
 
 Labdata 2
