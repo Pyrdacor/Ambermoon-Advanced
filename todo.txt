@@ -1,2 +1,1 @@
-EventEditor should add automap types for events for 3D maps only.
-Reorder in EventEditor.
+Allow assigning automap types to 3D map events.
