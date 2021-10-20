@@ -1,1 +1,70 @@
 Allow assigning automap types to 3D map events.
+
+Export all kind of overviews and stats:
+- All chests (contents, map, gold, food)
+- All monsters (with relevant stats only)
+- All monster groups (monsters, map) and battle events
+- All party members (with relevant stats only and start equipment)
+- All items you can get from NPCs
+- All rewards regarding attributes, abilities and exp
+- All potions and items granting attributes, abilities and spells
+- Spell list with needed SP, SLP and damage
+
+
+Revert SLP per Level adjustments. Spells stay as they are.
+But Hero, Valdyn and Gryban still should have lower SLP, SP and max M-B.
+As there are only very few Mystic spells, Valdyn should have really low SLP (1-2).
+222 SLP are needed for all spells. The cool spells' SLP should be increased.
+
+As Targor has very few spells he needs a good replacement.
+
+
+For Targor:
+
+Mystic Orb
+An orb-like weapon which grants a few charges of Mystic Globe and has also:
+35 Atk
+15 Stamina
+3 Crit
+3 M-B-W
+Mystic Globe 10 charges
+Weight: 100g
+
+It's part of the Mystic Set and can be found on the forest moon.
+
+Mystic Robe
+17 Def
+10 Speed
+25 M-B
+3 M-B-R
+5 charges LP stealer
+
+Mystic Hat
+Madness 10 charges
+5 Def
+15 Intelligence
+25 R-M
+2 M-B-R
+
+Mystic Boots
+15 Speed
+8 Def
+Blink 10 charges
+
+
+For Leonaria:
+
+A Alchemist-only staff with a huge amount of LP Stealer and another item with
+a huge amount of SP Stealer (hat).
+
+
+Definitely remove all scrolls for the spells:
+- Blind
+- Drug
+- Age
+- Disease
+- All single target heal ailment spells with a all-version
+- RestoreStamina
+- Escape (maybe it can be fixed?)
+
+Remove the strenghten potions or replace them with a different item which grants Heal I and SP I?

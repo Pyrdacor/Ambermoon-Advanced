@@ -140,28 +140,67 @@ Objects:
 
 # Hidden Sea Cave
 
-There is a new NPC in the Newlake Inn. He talks about his journey to the big vortex.
-He said that he travelled with Captain Torle so we should talk to him.
+When you talk to the map maker in Burnville he now will also mention the sea creatures
+on the map. When you ask about it, he tells you that he has seen all of them himself
+when he was travelling with Torle. You can ask Torle about it as well. The keyword is
+given to you by the map maker though.
 
-Torle can be asked about "Big Vortex". He won't be chatty about it when not talked
-to the NPC in Newlake before. But then he will talk more about it. He say he can harden
-the ship to make a travel near the big vortex possible. He needs some Xenobil planks and
-gold. You can then ask the woodkeeper for the Xenobil planks. He will sell it to you for
-10000 Gold. You need another 10000 Gold for Torle. After that Torle says that the ship
-is now ready.
+Torle will give his log book to his rescuers. There are the coordinates of 6 creatures.
+- A: Left of the hoimon desert is a giant turtle
+- B: Below the forest island is a big whale
+- C: North east of hoimon is a giant sea snake
+- D: Below the moaning desert is a sword fish
+- E: Below the black mountains is a piranha
+- X: North west of the forest island is a mermaid
 
-If you then travel to the vortex by boat, you will be teleported to a near location
-randomly. But with a small chance you enter the vortex. If you are teleported there
-should be a message like "Almost done it. Let's try again.". When you once entered the
-vortex, you will always enter immediately.
+If you visit those places a text event will pop up and you get a little exp.
+After visiting A to E, the mermaid at X will calm the ocean and grant you access to
+the big vortex. You can then enter it by boat. She will also give you flippers (boots that grant 99 swim).
 
 (TODO: If you can enter the vortex without boat, e.g. by leaving the eagle, there must
 be some global var setting nearby in ocean water to avoid entering the vortex without
 boat).
 
+
+```
+57x23
+MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+MMM......~~~~~~~~M~~~~~~~MM~~~~~~~~~~~~~~~M~~~..........M
+MM......~~~~~~~~~~~~~MM~~M~~~MM~~MMMMMMM~MMM~...........M
+M.....~~~~~~~~~~~MM~~~M~~M~~MMMMM~~M~~~~~~MM............M
+MM.~~~~~~~~~~~~~~~M~~~~~~MM~~~M~~~MM~MM~M~MMM...........M
+MMM~~~~~~~~~~~~~~~MM~MMMMMMMM~~~MMM~~M~~M~~M~~..........M
+MMMM~~~~~~~~~~~~~MM~~~~~M~~~M~~MM~~~MM~MMM~MM~~~~.......M
+MMMM~~~~~~~~~~~MMMMMMM~~~~M~~~~~MMMMMM~~~MMM~~~~~~~~...MM
+MMMMM.~~~~~~~~~~MMMMMMMMMMMMMMMMM~~~~~~~~~~~~~MMMMMM.MMMM
+MMMM~~~~~~~~~~~~~~~~~~~~~~~~~~MMMMMMMMMMMMMMMMMM~~~~~~MMM
+MMMMMMM~~~~~~~MMMMMMMMMMMMMMM....MMMMMMMMMMMMMMMM~~~~MMMM
+MMMMMMMMMMXMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM~~~~~~~MMM
+MMMMMMM~~~~~~~~~~~~~~~~~MMMMMMMMMMMMMMMM~~~~~~~~~MMM~MMMM
+MMMMM~~~~~~~~~~~~~~~MMMMMMMMMMMMMMMMMMM~~M~~~MM~~MM~~MMMM
+M|||||||||...~~~~~~~~~MMMMMMMMMMMMMMMMMM~~~M~~MM~MMMMMMMM
+M|.......|....~~~~~~~~~~MMMMM..~~~~~~~~~~MMMM~M.~~~~~MMMM
+M|.......|....~~~~~~~~~~~~~~MMMM~MMMMMMMMMMMMMMM~M~M~~~~M
+M|.......|.....~~~~~~~~~~~~~~~~MMMMMM~~~~MMM~~MMMM~MMMMMM
+M|.......|......~~~~~~~~~~~~~~~~~~~~~~MM~~~~~~~~M~~~~~~MM
+M||||OO|||.....~~~~~~~~~~~~~MMMMMMMMMMMMMMMM~~~~~~.MMMMMM
+M.............~~~~~~~~~~~~~~~~~~~~~....~~~~~~~MMMMMMMMMMM
+MM..........MMMM~~~~~~~MMMMMMMMMM~~~~~~~~MMMMMMMMMMMMMMMM
+MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+
+Legend:
+~ Water
+. Beach
+M Mountains/Rocks
+| Palisades
+O Gate
+X Rock (can be removed later)
+```
+
+
 In the cave there is a 2D map with beach and water. You have to swim a lot so having
 the skill high is good. It is a 2D swim maze. You eventually reach a beach with some
-houses in the upper right area. It has some palisaded like Spannenberg. You may enter
+houses in the upper right area. It has some palisades like Spannenberg. You may enter
 the village. It is a very small 3D map with mostly closed doors. A ghost town. Ship's End.
 Most houses are abandoned (text messages at the door). You can only enter one house.
 You will only find a diary which hints that some villagers moved to a castle in the
