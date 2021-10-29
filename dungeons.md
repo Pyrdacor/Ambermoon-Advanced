@@ -206,6 +206,35 @@ Most houses are abandoned (text messages at the door). You can only enter one ho
 You will only find a diary which hints that some villagers moved to a castle in the
 south west of the cave. You also can find a shovel and a ring of Sobek.
 
+```
+Size: 20x12 (with map border)
++-----------+-+--+
+|          X|B|  |
+| +--+  ----+ +X-+
+| |  X           |
+| +--+  +---+ +H-+
+|       X   X |  |
+| +X+   +---+ +--+
+| +-+            |
+|      +X-+   | B|
++---X--+--+---+--+
+
+H: House which can be entered
+B: Barrel with nothing in it (poison ailment)
+X: Closed doors or town exit
+
+Labdata 13
+
+Walls:
+1: Outer wall
+3: Outer door
+6: Palisade wall
+7: Palisade door
+Objects:
+12-17: Small plants
+Added 23: Barrel
+```
+
 At the south of the village you find another passage for swimming. On the way you stumble
 onto some undeads, spiders and lizards. You finally reach a castle with some newer houses
 around. You can find a raft dealer there. Inside the town there are some buildings:
