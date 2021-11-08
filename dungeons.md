@@ -247,25 +247,54 @@ around. You can find a raft dealer there. Inside the town there are some buildin
 - Swim Trainer (Place)
 
 ```
-Size: 35x20 (with map border)
-+------------------------------+
-|                              |
-| +--------+         +---X---+ |
-| |        |         |  Merc | |
-| | Castle +---+     |  Blac | |
-| |            |     +---X---+ |
-| |            X               |
-| |            |               |
-| |        +---+     +-------+ |
-| | +XX+ +-+         |       | |
-| +-+  +-+           X  Inn  | |
-|                    |       | |
-|                    +-------+ |
-| +---+      +---+             |
-| | S |      | R |    +-+ +-+  |
-| +-X-+      +-X-+    +X+ +X+  |
-|                              |
-+--------XX--------------------+
+Size: 26x18 (with map border)
++----------------------+
+|                      |
+| +--------+     +-X-+ |
+| |        |     |Mer| |
+| | Castle +--+  |Bla| |
+| |           |  +-X-+ |
+| |           X        |
+| |           |  +---+ |
+| |        +--+  XInn| |
+| | +XX+ +-+     +-X-+ |
+| +-+  +-+             |
+|              +-+ +-+ |
+| +-+  +-+ +-+ + + + + |
+| +X+  +X+ +X+ +S+ +R+ |
+|                      |
++-------------X--------+
+
+Labdata index 31.
+
+Walls:
+- 101: Stone wall
+- 102: Closed large door
+- 104: Closed large door with hammer
+- 106: Stone wall with borders
+- 108: Stone wall with large window
+- 109: Stone wall with small window
+- 111: Stone wall with large sign
+- 112: Stone wall with small sign
+- 115: Palisade wall (added)
+- 116: Palisade door (added)
+
+Objects:
+- 6: Small bush
+- 7: Small bush
+- 10: Dark male statue
+- 11: Female statue
+- 12: Male statue
+- 13: Stone pillar
+- 14: Yellow pillar
+- 15: Metal pillar
+- 16: Sand pillar
+- 17: Blond guy
+- 18: Female elf (black hair)
+- 19: Female elf (blond hair)
+- 20: Well
+- 21: Old wise man
+- 22: Knight
 ```
 
 The raft dealer places a raft at the docks outside the town. He also opens a passage in
