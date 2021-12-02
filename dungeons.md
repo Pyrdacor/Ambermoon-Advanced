@@ -341,6 +341,150 @@ rare items as well.
 - Light green: Lever
 - Dark green: Movable wall
 
+
+New labdata:
+- For world Lyramion 2Map_data
+- Wall height 400 or greater
+- Floor texture: 3 (dark gray)
+- Ceiling texture: 8 (bright gray)
+- Walls
+ 0x65 - Normal wall: 50
+ 0x66 - Fake wall: 50
+ 0x67 - Left border: 50, overlay 15 left (0, 0) (32x80)
+ 0x68 - Right border: 50, overlay 16 right (128-32, 0) (32x80)
+ 0x69 - Two borders: 50, with both overlay 15 and 16
+ 0x6A - Large window: 50, with overlay 71 (centered, 64x64)
+ 0x6B - Single small window: 50, with overlay 72 (centered, 32x58)
+ 0x6C - Two small windows: 50, with 2x overlay 72 (32x58)
+ 0x6D - Banner wall: 50, with overlay 70 (48x48)
+ 0x6E - Sign wall: 50, with overlay 40 (32x19)
+ 0x6F - Chains: 50, with overlays 33-36 (65,27 16x32, 46,27 16x26, 65,64 16x16, 41,64 16x16)
+ 0x70 - Door: 46
+ 0x71 - Darker wall: 146 (needs gfx from 3Walls3D.amb)
+ 0x72 - Darker wall with light: 147 (place torch on it, needs gfx from 3Walls3D.amb)
+ 0x73 - Out wall: 153 (needs gfx from 3Walls3D.amb)
+ 0x74 - Out destroyed wall: 154 (needs gfx from 3Walls3D.amb)
+- Objects
+  - 1: Black male statue
+  - 2: Knight statue without weapon
+  - 3: Knight status with weapon
+  - 4: Burning torch upper wall
+  - 5: Burning torch lower wall
+  - 6: Burning torch left wall
+  - 7: Burning torch right wall
+  - 8: Pile of stones
+  - 9: Skeleton
+  - 10: Undead monster
+  - 11: Crystal orb
+  - 12: Small pile of skulls
+  - 13: Large pile of skulls
+  - 14: Single skull
+  - 15: Carpet 2
+  - 16: Carpet 4
+  - 17: Stone pillar
+  - 18: Cage empty
+  - 19: Cage with skeleton
+  - 20: Ladder down
+  - 21: Ladder up
+  - 22: Hole down
+  - 23: Hole up
+  - 24: Flashing lights (manyeyes)
+  - 25: Switch left
+  - 26: Switch right
+  - 27: Burning candles
+  - 28: Chandelier
+  - 29: Small table with chest on it
+  - 30: Iron chest
+- Object infos
+  - 1: Black male statue
+  - 2: Knight statue without weapon
+  - 3: Knight status with weapon
+  - 4: Flame
+  - 5: Torch
+  - 6: Pile of stones
+  - 7: Skeleton
+  - 8: Undead monster
+  - 9: Crystal orb
+  - 10: Small pile of skulls
+  - 11: Large pile of skulls
+  - 12: Single skull
+  - 13: Carpet 2
+  - 14: Carpet 4
+  - 15: Stone pillar
+  - 16: Cage empty
+  - 17: Cage with skeleton
+  - 18: Ladder down
+  - 19: Hole down
+  - 20: Ladder up
+  - 21: Hole up
+  - 22: Flashing light
+  - 23: Switch left
+  - 24: Switch right
+  - 25: Burning candle
+  - 26: Chandelier (wooden part)
+  - 27: Chandelier chain
+  - 28: Chandelier candle
+  - 29: Small table
+  - 30: Iron chest
+
+
+
+Labdata 5:
+Objects:
+- 1: Golem statue
+- 2: Teleporter
+- 3: Black male statue
+- 4: Golem as monster (3 frames)
+- 5: Carpet
+- 6: Carpet
+- 7: Carpet
+- 8: Carpet
+- 9: Pillar
+- 10: Pillar
+- 11: Pillar
+- 12: Pillar
+- 13: Crystal orb
+- 14: Female statue
+- 15: Flashing light
+- 16: Switch off (left)
+- 17: Switch on (right)
+- 18: Candle (ignited)
+- 19: Candle (dead)
+- 20: Small table
+- 21: Iron chest
+- 22: Knight statue (without weapon)
+- 23: Knight statue (with weapon)
+- 24: Bed
+- 25: Baron NPC
+- 26: Chandelier
+- 27: Magic guard
+- 28: Moranian mage
+- 29: Demon (guard)
+- 30: Food bowl
+- 31: Coffin
+Walls:
+- 101: Door
+- 102: Two arc wall
+- 103: Normal wall
+- 104: Pillar symbol wall
+- 105: Pattern wall
+- 106: Pattern wall with slot
+- 107: Left border
+- 108: Right border
+- 109: Riddle mouth
+- 110: Large round window
+- 111: Small window
+- 112: Tiny window
+- 113: 2x small window
+- 114: Stairs up
+- 115: Stairs down
+- 116: Normal wall (fake wall)
+- 117: Ambermoon cover picture
+- 118: Ship picture
+- 119: Tree picture
+- 120: Shield and weapons
+- 121: Crystal wall
+
 The lever moves the wall away. The end boss has a key to unlock the main castle door. As mentioned the
 upper level has a sky and broken walls. The monsters all are groups of undeads. Some of them are marked
 as bosses and/or have very high anti-magic so they won't be affected by holy spells. All doors beside the
