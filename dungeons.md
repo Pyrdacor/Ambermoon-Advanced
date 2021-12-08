@@ -474,7 +474,7 @@ The three chests behind the fake walls contain:
 - Scimitar
 - Silver cutlery
 
-The other chest in the lower level contains a cursed dagger and simple clothings.
+The other chest in the lower level contains a cursed dagger.
 
 The chests in the upper level just contain:
 - Alcohol
