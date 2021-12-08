@@ -341,12 +341,11 @@ rare items as well.
 - Light green: Lever
 - Dark green: Movable wall
 
-
-New labdata:
+New labdata (020):
 - For world Lyramion 2Map_data
-- Wall height 400 or greater
+- Wall height 380
 - Floor texture: 3 (dark gray)
-- Ceiling texture: 8 (bright gray)
+- Ceiling texture: 4 (dark gray)
 - Walls
  0x65 - Normal wall: 50
  0x66 - Fake wall: 50
@@ -362,12 +361,10 @@ New labdata:
  0x70 - Door: 46
  0x71 - Darker wall: 146 (needs gfx from 3Walls3D.amb)
  0x72 - Darker wall with light: 147 (place torch on it, needs gfx from 3Walls3D.amb)
- 0x73 - Out wall: 153 (needs gfx from 3Walls3D.amb)
- 0x74 - Out destroyed wall: 154 (needs gfx from 3Walls3D.amb)
 - Objects
   - 1: Black male statue
   - 2: Knight statue without weapon
-  - 3: Knight status with weapon
+  - 3: Knight statue with weapon
   - 4: Burning torch upper wall
   - 5: Burning torch lower wall
   - 6: Burning torch left wall
@@ -398,7 +395,7 @@ New labdata:
 - Object infos
   - 1: Black male statue
   - 2: Knight statue without weapon
-  - 3: Knight status with weapon
+  - 3: Knight statue with weapon
   - 4: Flame
   - 5: Torch
   - 6: Pile of stones
@@ -426,6 +423,40 @@ New labdata:
   - 28: Chandelier candle
   - 29: Small table
   - 30: Iron chest
+
+New labdata (021):
+- For world Lyramion 2Map_data
+- Wall height 380
+- Floor texture: 3 (dark gray)
+- Ceiling texture: 0 (sky)
+- Walls
+ 0x65 - Out wall: 153 (needs gfx from 3Walls3D.amb)
+ 0x66 - Out destroyed wall: 154 (needs gfx from 3Walls3D.amb)
+ 0x67 - Out door: 46, overlay 92 at 0,0 (16x80) and overlay 93 at 112,0 (16x80)
+ - Objects
+  - 1: Pile of stones
+  - 2: Skeleton
+  - 3: Undead monster
+  - 4: Small pile of skulls
+  - 5: Large pile of skulls
+  - 6: Single skull
+  - 7: Carpet 2
+  - 8: Ladder down
+  - 9: Hole down
+  - 10: Burning candles
+  - 11: Iron chest
+- Object infos
+  - 1: Pile of stones
+  - 2: Skeleton
+  - 3: Undead monster
+  - 4: Small pile of skulls
+  - 5: Large pile of skulls
+  - 6: Single skull
+  - 7: Carpet 2
+  - 8: Ladder down
+  - 9: Hole down
+  - 10: Burning candle
+  - 11: Iron chest
 
 
 The lever moves the wall away. As mentioned the upper level has a sky and broken walls. The monsters all
