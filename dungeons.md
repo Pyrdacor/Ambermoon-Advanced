@@ -428,67 +428,9 @@ New labdata:
   - 30: Iron chest
 
 
-
-Labdata 5:
-Objects:
-- 1: Golem statue
-- 2: Teleporter
-- 3: Black male statue
-- 4: Golem as monster (3 frames)
-- 5: Carpet
-- 6: Carpet
-- 7: Carpet
-- 8: Carpet
-- 9: Pillar
-- 10: Pillar
-- 11: Pillar
-- 12: Pillar
-- 13: Crystal orb
-- 14: Female statue
-- 15: Flashing light
-- 16: Switch off (left)
-- 17: Switch on (right)
-- 18: Candle (ignited)
-- 19: Candle (dead)
-- 20: Small table
-- 21: Iron chest
-- 22: Knight statue (without weapon)
-- 23: Knight statue (with weapon)
-- 24: Bed
-- 25: Baron NPC
-- 26: Chandelier
-- 27: Magic guard
-- 28: Moranian mage
-- 29: Demon (guard)
-- 30: Food bowl
-- 31: Coffin
-Walls:
-- 101: Door
-- 102: Two arc wall
-- 103: Normal wall
-- 104: Pillar symbol wall
-- 105: Pattern wall
-- 106: Pattern wall with slot
-- 107: Left border
-- 108: Right border
-- 109: Riddle mouth
-- 110: Large round window
-- 111: Small window
-- 112: Tiny window
-- 113: 2x small window
-- 114: Stairs up
-- 115: Stairs down
-- 116: Normal wall (fake wall)
-- 117: Ambermoon cover picture
-- 118: Ship picture
-- 119: Tree picture
-- 120: Shield and weapons
-- 121: Crystal wall
-
-The lever moves the wall away. The end boss has a key to unlock the main castle door. As mentioned the
-upper level has a sky and broken walls. The monsters all are groups of undeads. Some of them are marked
-as bosses and/or have very high anti-magic so they won't be affected by holy spells. All doors beside the
-main entrance and boss door are unlocked so you can just pass it.
+The lever moves the wall away. As mentioned the upper level has a sky and broken walls. The monsters all
+are groups of undeads. Some of them are marked as bosses and/or have very high anti-magic so they won't be
+affected by holy spells. All doors beside the main entrance and boss door are unlocked so you can just pass them.
 
 The three chests behind the fake walls contain:
 - Holy horn
