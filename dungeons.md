@@ -361,6 +361,9 @@ New labdata (020):
  0x70 - Door: 46
  0x71 - Darker wall: 146 (needs gfx from 3Walls3D.amb)
  0x72 - Darker wall with light: 147 (place torch on it, needs gfx from 3Walls3D.amb)
+ 0x73 - Darker door: 173 (new wall gfx)
+ 0x74 - Darker fake wall: 146 (needs gfx from 3Walls3D.amb)
+ 0x75 - Darker wall (146) with eye overlay (at 32,11 with size 64x41)
 - Objects
   - 1: Black male statue
   - 2: Knight statue without weapon
@@ -392,6 +395,14 @@ New labdata (020):
   - 28: Chandelier
   - 29: Small table with chest on it
   - 30: Iron chest
+  - 31: Table with pot with straw on it and a chair
+  - 32: Pot with straw
+  - 33: Flags in some container(upper right corner)
+  - 34: Flask
+  - 35: Wooden table
+  - 36: Flags in some container (lower mid)
+  - 37: Big and small flask
+  - 38: Two torches (top and bottom wall)
 - Object infos
   - 1: Black male statue
   - 2: Knight statue without weapon
