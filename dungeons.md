@@ -403,6 +403,9 @@ New labdata (020):
   - 36: Flags in some container (lower mid)
   - 37: Big and small flask
   - 38: Two torches (top and bottom wall)
+  - 39: Hole in floor and ceiling
+  - 40: Two torches (left and right wall)
+  - 41: Undead with flashing light (undeads with eye)
 - Object infos
   - 1: Black male statue
   - 2: Knight statue without weapon
