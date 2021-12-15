@@ -155,11 +155,7 @@ Torle will give his log book to his rescuers. There are the coordinates of 6 cre
 
 If you visit those places a text event will pop up and you get a little exp.
 After visiting A to E, the mermaid at X will calm the ocean and grant you access to
-the big vortex. You can then enter it by boat. She will also give you flippers (boots that grant 99 swim).
-
-(TODO: If you can enter the vortex without boat, e.g. by leaving the eagle, there must
-be some global var setting nearby in ocean water to avoid entering the vortex without
-boat).
+the big vortex. You can then enter it.
 
 
 ```
