@@ -291,6 +291,7 @@ Objects:
 - 20: Well
 - 21: Old wise man
 - 22: Knight
+- 23: Bandit / Pirate
 ```
 
 The raft dealer places a raft at the docks outside the town. He also opens a passage in
