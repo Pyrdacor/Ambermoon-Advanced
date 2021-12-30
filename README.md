@@ -35,29 +35,29 @@ Thank you very much.
 
 Language | Downloads
 --- | ---
-English | [zip](https://github.com/Pyrdacor/Ambermoon.net/raw/master/releases/english/ambermoon_advanced_english_0.01_extracted.zip) [lha](https://github.com/Pyrdacor/Ambermoon.net/raw/master/releases/english/ambermoon_advanced_english_0.01_extracted.lha) [tar.gz](https://github.com/Pyrdacor/Ambermoon.net/raw/master/releases/english/ambermoon_advanced_english_0.01_extracted.tar.gz)
-Deutsch | [zip](https://github.com/Pyrdacor/Ambermoon.net/raw/master/releases/german/ambermoon_advanced_german_0.01_extracted.zip) [lha](https://github.com/Pyrdacor/Ambermoon.net/raw/master/releases/german/ambermoon_advanced_german_0.01_extracted.lha) [tar.gz](https://github.com/Pyrdacor/Ambermoon.net/raw/master/releases/german/ambermoon_advanced_german_0.01_extracted.tar.gz)
+English | [zip](https://github.com/Pyrdacor/Ambermoon.net/raw/main/releases/english/ambermoon_advanced_english_0.01_extracted.zip) [lha](https://github.com/Pyrdacor/Ambermoon.net/raw/main/releases/english/ambermoon_advanced_english_0.01_extracted.lha) [tar.gz](https://github.com/Pyrdacor/Ambermoon.net/raw/main/releases/english/ambermoon_advanced_english_0.01_extracted.tar.gz)
+Deutsch | [zip](https://github.com/Pyrdacor/Ambermoon.net/raw/main/releases/german/ambermoon_advanced_german_0.01_extracted.zip) [lha](https://github.com/Pyrdacor/Ambermoon.net/raw/main/releases/german/ambermoon_advanced_german_0.01_extracted.lha) [tar.gz](https://github.com/Pyrdacor/Ambermoon.net/raw/main/releases/german/ambermoon_advanced_german_0.01_extracted.tar.gz)
 
 
 ## Screenshots
 
 <p float="left">
-  <a href="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/master/screenshots/Teaser01.png"><img src="https://github.com/Pyrdacor/Ambermoon.net/raw/master/screenshots/Teaser01.png" width="400" alt="Indoor map" /></a>
-  <a href="https://github.com/Pyrdacor/Ambermoon.net/raw/master/screenshots/Teaser02.png"><img src="https://github.com/Pyrdacor/Ambermoon.net/raw/master/screenshots/Teaser02.png" width="400" alt="World map" /></a>
+  <a href="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser01.png"><img src="https://github.com/Pyrdacor/Ambermoon.net/raw/main/screenshots/Teaser01.png" width="400" alt="Indoor map" /></a>
+  <a href="https://github.com/Pyrdacor/Ambermoon.net/raw/main/screenshots/Teaser02.png"><img src="https://github.com/Pyrdacor/Ambermoon.net/raw/main/screenshots/Teaser02.png" width="400" alt="World map" /></a>
 </p>
 <p float="left">
-  <a href="https://github.com/Pyrdacor/Ambermoon.net/raw/master/screenshots/Teaser03.png"><img src="https://github.com/Pyrdacor/Ambermoon.net/raw/master/screenshots/Teaser03.png" width="400" alt="Indoor map" /></a>
-  <a href="https://github.com/Pyrdacor/Ambermoon.net/raw/master/screenshots/Teaser04.png"><img src="https://github.com/Pyrdacor/Ambermoon.net/raw/master/screenshots/Teaser04.png" width="400" alt="World map" /></a>
+  <a href="https://github.com/Pyrdacor/Ambermoon.net/raw/main/screenshots/Teaser03.png"><img src="https://github.com/Pyrdacor/Ambermoon.net/raw/main/screenshots/Teaser03.png" width="400" alt="Indoor map" /></a>
+  <a href="https://github.com/Pyrdacor/Ambermoon.net/raw/main/screenshots/Teaser04.png"><img src="https://github.com/Pyrdacor/Ambermoon.net/raw/main/screenshots/Teaser04.png" width="400" alt="World map" /></a>
 </p>
 <p float="left">
-  <a href="https://github.com/Pyrdacor/Ambermoon.net/raw/master/screenshots/Teaser05.png"><img src="https://github.com/Pyrdacor/Ambermoon.net/raw/master/screenshots/Teaser05.png" width="400" alt="Indoor map" /></a>
-  <a href="https://github.com/Pyrdacor/Ambermoon.net/raw/master/screenshots/Teaser06.png"><img src="https://github.com/Pyrdacor/Ambermoon.net/raw/master/screenshots/Teaser06.png" width="400" alt="World map" /></a>
+  <a href="https://github.com/Pyrdacor/Ambermoon.net/raw/main/screenshots/Teaser05.png"><img src="https://github.com/Pyrdacor/Ambermoon.net/raw/main/screenshots/Teaser05.png" width="400" alt="Indoor map" /></a>
+  <a href="https://github.com/Pyrdacor/Ambermoon.net/raw/main/screenshots/Teaser06.png"><img src="https://github.com/Pyrdacor/Ambermoon.net/raw/main/screenshots/Teaser06.png" width="400" alt="World map" /></a>
 </p>
 <p float="left">
-  <a href="https://github.com/Pyrdacor/Ambermoon.net/raw/master/screenshots/Teaser07.png"><img src="https://github.com/Pyrdacor/Ambermoon.net/raw/master/screenshots/Teaser07.png" width="400" alt="Indoor map" /></a>
-  <a href="https://github.com/Pyrdacor/Ambermoon.net/raw/master/screenshots/Teaser08.png"><img src="https://github.com/Pyrdacor/Ambermoon.net/raw/master/screenshots/Teaser08.png" width="400" alt="World map" /></a>
+  <a href="https://github.com/Pyrdacor/Ambermoon.net/raw/main/screenshots/Teaser07.png"><img src="https://github.com/Pyrdacor/Ambermoon.net/raw/main/screenshots/Teaser07.png" width="400" alt="Indoor map" /></a>
+  <a href="https://github.com/Pyrdacor/Ambermoon.net/raw/main/screenshots/Teaser08.png"><img src="https://github.com/Pyrdacor/Ambermoon.net/raw/main/screenshots/Teaser08.png" width="400" alt="World map" /></a>
 </p>
 <p float="left">
-  <a href="https://github.com/Pyrdacor/Ambermoon.net/raw/master/screenshots/Teaser09.png"><img src="https://github.com/Pyrdacor/Ambermoon.net/raw/master/screenshots/Teaser09.png" width="400" alt="Indoor map" /></a>
-  <a href="https://github.com/Pyrdacor/Ambermoon.net/raw/master/screenshots/Teaser10.png"><img src="https://github.com/Pyrdacor/Ambermoon.net/raw/master/screenshots/Teaser10.png" width="400" alt="World map" /></a>
+  <a href="https://github.com/Pyrdacor/Ambermoon.net/raw/main/screenshots/Teaser09.png"><img src="https://github.com/Pyrdacor/Ambermoon.net/raw/main/screenshots/Teaser09.png" width="400" alt="Indoor map" /></a>
+  <a href="https://github.com/Pyrdacor/Ambermoon.net/raw/main/screenshots/Teaser10.png"><img src="https://github.com/Pyrdacor/Ambermoon.net/raw/main/screenshots/Teaser10.png" width="400" alt="World map" /></a>
 </p>
