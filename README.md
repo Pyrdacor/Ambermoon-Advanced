@@ -8,7 +8,7 @@ The first beta release 0.01 is out now in english and german.
 
 Please keep in mind that this is in beta phase and I develop this on my own in my free time. So expect bugs, typos, bad texts, bad translations and even crashes. Save often!
 
-Ambermoon Advanced is playable on the Amiga. At least I hope so. I tested it with WinUAE so I am not 100% sure if it runs on any Amiga hardware.
+Ambermoon Advanced is playable on the Amiga. At least I hope so. I tested it with WinUAE so I am not 100% sure if it runs on every Amiga hardware.
 
 ## What it's not
 
