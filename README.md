@@ -20,7 +20,7 @@ If you want to play the episodes in succession you should pause before you leave
 
 ## Feedback and support
 
-Your feedback is very welcome. For bug reports you may use the issue tracker here on github but you can also join our [discord server](discord.gg/CCTt3bAh7g) or [email](mailto:trobt@web.de) me.
+Your feedback is very welcome. For bug reports you may use the issue tracker here on github but you can also join our [discord server](https://discord.gg/CCTt3bAh7g) or [email](mailto:trobt@web.de) me.
 
 If you want to support this or other projects, you can donate or become a patron/sponsor. \
 <a href="https://www.patreon.com/bePatron?u=44764566"><img src="https://github.com/Pyrdacor/github-images/raw/main/patreon.svg" width="140" height="28" alt="Become a patron" /></a>
