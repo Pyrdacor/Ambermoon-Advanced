@@ -1,0 +1,79 @@
+# Blazing Mountain
+
+Labdata 36 (new).
+Palette 6.
+
+## Walls
+
+65      110: Door
+66      111: Wall
+67      112: Wall
+68      113: Wall with pillar
+69      114: Wall with grate
+6A      115: Wall with face
+6B      121: Stairs up
+6C      122: Stairs down
+6D      119: Spider web
+6E      120: Destroyed spider web
+6F      116: Cave wall
+70      133: Cave wall with wooden pillar
+71      116: Cave wall with rock (overlay 29 with 32x80 in center)
+72      132: Cave-in with space
+
+
+## Object Infos
+
+01      30: Pillar with faces
+02      16: Flame
+03      17: Torch
+04      32: Stones on the floor
+05      89: Large lava
+06      89: Large lava (smaller version)
+07      89: Unused lava
+08      125: Fountain
+09      118: Cage with skeleton
+0A      36: Skeleton
+0B      82: Skulls
+0C      58: Crystal ball
+0D      94: Bat
+0E      93: Bat
+0F      141: Fire place
+10      164: Iron chest
+11      31: Teleporter (multiple frames)
+12      38: Imp
+13      51: Fire dragon
+14      51: Huge fire dragon
+
+
+## Objects
+
+01      Pillar with faces
+02      Large lava
+03      Large lava with smaller parts at the bottom
+04      Large lava with smaller parts at the bottom and right
+05      Fountain
+06      Cage with skeleton lower left
+07      Cage with skeleton upper right
+08      Skeleton
+09      Skulls
+0A      Crystal ball
+0B      3 bats
+0C      Fire place
+0D      Iron chest
+0E      Teleporter
+0F      Stones on the floor
+10      Burning torch top wall
+11      Burning torch bottom wall
+12      Large lava with smaller parts at the right
+13      Imp
+14      Fire dragon
+15      Huge fire dragon
+16      2x pillar left to right
+
+TODO: left and right wall torches
+TODO: test if huge lava messes up Amiga performance
+TODO: more torches
+TODO: monsters
+TODO: spinners
+TODO: events
+TODO: you can slip through the double pillars (either use groups of 3 and 2 pillars alternating or make them bigger or place them to make the slit smaller but then also test on Amiga!)
