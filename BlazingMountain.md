@@ -68,12 +68,15 @@ Palette 6.
 13      Imp
 14      Fire dragon
 15      Huge fire dragon
-16      2x pillar left to right
+16      2x pillar left to right (left aligned)
+17      Burning torch left wall
+18      Burning torch right wall
+19      3x pillar left to right
+1A      2x pillar left to right (right aligned)
 
-TODO: left and right wall torches
 TODO: test if huge lava messes up Amiga performance
-TODO: more torches
 TODO: monsters
 TODO: spinners
 TODO: events
 TODO: you can slip through the double pillars (either use groups of 3 and 2 pillars alternating or make them bigger or place them to make the slit smaller but then also test on Amiga!)
+TODO: Does original show map object colors? Does remake not?
