@@ -116,7 +116,9 @@ ID | Type | Name | Image | Info
 424 | Key | Magma Key / Magmaschlüssel | 140 | Opens a door in the fire dungeon
 425 | Magic Item | Ice Crystal / Eiskristall | 16 | Place on altar to cool the vulcano
 426 | Magic Item | Fire Crystal / Feuerkristall | 188 (new) | Opens the fire temple
-427 | Normal Item | Inactive Crystal | Inaktiver Kristall | 16 | Must be imbued with power to become the fire crystal
+427 | Normal Item | Inactive Crystal / Inaktiver Kristall | 16 | Must be imbued with power to become the fire crystal
+428 | 2H close-range weapon | Flamberge | 189 (new) | Strong weapon for warrior
+429 | Weapon | Fire staff | 190 (new) | Strong weapon for magician
 
 
 ## Todos
