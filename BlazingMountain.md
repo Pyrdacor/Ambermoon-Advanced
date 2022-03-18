@@ -87,7 +87,7 @@ ID | Name
 --- | ---
 65 | Dämonenbrut / Demon Spawn
 66 | Lavadrache / Lava Dragon
-!67 | Pyrdacor
+67 | Pyrdacor (mage version)
 !68 | Pyrdacor
 !69 | Pyrdacor
 
@@ -101,7 +101,7 @@ ID | Description
 99 | 1x Lava Dragon
 114 | 3x Lava Dragon
 115 | 2x Lava Dragon + 2x Demon Spawn
-!116 | 1x Pyrdacor I
+116 | 1x Pyrdacor I + 2x Demon Spawn
 !117 | 1x Pyrdacor II + 2x Demon Spawn
 !118 | 1x Pyrdacor III + 2x Lava Dragon
 
@@ -119,10 +119,44 @@ ID | Type | Name | Image | Info
 427 | Normal Item | Inactive Crystal / Inaktiver Kristall | 16 | Must be imbued with power to become the fire crystal
 428 | 2H close-range weapon | Flamberge | 189 (new) | Strong weapon for warrior
 429 | Weapon | Fire staff | 190 (new) | Strong weapon for magician
+430 | Magic Item | Dragon Essence / Drachenessenz | 151 | Used to empower Kasimir
 
+### Flamberge
+
+- 2 hands
+- 40 LP
+- 15 STA
+- 30 ATK
+- 1 DEF
+- 33 DMG
+- 25/30 Fire Storm
+- M-B-W 4
+- Indestructible
+- Warrior only
+- Male only
+- Price 33000
+- Weight 5500
+
+### Fire staff
+
+- 2 hands
+- 20 LP
+- 60 SP
+- 20 INT
+- 30 U-M
+- 1 DEF
+- 15 DMG
+- 25/30 Fire Pillar
+- M-B-W 4
+- Indestructible
+- Mage only
+- Male only
+- Price 27500
+- Weight 2500
 
 ## Todos
 
+- fire staff sprite rework
 - test if huge lava messes up Amiga performance
 - monsters
 - spinners
