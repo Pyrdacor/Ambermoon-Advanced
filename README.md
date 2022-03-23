@@ -12,7 +12,7 @@ Ambermoon Advanced is playable on the Amiga. At least I hope so. I tested it wit
 
 ## What it's not
 
-Ambermoon Advanced is no complete new game, so you will still play Ambermoon as you know it but of course with some additions and changes. For example monsters now have elements as well as spells. Therefore some monsters are now immune to certain spells. Don't bother shooting fire balls at fire dragons or rocks at stone golems. But there is no damage bonus against elements if you want to ask that.
+Ambermoon Advanced is no complete new game, so you will still play Ambermoon as you know it but of course with some additions and changes. For example monsters now have elements and spells have elements too. Therefore some monsters are now immune to certain spells. Don't bother shooting fire balls at fire dragons or rocks at stone golems. But there is no damage bonus against elements if you want to ask that. For future updates, more complex spell damage changes are planned which might include element bonus, intelligence damage boosts and level-dependent damage increasements.
 
 Also keep in mind that adding content is a lot of work so don't expect the whole world to change or secrets in every dungeon. As Ambermoon Advanced is released in episodes the current changes focus on the early game and adds 2 new quest chains to the mid to late game on Lyramion.
 
