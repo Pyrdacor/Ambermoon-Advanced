@@ -159,9 +159,19 @@ ID | Type | Name | Image | Info
 - fire staff sprite rework
 - test if huge lava messes up Amiga performance
 - monsters
-- spinners
 - events
 - you can slip through the double pillars (either use groups of 3 and 2 pillars alternating or make them bigger or place them to make the slit smaller but then also test on Amiga!)
 - Does original show map object colors? Does remake not?
 
 
+## Spinner events
+
+0e: Spin up, reset right path
+0f: Spin right, set right path
+10: Spin right, reset right path
+11: Spin down, reset right path
+12: Spin left, reset right path
+13: Spin up, keep right path state
+14: Spin right, keep right path state
+15: Spin down, keep right path state
+16: Spin left, keep right path state
