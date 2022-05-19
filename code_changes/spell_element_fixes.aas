@@ -1,0 +1,12 @@
+# The first char in a line is the instruction.
+# A '#' is just a comment line.
+# To search for text in the original ASM use '?'.
+# All text behind this until newline (including whitespaces) is searched.
+# To add a new line before the current position use '<', to insert after the current line use '>'.
+# To replace data use '!'. Enter the text to replace and then the text to insert.
+# To seek from the current location use '+' or '-' followed by the number of characters.
+
+# Lookup the spell infos
+?DAT_SpellInfos:
+#
+>

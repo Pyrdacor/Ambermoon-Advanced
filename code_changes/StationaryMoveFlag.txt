@@ -1,0 +1,6 @@
+see LAB_0022b9da, LAB_00236dea and LAB_00236d1c
+and LAB_00236f44 (skip the time slot movement!)
+
+Just duplicate the random bit check with bit 7.
+
+Bit 7 is the stationary flag.

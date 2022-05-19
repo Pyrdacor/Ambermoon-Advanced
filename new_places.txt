@@ -1,4 +1,4 @@
-Place 066: Merchant of per shop (merchant index 019)
+Place 066: Merchant of pet shop (merchant index 019)
 - 1x 208 (Silver cutlery)
 - 1x 404 (Cat toy)
 - 1x 405 (Dog toy)
