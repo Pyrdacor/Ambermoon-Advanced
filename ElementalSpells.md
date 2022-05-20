@@ -50,9 +50,6 @@ Spirit spells are strong against physical and undead monsters (150%).
 
 Spell | Class | Description
 --- | --- | ---
-Dispell Undead | Healer | Dispells a single undead enemy
-Destroy Undead | Healer | Dispells a row of undead enemies
-Holy Word | Healer | Dispells all undead enemies
 Ghost Weapon | Alchemist | Shoots out a ghostly fire which deals the same damage as your total attack damage
 Magical Projectile | Magician | Deals half your level as damage to a single enemy (when cast by monsters it is the the full level)
 Magical Arrows | Magician | Deals half your level as damage to a row of enemies (when cast by monsters it is the the full level)
