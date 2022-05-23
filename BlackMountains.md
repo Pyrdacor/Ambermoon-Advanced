@@ -21,6 +21,8 @@ Hex ID | Gfx Id | Description
 70 | 133 | Cave wall with wooden pillar
 71 | 116 | Cave wall with rock (overlay 29 with 32x80 in center)
 72 | 132 | Cave-in with space
+73 | 111 | Fake wall
+74 | 111 | Wall with riddlemouth
 
 
 ## Object Infos
@@ -47,6 +49,7 @@ Hex ID | Gfx Id | Description
 12  | 38 | Imp
 13  | 51 | Fire dragon
 14  | 51 | Huge fire dragon
+15  | 139 | Lever
 
 
 ## Objects
@@ -79,6 +82,7 @@ Hex ID | Description
 18 | Burning torch right wall
 19 | 3x pillar left to right
 1A | 2x pillar left to right (right aligned)
+1B | Lever
 
 
 ## Monsters
