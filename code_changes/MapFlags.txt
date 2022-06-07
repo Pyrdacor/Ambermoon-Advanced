@@ -1,0 +1,2 @@
+Bit 12: No world map music (overrides travel type bit and use map music instead)
+Bit 13: No marking (spells "Mark of return" and "Word of return" are not working, shows message 63 when trying)
