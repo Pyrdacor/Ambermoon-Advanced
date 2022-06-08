@@ -24,8 +24,13 @@ Palette 6
 77: Wall with tree picture (small)
 78: Wall with shield and swords
 79: Crystal wall
-7A: Wall with statue and button (not pressed)
-7B: Wall with statue and button (pressed)
+7A: Wall with statue and button (not pressed) (added)
+7B: Wall with statue and button (pressed) (added)
+7C: Wall with sign (right aligned) (added)
+7D: Wall with sign (left aligned) (added)
+7E: Door with pillars (added)
+7F: Book shelves 1 (added)
+80: Book shelves 2 (added)
 
 # Objects
 
@@ -61,9 +66,17 @@ Palette 6
 1E: Demon's food bowl
 1F: Coffin
 20: Table with urn (added)
+21: Huge knight statue with tombstone (added)
+22: Weapon rack (added)
+23: Stool right-aligned (added)
+24: Stool left-aligned (added)
 
 
 # Object infos
 
 ...
 22: Urn (added)
+23: Huge knight statue (added)
+24: Weapon rack (added)
+25: Tombstone (added)
+26: Stool (added)
