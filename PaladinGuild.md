@@ -31,6 +31,7 @@ Palette 6
 7E: Door with pillars (added)
 7F: Book shelves 1 (added)
 80: Book shelves 2 (added)
+81: Fake wall with statue
 
 # Objects
 
@@ -68,8 +69,7 @@ Palette 6
 20: Table with urn (added)
 21: Huge knight statue with tombstone (added)
 22: Weapon rack (added)
-23: Stool right-aligned (added)
-24: Stool left-aligned (added)
+23: Table with stools (added)
 
 
 # Object infos
