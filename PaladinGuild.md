@@ -70,6 +70,7 @@ Palette 6
 21: Huge knight statue with tombstone (added)
 22: Weapon rack (added)
 23: Table with stools (added)
+24: Altair (pillar with star) (added)
 
 
 # Object infos
@@ -80,3 +81,5 @@ Palette 6
 24: Weapon rack (added)
 25: Tombstone (added)
 26: Stool (added)
+27: Small pillar (added)
+28: Stone star (added)
