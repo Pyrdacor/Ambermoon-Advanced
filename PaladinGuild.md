@@ -71,6 +71,7 @@ Palette 6
 22: Weapon rack (added)
 23: Table with stools (added)
 24: Altair (pillar with star) (added)
+25: Undead (added)
 
 
 # Object infos
@@ -83,3 +84,4 @@ Palette 6
 26: Stool (added)
 27: Small pillar (added)
 28: Stone star (added)
+29: Undead (added)
