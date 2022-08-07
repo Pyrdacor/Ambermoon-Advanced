@@ -49,7 +49,8 @@ Hex ID | Gfx Id | Description
 12  | 38 | Imp
 13  | 51 | Fire dragon
 14  | 51 | Huge fire dragon
-15  | 139 | Lever
+15  | 139 | Lever left
+16  | 140 | Level right
 
 
 ## Objects
@@ -82,7 +83,8 @@ Hex ID | Description
 18 | Burning torch right wall
 19 | 3x pillar left to right
 1A | 2x pillar left to right (right aligned)
-1B | Lever
+1B | Lever left
+1C | Lever right
 
 
 ## Monsters
@@ -160,7 +162,6 @@ ID | Type | Name | Image | Info
 
 ## Todos
 
-- fire staff sprite rework
 - test if huge lava messes up Amiga performance
 - monsters
 - events
