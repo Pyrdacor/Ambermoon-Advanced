@@ -51,6 +51,7 @@ Hex ID | Gfx Id | Description
 14  | 51 | Huge fire dragon
 15  | 139 | Lever left
 16  | 140 | Level right
+17  | 16 | Large flame
 
 
 ## Objects
@@ -85,6 +86,7 @@ Hex ID | Description
 1A | 2x pillar left to right (right aligned)
 1B | Lever left
 1C | Lever right
+1D | Large flame
 
 
 ## Monsters
