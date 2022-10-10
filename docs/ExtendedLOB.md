@@ -39,7 +39,7 @@ The last case encodes 2 RLE sequences. The first two bytes encode 290 zeros. So 
 
 ### Decompression
 
-Whenever the header byte is zero, the next byte is read, increased by 3 and this amount of zeros is written to the output.
+Whenever the header byte is zero, the next byte is read, increased by 35 and this amount of zeros is written to the output.
 
 
 ## 1 to 127: Encodes a sequence of literals
