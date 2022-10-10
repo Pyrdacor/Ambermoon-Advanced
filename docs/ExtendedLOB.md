@@ -35,7 +35,7 @@ If a sequence of 3 or more zeros in a row is found, each chunk of 3 to 258 zeros
 
 The last case encodes 2 RLE sequences. The first two bytes encode 258 zeros. So 42 zeros remain. The second byte pair encodes those 42 zeros. Note the amount minus 3 is stored which is 39 (hex 27).
 
-*Important*: There are cases where the last chunk has less than 3 zeros! For example you can't encode 260 bytes only with this RLE. The first 258 zeros are ok but then only 2 zeros remain. Those can't be encoded as an additional RLE! They have to be written as normal literals instead!
+**Important**: There are cases where the last chunk has less than 3 zeros! For example you can't encode 260 bytes only with this RLE. The first 258 zeros are ok but then only 2 zeros remain. Those can't be encoded as an additional RLE! They have to be written as normal literals instead!
 
 ### Decompression
 
@@ -50,9 +50,9 @@ If no compression is possible, the literals (byte values) have to be written to 
 You can just write the number of uncompressed bytes (up to 127) as a single byte to the output and then write the bytes. For sequences longer than 127 you have to use multiple of such sections.
 
 The worst case for compression are single uncompressed bytes, as they need 2 bytes in the output. There is a special encoding for byte values less than 32 to avoid this a bit.
-See 'Small byte literal' encoding below for more details. For bytes equal or above 32, this is not possible unfortunately. They will cause the worst case.
+See 'Small byte literal' encoding at the end of this page for more details. For bytes equal or above 32, this is not possible unfortunately. They will cause the worst case.
 
-This won't save space but will even add an additional byte to the output. These additional bytes should be compensated by other compression encodings. For large sections which can't be compressed,
+The literal sequence encoding won't save space but will even add an additional byte to the output. These additional bytes should be compensated by other compression encodings. For large sections which can't be compressed,
 this additional byte only becomes a small fraction of the section size. The smaller the size though, the more the byte matters. It is hard to determine how well the total compression will be as
 it depends on the data. There might be cases where the extended LOB performs bad or even increases the size of the data. In that case use the raw data or another compression. In general it will
 compress very well for its simplicity and will often out-perform the original LOB compression. Reading of encoded literal sequences should also be much faster as only 1 byte is decoded and then the
