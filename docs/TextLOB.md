@@ -100,12 +100,12 @@ As the offset consists of 9 bits it can theoretically express the values 0 to 51
 can't be 31 (binary 00011111). At max the first byte can be `00011110` in binary. Therefore our 9 bit offset value is limited to `111011111` which is 479.
 Again offsets below 3 make not much sense, so we interpret the offset range as 3 to 482. The max offset for longer matches is therefore 482.
 
-The process of encoding and decoding is the same. Only the match offset and length are stored differently. For 2-byte matches the length is implicit.
+The process of encoding and decoding is the same. Only the match offset and length are stored differently. For 2-byte matches the length is implicit. Don't forget to adjust the offset and length values (add or remove 3).
 
 
 ### Initial bytes
 
-Text sub-files start with some header bytes in general. For example bytes with specify the amount of texts or the text lengths. As they are part of the data,
+Text sub-files start with some header bytes in general. For example bytes which specify the amount of texts or the text lengths. As they are part of the data,
 they have to be encoded as well. But those values can be anything, including the values 1 to 31 which are forbidden otherwise. To enable the above encodings,
 the header bytes can be skipped for compression. To accomplish this, the whole compressed data starts with a byte which gives the size of bytes which should
 not be compressed. The amount is then just copied over and then decompression starts.
