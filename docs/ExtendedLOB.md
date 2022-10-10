@@ -170,7 +170,7 @@ with just a single byte. The encoding is `111XXXXX` where the X bits directly sp
 For example consider the following source data `00 00 00 05 00 00 00 06` which is very common. The sequences of zero can be run-length-encoded but then you have the single
 byte `05` in-between. Normally you would have to encode this byte as the two-byte encoding `01 05`. But with this special encoding you can just encoded it as `E5`.
 
-Another benefit is that you save a byte for sequences of small bytes. Consider the source data `01 02 03 04 05`. Normally would would encode a sequence of uncompressed
+Another benefit is that you save a byte for sequences of small bytes. Consider the source data `01 02 03 04 05`. Normally you would encode a sequence of uncompressed
 bytes as `05 01 02 03 04 05`. The first byte is the header byte which gives the amount of uncompressed literals. Instead you can also just use `E1 E2 E3 E4 E5` here.
 
 This saves a byte as every single byte is basically a header byte with some encoding. But note that this approach might be slower as you have to decode every byte instead
