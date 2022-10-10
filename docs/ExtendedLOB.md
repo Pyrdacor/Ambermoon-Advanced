@@ -102,8 +102,7 @@ Before | 01 02 | Data before match processing
 
 In hex the header is A0 to BF. You can check if the header starts with the bit sequence 101.
 
-Large matches are similar to small matches but with different value ranges for offset and length. Offsets can be 1 to 1024 and lengths 3 to 130. The encoding needs 2.5 bytes. You will save 0.5 to 127.5 bytes.
-In worst case (last large match is a even one and length is 3), you don't save any space. But this happens at max once per data.
+Large matches are similar to small matches but with different value ranges for offset and length. Offsets can be 1 to 1024 and lengths 3 to 130. The encoding needs 2.5 bytes. You will save 0.5 to 127.5 bytes. In worst case (last large match is a even one and length is 3), you don't save any space. But this happens at max once per data. The cases where you only save 0.5 to 15.5 are also rare as you can encode small matches of length 3 to 18 with just 2 bytes. This is only necessary if the offset is between 513 and 1024. In those cases it is still good to save a few bits and bytes but the chance raises which each offset to find the same data again more closely as well.
 
 Note that you can express some matches as either small or large matches. Always prefer encoding them as small ones if possible.
 
