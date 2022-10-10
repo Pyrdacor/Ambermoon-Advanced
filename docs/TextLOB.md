@@ -119,5 +119,4 @@ stores some non-text characters after a small header. However it should work wel
 ### Summary
 
 The compressed data stream must start with a byte which gives the amount of bytes to copy directly to the output. This can't exceed 255. Then all bytes are
-either output as they are or encoded. A zero byte becomes 0x1f in the output. Every value between 0x00 and 0x1e is an encoded match which might use an additional
-byte. All other bytes are copied as they are.
+either output as they are or encoded. A zero byte in the uncompressed data becomes 0x1f in the compressed data. Every value between 0x00 and 0x1e is the compressed data is an encoded match which might use an additional byte. All other bytes are copied as they are.
