@@ -4,6 +4,7 @@ To save more space for the new content, I added a new LOB compression method.
 
 The LOB method in Ambermoon is type 06. The type is given in the highest byte of the 4 byte header which follows the magic string "1LOB".
 This new LOB method uses byte FF (type 255). This way files can use any of the available LOB methods, so the original one is still available.
+Moreover we can just use the existing container formats like AMNP without change and use any LOB method (old or new) for any sub-file.
 
 For the original LOB, see here: https://github.com/Pyrdacor/Ambermoon/blob/master/Files/LOB.md.
 
