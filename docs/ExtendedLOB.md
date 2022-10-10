@@ -77,7 +77,7 @@ The next byte is also used to store information for the match. Basically header 
 
 ### Decompression
 
-If the header is of the bit form 110XXXXX, it is a small match. See the compression to know how offset and length are encoded. Don't forget to add 3 to the read match length as it is stored as 0 to 15 instead of 3 to 18. And add 1 to the read offset value.
+If the header is of the bit form 100XXXXX, it is a small match. See the compression to know how offset and length are encoded. Don't forget to add 3 to the read match length as it is stored as 0 to 15 instead of 3 to 18. And add 1 to the read offset value.
 
 If you decoded the match offset and length, you can process the match by reading from the current position minus the given offset.
 
