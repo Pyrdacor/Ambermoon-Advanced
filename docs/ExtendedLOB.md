@@ -56,6 +56,8 @@ it depends on the data. There might be cases where the extended LOB performs bad
 compress very well for its simplicity and will often out-perform the original LOB compression. Reading of encoded literal sequences should also be much faster as only 1 byte is decoded and then the
 whole sequence can be read directly.
 
+The original LOB also needs to store an additional header bit for each literal. For a sequence of 8 literals, it stores 8 additional bits or 1 additional byte. This means that literals sequences of length 1 to 7 are better encoded with original LOB, sequences of length 8 are equally well encoded and longer sequences are better encoded by the extended LOB. For the worse cases, often the small literal encoding might help.
+
 ### Decompression
 
 If the header byte is 1 to 127. Just read this amount of bytes.
