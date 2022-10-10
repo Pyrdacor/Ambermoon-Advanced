@@ -24,9 +24,9 @@ As each header byte can have a value from 0 to 255, the following value ranges e
 
 If a sequence of 3 or more zeros in a row is found, each chunk of 3 to 258 zeros is encoded as 2 bytes. The first byte is a zero, the second byte gives the amount minus 3.
 
-For example 10 zeros are encoded as those hex bytes: `00 07`.
-3 zeros would be: `00 00`.
-And 300 zeros would be: `00 FF 00 27`.
+- For example 10 zeros are encoded as those hex bytes: `00 07`.
+- 3 zeros would be: `00 00`.
+- And 300 zeros would be: `00 FF 00 27`.
 
 The last case encodes 2 RLE sequences. The first two bytes encode 258 zeros. So 42 zeros remain. The second byte pair encodes those 42 zeros. Note the amount minus 3 is stored which is 39 (hex 27).
 
