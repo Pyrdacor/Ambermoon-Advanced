@@ -174,5 +174,5 @@ Another benefit is that you save a byte for sequences of small bytes. Consider t
 bytes as `05 01 02 03 04 05`. The first byte is the header byte which gives the amount of uncompressed literals. Instead you can also just use `E1 E2 E3 E4 E5` here.
 
 This saves a byte as every single byte is basically a header byte with some encoding. But note that this approach might be slower as you have to decode every byte instead
-of just copy the sequence after decoding one header. This is especially true if the sequence is very long. In that case the single save byte isn't that important anymore
+of just copy the sequence after decoding one header. This is especially true if the sequence is very long. In that case the single saved byte isn't that important anymore
 so it's preferred to use the normal literal sequence with the 1-byte header instead. For short sequences, the 1 additional byte matters and should be avoided.
