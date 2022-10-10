@@ -107,6 +107,8 @@ In worst case (last large match is a even one and length is 3), you don't save a
 
 Note that you can express some matches as either small or large matches. Always prefer encoding them as small ones if possible.
 
+The original LOB can handle greater offsets up to 4095 but is very limited when it comes to match lengths. Only lengths up to 18 are possible. I guess it was used as it performs good enough for data, images and texts. However for most non-text data, long matches and even long RLE sequences are quite common. Of course they perform very bad on text data. This is why I invented two different LOB methods for text and non-text data.
+
 ### Compression
 
 For basic information see small matches. Here only the bit encoding is shown.
