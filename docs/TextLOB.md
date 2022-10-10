@@ -46,11 +46,12 @@ to encode 2-byte matches in a single byte as offsets would be very limited and t
 
 ### 2-byte matches
 
-You might think of the sentence "BE OR NOT TO BE" where you can match the "BE". But for those cases often a 3-byte match is better which includes
-the space as well (if possible). 2-byte matches are much more common: "THE FIRE BURNS QUITE HOT THOUGH". You won't expect much matches here but if you
-include the space you can see that the sequence "E " (with space) is used 3 times here. This is also true for parts of words. You can match "HO" and "TH" as well.
+You might think of texts "TO BE OR NOT TO BE" where you can encode the "TO" and the "BE" as a back reference. But for those cases often a 3-byte match is better which includes
+the space as well (if possible). For example the second "TO " (with space) can be encoded. 2-byte matches are much more common: "THE FIRE BURNS QUITE HOT OVER THERE".
+You won't expect much matches here but if you include the space you can see that the sequence "E " (with space) is used 3 times here. This is also true for parts of words. You can match "HO", "TH" or "ER" as well.
 
-So in total we have 4 2-byte matches here. Encoded as 1.5 bytes each we can at least save 2 bytes in total, which is ok for a random short text.
+So in total we have a bunch of 2-byte matches here. Encoded as 1.5 bytes each, we can at least save some bytes, which is ok for a random short text. Consider many maps and characters with all their texts and we will
+already save some kilobytes just with those 2-byte matches.
 
 Of course with entropy encoding like Huffman we could compress this much better. But we want to use it on the Amiga with simple code and good performance!
 There is always a tradeoff and I came up with this compression to allow a fast decompression which is good enough to save a few KBs in total.
@@ -59,10 +60,10 @@ There is always a tradeoff and I came up with this compression to allow a fast d
 
 As mentioned we only consider values 0 to 30 for matches. In binary this is 00000000 to 00011110. So if any of the upper 3 bits is set, it is no match!
 
-To state that it is a 2-byte match, the 4th bit (from left) is also 0. So for 2-byte matches the first byte is of the form 0000XXXX. 0001XXXX would start
+To state that it is a 2-byte match, the 4th bit (from left) is also 0. So for 2-byte matches the first byte is of the form 0000XXXX. In contrast 0001XXXX would start
 a match of higher length.
 
-As mentioned we use 1.5 bytes. To do so we either use 2 bytes or 1 byte. We alternate between 2 and 1 bytes, and every second 2-byte-match will use a half
+As mentioned we use 1.5 bytes to encode such a match. To do so we either use 2 bytes or 1 byte. We alternate between reading 2 or 1 bytes, and every second 2-byte match will use a half
 byte (4 bits) of the last 2-byte match. A similar thing is done in the [Extended LOB algorithm](ExtendedLOB.md). There for the large matches which use 2.5 bytes.
 So have a look there to understand the process better.
 
@@ -96,8 +97,8 @@ If the 4th bit (from left) is set, it is a match of length 3 to 10. This is alwa
 toggle for the 2-byte matches! The encoding for longer matches is `0001OOOO OOOOOLLL`. So here we have 9 bits in total for the offset and 3 bits for the length.
 As matches of length 2 are already handled, we interpret the length value (0 to 7) as 3 to 10.
 
-As the offset consists of 9 bits it can theoretically express the values 0 to 511. But as byte 31 is a special encoding for a zero byte, the first byte
-can't be 31 (binary 00011111). At max the first byte can be `00011110` in binary. Therefore our 9 bit offset value is limited to `111011111` which is 479.
+The offset consists of 9 bits, therefore it can theoretically express the values 0 to 511. But as byte 31 is a special encoding for a zero byte, the first byte
+can't be 31 (binary `00011111`). At max the first byte can be `00011110` in binary. Therefore our 9 bit offset value is limited to `111011111` which is 479.
 Again offsets below 3 make not much sense, so we interpret the offset range as 3 to 482. The max offset for longer matches is therefore 482.
 
 The process of encoding and decoding is the same. Only the match offset and length are stored differently. For 2-byte matches the length is implicit. Don't forget to adjust the offset and length values (add or remove 3).
@@ -119,4 +120,4 @@ stores some non-text characters after a small header. However it should work wel
 ### Summary
 
 The compressed data stream must start with a byte which gives the amount of bytes to copy directly to the output. This can't exceed 255. Then all bytes are
-either output as they are or encoded. A zero byte in the uncompressed data becomes 0x1f in the compressed data. Every value between 0x00 and 0x1e is the compressed data is an encoded match which might use an additional byte. All other bytes are copied as they are.
+either output as they are or encoded. A zero byte in the uncompressed data becomes 0x1f in the compressed data. Every value between 0x00 and 0x1e in the compressed data is an encoded match which might use an additional byte. All other bytes are copied as they are.
