@@ -27,15 +27,15 @@ So to process compressed data, read a byte from the encoded data stream, decode 
 
 ### Compression
 
-If a sequence of 3 or more zeros in a row is found, each chunk of 3 to 258 zeros is encoded as 2 bytes. The first byte is a zero, the second byte gives the amount minus 3.
+If a sequence of 35 or more zeros in a row is found, each chunk of 35 to 290 zeros is encoded as 2 bytes. The first byte is a zero, the second byte gives the amount minus 35.
 
-- For example 10 zeros are encoded as those hex bytes: `00 07`.
-- 3 zeros would be: `00 00`.
-- And 300 zeros would be: `00 FF 00 27`.
+- For example 40 zeros are encoded as those hex bytes: `00 05`.
+- 35 zeros would be: `00 00`.
+- And 350 zeros would be: `00 FF 00 19`.
 
-The last case encodes 2 RLE sequences. The first two bytes encode 258 zeros. So 42 zeros remain. The second byte pair encodes those 42 zeros. Note the amount minus 3 is stored which is 39 (hex 27).
+The last case encodes 2 RLE sequences. The first two bytes encode 290 zeros. So 60 zeros remain. The second byte pair encodes those 60 zeros. Note the amount minus 35 is stored which is 25 (hex 19).
 
-**Important**: There are cases where the last chunk has less than 3 zeros! For example you can't encode 260 bytes only with this RLE. The first 258 zeros are ok but then only 2 zeros remain. Those can't be encoded as an additional RLE! They have to be written as normal literals instead!
+**Important**: There are cases where the last chunk has less than 35 zeros! For example you can't encode 300 zeros only with this RLE. The first 290 zeros are ok but then only 10 zeros remain. Those can't be encoded as an additional zero RLE! They have to be written as a normal RLE. If only 2 zeros would remain (i.e. when encoding 292 zeros), you even have to write the last two zeros as normal literals instead!
 
 ### Decompression
 
@@ -152,15 +152,15 @@ In general when processing the nth large match, if n is even (0, 2, 4, etc), rea
 If n is odd (1, 3, 5, etc), just take the 4 bits from the reserve.
 
 
-## 192 to 223: Encodes a non-zero RLE
+## 192 to 223: Encodes a byte RLE
 
 In hex the header is C0 to DF. You can check if the header starts with the bit sequence 110. You can save 1 to 32 bytes with this.
 
 ### Compression
 
-If there is a sequence of equal bytes which has a length greater or equal 3, you can use this encoding. Basically it works like the zero RLE but with other byte values.
+If there is a sequence of equal bytes which has a length greater or equal 3, you can use this encoding. Basically it works like the zero RLE but with all byte values.
 
-The amount here is limited to 34 though where the zero RLE allows up to 258. In theory you could also encode zero RLEs with this but it's not recommended.
+The amount here is limited to 34 though where the zero RLE allows up to 290. As this encoding covers counts of up to 34, the special zero RLE encoding only starts at a count of 35.
 
 The bit encoding of the header is: `110LLLLL`. Here the L bits give a length value of 0 to 31, which represents a length of 3 to 34 (so subtract 3 for encoding or add 3 for decoding).
 
@@ -170,6 +170,14 @@ The following byte gives the byte to repeat.
 
 If the header starts with the bits `110`, read the next 5 bits as a length, increase it by 3 and write the following byte to the output n times, where n is the given length.
 
+### Mixing zero RLEs
+
+To encode arbitrary sequences of zeros, you can combine the two different RLE encodings:
+
+- 300 zeros: `00 FF C7 00`
+- 293 zeros: `00 FF C0 00`
+- 324 zeros: `00 FF DF 00`
+- 325 zeros: `00 FF 00 00`
 
 ## 224 to 255: Small byte literal
 
