@@ -39,18 +39,18 @@ Whenever the header byte is zero, the next byte is read, increased by 3 and this
 
 ## 1 to 127: Encodes a sequence of literals
 
+### Compression
+
+If no compression is possible, the literals (byte values) have to be written to the output as they are. Of course the decompressor must know if a data chunk is uncompressed. This is done by this header.
+You can just write the number of uncompressed bytes (up to 127) as a single byte to the output and then write the bytes. For sequences longer than 127 you have to use multiple of such sections.
+
+The worst case for compression are single uncompressed bytes, as they need 2 bytes in the output. There is a special encoding for byte values less than 32 to avoid this a bit.
+See 'Small byte literal' encoding below for more details. For bytes equal or above 32, this is not possible unfortunately. They will cause the worst case.
+
 This won't save space but will even add an additional byte to the output. These additional bytes should be compensated by other compression encodings. For large sections which can't be compressed,
 this additional byte only becomes a small fraction of the section size. The smaller the size though, the more the byte matters. It is hard to determine how well the total compression will be as
 it depends on the data. There might be cases where the extended LOB performs bad or even increases the size of the data. In that case use the raw data or another compression. In general it will
 compress very well for its simplicity and will often out-perform the original LOB compression.
-
-### Compression
-
-If no compression is possible, the literals (byte values) have to be written to the output as they are. Of course the decompressor must know if a data chunk is uncompressed. This is done by this header.
-You can write up to 127 bytes uncompressed to the output. Just add the header 1 to 127 and write the bytes. For sequences longer than 127 you have to use multiple of such sections.
-
-The worst case for compression are single uncompressed bytes, as they need 2 bytes in the output. There is a special encoding for byte values less than 32 to avoid this a bit.
-See 'Small byte literal' encoding below for more details. For bytes equal or above 32, this is not possible unfortunately. They will cause the worst case.
 
 ### Decompression
 
