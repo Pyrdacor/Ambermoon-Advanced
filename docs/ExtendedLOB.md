@@ -122,7 +122,7 @@ For compressors this means that parts of every second large match have to be add
 
 Example:
 
-Given the source data stream `01 02 .. 64 01 02 .. 64 01 02 .. 64` the output could be encoded with two large matches as : `01 02 .. 64 B8 46 33 B8 46`. Note that the source data consists of 3 sequences of
+Given the source data stream `01 02 .. 64 01 02 .. 64 01 02 .. 64` the output could be encoded with two large matches as : `64 01 02 .. 64 B8 46 33 B8 46`. Note that the source data consists of 3 sequences of
 the hex values for 1 to 100!
 
 The first large match begins with `B8`. The 5 bytes `B8 46 33 B8 46` represented in bits are:
