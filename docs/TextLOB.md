@@ -101,3 +101,23 @@ can't be 31 (binary 00011111). At max the first byte can be `00011110` in binary
 Again offsets below 3 make not much sense, so we interpret the offset range as 3 to 482. The max offset for longer matches is therefore 482.
 
 The process of encoding and decoding is the same. Only the match offset and length are stored differently. For 2-byte matches the length is implicit.
+
+
+### Initial bytes
+
+Text sub-files start with some header bytes in general. For example bytes with specify the amount of texts or the text lengths. As they are part of the data,
+they have to be encoded as well. But those values can be anything, including the values 1 to 31 which are forbidden otherwise. To enable the above encodings,
+the header bytes can be skipped for compression. To accomplish this, the whole compressed data starts with a byte which gives the size of bytes which should
+not be compressed. The amount is then just copied over and then decompression starts.
+
+If you compress data with this, find the last byte which has a value between 1 and 31. Then store the amount (including this last byte) as the first byte of
+the encoded data. A value of 0 is also valid. In that case decompression would directly start after reading this initial byte. Note that it is not possible
+to compress data which has an invalid byte after the first 255 bytes. So the whole text LOB algorithm is not usable for most binary files or any file which
+stores some non-text characters after a small header. However it should work well for the Ambermoon text container sub-files. It was designed for those files.
+
+
+### Summary
+
+The compressed data stream must start with a byte which gives the amount of bytes to copy directly to the output. This can't exceed 255. Then all bytes are
+either output as they are or encoded. A zero byte becomes 0x1f in the output. Every value between 0x00 and 0x1e is an encoded match which might use an additional
+byte. All other bytes are copied as they are.

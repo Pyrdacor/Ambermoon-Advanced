@@ -52,7 +52,8 @@ See 'Small byte literal' encoding below for more details. For bytes equal or abo
 This won't save space but will even add an additional byte to the output. These additional bytes should be compensated by other compression encodings. For large sections which can't be compressed,
 this additional byte only becomes a small fraction of the section size. The smaller the size though, the more the byte matters. It is hard to determine how well the total compression will be as
 it depends on the data. There might be cases where the extended LOB performs bad or even increases the size of the data. In that case use the raw data or another compression. In general it will
-compress very well for its simplicity and will often out-perform the original LOB compression.
+compress very well for its simplicity and will often out-perform the original LOB compression. Reading of encoded literal sequences should also be much faster as only 1 byte is decoded and then the
+whole sequence can be read directly.
 
 ### Decompression
 
