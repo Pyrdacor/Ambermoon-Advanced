@@ -87,7 +87,7 @@ It is more valuable to allow the offset to be as large as possible.
 
 When reading and a byte has a value between 0 and 15, it is a 2-byte match. Based on the reserve toggle state, read an additional byte or use the reserve bits.
 
-Then extract the length and offset (don't forget to increase them by 3 and 1 respectivly) and copy the match from the already decoded data to the end of it.
+Then extract the offset (don't forget to increase it by 3) and copy the match from the already decoded data to the end of it. The length is implicit here and is always 2 of course.
 
 
 ### Longer matches
