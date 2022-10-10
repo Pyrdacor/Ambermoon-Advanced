@@ -14,7 +14,7 @@ the new [text LOB compression](TextLOB.md).
 
 # Compression
 
-The general approach is to find sequences of equal bytes and replace them with a run-length encoding or find the current byte sequence somewhere else in the earlier data and replace the data by a match reference (offset to the source data and length of the match). a run-length encoding just stores which byte to repeat and how often to repeat it. For example the sequence `00 00 00 00` can theoretically be expressed as `00 04`, where the first byte gives the byte to repeat and the second byte gives the amount. We will tweak this a little bit to encode a bit better but this is the general idea of RLE.
+The general approach is to find sequences of equal bytes and replace them with a run-length encoding (RLE) or find the current byte sequence somewhere else in the earlier data and replace the data by a match reference (offset to the source data and length of the match). a run-length encoding just stores which byte to repeat and how often to repeat it. For example the sequence `00 00 00 00` can theoretically be expressed as `00 04`, where the first byte gives the byte to repeat and the second byte gives the amount. We will tweak this a little bit to encode a bit better but this is the general idea of RLE.
 
 In constrast to the original LOB, instead of a header byte where each bit specifies if a literal or match follows, each header byte directly encodes some byte sequence.
 
