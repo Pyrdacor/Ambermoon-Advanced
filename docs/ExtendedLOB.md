@@ -18,7 +18,9 @@ The general approach is to find sequences of equal bytes and replace them with a
 
 In constrast to the original LOB, instead of a header byte where each bit specifies if a literal or match follows, each header byte directly encodes some byte sequence.
 
-As each header byte can have a value from 0 to 255, the following value ranges encode specific things. So read a byte from the encoded data stream, decode its meaning, read more bytes as needed and proceed with the next header byte. 
+As each header byte can have a value from 0 to 255, the following value ranges encode specific things.
+
+So to process compressed data, read a byte from the encoded data stream, decode its meaning, read more bytes as needed and proceed with the next header byte. Keep going until the whole data is decompressed.
 
 
 ## 0: Encodes a run-length encoding (RLE) of zeros
