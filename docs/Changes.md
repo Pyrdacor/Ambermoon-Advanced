@@ -1,3 +1,5 @@
+*This is at a very old state. See the excel file in the root dir instead.*
+
 Note: The changes are only done to the german files. The only exception are the executables which are fixed both.
 The english version can then be done by diffs or adding the files.
 
