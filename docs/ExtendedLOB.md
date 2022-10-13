@@ -114,8 +114,8 @@ The original LOB can handle greater offsets up to 4095 but is very limited when 
 
 For basic information see small matches. Here only the bit encoding is shown.
 
-There are 2 possible encodings. If this is the first large match, the match is encoded as `101LLLLL LLOOOOOO OOOORRRR`. Here L and O represent bits for the match length and offset as for the small match.
-Special are the R bits. As only 20 bits of the 24 bits are needed, we use the remaining 4 bits for the next large match. So when the second match is encoded it will be only `101LLLLL LLOOOOOO`.
+There are 2 possible encodings. If this is the first large match, the match is encoded as `010LLLLL LLOOOOOO OOOORRRR`. Here L and O represent bits for the match length and offset as for the small match.
+Special are the R bits. As only 20 bits of the 24 bits are needed, we use the remaining 4 bits for the next large match. So when the second match is encoded it will be only `010LLLLL LLOOOOOO`.
 Here the O bits only give the upper 6 bits of the 10 bit offset value. The other 4 bits must be stored in the reserve bits R of the previous match.
 
 For compressors this means that parts of every second large match have to be added somewhere in the previous output stream.
