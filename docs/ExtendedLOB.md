@@ -42,12 +42,12 @@ The last case encodes 2 RLE sequences. The first two bytes encode 290 zeros. So 
 Whenever the header byte is zero, the next byte is read, increased by 35 and this amount of zeros is written to the output.
 
 
-## 1 to 127: Encodes a sequence of literals
+## 1 to 31: Encodes a sequence of literals
 
 ### Compression
 
 If no compression is possible, the literals (byte values) have to be written to the output as they are. Of course the decompressor must know if a data chunk is uncompressed. This is done by this header.
-You can just write the number of uncompressed bytes (up to 127) as a single byte to the output and then write the bytes. For sequences longer than 127 you have to use multiple of such sections.
+You can just write the number of uncompressed bytes (up to 31) as a single byte to the output and then write the bytes. For sequences longer than 31 you have to use multiple of such sections.
 
 The worst case for compression are single uncompressed bytes, as they need 2 bytes in the output. There is a special encoding for byte values less than 32 to avoid this a bit.
 See 'Small byte literal' encoding at the end of this page for more details. For bytes equal or above 32, this is not possible unfortunately. They will cause the worst case.
@@ -62,12 +62,12 @@ The original LOB also needs to store an additional header bit for each literal. 
 
 ### Decompression
 
-If the header byte is 1 to 127. Just read this amount of bytes.
+If the header byte is 1 to 31. Just read this amount of bytes.
 
 
-## 128 to 159: Encodes a small match
+## 32 to 63: Encodes a small match
 
-In hex the header is 80 to 9F. You can check if the header starts with the bit sequence 100.
+In hex the header is 20 to 3F. You can check if the header starts with the bit sequence 001.
 
 Small matches encode a pair of offset and length. The offset is limited to the range 1 to 512, and the length to the range 3 to 18. The encoding needs 2 bytes. You will save 1 to 16 bytes.
 
@@ -83,7 +83,7 @@ The next byte is also used to store information for the match. Basically header 
 
 ### Decompression
 
-If the header is of the bit form 100XXXXX, it is a small match. See the compression to know how offset and length are encoded. Don't forget to add 3 to the read match length as it is stored as 0 to 15 instead of 3 to 18. And add 1 to the read offset value.
+If the header is of the bit form 001XXXXX, it is a small match. See the compression to know how offset and length are encoded. Don't forget to add 3 to the read match length as it is stored as 0 to 15 instead of 3 to 18. And add 1 to the read offset value.
 
 If you decoded the match offset and length, you can process the match by reading from the current position minus the given offset.
 
@@ -98,9 +98,9 @@ Before | 01 02 | Data before match processing
 4th | 01 02 01 02 01 02 | Copy again
 
 
-## 160 to 191: Encodes a large match
+## 64 to 95: Encodes a large match
 
-In hex the header is A0 to BF. You can check if the header starts with the bit sequence 101.
+In hex the header is 40 to 5F. You can check if the header starts with the bit sequence 010.
 
 Large matches are similar to small matches but with different value ranges for offset and length. Offsets can be 1 to 1024 and lengths 3 to 130. The encoding needs 2.5 bytes. You will save 0.5 to 127.5 bytes. The cases where you only save 0.5 to 15.5 are also rare as you can encode small matches of length 3 to 18 with just 2 bytes. The large match encoding is only necessary if the offset is between 513 and 1024. In those cases it is still good to save a few bits and bytes but the chance raises which each increased offset to find the same data again more closely as well.
 
@@ -122,22 +122,22 @@ For compressors this means that parts of every second large match have to be add
 
 Example:
 
-Given the source data stream `01 02 .. 64 01 02 .. 64 01 02 .. 64` the output could be encoded with two large matches as : `64 01 02 .. 64 B8 46 33 B8 46`. Note that the source data consists of 3 sequences of
+Given the source data stream `01 02 .. 64 01 02 .. 64 01 02 .. 64` the output could be encoded with two large matches as : `64 01 02 .. 64 58 46 33 58 46`. Note that the source data consists of 3 sequences of
 the hex values for 1 to 100!
 
-The first large match begins with `B8`. The 5 bytes `B8 46 33 B8 46` represented in bits are:
+The first large match begins with `58`. The 5 bytes `58 46 33 58 46` represented in bits are:
 
-`10111000 01000110 00110011 10111000 01000110`
+`01011000 01000110 00110011 01011000 01000110`
 
-The first 20 bits encode the first large match: `10111000 01000110 0011`. This is the header for large matches `101`, followed by the encoded match length `1100001` which is 97 (add 3 for 100). Then the
+The first 20 bits encode the first large match: `01011000 01000110 0011`. This is the header for large matches `010`, followed by the encoded match length `1100001` which is 97 (add 3 for 100). Then the
 match offset follows as `0001100011` which is 99. Add 1 to get 100. So the match has offset 100 and length 100.
 
 The next 4 bits are the reserve for the next large match. For encoding you could add it as the lower 4 bits of the encoded data stream. When decompressing you would normally store those 4 bits somewhere
 for later use. Here the reserve is `0011`.
 
-Then the second large match encoding follows with `10111000 01000110`. Note that there might be other bytes or encodings in-between in other cases.
+Then the second large match encoding follows with `01011000 01000110`. Note that there might be other bytes or encodings in-between in other cases.
 
-When decompressing you would basically concat the reserve bits to those 16 bits to have the full 20 bits: `10111000 01000110 0011`. This again encodes a match with offset 100 and length 100.
+When decompressing you would basically concat the reserve bits to those 16 bits to have the full 20 bits: `01011000 01000110 0011`. This again encodes a match with offset 100 and length 100.
 
 Use a toggle variable to determine if it's time to write a new additional byte or add the last 4 bits to an already written byte.
 
@@ -152,9 +152,9 @@ In general when processing the nth large match, if n is even (0, 2, 4, etc), rea
 If n is odd (1, 3, 5, etc), just take the 4 bits from the reserve.
 
 
-## 192 to 223: Encodes a byte RLE
+## 96 to 127: Encodes a byte RLE
 
-In hex the header is C0 to DF. You can check if the header starts with the bit sequence 110. You can save 1 to 32 bytes with this.
+In hex the header is 60 to 7F. You can check if the header starts with the bit sequence 011. You can save 1 to 32 bytes with this.
 
 ### Compression
 
@@ -168,29 +168,29 @@ The following byte gives the byte to repeat.
 
 ### Decompression
 
-If the header starts with the bits `110`, read the next 5 bits as a length, increase it by 3 and write the following byte to the output n times, where n is the given length.
+If the header starts with the bits `011`, read the next 5 bits as a length, increase it by 3 and write the following byte to the output n times, where n is the given length.
 
 ### Mixing zero RLEs
 
 To encode arbitrary sequences of zeros, you can combine the two different RLE encodings:
 
-- 300 zeros: `00 FF C7 00`
-- 293 zeros: `00 FF C0 00`
-- 324 zeros: `00 FF DF 00`
+- 300 zeros: `00 FF 67 00`
+- 293 zeros: `00 FF 60 00`
+- 324 zeros: `00 FF 7F 00`
 - 325 zeros: `00 FF 00 00`
 
-## 224 to 255: Small byte literal
+## 128 to 255: Small byte literal
 
-In hex the header is E0 to FF. You can check if the header starts with the bit sequence 111. You won't save space directly but avoid a worst case scenario or adding an additional byte for sequences.
+In hex the header is 80 to FF. You can check if the header starts with the bit 1. You won't save space directly but avoid a worst case scenario or adding an additional byte for sequences.
 
-As mentioned above, the worst case scenario for compression is a single uncompressed byte. To reduce the cost of this a bit, single bytes with values below 32 can be encoded
-with just a single byte. The encoding is `111XXXXX` where the X bits directly specify the byte value.
+As mentioned above, the worst case scenario for compression is a single uncompressed byte. To reduce the cost of this a bit, single bytes with values between -64 and +63 can be encoded
+with just a single byte. The encoding is `1XXXXXXX` where the X bits specify the signed byte value. Values 0 to 63 are used as is, 64 to 127 are -64 to -1.
 
 For example consider the following source data `00 00 00 05 00 00 00 06` which is very common. The sequences of zero can be run-length-encoded but then you have the single
-byte `05` in-between. Normally you would have to encode this byte as the two-byte encoding `01 05`. But with this special encoding you can just encoded it as `E5`.
+byte `05` in-between. Normally you would have to encode this byte as the two-byte encoding `01 05`. But with this special encoding you can just encoded it as `85`.
 
 Another benefit is that you save a byte for sequences of small bytes. Consider the source data `01 02 03 04 05`. Normally you would encode a sequence of uncompressed
-bytes as `05 01 02 03 04 05`. The first byte is the header byte which gives the amount of uncompressed literals. Instead you can also just use `E1 E2 E3 E4 E5` here.
+bytes as `05 01 02 03 04 05`. The first byte is the header byte which gives the amount of uncompressed literals. Instead you can also just use `81 82 83 84 85` here.
 
 This saves a byte as every single byte is basically a header byte with some encoding. But note that this approach might be slower as you have to decode every byte instead
 of just copy the sequence after decoding one header. This is especially true if the sequence is very long. In that case the single saved byte isn't that important anymore
