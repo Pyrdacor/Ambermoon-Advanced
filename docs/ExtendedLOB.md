@@ -49,8 +49,8 @@ Whenever the header byte is zero, the next byte is read, increased by 35 and thi
 If no compression is possible, the literals (byte values) have to be written to the output as they are. Of course the decompressor must know if a data chunk is uncompressed. This is done by this header.
 You can just write the number of uncompressed bytes (up to 31) as a single byte to the output and then write the bytes. For sequences longer than 31 you have to use multiple of such sections.
 
-The worst case for compression are single uncompressed bytes, as they need 2 bytes in the output. There is a special encoding for byte values less than 32 to avoid this a bit.
-See 'Small byte literal' encoding at the end of this page for more details. For bytes equal or above 32, this is not possible unfortunately. They will cause the worst case.
+The worst case for compression are single uncompressed bytes, as they need 2 bytes in the output. There is a special encoding for byte values between -64 and +63 to avoid this a bit.
+See 'Small byte literal' encoding at the end of this page for more details. For bytes outside that range, this is not possible unfortunately. They will cause the worst case.
 
 The literal sequence encoding won't save space but will even add an additional byte to the output. These additional bytes should be compensated by other compression encodings. For large sections which can't be compressed,
 this additional byte only becomes a small fraction of the section size. The smaller the size though, the more the byte matters. It is hard to determine how well the total compression will be as
