@@ -76,7 +76,7 @@ Small matches encode a pair of offset and length. The offset is limited to the r
 If the current byte sequence of length 3 to 18 exists in the previous data at a max distance of 512, you can encode this as a small match. Note that the offset can be smaller than 3 and even down to 1! This can theoretically be used to encode recurring patterns. Think of some data like 01 02 01 02 01 02. At the 3rd position you could encode a match with offset 2 and length 4. Matches are processed byte per byte.
 See the decompression example below.
 
-The next byte is also used to store information for the match. Basically header plus additional byte encode the match as follows (big endian format): `100LLLLO OOOOOOOO`
+The next byte is also used to store information for the match. Basically header plus additional byte encode the match as follows (big endian format): `001LLLLO OOOOOOOO`
 
 `LLLL` is a 4-bit value for the match length. Possible values are 0 to 15, but it encodes the length 3 to 18 (so subtract 3 from the match length for encoding).
 `OOOOOOOOO` is a 9-bit value for the match offset. The highest bit is stored inside the header byte as bit 0! Possible values are 0 to 511, but it encodes offsets 1 to 512 (substract 1 for encoding).
