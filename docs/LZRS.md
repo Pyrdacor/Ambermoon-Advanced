@@ -36,3 +36,30 @@ So the max match offset is limited to 1024, which is ok for data of only some KB
 
 The two `NN` bits give an optional number of following literals (0 to 3).
 This is helpful when there are only a few bytes between matches or RLE sequences. You won't need another literal encoding which would add another additional byte to the data.
+
+If there are more than 3 bytes following a match/RLE, first the amount of literals given in the match header are read (in general the value should be 3). Only then the next literal header follows and then the other literals.
+
+Example:
+
+`E0 00 0C 00 01 02 03 E0 04`
+
+The first by is a literal header with amount 1.
+Then the literal `00` follows.
+The 3rd byte starts a match header.
+The match has length 3 and offset 1, so the output is `00 00 00 00` afterwards.
+The match header states that 3 literals follow, which are then `01 02 03`.
+And then another literal header with amount 1 follows.
+The last byte is then this literal.
+
+The total output is `00 00 00 00 01 02 03 04`
+
+
+## Data start
+
+Compressed data can never start with a match as there are no literals to provide a back reference.
+
+As the data always starts with literals, the first header is a special one. It is just a single byte giving the amount of literals directly.
+The value range is 0..255. As 0 literals doesn't make sense, a value of 0 means 256 and another byte is read and added to that value.
+You can add more bytes if the value is at that maximum (255).
+
+This saves a byte if the sequence starts with more literals than the normal literal header could express 
