@@ -60,6 +60,6 @@ Compressed data can never start with a match as there are no literals to provide
 
 As the data always starts with literals, the first header is a special one. It is just a single byte giving the amount of literals directly.
 The value range is 0..255. As 0 literals doesn't make sense, a value of 0 means 256 and another byte is read and added to that value.
-You can add more bytes if the value is at that maximum (255).
+You can add more bytes if the value is at the maximum (255). This can be repeated unlimited.
 
 This saves a byte if the sequence starts with more literals than the normal literal header could express 
