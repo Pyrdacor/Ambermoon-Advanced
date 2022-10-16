@@ -15,7 +15,7 @@ The lower 5 bits give the number of literals that follow. The value range is 0..
 If the amount is 32, another byte is read and its value is added. A byte has a value range of 0..255. If this byte has also the max value of 255, another byte is read and added, and so on.
 There is no limit in theory. If all the data is not compressible, it will increase by at max 0.4% due to this design.
 
-Note that the next byte must be always read of the previous byte was at maximum, even if its value is 0.
+Note that the next byte must be always read if the previous byte was at maximum, even if its value is 0.
 
 
 ## Matches
