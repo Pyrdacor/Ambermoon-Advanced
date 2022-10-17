@@ -12,10 +12,16 @@ To differentiate between literals and matches, a header byte is used. For litera
 **Header** (binary): `111NNNNN`
 
 The lower 5 bits give the number of literals that follow. The value range is 0..31. This is mapped to 1..32 by adding 1.
-If the amount is 32, another byte is read and its value is added. A byte has a value range of 0..255. If this byte has also the max value of 255, another byte is read and added, and so on.
+If the amount is 32, another byte is read after those 32 literals and this amount of literals also follow. A byte has a value range of 0..255. If this byte has also the max value of 255, another byte is read and added after the literals, and so on.
 There is no limit in theory. If all the data is not compressible, it will increase by at max 0.4% due to this design.
 
 Note that the next byte must be always read if the previous byte was at maximum, even if its value is 0.
+
+Example:
+
+`1F 00 .. 1F FF 00 .. FF 01 20`
+
+The first byte is 31, so 32 literals follow: `00` to `1F`. And then another byte is read as the value was 31. This byte has value 255, so this amount of literals follow: `00` to `FF`. And another byte is read as the value was 255. Now the byte has a value of 1. So only a single byte follows: `20`. And no more literals follow.
 
 
 ## Matches
@@ -58,8 +64,6 @@ The total output is `00 00 00 00 01 02 03 04`
 
 Compressed data can never start with a match as there are no literals to provide a back reference.
 
-As the data always starts with literals, the first header is a special one. It is just a single byte giving the amount of literals directly.
-The value range is 0..255. As 0 literals doesn't make sense, a value of 0 means 256 and another byte is read and added to that value.
-You can add more bytes if the value is at the maximum (255). This can be repeated unlimited.
+As the data always starts with literals, the first header is a special one. It is just a single byte giving the amount of literals directly. The value range is 0..255. As 0 literals doesn't make sense, a value of 0 means 256 and another byte is read and processed after those 256 literals. Similar to other literal encodings, this can be continued with bytes of value 255.
 
 This saves a byte if the sequence starts with more literals than the normal literal header could express 
