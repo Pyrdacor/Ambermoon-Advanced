@@ -33,7 +33,11 @@ so the length value here can only be in the binary range 0000 to 1101, which is 
 The length is mapped to the real lengths 3 to 16 by adding 3.
 
 Like for literals the amount (here length) can be extended by adding bytes if the value is at maximum. So if the mapped length value is 16, another byte is read and added and so on.
-Match lengths can be unlimited in theory as well.
+Note that the additional length bytes all directly follow the second header byte. Match lengths can be unlimited in theory as well.
+
+For example a match of length 300 would be expressed as `Fx xx FF 1D` where xxx depends on the offset and following literal count.
+The first nibble `F` stands for the amount of 16. As it is at max, the third byte `FF` is another length byte. It adds 255. As it is also at max, another byte is used. This time `1D` which is 29. 16 + 255 + 29 = 300.
+
 For real matches this should be limited so that the compression process won't take too long.
 But matches can also be used to express RLE, where long match lengths are desired and should not be limited 
 
