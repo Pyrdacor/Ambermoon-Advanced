@@ -70,4 +70,13 @@ Compressed data can never start with a match as there are no literals to provide
 
 As the data always starts with literals, the first header is a special one. It is just a single byte giving the amount of literals directly. The value range is 0..255. As 0 literals doesn't make sense, a value of 0 means 256 and another byte is read and processed after those 256 literals. Similar to other literal encodings, this can be continued with bytes of value 255.
 
-This saves a byte if the sequence starts with more literals than the normal literal header could express 
+This saves a byte if the sequence starts with more literals than the normal literal header could express, which is 32. But even 32 would require an additional length byte so a byte is saved if the initial length of uncompressable literals is 32 or greater.
+
+If the first 500 bytes are uncompressable literals the data would start with `00 literals F4 more literals`. The zero byte stands for 256 and more bytes. After 256 literal bytes, the byte `F4` stands for 244 additional literals. Then they follow.
+
+
+### Additional length encoding
+
+One might ask why the bytes for additional lengths are not right after each other. It would be better readable this way.
+The reason is, that the decompressor can process chunks of literals easier. It just needs to memorize if another chunk follows, read the amount and copy the literals.
+This will also work when the total amount of literals exceed large values. For example a decompressor can always use a byte or word to store the amount per chunk. This is useful for the Amiga and similar systems.
