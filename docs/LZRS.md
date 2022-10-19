@@ -77,6 +77,10 @@ If the first 500 bytes are uncompressable literals the data would start with `00
 
 ### Additional length encoding
 
-One might ask why the bytes for additional lengths are not right after each other. It would be better readable this way.
-The reason is, that the decompressor can process chunks of literals easier. It just needs to memorize if another chunk follows, read the amount and copy the literals.
-This will also work when the total amount of literals exceed large values. For example a decompressor can always use a byte or word to store the amount per chunk. This is useful for the Amiga and similar systems.
+One might ask why the bytes for additional lengths are not right after each other. It would be better readable this way. A program could just read all length bytes and then copy all literals.
+
+The reason is, that the decompressor can process chunks of literals easier and with low resources. It just needs to memorize if another chunk follows, read the amount of one chunk of literals and copy them.
+
+This will also work when the total amount of literals exceed large values like 65535 (max word value). For example a decompressor can always use a byte or word to store the amount per chunk. This is useful for the Amiga and similar systems. You don't need to worry about integer range exceeding even if the total amount is very large.
+
+In theory the same is true for matches, but as there no literals are needed, the length bytes follow each other directly. You may still want to use code which writes chunks of the match with a may length of 255 and repeat the process until all chunks are processed.
