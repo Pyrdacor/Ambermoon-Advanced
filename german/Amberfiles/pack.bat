@@ -1,4 +1,4 @@
-start "" AmbermoonPack.exe AMPC 1Map_data 1Map_data.amb -d4 -c3
+start "" AmbermoonPack.exe AMPC 1Map_data 1Map_data.amb -d1 -c3
 start "" AmbermoonPack.exe AMPC 2Map_data 2Map_data.amb -d4 -c3
 start "" AmbermoonPack.exe AMPC 3Map_data 3Map_data.amb -d4 -c3
 start "" AmbermoonPack.exe AMPC 2Lab_data 2Lab_data.amb -d4 -c3
