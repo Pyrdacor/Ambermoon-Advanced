@@ -32,3 +32,8 @@ start "" AmbermoonTextImport.exe -i . NPC_texts.amb NPC_texts -c
 start "" AmbermoonTextImport.exe -i . Object_texts.amb Object_texts -c
 start "" AmbermoonTextImport.exe -i . Party_texts.amb Party_texts -c
 start "" AmbermoonTextImport.exe -i . Text.amb Text -c
+
+start "" AmbermoonPack.exe AMBR Save.00/Chest_data Save.00/Chest_data.amb
+start "" AmbermoonPack.exe AMBR Save.00/Party_char Save.00/Party_char.amb
+start "" AmbermoonPack.exe AMBR Save.00/Merchant_data Save.00/Merchant_data.amb
+start "" AmbermoonPack.exe AMBR Save.00/Automap Save.00/Automap.amb
