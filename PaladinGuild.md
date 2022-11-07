@@ -32,6 +32,7 @@ Palette 6
 7F: Book shelves 1 (added)
 80: Book shelves 2 (added)
 81: Fake wall with statue
+82: Wall with shield (added)
 
 # Objects
 
@@ -72,6 +73,8 @@ Palette 6
 23: Table with stools (added)
 24: Altair (pillar with star) (added)
 25: Undead (added)
+26: Tombstone left (added)
+27: Tombstone right (added)
 
 
 # Object infos
