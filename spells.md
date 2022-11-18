@@ -107,38 +107,38 @@ Total SLP: 235
 
 ## Destruction
 
-Name | SLP | SP | Target | Area | Worlds
---- | --- | --- | --- | --- | ---
-MagicalProjectile | 5 | 5 | SingleEnemy | BattleOnly | All
-MagicalArrows | 10 | 15 | EnemyRow | BattleOnly | All
-Lame | 5 | 10 | SingleEnemy | BattleOnly | All
-Poison | 5 | 15 | SingleEnemy | BattleOnly | All
-Petrify | 5 | 60 | SingleEnemy | BattleOnly | All
-CauseDisease | 5 | 15 | SingleEnemy | BattleOnly | All
-CauseAging | 5 | 15 | SingleEnemy | BattleOnly | All
-Irritate | 5 | 10 | SingleEnemy | BattleOnly | All
-CauseMadness | 10 | 30 | SingleEnemy | BattleOnly | All
-Sleep | 10 | 15 | SingleEnemy | BattleOnly | All
-Fear | 10 | 50 | SingleEnemy | BattleOnly | All
-Blind | 10 | 15 | SingleEnemy | BattleOnly | All
-Drug | 10 | 15 | SingleEnemy | BattleOnly | All
-DissolveVictim | 25 | 250 | SingleEnemy | BattleOnly | All
-Mudsling | 1 | 8 | SingleEnemy | BattleOnly | All
-Rockfall | 5 | 15 | SingleEnemy | BattleOnly | All
-Earthslide | 10 | 20 | EnemyRow | BattleOnly | All
-Earthquake | 15 | 30 | AllEnemies | BattleOnly | All
-Winddevil | 5 | 12 | SingleEnemy | BattleOnly | All
-Windhowler | 10 | 25 | SingleEnemy | BattleOnly | All
-Thunderbolt | 15 | 35 | EnemyRow | BattleOnly | All
-Whirlwind | 20 | 50 | AllEnemies | BattleOnly | All
-Firebeam | 10 | 25 | SingleEnemy | BattleOnly | All
-Fireball | 15 | 60 | SingleEnemy | BattleOnly | All
-Firestorm | 20 | 80 | EnemyRow | BattleOnly | All
-Firepillar | 25 | 120 | AllEnemies | BattleOnly | All
-Waterfall | 15 | 50 | SingleEnemy | BattleOnly | Lyramion \| ForestMoon
-Iceball | 20 | 100 | SingleEnemy | BattleOnly | Lyramion \| ForestMoon
-Icestorm | 25 | 150 | EnemyRow | BattleOnly | Lyramion \| ForestMoon
-Iceshower | 30 | 200 | AllEnemies | BattleOnly | Lyramion \| ForestMoon
+Bit | Name | SLP | SP | Target | Area | Worlds
+--- | --- | --- | --- | --- | --- | ---
+0x00000002 | MagicalProjectile | 5 | 5 | SingleEnemy | BattleOnly | All
+0x00000004 | MagicalArrows | 10 | 15 | EnemyRow | BattleOnly | All
+0x00000008 | Lame | 5 | 10 | SingleEnemy | BattleOnly | All
+0x00000010 | Poison | 5 | 15 | SingleEnemy | BattleOnly | All
+0x00000020 | Petrify | 5 | 60 | SingleEnemy | BattleOnly | All
+0x00000040 | CauseDisease | 5 | 15 | SingleEnemy | BattleOnly | All
+0x00000080 | CauseAging | 5 | 15 | SingleEnemy | BattleOnly | All
+0x00000100 | Irritate | 5 | 10 | SingleEnemy | BattleOnly | All
+0x00000200 | CauseMadness | 10 | 30 | SingleEnemy | BattleOnly | All
+0x00000400 | Sleep | 10 | 15 | SingleEnemy | BattleOnly | All
+0x00000800 | Fear | 10 | 50 | SingleEnemy | BattleOnly | All
+0x00001000 | Blind | 10 | 15 | SingleEnemy | BattleOnly | All
+0x00002000 | Drug | 10 | 15 | SingleEnemy | BattleOnly | All
+0x00004000 | DissolveVictim | 25 | 250 | SingleEnemy | BattleOnly | All
+0x00008000 | Mudsling | 1 | 8 | SingleEnemy | BattleOnly | All
+0x00010000 | Rockfall | 5 | 15 | SingleEnemy | BattleOnly | All
+0x00020000 | Earthslide | 10 | 20 | EnemyRow | BattleOnly | All
+0x00040000 | Earthquake | 15 | 30 | AllEnemies | BattleOnly | All
+0x00080000 | Winddevil | 5 | 12 | SingleEnemy | BattleOnly | All
+0x00100000 | Windhowler | 10 | 25 | SingleEnemy | BattleOnly | All
+0x00200000 | Thunderbolt | 15 | 35 | EnemyRow | BattleOnly | All
+0x00400000 | Whirlwind | 20 | 50 | AllEnemies | BattleOnly | All
+0x00800000 | Firebeam | 10 | 25 | SingleEnemy | BattleOnly | All
+0x01000000 | Fireball | 15 | 60 | SingleEnemy | BattleOnly | All
+0x02000000 | Firestorm | 20 | 80 | EnemyRow | BattleOnly | All
+0x04000000 | Firepillar | 25 | 120 | AllEnemies | BattleOnly | All
+0x08000000 | Waterfall | 15 | 50 | SingleEnemy | BattleOnly | Lyramion \| ForestMoon
+0x10000000 | Iceball | 20 | 100 | SingleEnemy | BattleOnly | Lyramion \| ForestMoon
+0x20000000 | Icestorm | 25 | 150 | EnemyRow | BattleOnly | Lyramion \| ForestMoon
+0x40000000 | Iceshower | 30 | 200 | AllEnemies | BattleOnly | Lyramion \| ForestMoon
 
 Total SLP: 361
 
