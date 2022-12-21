@@ -1,1 +1,1 @@
-﻿Do you want to load a saved game or quit the game?
+﻿Because no games were saved yet, you can only load the initial saved game.^Is this alright ?

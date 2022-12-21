@@ -1,1 +1,1 @@
-﻿Which monster will be your target?
+﻿Whose item will be your target?

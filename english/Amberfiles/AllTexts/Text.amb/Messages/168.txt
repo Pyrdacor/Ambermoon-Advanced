@@ -1,1 +1,1 @@
-﻿This was the last time the item could be enchanted.
+﻿How many charges?

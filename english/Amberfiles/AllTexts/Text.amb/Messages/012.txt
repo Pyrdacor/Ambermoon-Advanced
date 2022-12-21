@@ -1,1 +1,1 @@
-﻿Seek error.
+﻿Disk is full.

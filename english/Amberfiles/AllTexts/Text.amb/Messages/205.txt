@@ -1,1 +1,1 @@
-﻿You don't have any ammunition!
+﻿What do you want to attack?

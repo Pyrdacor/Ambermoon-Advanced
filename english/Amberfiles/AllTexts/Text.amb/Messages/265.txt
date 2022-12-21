@@ -1,1 +1,1 @@
-﻿This is not a magical item.
+﻿This item has no charges left.

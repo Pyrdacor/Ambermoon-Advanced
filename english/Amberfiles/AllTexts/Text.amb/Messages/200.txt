@@ -1,1 +1,1 @@
-﻿Maximum level has been reached!
+﻿You are being attacked! Do you want to fight?

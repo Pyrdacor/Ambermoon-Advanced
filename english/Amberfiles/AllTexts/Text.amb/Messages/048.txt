@@ -1,1 +1,1 @@
-﻿Do you really want to drop it?
+﻿The same item is already in use.

@@ -1,1 +1,1 @@
-﻿You cannot damage petrified monsters!
+﻿ is immune to this spell!

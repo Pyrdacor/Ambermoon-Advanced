@@ -1,1 +1,1 @@
-﻿~LEAD~ can't learn spells of this spell class.
+﻿~LEAD~ manages to learn the spell. The scroll crumbles to dust.

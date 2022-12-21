@@ -1,1 +1,1 @@
-﻿ has deflected the spell!
+﻿ is immune to this spell type!

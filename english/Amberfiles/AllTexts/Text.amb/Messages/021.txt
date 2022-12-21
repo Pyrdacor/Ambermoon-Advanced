@@ -1,1 +1,1 @@
-﻿That's not a spell-scroll!
+﻿~LEAD~ can't learn spells of this spell class.

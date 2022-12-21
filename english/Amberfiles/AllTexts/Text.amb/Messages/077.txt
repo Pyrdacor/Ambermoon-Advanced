@@ -1,1 +1,1 @@
-﻿~LEAD~ is unable to pick the lock.
+﻿With which item do you want to open the door?

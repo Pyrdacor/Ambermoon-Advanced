@@ -1,1 +1,1 @@
-﻿You can only use this spell in cities or dungeons!
+﻿~CAST~ magically marks this position.

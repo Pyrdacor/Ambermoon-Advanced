@@ -1,1 +1,1 @@
-﻿The same item is already in use.
+﻿Do you really want to drop the gold?

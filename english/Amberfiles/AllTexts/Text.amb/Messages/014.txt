@@ -1,1 +1,1 @@
-﻿Incomplete read.
+﻿File is protected from writing.

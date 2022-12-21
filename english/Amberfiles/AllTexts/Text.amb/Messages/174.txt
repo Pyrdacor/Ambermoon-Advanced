@@ -1,1 +1,1 @@
-﻿Healing these life-points will cost you 
+﻿Which condition do you want me to heal?

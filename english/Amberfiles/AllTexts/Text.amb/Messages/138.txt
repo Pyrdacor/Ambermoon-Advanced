@@ -1,1 +1,1 @@
-﻿The way back is too dangerous : there's a monster in the vicinity!
+﻿Please remove the write protection from the saved-game-disk. (The write-protection-window must be closed)

@@ -1,1 +1,1 @@
-﻿Enchanting this item will cost you 
+﻿This was the last time the item could be enchanted.

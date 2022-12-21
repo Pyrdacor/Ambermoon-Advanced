@@ -1,1 +1,1 @@
-﻿This item doesn't open the door.
+﻿This item doesn't open the chest.

@@ -1,1 +1,1 @@
-﻿~CAST~ magically marks this position.
+﻿You return to the position you marked before.

@@ -1,1 +1,1 @@
-﻿~LEAD~ unlocks the door using the lockpick.
+﻿The lockpick breaks.

@@ -1,1 +1,1 @@
-﻿~CAST~ hasn't marked a position!
+﻿You cannot damage petrified monsters!

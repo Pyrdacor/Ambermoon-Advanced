@@ -1,1 +1,1 @@
-﻿With which item do you want to open the chest?
+﻿~LEAD~ has unlocked the chest.

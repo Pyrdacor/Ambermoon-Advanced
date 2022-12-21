@@ -1,1 +1,1 @@
-﻿You cannot move.
+﻿It's too far away.

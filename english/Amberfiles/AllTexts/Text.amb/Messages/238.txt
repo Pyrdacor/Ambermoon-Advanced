@@ -1,1 +1,1 @@
-﻿Whose item will be your target?
+﻿Which row of party members will be your target?

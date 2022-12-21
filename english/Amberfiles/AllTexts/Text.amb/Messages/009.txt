@@ -1,1 +1,1 @@
-﻿Object not of required type.
+﻿Disk is not validated.

@@ -1,1 +1,1 @@
-﻿Do you really want to load?
+﻿Do you really want to save over the old saved game?

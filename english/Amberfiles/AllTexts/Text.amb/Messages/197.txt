@@ -1,1 +1,1 @@
-﻿Training points are now :
+﻿Attacks per round are now :

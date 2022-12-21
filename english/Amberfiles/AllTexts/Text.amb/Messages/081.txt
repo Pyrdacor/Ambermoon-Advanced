@@ -1,1 +1,1 @@
-﻿~LEAD~ has opened the chest.
+﻿~LEAD~ unlocks the chest using the lockpick.

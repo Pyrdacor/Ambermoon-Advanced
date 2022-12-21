@@ -1,1 +1,1 @@
-﻿~SUBJ~ does not allow you to look in ~SEX2~ backpack.
+﻿Don't you want to take these items with you?

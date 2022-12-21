@@ -1,1 +1,1 @@
-﻿Which item do you want me to examine?
+﻿This item has already been examined!

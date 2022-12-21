@@ -1,1 +1,1 @@
-﻿Disk is full.
+﻿Incomplete read.

@@ -1,1 +1,1 @@
-﻿The lockpick breaks.
+﻿~LEAD~ is unable to pick the lock.

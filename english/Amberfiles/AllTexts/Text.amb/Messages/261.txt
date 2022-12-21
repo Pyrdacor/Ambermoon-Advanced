@@ -1,1 +1,1 @@
-﻿You return to the position you marked before.
+﻿~CAST~ hasn't marked a position!
