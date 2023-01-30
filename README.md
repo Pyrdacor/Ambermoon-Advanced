@@ -56,22 +56,30 @@ Deutsch | [zip](https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/releases
 ## Screenshots
 
 <p float="left">
-  <a href="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser01.png"><img src="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser01.png" width="400" alt="Indoor map" /></a>
-  <a href="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser02.png"><img src="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser02.png" width="400" alt="World map" /></a>
+  <a href="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser01.png"><img src="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser01.png" width="400" alt="New dungeons" /></a>
+  <a href="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser02.png"><img src="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser02.png" width="400" alt="Story progress" /></a>
 </p>
 <p float="left">
-  <a href="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser03.png"><img src="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser03.png" width="400" alt="Indoor map" /></a>
-  <a href="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser04.png"><img src="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser04.png" width="400" alt="World map" /></a>
+  <a href="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser03.png"><img src="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser03.png" width="400" alt="New places" /></a>
+  <a href="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser04.png"><img src="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser04.png" width="400" alt="New monsters" /></a>
 </p>
 <p float="left">
-  <a href="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser05.png"><img src="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser05.png" width="400" alt="Indoor map" /></a>
-  <a href="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser06.png"><img src="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser06.png" width="400" alt="World map" /></a>
+  <a href="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser05.png"><img src="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser05.png" width="400" alt="Known locations from the past" /></a>
+  <a href="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser06.png"><img src="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser06.png" width="400" alt="Abandoned buildings" /></a>
 </p>
 <p float="left">
-  <a href="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser07.png"><img src="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser07.png" width="400" alt="Indoor map" /></a>
-  <a href="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser08.png"><img src="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser08.png" width="400" alt="World map" /></a>
+  <a href="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser07.png"><img src="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser07.png" width="400" alt="Secret places" /></a>
+  <a href="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser08.png"><img src="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser08.png" width="400" alt="In the eye of the vortex" /></a>
 </p>
 <p float="left">
-  <a href="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser09.png"><img src="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser09.png" width="400" alt="Indoor map" /></a>
-  <a href="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser10.png"><img src="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser10.png" width="400" alt="World map" /></a>
+  <a href="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser09.png"><img src="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser09.png" width="400" alt="New adventures" /></a>
+  <a href="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser10.png"><img src="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser10.png" width="400" alt="Places from Amberstar" /></a>
+</p>
+<p float="left">
+  <a href="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser11.png"><img src="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser11.png" width="400" alt="The uncursed eyrie" /></a>
+  <a href="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser12.png"><img src="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser12.png" width="400" alt="The desert is calling" /></a>
+</p>
+<p float="left">
+  <a href="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser13.png"><img src="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser13.png" width="400" alt="Inside the black mountains" /></a>
+  <a href="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser14.png"><img src="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser14.png" width="400" alt="Hall of fame" /></a>
 </p>
