@@ -18,6 +18,18 @@ Also keep in mind that adding content is a lot of work so don't expect the whole
 
 If you want to play the episodes in succession you should pause before you leave Lyramion for the first time. The second episode is planned for the late game on Lyramion. Other episodes will then focus on the forest moon and Morag.
 
+
+## Prepare for the second episode
+
+The second episode is about to be released. Unfortunately it wasn't possible to keep the savegames compatible with the ones from the first episode. However there is a savegame patcher online which you can use
+to patch your savegame to use it for the second episode. You can find it online at https://ambermoon-advanced.pyrdacor.net. Just drag&drop your savegame folders (e.g. Save.00) there and you will be able to
+download the patched version as a zip file.
+
+If you use the remake Ambermoon.net you don't need to do this as the remake automatically upgrades your savegames on loading.
+
+**Always backup your saves beforehand!**
+
+
 ## Feedback and support
 
 Your feedback is very welcome. For bug reports you may use the issue tracker here on github but you can also join our [discord server](https://discord.gg/CCTt3bAh7g) or [email](mailto:trobt@web.de) me.
