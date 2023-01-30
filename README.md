@@ -27,7 +27,9 @@ download the patched version as a zip file.
 
 If you use the remake Ambermoon.net you don't need to do this as the remake automatically upgrades your savegames on loading.
 
-**Always backup your saves beforehand!**
+Note: **The patched savegames might be incompatible when playing the first episode with them.**
+
+Note: **Always backup your saves beforehand!**
 
 
 ## Feedback and support
