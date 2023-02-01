@@ -4,7 +4,7 @@
 
 Ambermoon Advanced is an inofficial extension of Ambermoon. It is developed and maintained by me (Pyrdacor).
 
-The first official release 1.02 is out now in english and german. It contains the first two episodes "Mysteries of the sea" and "Elemental creatures". Five episodes are planned in total.
+The first official release 1.0x is out now in english and german. It contains the first two episodes "Mysteries of the sea" and "Elemental creatures". Five episodes are planned in total.
 
 Please keep in mind that I develop this on my own in my free time. So expect bugs, typos, bad texts, bad translations, unbalanced sections, dead ends and even crashes. Save often! If you get stuck of find bugs, please get in touch here on GitHub in the issue tracker or via mail (trobt@web.de).
 
@@ -18,6 +18,16 @@ Ambermoon Advanced is no complete new game, so you will still play Ambermoon as 
 Also keep in mind that adding content is a lot of work so don't expect the whole world to change or secrets in every dungeon. As Ambermoon Advanced is released in episodes the current changes focus on the early to late game on Lyramion. The two moons have no new content so far. This will change in the next episodes of course.
 
 If you want to play the episodes in succession you should pause before you leave Lyramion for the first time.
+
+
+## Downloads
+
+### Ambermoon Advanced 1.03
+
+Language | Downloads
+--- | ---
+English | [zip](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/ambermoon_advanced_english_1.03_extracted.zip) [lha](https://downloads.pyrdacor.net/ambermoon-advanced/1.02/ambermoon_advanced_english_1.03_extracted.lha) [tar.gz](https://downloads.pyrdacor.net/ambermoon-advanced/1.02/ambermoon_advanced_english_1.03_extracted.tar.gz)
+Deutsch | [zip](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/ambermoon_advanced_german_1.03_extracted.zip) [lha](https://downloads.pyrdacor.net/ambermoon-advanced/1.02/ambermoon_advanced_german_1.03_extracted.lha) [tar.gz](https://downloads.pyrdacor.net/ambermoon-advanced/1.02/ambermoon_advanced_german_1.03_extracted.tar.gz)
 
 
 ## Prepare for the second episode
@@ -56,16 +66,6 @@ If you want to support this or other projects, you can donate or become a patron
 <a href="https://github.com/sponsors/Pyrdacor"><img src="https://github.com/Pyrdacor/github-images/raw/main/sponsor.svg" width="70" height="24" alt="Sponsor" /></a>
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=76DV5MK5GNEMS&source=url) [![Flattr](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=Pyrdacor&url=https://github.com/Pyrdacor/Ambermoon.net&title=Ambermoon.net&language=C#&tags=github&category=software) \
 Thank you very much.
-
-
-## Downloads
-
-### Ambermoon Advanced 1.02
-
-Language | Downloads
---- | ---
-English | [zip](https://downloads.pyrdacor.net/ambermoon-advanced/1.02/ambermoon_advanced_english_1.02_extracted.zip) [lha](https://downloads.pyrdacor.net/ambermoon-advanced/1.02/ambermoon_advanced_english_1.02_extracted.lha) [tar.gz](https://downloads.pyrdacor.net/ambermoon-advanced/1.02/ambermoon_advanced_english_1.02_extracted.tar.gz)
-Deutsch | [zip](https://downloads.pyrdacor.net/ambermoon-advanced/1.02/ambermoon_advanced_german_1.02_extracted.zip) [lha](https://downloads.pyrdacor.net/ambermoon-advanced/1.02/ambermoon_advanced_german_1.02_extracted.lha) [tar.gz](https://downloads.pyrdacor.net/ambermoon-advanced/1.02/ambermoon_advanced_german_1.02_extracted.tar.gz)
 
 
 ## FAQ
