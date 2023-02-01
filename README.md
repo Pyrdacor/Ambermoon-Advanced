@@ -26,8 +26,8 @@ If you want to play the episodes in succession you should pause before you leave
 
 Language | Downloads
 --- | ---
-English | [zip](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/ambermoon_advanced_english_1.03_extracted.zip) [lha](https://downloads.pyrdacor.net/ambermoon-advanced/1.02/ambermoon_advanced_english_1.03_extracted.lha) [tar.gz](https://downloads.pyrdacor.net/ambermoon-advanced/1.02/ambermoon_advanced_english_1.03_extracted.tar.gz)
-Deutsch | [zip](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/ambermoon_advanced_german_1.03_extracted.zip) [lha](https://downloads.pyrdacor.net/ambermoon-advanced/1.02/ambermoon_advanced_german_1.03_extracted.lha) [tar.gz](https://downloads.pyrdacor.net/ambermoon-advanced/1.02/ambermoon_advanced_german_1.03_extracted.tar.gz)
+English | [zip](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/ambermoon_advanced_english_1.03_extracted.zip) [lha](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/ambermoon_advanced_english_1.03_extracted.lha) [tar.gz](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/ambermoon_advanced_english_1.03_extracted.tar.gz)
+Deutsch | [zip](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/ambermoon_advanced_german_1.03_extracted.zip) [lha](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/ambermoon_advanced_german_1.03_extracted.lha) [tar.gz](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/ambermoon_advanced_german_1.03_extracted.tar.gz)
 
 
 ## Prepare for the second episode
