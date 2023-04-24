@@ -27,7 +27,7 @@ start "" AmbermoonPack.exe JH+LOB Place_data_dec/001 Place_data 0xd2e7 -c3
 start "" AmbermoonPack.exe AMPC Portraits Portraits.amb -d1 -c3
 
 start "" AmbermoonTextImport.exe -i . 1Map_texts.amb 1Map_texts -c
-start "" AmbermoonTextImport.exe -i . 2Map_texts.amb 2Map_texts -c
+start "" AmbermoonTextImport.exe -i . 2Map_texts.amb 2Map_texts
 start "" AmbermoonTextImport.exe -i . 3Map_texts.amb 3Map_texts -c
 start "" AmbermoonTextImport.exe -i . NPC_texts.amb NPC_texts -c
 start "" AmbermoonTextImport.exe -i . Object_texts.amb Object_texts -c
