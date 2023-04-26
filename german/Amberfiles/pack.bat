@@ -12,6 +12,7 @@ start "" AmbermoonPack.exe AMNP 2Overlay3D 2Overlay3D.amb -d4 -c3
 start "" AmbermoonPack.exe AMNP 3Overlay3D 3Overlay3D.amb -d4 -c3
 start "" AmbermoonPack.exe AMNP 2Wall3D 2Wall3D.amb -c3
 start "" AmbermoonPack.exe AMNP 3Wall3D 3Wall3D.amb -c3
+start "" AmbermoonPack.exe AMNP Travel_gfx Travel_gfx.amb -c3
 
 start "" AmbermoonPack.exe LOB Combat_graphics_ext/001 Combat_graphics -c3
 start "" AmbermoonPack.exe JH+LOB Dict/001 Dict.amb 0xd2e7 -c3
