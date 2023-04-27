@@ -12,7 +12,6 @@ start "" AmbermoonPack.exe AMNP 2Overlay3D 2Overlay3D.amb -d4 -c3
 start "" AmbermoonPack.exe AMNP 3Overlay3D 3Overlay3D.amb -d4 -c3
 start "" AmbermoonPack.exe AMNP 2Wall3D 2Wall3D.amb -c3
 start "" AmbermoonPack.exe AMNP 3Wall3D 3Wall3D.amb -c3
-start "" AmbermoonPack.exe AMNP Travel_gfx Travel_gfx.amb -c3
 
 start "" AmbermoonPack.exe LOB Combat_graphics_ext/001 Combat_graphics -c3
 start "" AmbermoonPack.exe JH+LOB Dict/001 Dict.amb 0xd2e7 -c3
@@ -26,6 +25,7 @@ start "" AmbermoonPack.exe LOB Object_icons_ext/001 Object_icons -c3
 start "" AmbermoonPack.exe JH+LOB Objects/001 Objects.amb 0xd2e7 -c3
 start "" AmbermoonPack.exe JH+LOB Place_data_dec/001 Place_data 0xd2e7 -c3
 start "" AmbermoonPack.exe AMPC Portraits Portraits.amb -d1 -c3
+start "" AmbermoonPack.exe AMNP Travel_gfx Travel_gfx.amb -c3
 
 start "" AmbermoonTextImport.exe -i . 1Map_texts.amb 1Map_texts -c
 start "" AmbermoonTextImport.exe -i . 2Map_texts.amb 2Map_texts
