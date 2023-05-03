@@ -26,6 +26,7 @@ start "" AmbermoonPack.exe JH+LOB Objects/001 Objects.amb 0xd2e7 -c3
 start "" AmbermoonPack.exe JH+LOB Place_data_dec/001 Place_data 0xd2e7 -c3
 start "" AmbermoonPack.exe AMPC Portraits Portraits.amb -d1 -c3
 start "" AmbermoonPack.exe AMNP Travel_gfx Travel_gfx.amb -c3
+start "" AmbermoonPack.exe AMNP Floors Floors.amb -d1 -c3
 
 start "" AmbermoonTextImport.exe -i . 1Map_texts.amb 1Map_texts -c
 start "" AmbermoonTextImport.exe -i . 2Map_texts.amb 2Map_texts
