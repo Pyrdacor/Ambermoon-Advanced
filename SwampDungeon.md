@@ -19,15 +19,10 @@ Palette 26
 
 ## TODO
 
-- Reduce wall height
-- Teleport is much too small
-- Lever is a bit too small
-- Feels really big and empty for now
-- Lower chest on podest a bit (maybe also the bag)
-- Coffin is too small
-- Add flashing lights
+- Pfütze größer, muss etwa Breite eines Tiles haben
+- Wand mit Licht sieht kacke aus. Lichtkreisradius muss etwa Wandhöhe sein
+- Map aufmachen im Remake führt zu Absturz
 - Add all events
-- Add torches
 - Add monsters
 
 
@@ -35,12 +30,14 @@ Palette 26
 
 **Hex ID: Description**
 
-- 65: Normal temple wall (with moss overlay)
+- 65: Normal temple wall 1 (with moss overlay)
 - 66: Fake temple wall
 - 67: Cave-in
 - 68: Closed door
 - 69: Open door
 - 6A: Exit
+- 6B: Normal temple wall 2 (with moss overlay)
+- 6C: Normal temple wall 1 with torch light (with moss overlay)
 
 
 ## Object Infos
@@ -57,7 +54,17 @@ Palette 26
 - 0A: Lever left
 - 0B: Lever right
 - 0C: Coffin
-- 0D: Teleport **TODO**
+- 0D: Teleport
+- 0E: Statue
+- 0F: Undead
+- 10: Candle/torch stick
+- 11: Candle/torch flame
+- 12: Flashing light
+- 13: Skeleton
+- 14: Stones (broken statue)
+- 15: Skull (broken statue)
+- 16: Single stone
+- 17: Trash
 
 
 ## Objects
@@ -73,7 +80,16 @@ Palette 26
 - 09: Lever left
 - 0A: Lever right
 - 0B: Coffin
-- 0C: Teleport **TODO**
+- 0C: Teleport
+- 0D: Statue
+- 0E: Undead
+- 0F: Candle/torch
+- 10: Flashing light
+- 11: Candle/torch without fire
+- 12: Skeleton
+- 13: Stones (broken statue)
+- 14: Statue with 2 stones
+- 15: Trash
 
 
 ## Monsters
