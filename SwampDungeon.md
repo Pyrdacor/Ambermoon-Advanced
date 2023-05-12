@@ -20,7 +20,6 @@ Palette 26
 ## TODO
 
 - Pfütze größer, muss etwa Breite eines Tiles haben
-- Wand mit Licht sieht kacke aus. Lichtkreisradius muss etwa Wandhöhe sein
 - Map aufmachen im Remake führt zu Absturz
 - Add all events
 - Add monsters
@@ -65,6 +64,12 @@ Palette 26
 - 15: Skull (broken statue)
 - 16: Single stone
 - 17: Trash
+- 18: Hanging green/brown plants (like in cellar) **TODO**
+- 19: Ceiling spider (like in cellar) **TODO**
+- 1A: Mushroom? **TODO**
+- 1B: Ceiling Mushroom? **TODO**
+- 1C: Ceiling plants? **TODO**
+- 1D: Plants? **TODO**
 
 
 ## Objects
@@ -90,6 +95,8 @@ Palette 26
 - 13: Stones (broken statue)
 - 14: Statue with 2 stones
 - 15: Trash
+- 16: Hanging green/brown plants (like in cellar) **TODO**
+- 17: Ceiling spider (like in cellar) **TODO**
 
 
 ## Monsters
