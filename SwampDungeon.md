@@ -19,10 +19,9 @@ Palette 26
 
 ## TODO
 
-- Pfütze größer, muss etwa Breite eines Tiles haben
-- Map aufmachen im Remake führt zu Absturz
 - Add all events
 - Add monsters
+- Adjust initial save bits (events and chars)
 
 
 ## Walls
