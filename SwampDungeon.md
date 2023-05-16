@@ -22,6 +22,7 @@ Palette 26
 - Add all events
 - Add monsters
 - Adjust initial save bits (events and chars)
+- Adjust colors for wasps (in battle)
 
 
 ## Walls
@@ -63,12 +64,13 @@ Palette 26
 - 15: Skull (broken statue)
 - 16: Single stone
 - 17: Trash
-- 18: Hanging green/brown plants (like in cellar) **TODO**
-- 19: Ceiling spider (like in cellar) **TODO**
-- 1A: Mushroom? **TODO**
-- 1B: Ceiling Mushroom? **TODO**
-- 1C: Ceiling plants? **TODO**
-- 1D: Plants? **TODO**
+- 18: Wasp
+- 19: Hanging green/brown plants (like in cellar) **TODO**
+- 1A: Ceiling spider (like in cellar) **TODO**
+- 1B: Mushroom? **TODO**
+- 1C: Ceiling Mushroom? **TODO**
+- 1D: Ceiling plants? **TODO**
+- 1E: Plants? **TODO**
 
 
 ## Objects
@@ -94,8 +96,9 @@ Palette 26
 - 13: Stones (broken statue)
 - 14: Statue with 2 stones
 - 15: Trash
-- 16: Hanging green/brown plants (like in cellar) **TODO**
-- 17: Ceiling spider (like in cellar) **TODO**
+- 16: Wasp
+- 17: Hanging green/brown plants (like in cellar) **TODO**
+- 18: Ceiling spider (like in cellar) **TODO**
 
 
 ## Monsters
