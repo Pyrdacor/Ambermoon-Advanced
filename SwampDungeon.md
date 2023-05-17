@@ -19,6 +19,8 @@ Palette 26
 
 ## TODO
 
+- Heavy stone must disappear after pickup
+
 - Add all events
 - Add monsters
 - Adjust initial save bits (events and chars)
