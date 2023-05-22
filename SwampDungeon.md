@@ -19,6 +19,9 @@ Palette 26
 
 ## TODO
 
+- Remove bag on podest in lower right room when taking the items
+- 
+
 - Add all events
 - Add monsters
 - Adjust initial save bits (events and chars)
