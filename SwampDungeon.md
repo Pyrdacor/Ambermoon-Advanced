@@ -20,12 +20,17 @@ Palette 26
 ## TODO
 
 - Remove bag on podest in lower right room when taking the items
-- 
 
-- Add all events
-- Add monsters
-- Adjust initial save bits (events and chars)
+- Add end room monsters
+- Move the wasps in large room a bit as they are stuck behind the pillar
+- Add the flashing lights
+- Deactive some monsters in savegame
+- Make gral mages more distinct (color)
+- Create skelett on floor after defeat over Diokhar
+- Last teleport not working, wrong one is activated
+- ß is bugged
 - Adjust colors for wasps (in battle)
+- Add deco elements
 
 
 ## Walls
@@ -68,12 +73,13 @@ Palette 26
 - 16: Single stone
 - 17: Trash
 - 18: Wasp
-- 19: Hanging green/brown plants (like in cellar) **TODO**
-- 1A: Ceiling spider (like in cellar) **TODO**
-- 1B: Mushroom? **TODO**
-- 1C: Ceiling Mushroom? **TODO**
-- 1D: Ceiling plants? **TODO**
-- 1E: Plants? **TODO**
+- 19: Alchemist
+- 1A: Hanging green/brown plants (like in cellar) **TODO**
+- 1B: Ceiling spider (like in cellar) **TODO**
+- 1C: Mushroom? **TODO**
+- 1D: Ceiling Mushroom? **TODO**
+- 1E: Ceiling plants? **TODO**
+- 1F: Plants? **TODO**
 
 
 ## Objects
@@ -100,8 +106,9 @@ Palette 26
 - 14: Statue with 2 stones
 - 15: Trash
 - 16: Wasp
-- 17: Hanging green/brown plants (like in cellar) **TODO**
-- 18: Ceiling spider (like in cellar) **TODO**
+- 17: Alchemist
+- 18: Hanging green/brown plants (like in cellar) **TODO**
+- 19: Ceiling spider (like in cellar) **TODO**
 
 
 ## Monsters
