@@ -19,15 +19,11 @@ Palette 26
 
 ## TODO
 
-- Remove bag on podest in lower right room when taking the items
-
+- Lockpick doors are opened when just exiting
 - Add end room monsters
-- Move the wasps in large room a bit as they are stuck behind the pillar
 - Add the flashing lights
 - Deactive some monsters in savegame
 - Make gral mages more distinct (color)
-- Create skelett on floor after defeat over Diokhar
-- Last teleport not working, wrong one is activated
 - ß is bugged
 - Adjust colors for wasps (in battle)
 - Add deco elements
