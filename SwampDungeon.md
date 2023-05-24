@@ -19,14 +19,10 @@ Palette 26
 
 ## TODO
 
-- Lockpick doors are opened when just exiting
-- Add end room monsters
-- Add the flashing lights
 - Deactive some monsters in savegame
 - Make gral mages more distinct (color)
 - ß is bugged
 - Adjust colors for wasps (in battle)
-- Add deco elements
 
 
 ## Walls
@@ -53,7 +49,7 @@ Palette 26
 - 06: Carpet (podest)
 - 07: Small bag
 - 08: Iron chest
-- 09: Mushroom
+- 09: Big mushroom
 - 0A: Lever left
 - 0B: Lever right
 - 0C: Coffin
@@ -70,12 +66,12 @@ Palette 26
 - 17: Trash
 - 18: Wasp
 - 19: Alchemist
-- 1A: Hanging green/brown plants (like in cellar) **TODO**
-- 1B: Ceiling spider (like in cellar) **TODO**
-- 1C: Mushroom? **TODO**
-- 1D: Ceiling Mushroom? **TODO**
-- 1E: Ceiling plants? **TODO**
-- 1F: Plants? **TODO**
+- 1A: Hanging green/brown plants (like in cellar)
+- 1B: Ceiling spider (like in cellar)
+- 1C: Brown mushroom
+- 1D: Red mushroom
+- 1E: Small bush 1
+- 1F: Small bush 2
 
 
 ## Objects
@@ -87,7 +83,7 @@ Palette 26
 - 05: Snake podest
 - 06: Snake podest with bag
 - 07: Snake podest with chest
-- 08: Mushroom
+- 08: Big mushroom
 - 09: Lever left
 - 0A: Lever right
 - 0B: Coffin
@@ -103,8 +99,9 @@ Palette 26
 - 15: Trash
 - 16: Wasp
 - 17: Alchemist
-- 18: Hanging green/brown plants (like in cellar) **TODO**
-- 19: Ceiling spider (like in cellar) **TODO**
+- 18: Hanging green/brown plants (like in cellar)
+- 19: Ceiling spider (like in cellar)
+- 1A: Mushrooms behind bushes
 
 
 ## Monsters
