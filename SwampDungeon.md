@@ -19,10 +19,9 @@ Palette 26
 
 ## TODO
 
-- Deactive some monsters in savegame
 - Make gral mages more distinct (color)
-- ß is bugged
 - Adjust colors for wasps (in battle)
+- Make undeads on map larger
 
 
 ## Walls
