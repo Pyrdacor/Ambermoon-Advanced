@@ -28,8 +28,8 @@ Language | Downloads
 --- | ---
 English | [zip](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/ambermoon_advanced_english_1.03_extracted.zip) [lha](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/ambermoon_advanced_english_1.03_extracted.lha) [tar.gz](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/ambermoon_advanced_english_1.03_extracted.tar.gz)
 Deutsch | [zip](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/ambermoon_advanced_german_1.03_extracted.zip) [lha](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/ambermoon_advanced_german_1.03_extracted.lha) [tar.gz](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/ambermoon_advanced_german_1.03_extracted.tar.gz)
-WHDLoad English | [download](https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/releases/english/Ambermoon-Advanced-1_03-English-WHDLoad.lha)
-WHDLoad German | [download](https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/releases/english/Ambermoon-Advanced-1_03-German-WHDLoad.lha)
+WHDLoad English | [download](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/Ambermoon-Advanced-1_03-English-WHDLoad.lha)
+WHDLoad German | [download](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/Ambermoon-Advanced-1_03-German-WHDLoad.lha)
 
 
 ## Prepare for the second episode
