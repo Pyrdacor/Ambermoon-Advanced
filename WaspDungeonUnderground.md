@@ -22,6 +22,7 @@ Labdata 40 [Palette 20]
 - 71: Wall with integrated chest (open with content)
 - 72: Wall with yellowish computer face
 - 73: Wall with light cone
+- 74: Wall with hands
 
 
 ## Object Infos
@@ -83,14 +84,4 @@ Labdata 40 [Palette 20]
 - 01: Wasp (upper left room; 7,6)
 - 02: Guard (upper right room; 16,6)
 - 03: Guard (upper right room; 18,7)
-- 04: Guard boss (final room; 11,22)
-- 05: Lightning 1 (14,12)
-- 06: Lightning 2 (14,15)
-- 07: Lightning 3 (14,18)
-- 08: Lightning 4 (16,17)
-- 09: Lightning 5 (17,15)
-- 0A: Lightning 6 (18,17)
-- 0B: Lightning 7 (20,16)
-- 0C: Lightning 8 (19,14)
-- 0D: Lightning 9 (18,12)
-- 0E: Lightning 10 (16,13)
+- 04: Guard boss (very right room; 19,10)
