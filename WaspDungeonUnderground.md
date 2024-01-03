@@ -19,10 +19,12 @@ Labdata 40 [Palette 20]
 - 6E: Wall with chains to pull
 - 6F: Wall with integrated chest (closed)
 - 70: Wall with integrated chest (open but empty)
-- 71: Wall with integrated chest (open with content)
+- 71: Wall with integrated chest (open with battery)
 - 72: Wall with yellowish computer face
 - 73: Wall with light cone
 - 74: Wall with hands
+- 75: Illuminated wall with integrated chest (open with battery)
+- 76: Illuminated wall with integrated chest (open but empty)
 
 
 ## Object Infos
