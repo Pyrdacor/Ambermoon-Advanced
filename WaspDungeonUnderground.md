@@ -79,6 +79,7 @@ Labdata 40 [Palette 20]
 - 10: Very huge stone (wall breach in front of wasp door)
 - 11: Static active guard (person)
 - 12: Lightning spark
+- 13: Round ceiling lamp with 2 lightning sparks
 
 
 ## Characters
