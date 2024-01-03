@@ -71,7 +71,7 @@ Labdata 40 [Palette 20]
 - 08: Guard and wasp fighting
 - 09: Book shrine
 - 0A: Portal with hole (elevator center)
-- 0B: Round ceiling lamp
+- 0B: Round ceiling lamp (centered)
 - 0C: Reward podest (active)
 - 0D: Reward podest (taken)
 - 0E: Teleporter spot (inactive)
@@ -79,7 +79,9 @@ Labdata 40 [Palette 20]
 - 10: Very huge stone (wall breach in front of wasp door)
 - 11: Static active guard (person)
 - 12: Lightning spark
-- 13: Round ceiling lamp with 2 lightning sparks
+- 13: Round ceiling lamp (centered) with 2 lightning sparks
+- 14: Round ceiling lamp (right) with 1 lightning spark
+- 15: Round ceiling lamp (right)
 
 
 ## Characters
