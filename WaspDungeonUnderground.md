@@ -25,6 +25,8 @@ Labdata 40 [Palette 20]
 - 74: Wall with hands
 - 75: Illuminated wall with integrated chest (open with battery)
 - 76: Illuminated wall with integrated chest (open but empty)
+- 77: Antique stone fake wall (darker version, activated)
+- 78: Wall with 4 triangles (one of each color)
 
 
 ## Object Infos
