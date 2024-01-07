@@ -14,7 +14,6 @@ start "" AmbermoonPack.exe AMNP 2Wall3D 2Wall3D.amb
 start "" AmbermoonPack.exe AMNP 3Wall3D 3Wall3D.amb
 
 start "" AmbermoonPack.exe LOB Combat_graphics_ext/001 Combat_graphics
-start "" AmbermoonPack.exe JH+LOB Dict/001 Dict.amb 0xd2e7
 start "" AmbermoonPack.exe AMPC Icon_data Icon_data.amb
 start "" AmbermoonPack.exe AMPC Monster_char Monster_char.amb
 start "" AmbermoonPack.exe AMNP Monster_gfx Monster_gfx.amb
@@ -36,6 +35,7 @@ start "" AmbermoonTextManager.exe -i . AllTexts -f NPC_texts.amb
 start "" AmbermoonTextManager.exe -i . AllTexts -f Object_texts.amb
 start "" AmbermoonTextManager.exe -i . AllTexts -f Party_texts.amb
 start "" AmbermoonTextManager.exe -i . AllTexts -f Text.amb
+start "" AmbermoonTextManager.exe -i . AllTexts -f Dict.amb
 
 start "" AmbermoonPack.exe AMBR Save.00/Chest_data Save.00/Chest_data.amb
 start "" AmbermoonPack.exe AMBR Save.00/Party_char Save.00/Party_char.amb
