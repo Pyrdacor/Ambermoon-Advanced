@@ -1,9 +1,8 @@
-# Wesp Dungeon
+# Wasp Dungeon
 
 Labdata 14 (same as Mine level 3) [Palette 20]
 
 Elevator uses new labdata 39 (see at the end)
-
 
 ## Walls
 
@@ -36,7 +35,6 @@ Elevator uses new labdata 39 (see at the end)
 - 7D: Wasp door **new**
 - 7E: Antique stone wall (darker version, inactive) **new**
 - 7F: Pillar wall **new**
-
 
 ## Object Infos
 
@@ -89,7 +87,6 @@ Elevator uses new labdata 39 (see at the end)
 - 2F: Skeleton **new**
 - 30: Bigger plant **new**
 - 31: Large wasp (384x288) **new**
-
 
 ## Objects
 
@@ -152,8 +149,6 @@ Elevator uses new labdata 39 (see at the end)
 - 39: Male dwarf fighting wasps and active amber machine **new**
 - 3A: Dwarf skeleton and active amber machine **new**
 
-
-
 # Elevator
 
 ## Walls
@@ -162,7 +157,6 @@ Elevator uses new labdata 39 (see at the end)
 
 - 65: Antique door closed and active
 - 66: Antique stone wall (darker version, activated)
-
 
 ## Object Infos
 
@@ -187,4 +181,3 @@ Elevator uses new labdata 39 (see at the end)
 - 04: Big wasp
 - 05: Moving wall (in elevator, animated)
 - 06: Stones on the floor (no lightning spark)
-
