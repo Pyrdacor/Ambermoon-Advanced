@@ -3,7 +3,6 @@
 Labdata 38 (new)
 Palette 26
 
-
 ## Story
 
 - Ancient temple covered in moss and with large stone pillars
@@ -16,13 +15,11 @@ Palette 26
 - There are poisonous puddles everywhere
 - Large parts of the temple can change with levers/buttons
 
-
 ## TODO
 
 - Make gral mages more distinct (color)
 - Adjust colors for wasps (in battle)
 - Make undeads on map larger
-
 
 ## Walls
 
@@ -36,7 +33,7 @@ Palette 26
 - 6A: Exit
 - 6B: Normal temple wall 2 (with moss overlay)
 - 6C: Normal temple wall 1 with torch light (with moss overlay)
-
+- 6D: Normal temple wall 1 (with crack)
 
 ## Object Infos
 
@@ -71,7 +68,7 @@ Palette 26
 - 1D: Red mushroom
 - 1E: Small bush 1
 - 1F: Small bush 2
-
+- 20: Hole in the ground
 
 ## Objects
 
@@ -101,13 +98,12 @@ Palette 26
 - 18: Hanging green/brown plants (like in cellar)
 - 19: Ceiling spider (like in cellar)
 - 1A: Mushrooms behind bushes
-
+- 1B: Hole in the ground
 
 ## Monsters
 
 - Swamp wasps
 - Undead spirits
-
 
 ## Rewards
 
