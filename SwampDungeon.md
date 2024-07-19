@@ -99,6 +99,8 @@ Palette 26
 - 19: Ceiling spider (like in cellar)
 - 1A: Mushrooms behind bushes
 - 1B: Hole in the ground
+- 1C: Stones (broken wall remains)
+- 1D: Fewer stones (broken wall remains)
 
 ## Monsters
 
