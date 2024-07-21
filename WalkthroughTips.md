@@ -20,6 +20,12 @@ In Spannenberg you can find a new party member which is an animal.
 
 You need to learn the animal language beforehand. Talk to Sandra the healer. And if you don't know Amberstar or forgot the name of her tomcat, there is someone new in town who might know it.
 
+The animal is pretty weak, can't carry items (except for those who can be used or equipped by it) and won't level up at all. But it also is not "stealing" exp so the other party members will get the full exp.
+
+The animal can still be valuable in the very early game, especially with some item from the gardener's shop. And it has 6 free self-revives and a cheap healing potion.
+
+In the mid to late game you will be able to empower the animal a lot. Pay attention to what Sandra says when you return her amulet.
+
 
 ## Extended start town
 
