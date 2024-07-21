@@ -9,15 +9,43 @@ Also note that the game and also the expansion are based on the predecessor Ambe
 
 ## Overview
 
+- Animal party member
+- Extended start town
 - Sea creatures quest line
 - Mystical creatures quest line
+
+## Animal party member
+
+In Spannenberg you can find a new party member which is an animal.
+
+You need to learn the animal language beforehand. Talk to Sandra the healer. And if you don't know Amberstar or forgot the name of her tomcat, there is someone new in town who might know it.
+
+
+## Extended start town
+
+Spannenberg was extended a lot. There are those new things:
+
+- Carpenter
+- Gardener
+- Animal party member
+
+### Carpenter
+
+The carpenter can renovate your grandpa's house and it will become your house with a new look.
+
+He can also add a wind gate and a storage cave. The cave holds a new small dungeon with a nice little side quest. To unlock all this you have to visit Snakesign later on to unlock it. There might be naming confusions. At some point the carpenter was named Karl but later was renamed to Theodorus (a reference to the Amberstar wind gate builder family).
+
+
+### Gardener
+
+The gardener likes animals and can unlock pets for you. Unfortunately this quest might be broken in episode 2 and will be working again in the next episode. He can still help you with other things. For example to hint you in the right direction to learn the animal language at Sandra if you don't know Amberstar. You need the animal language to get the new party member.
 
 
 ## Sea Creatures Questline
 
 After you rescued the townsfolk of Burnville you can start this quest line already. Talk to someone who knows about maps.
 
-## Vortex
+### Vortex
 
 The vortex is mainly inspired by Amberstar. There you could enter the vortex and visit the ship graveyard named Ship's End. There was a castle as well with a cruel monster called Manyeyes and it lived up to its name. It consisted of many eyes like the one boss in Zelda. This was long ago so when you visit it now in the expansion, things might have changed.
 
