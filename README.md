@@ -32,6 +32,13 @@ WHDLoad English | [download](https://downloads.pyrdacor.net/ambermoon-advanced/1
 WHDLoad German | [download](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/Ambermoon-Advanced-1_03-German-WHDLoad.lha)
 
 
+## Walkthrough Tips
+
+As many players struggle with the new content, I started to write a small hint section to make it easier to proceed. Of course I will also try to improve the game in the future to make this obsolete.
+
+[Walkthrough Tips](WalkthroughTips.md)
+
+
 ## Prepare for the second episode
 
 The second episode is out now. Unfortunately it wasn't possible to keep the savegames compatible with the ones from the first episode. However there is a savegame patcher online which you can use to patch your savegame to use it for the second episode. You can find it online at https://ambermoon-advanced.pyrdacor.net. Just drag&drop your savegame folders (e.g. Save.00) there and you will be able to
