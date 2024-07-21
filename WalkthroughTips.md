@@ -58,6 +58,13 @@ The vortex is mainly inspired by Amberstar. There you could enter the vortex and
 
 ## Mystical Creatures Questline
 
+You will gather 6 essences of those powerful creatures. Your starting point is a new book in the Newlake library.
+
+In the Crystal remains (Crytal was a big town in Amberstar) you will find some more information and the first essences already. In the wine cellar you can find an amulet with a name of it. Maybe you can return it to its owner?
+
+The essences can be used to empower the animal party member. But you also get a reward if you just return them to the person who could do the empowering. She is located in Spannenberg but you have to give her the amulet first.
+
+
 ### Fire Temple
 
 Tips:
