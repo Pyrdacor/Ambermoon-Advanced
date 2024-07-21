@@ -7,7 +7,24 @@ This page contains spoilers so read with caution.
 Also note that the game and also the expansion are based on the predecessor Amberstar. Many additions reference story elements from there. The paladin guild and wine cellar of crystal or the inner of the vortex were all present in Amberstar. If you don't know it, it might be hard to understand the relations.
 
 
-## Fire Temple
+## Overview
+
+- Sea creatures quest line
+- Mystical creatures quest line
+
+
+## Sea Creatures Questline
+
+After you rescued the townsfolk of Burnville you can start this quest line already. Talk to someone who knows about maps.
+
+## Vortex
+
+The vortex is mainly inspired by Amberstar. There you could enter the vortex and visit the ship graveyard named Ship's End. There was a castle as well with a cruel monster called Manyeyes and it lived up to its name. It consisted of many eyes like the one boss in Zelda. This was long ago so when you visit it now in the expansion, things might have changed.
+
+
+## Mystical Creatures Questline
+
+### Fire Temple
 
 Tips:
 
@@ -26,7 +43,7 @@ Things not to miss:
 - Pyrdacor's essence
 
 
-## Isdir's cave
+### Isdir's cave
 
 The english text mention a mystical creature named Isdir. Unfortunately in the english version there is a typo which says IDIR. The correct name is ISDIR. This will be fixed in the next episode.
 
@@ -34,7 +51,8 @@ Tips:
 
 - He is related to water, so you should look for him in the vortex. If you don't entered the vortex yet, please look for the tips about the sea creatures.
 - If you can't find him directly, you should ask someone about him. Maybe someone has seen him.
-- His quests are mainly focused on finding things on Lyramion. Some require that the current daytime is night. But you can still search at day to see more, then when you found it, wait until night (usually 0:00 to 4:00) and move or interact to trigger the event.
+- His quests are mainly focused on finding things on Lyramion. Some require that the current daytime is night. But you can still search at day to see more. Then when you found it, wait until night (usually 0:00 to 4:00) and move or interact to trigger the event.
+- The upside down tree is just a chopped down tree and it is very close to the five trees. You don't have to go far. You can search at day with the eagle and when you found it hop off the eagle and approach it at night.
 
 Things not to miss:
 
