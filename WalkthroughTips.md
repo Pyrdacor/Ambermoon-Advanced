@@ -2,7 +2,7 @@
 
 Back when I released episode 2, I only had one German playtester. Nowadays I see some people struggle to complete my quest lines, especially with the English version. So here are some hints to play my expansion.
 
-This page contains spoilers so read with care.
+This page contains spoilers so read with caution.
 
 Also note that the game and also the expansion are based on the predecessor Amberstar. Many additions reference story elements from there. The paladin guild and wine cellar of crystal or the inner of the vortex were all present in Amberstar. If you donknow it, it might be hard to understand the relations.
 
