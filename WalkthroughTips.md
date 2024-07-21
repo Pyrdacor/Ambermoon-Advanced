@@ -6,6 +6,8 @@ This page contains spoilers so read with caution.
 
 Also note that the game and also the expansion are based on the predecessor Amberstar. Many additions reference story elements from there. The paladin guild and wine cellar of crystal or the inner of the vortex were all present in Amberstar. If you don't know it, it might be hard to understand the relations.
 
+**This is still WIP and will be extended.**
+
 
 ## Overview
 
@@ -60,9 +62,9 @@ The vortex is mainly inspired by Amberstar. There you could enter the vortex and
 
 You will gather 6 essences of those powerful creatures. Your starting point is a new book in the Newlake library.
 
-In the Crystal remains (Crytal was a big town in Amberstar) you will find some more information and the first essences already. In the wine cellar you can find an amulet with a name of it. Maybe you can return it to its owner?
+In the Crystal remains (Crytal was a big town in Amberstar) you will find some more information and the first essences already. In the wine cellar you can find an amulet with a name on it. Maybe you can return it to its owner?
 
-The essences can be used to empower the animal party member. But you also get a reward if you just return them to the person who could do the empowering. She is located in Spannenberg but you have to give her the amulet first.
+The essences can be used to empower the animal party member. But you also get a reward if you just return them to the person who could do the empowering. She is located in Spannenberg but you have to give her the amulet first. Note that you also get the reward if you empower the animal!
 
 
 ### Fire Temple
