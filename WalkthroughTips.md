@@ -4,7 +4,7 @@ Back when I released episode 2, I only had one German playtester. Nowadays I see
 
 This page contains spoilers so read with caution.
 
-Also note that the game and also the expansion are based on the predecessor Amberstar. Many additions reference story elements from there. The paladin guild and wine cellar of crystal or the inner of the vortex were all present in Amberstar. If you donknow it, it might be hard to understand the relations.
+Also note that the game and also the expansion are based on the predecessor Amberstar. Many additions reference story elements from there. The paladin guild and wine cellar of crystal or the inner of the vortex were all present in Amberstar. If you don't know it, it might be hard to understand the relations.
 
 
 ## Fire Temple
@@ -12,10 +12,10 @@ Also note that the game and also the expansion are based on the predecessor Ambe
 Tips:
 
 - In the spinner room you have to start east of the pillar (on the tile right of it). The parchment text is a bit unspecific here and will be improved in the next episode.
-- When you walk through the spinners always make sure you stand on the right tile. After a spin you can adjust yourself to the center of the tile.
+- When you walk through the spinners always make sure you stand on the correct tile. After a spin you can adjust yourself to the center of the tile.
 - It can be beneficial to open the map. With a compass active, you can see an arrow above the player which indicates your current view direction.
-- Imoortant to solve the puzzle is that you don't enter any tile which is not part of the right way. You will fail at the end of you do. An exception is the topmost tile row.
-- So with the right starting position and when moving with caution, you should be able to proceed. It is not a problem to spin multiple times as long as you stay on the right tiles.
+- Imlortant to solve the puzzle is that you don't enter any tile which is not part of the right way. You will fail at the end if you do. An exception is the topmost tile row.
+- So with the right starting position and when moving with caution, you should be able to proceed. It is not a problem to spin multiple times as long as you stay on the right tiles. So always adjust yourself before approaching the next tile.
 
 Things not to miss:
 
