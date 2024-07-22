@@ -27,6 +27,7 @@ start "" AmbermoonPack.exe AMPC Portraits Portraits.amb
 start "" AmbermoonPack.exe AMNP Travel_gfx Travel_gfx.amb
 start "" AmbermoonPack.exe AMNP Floors Floors.amb
 start "" AmbermoonPack.exe AMPC Palettes Palettes.amb
+start "" AmbermoonPack.exe AMNP Event_pix Event_pix.amb
 
 start "" AmbermoonTextManager.exe -i . AllTexts -f 1Map_texts.amb
 start "" AmbermoonTextManager.exe -i . AllTexts -f 2Map_texts.amb
