@@ -1,0 +1,210 @@
+- 367 17,18 Climbing, Left
+- 369  4,16 Falling, Up
+- GlobVar 195: Teleporter switch in AA Level 3add
+- GlobVar 196: Teleporter off/on
+- GlobVar 197-204 (count = 8) for switches
+  - We can implement switches based on event ids instead
+  - We use those glob vars for the 4 clock room switches
+  - We also use glob var 201 to store if the other room riddle was solved
+  - We use 202 to 204 for the 3 target switches (8 targets)
+- Event IDs (hex) for disabled traps (savegame)
+  - 16 to 1D
+  - We will use 16 and 18 to 1B (remove 17, 1C and 1D from savegame!)
+- Event ID states (hex) to complete lower-left room:
+  - 12: off (1)    [Savegame Bit: 23505]
+  - 13: on (0)     [Savegame Bit: 23506]
+  - 14: off (1)    [Savegame Bit: 23507]
+  - 15: off (1)    [Savegame Bit: 23508]
+  - 16: on (0)     [Savegame Bit: 23509]
+  - 17: off (1)    [Savegame Bit: 23510]
+  - 18: on (0)     [Savegame Bit: 23511]
+  - 19: on (0)     [Savegame Bit: 23512]
+- Text 3: Previously was used when spawning in front of the guards, now hints to
+  hidden stuff on the skeleton if you don't have enough search skill.
+
+
+Old map events:
+
+ID | Description
+---|---------------------------------------------------------------------------
+00 | Teleport: X=17, Y=18, Direction=Left, Transition=Climbing, MapIndex=367
+01 | ChangeTile: X=18, Y=18, FrontTileIndex=46, MapIndex=367
+02 | Condition: TypeOfCondition=GlobalVariable, Value=0, ObjectIndex=195,
+   | ContinueIfFalseWithMapEventIndex=0x0004
+03 | Teleport: X=31, Y=8, Direction=Up, Transition=Teleporter, MapIndex=368
+04 | Teleport: X=21, Y=16, Direction=Right, Transition=MapChange, MapIndex=368
+05 | Condition: TypeOfCondition=Hand, Value=1,
+   | ContinueIfFalseWithMapEventIndex=0xffff
+06 | Condition: TypeOfCondition=GlobalVariable, Value=0, ObjectIndex=196,
+   | ContinueIfFalseWithMapEventIndex=0x000c
+07 | PopupText: EventImageIndex=255, PopupTrigger=Always, TextIndex=1
+08 | ChangeTile: X=0, Y=0, FrontTileIndex=118, MapIndex=0
+09 | ChangeTile: X=28, Y=17, FrontTileIndex=9, MapIndex=0
+0a | Action: TypeOfAction=SetEventBit, Value=0, ObjectIndex=23490
+0b | Action: TypeOfAction=SetGlobalVariable, Value=1, ObjectIndex=196
+0c | ChangeTile: X=0, Y=0, FrontTileIndex=117, MapIndex=0
+0d | ChangeTile: X=28, Y=17, FrontTileIndex=25, MapIndex=0
+0e | Action: TypeOfAction=SetEventBit, Value=1, ObjectIndex=23490
+0f | Action: TypeOfAction=SetGlobalVariable, Value=0, ObjectIndex=196
+10 | Condition: TypeOfCondition=Hand, Value=1,
+   | ContinueIfFalseWithMapEventIndex=0xffff
+11 | Condition: TypeOfCondition=GlobalVariable, Value=0, ObjectIndex=195,
+   | ContinueIfFalseWithMapEventIndex=0x0014
+12 | ChangeTile: X=0, Y=0, FrontTileIndex=109, MapIndex=0
+13 | Action: TypeOfAction=SetGlobalVariable, Value=1, ObjectIndex=195
+14 | ChangeTile: X=0, Y=0, FrontTileIndex=110, MapIndex=0
+15 | Action: TypeOfAction=SetGlobalVariable, Value=0, ObjectIndex=195
+16 | Teleport: X=31, Y=17, Direction=Left, Transition=MapChange, MapIndex=368
+17 | Teleport: X=9, Y=18, Direction=Up, Transition=MapChange, MapIndex=368
+18 | Teleport: X=31, Y=17, Direction=Left, Transition=MapChange, MapIndex=368
+19 | Chest: LockpickingChanceReduction=0, Flags=SearchSkillCheck | Unknown4 |
+   | Unknown5, TextIndex=2, ChestIndex=214, LootFlags=CloseWhenEmpty,
+   | KeyIndex=0, UnlockFailedEventIndex=0xffff
+1a | Condition: TypeOfCondition=Hand, Value=1,
+   | ContinueIfFalseWithMapEventIndex=0xffff
+1b | Condition: TypeOfCondition=GlobalVariable, Value=1, ObjectIndex=197,
+   | ContinueIfFalseWithMapEventIndex=0x0020
+1c | ChangeTile: X=0, Y=0, FrontTileIndex=118, MapIndex=0
+1d | Action: TypeOfAction=SetGlobalVariable, Value=0, ObjectIndex=197
+1e | ChangeTile: X=7, Y=4, FrontTileIndex=10, MapIndex=0
+1f | Action: TypeOfAction=SetEventBit, Value=1, ObjectIndex=23501
+20 | ChangeTile: X=0, Y=0, FrontTileIndex=117, MapIndex=0
+21 | Action: TypeOfAction=SetGlobalVariable, Value=0, ObjectIndex=197
+22 | ChangeTile: X=7, Y=4, FrontTileIndex=0, MapIndex=0
+23 | Action: TypeOfAction=SetEventBit, Value=1, ObjectIndex=23501
+24 | Condition: TypeOfCondition=Hand, Value=1,
+   | ContinueIfFalseWithMapEventIndex=0xffff
+25 | Condition: TypeOfCondition=GlobalVariable, Value=1, ObjectIndex=198,
+   | ContinueIfFalseWithMapEventIndex=0x002a
+26 | ChangeTile: X=0, Y=0, FrontTileIndex=118, MapIndex=0
+27 | Action: TypeOfAction=SetGlobalVariable, Value=1, ObjectIndex=198
+28 | ChangeTile: X=7, Y=9, FrontTileIndex=10, MapIndex=0
+29 | Action: TypeOfAction=SetEventBit, Value=0, ObjectIndex=23502
+2a | ChangeTile: X=0, Y=0, FrontTileIndex=117, MapIndex=0
+2b | Action: TypeOfAction=SetGlobalVariable, Value=1, ObjectIndex=198
+2c | ChangeTile: X=7, Y=9, FrontTileIndex=0, MapIndex=0
+2d | Action: TypeOfAction=SetEventBit, Value=1, ObjectIndex=23502
+2e | Condition: TypeOfCondition=Hand, Value=1,
+   | ContinueIfFalseWithMapEventIndex=0xffff
+2f | Condition: TypeOfCondition=GlobalVariable, Value=1, ObjectIndex=199,
+   | ContinueIfFalseWithMapEventIndex=0x0034
+30 | ChangeTile: X=0, Y=0, FrontTileIndex=118, MapIndex=0
+31 | Action: TypeOfAction=SetGlobalVariable, Value=0, ObjectIndex=199
+32 | ChangeTile: X=7, Y=13, FrontTileIndex=10, MapIndex=0
+33 | Action: TypeOfAction=SetEventBit, Value=0, ObjectIndex=23503
+34 | ChangeTile: X=0, Y=0, FrontTileIndex=117, MapIndex=0
+35 | Action: TypeOfAction=SetGlobalVariable, Value=1, ObjectIndex=199
+36 | ChangeTile: X=7, Y=13, FrontTileIndex=0, MapIndex=0
+37 | Action: TypeOfAction=SetEventBit, Value=1, ObjectIndex=23503
+38 | Condition: TypeOfCondition=Hand, Value=1,
+   | ContinueIfFalseWithMapEventIndex=0xffff
+39 | Condition: TypeOfCondition=GlobalVariable, Value=1, ObjectIndex=200,
+   | ContinueIfFalseWithMapEventIndex=0x003e
+3a | ChangeTile: X=0, Y=0, FrontTileIndex=118, MapIndex=0
+3b | Action: TypeOfAction=SetGlobalVariable, Value=0, ObjectIndex=200
+3c | ChangeTile: X=7, Y=17, FrontTileIndex=10, MapIndex=0
+3d | Action: TypeOfAction=SetEventBit, Value=0, ObjectIndex=23504
+3e | ChangeTile: X=0, Y=0, FrontTileIndex=117, MapIndex=0
+3f | Action: TypeOfAction=SetGlobalVariable, Value=1, ObjectIndex=200
+40 | ChangeTile: X=7, Y=17, FrontTileIndex=0, MapIndex=0
+41 | Action: TypeOfAction=SetEventBit, Value=1, ObjectIndex=23504
+42 | Trap: Ailment=None, Target=All, AffectedGenders=Both, BaseDamage=255
+43 | Trap: Ailment=None, Target=All, AffectedGenders=Both, BaseDamage=255
+44 | Trap: Ailment=None, Target=All, AffectedGenders=Both, BaseDamage=255
+45 | Trap: Ailment=None, Target=All, AffectedGenders=Both, BaseDamage=255
+46 | Trap: Ailment=None, Target=All, AffectedGenders=Both, BaseDamage=255
+47 | Trap: Ailment=None, Target=All, AffectedGenders=Both, BaseDamage=255
+48 | Trap: Ailment=None, Target=All, AffectedGenders=Both, BaseDamage=255
+49 | Trap: Ailment=None, Target=All, AffectedGenders=Both, BaseDamage=255
+4a | Condition: TypeOfCondition=Hand, Value=1,
+   | ContinueIfFalseWithMapEventIndex=0xffff
+4b | Condition: TypeOfCondition=GlobalVariable, Value=0, ObjectIndex=201,
+   | ContinueIfFalseWithMapEventIndex=0x0052
+4c | ChangeTile: X=0, Y=0, FrontTileIndex=118, MapIndex=0
+4d | Action: TypeOfAction=SetGlobalVariable, Value=1, ObjectIndex=201
+4e | ChangeTile: X=11, Y=5, FrontTileIndex=10, MapIndex=0
+4f | ChangeTile: X=15, Y=5, FrontTileIndex=10, MapIndex=0
+50 | Action: TypeOfAction=SetEventBit, Value=0, ObjectIndex=23509
+51 | Action: TypeOfAction=SetEventBit, Value=0, ObjectIndex=23510
+52 | ChangeTile: X=0, Y=0, FrontTileIndex=117, MapIndex=0
+53 | Action: TypeOfAction=SetGlobalVariable, Value=0, ObjectIndex=201
+54 | ChangeTile: X=11, Y=5, FrontTileIndex=0, MapIndex=0
+55 | ChangeTile: X=15, Y=5, FrontTileIndex=0, MapIndex=0
+56 | Action: TypeOfAction=SetEventBit, Value=1, ObjectIndex=23509
+57 | Action: TypeOfAction=SetEventBit, Value=1, ObjectIndex=23510
+58 | Condition: TypeOfCondition=Hand, Value=1,
+   | ContinueIfFalseWithMapEventIndex=0xffff
+59 | Condition: TypeOfCondition=GlobalVariable, Value=0, ObjectIndex=202,
+   | ContinueIfFalseWithMapEventIndex=0x0060
+5a | ChangeTile: X=0, Y=0, FrontTileIndex=118, MapIndex=0
+5b | Action: TypeOfAction=SetGlobalVariable, Value=1, ObjectIndex=202
+5c | ChangeTile: X=11, Y=9, FrontTileIndex=10, MapIndex=0
+5d | ChangeTile: X=15, Y=9, FrontTileIndex=10, MapIndex=0
+5e | Action: TypeOfAction=SetEventBit, Value=0, ObjectIndex=23511
+5f | Action: TypeOfAction=SetEventBit, Value=0, ObjectIndex=23512
+60 | ChangeTile: X=0, Y=0, FrontTileIndex=117, MapIndex=0
+61 | Action: TypeOfAction=SetGlobalVariable, Value=0, ObjectIndex=202
+62 | ChangeTile: X=11, Y=9, FrontTileIndex=0, MapIndex=0
+63 | ChangeTile: X=15, Y=9, FrontTileIndex=0, MapIndex=0
+64 | Action: TypeOfAction=SetEventBit, Value=1, ObjectIndex=23511
+65 | Action: TypeOfAction=SetEventBit, Value=1, ObjectIndex=23512
+66 | Condition: TypeOfCondition=Hand, Value=1,
+   | ContinueIfFalseWithMapEventIndex=0xffff
+67 | Condition: TypeOfCondition=GlobalVariable, Value=0, ObjectIndex=203,
+   | ContinueIfFalseWithMapEventIndex=0x006e
+68 | ChangeTile: X=0, Y=0, FrontTileIndex=118, MapIndex=0
+69 | Action: TypeOfAction=SetGlobalVariable, Value=1, ObjectIndex=203
+6a | ChangeTile: X=11, Y=13, FrontTileIndex=10, MapIndex=0
+6b | ChangeTile: X=15, Y=13, FrontTileIndex=10, MapIndex=0
+6c | Action: TypeOfAction=SetEventBit, Value=0, ObjectIndex=23513
+6d | Action: TypeOfAction=SetEventBit, Value=0, ObjectIndex=23514
+6e | ChangeTile: X=0, Y=0, FrontTileIndex=117, MapIndex=0
+6f | Action: TypeOfAction=SetGlobalVariable, Value=0, ObjectIndex=203
+70 | ChangeTile: X=11, Y=13, FrontTileIndex=0, MapIndex=0
+71 | ChangeTile: X=15, Y=13, FrontTileIndex=0, MapIndex=0
+72 | Action: TypeOfAction=SetEventBit, Value=1, ObjectIndex=23513
+73 | Action: TypeOfAction=SetEventBit, Value=1, ObjectIndex=23514
+74 | Condition: TypeOfCondition=Hand, Value=1,
+   | ContinueIfFalseWithMapEventIndex=0xffff
+75 | Condition: TypeOfCondition=GlobalVariable, Value=0, ObjectIndex=204,
+   | ContinueIfFalseWithMapEventIndex=0x007c
+76 | ChangeTile: X=0, Y=0, FrontTileIndex=118, MapIndex=0
+77 | Action: TypeOfAction=SetGlobalVariable, Value=1, ObjectIndex=204
+78 | ChangeTile: X=11, Y=18, FrontTileIndex=10, MapIndex=0
+79 | ChangeTile: X=15, Y=18, FrontTileIndex=10, MapIndex=0
+7a | Action: TypeOfAction=SetEventBit, Value=0, ObjectIndex=23515
+7b | Action: TypeOfAction=SetEventBit, Value=0, ObjectIndex=23516
+7c | ChangeTile: X=0, Y=0, FrontTileIndex=117, MapIndex=0
+7d | Action: TypeOfAction=SetGlobalVariable, Value=0, ObjectIndex=204
+7e | ChangeTile: X=11, Y=18, FrontTileIndex=0, MapIndex=0
+7f | ChangeTile: X=15, Y=18, FrontTileIndex=0, MapIndex=0
+80 | Action: TypeOfAction=SetEventBit, Value=1, ObjectIndex=23515
+81 | Action: TypeOfAction=SetEventBit, Value=1, ObjectIndex=23516
+82 | Trap: Ailment=None, Target=All, AffectedGenders=Both, BaseDamage=255
+83 | Trap: Ailment=None, Target=All, AffectedGenders=Both, BaseDamage=255
+84 | Trap: Ailment=None, Target=All, AffectedGenders=Both, BaseDamage=255
+85 | Trap: Ailment=None, Target=All, AffectedGenders=Both, BaseDamage=255
+86 | Trap: Ailment=None, Target=All, AffectedGenders=Both, BaseDamage=255
+87 | Trap: Ailment=None, Target=All, AffectedGenders=Both, BaseDamage=255
+88 | Trap: Ailment=None, Target=All, AffectedGenders=Both, BaseDamage=255
+89 | Trap: Ailment=None, Target=All, AffectedGenders=Both, BaseDamage=255
+8a | Trap: Ailment=None, Target=All, AffectedGenders=Both, BaseDamage=255
+8b | Trap: Ailment=None, Target=All, AffectedGenders=Both, BaseDamage=255
+8c | Trap: Ailment=None, Target=All, AffectedGenders=Both, BaseDamage=255
+8d | Trap: Ailment=None, Target=All, AffectedGenders=Both, BaseDamage=255
+8e | Trap: Ailment=None, Target=All, AffectedGenders=Both, BaseDamage=255
+8f | Trap: Ailment=None, Target=All, AffectedGenders=Both, BaseDamage=255
+90 | Trap: Ailment=None, Target=All, AffectedGenders=Both, BaseDamage=255
+91 | Trap: Ailment=None, Target=All, AffectedGenders=Both, BaseDamage=255
+92 | Teleport: X=9, Y=18, Direction=Up, Transition=MapChange, MapIndex=368
+93 | ChangeTile: X=0, Y=0, FrontTileIndex=44, MapIndex=0
+94 | Action: TypeOfAction=SetCharacterBit, Value=1, ObjectIndex=11754
+95 | Action: TypeOfAction=SetCharacterBit, Value=1, ObjectIndex=11755
+96 | Action: TypeOfAction=SetCharacterBit, Value=1, ObjectIndex=11756
+97 | Action: TypeOfAction=SetCharacterBit, Value=1, ObjectIndex=11757
+98 | Teleport: X=4, Y=16, Direction=Up, Transition=Falling, MapIndex=369
+99 | Teleport: X=31, Y=17, Direction=Left, Transition=MapChange, MapIndex=368
+9a | ChangeMusic: MusicIndex=30, Volume=0xff
+9b | PopupText: EventImageIndex=255, PopupTrigger=Always, TextIndex=3
+9c | Action: TypeOfAction=SetEventBit, Value=1, ObjectIndex=23520
+9d | ChangeMusic: MusicIndex=255, Volume=0xff
