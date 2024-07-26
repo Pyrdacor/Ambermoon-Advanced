@@ -1,0 +1,12 @@
+Change lava to floor:
+12,6 to 14,6
+10,7 to 14,7
+10,8
+10,9
+10,10
+
+Spawn from center room
+2,13
+
+Spawn from last room
+29,3

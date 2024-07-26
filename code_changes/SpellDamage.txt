@@ -1,0 +1,18 @@
+Spell | Old | New
+
+Mudsling | 4-8 | 5-10
+Rockfall | 10-25 | 12-25
+Earthslide | 8-16 | 10-20
+Earthquake | 8-22 | 8-18
+Winddevil | 8-16 | 20-35
+Windhowler | 16-48 | 30-50
+Thunderbolt | 20-32 | 25-45
+Whirlwind | 20-35 | 20-40
+Firebeam | 20-30 | 45-75
+Fireball | 40-85 | 70-120
+Firestorm | 35-65 | 65-110
+Firepillar | 40-70 | 60-100
+Waterfall | 32-60 | 110-150
+Iceball | 90-180 | 150-200
+Icestorm | 64-128 | 130-180
+Iceshower | 128-256 | 125-175
