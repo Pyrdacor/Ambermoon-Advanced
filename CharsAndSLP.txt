@@ -1,0 +1,263 @@
+Thalion: 5 (Lvl 1), 5/Lvl
+
+Max (< 25 INT): 250
+Max (100 INT): 450
+
+
+Leonaria: 35 (Lvl 25), 10/Lvl
+
+Max (< 25 INT): 500
+Max (100 INT): 700
+
+- Gegenstand Laden (20)
+- Magische Fackel (5)
+- Imitierte Sonne (15)
+- Geisterwaffe (5)
+- Essen erschaffen (10)
+- Fluch beseitigen (20)
+- Blink (5)
+- Sprung (10)
+- Wort des Markierens (20)
+- Wort der Rückkehr (20)
+- Levitation (10)
+- Alch. Globus (25)
+- Rep. Gegenstand (15)
+- Verd. Gegenstand (25)
+- LP-Stehler (5)
+- SP-Sauger (5)
+Total: 215
+
+10 * 25 = 250
+250 - 215 = 35
+
+
+Changes:
+
+- Charge Item: 20 -> 60
+- Repair Item: 15 -> 45
+- Duplicate Item: 25 -> 75
+- LP Stealer: 5 -> 25
+- SP Stealer: 5 -> 25
+- Light: 2 -> 5
+- Magical Torch: 5 -> 10
+- Magical Lantern: 10 -> 20
+- Magical Sun: 15 -> 35
+- Ghost Weapon: 5 -> 30
+- Create Food: 10 -> 15
+- Blink: 5 -> 15
+- Jump: 10 -> 50
+- Word Of Marking: 20 -> 70
+- Word Of Returning: 20 -> 80
+- Magic Shield: 10 -> 25
+- Magic Wall: 15 -> 35
+- Magic Barrier: 20 -> 45
+- Magic Weapon: 10 -> 25
+- Magic Assault: 15 -> 35
+- Magic Attack: 20 -> 45
+- Levitation: 10 -> 65
+- Anti-Magic Wall: 5 -> 30
+- Anti-Magic Sphere: 15 -> 50
+- Alch. Globe: 25 -> 120
+- Hurry: 5 -> 50
+- Mass Hurry: 10 -> 80
+
+Keep:
+
+- Remove Curses: 20
+- Escape: 15
+
+Total: 1200
+
+Leonaria gets SLP/Lvl of 20. So she has 500 SLP with Level 25.
+
+- Charge Item (60)
+- Magic Torch (10)
+- Magic Sun (35)
+- Ghost Weapon (30)
+- Blink (15)
+- Jump (50)
+- Word of Marking (70)
+- Word of Return (80)
+- Alch. Globe (120)
+- LP Stealer (25)
+
+500
+
+
+----------------------------------------------
+
+
+Targor: 20 (Lvl 16), 10/Lvl
+
+Max (< 25 INT): 500
+Max (100 INT): 700
+
+
+- Monsterwissen (3)
+- Identifikation (15)
+- Hellsicht (20)
+- Kartenschau (15)
+- Magischer Kompass (2)
+- Fallen Finden (10)
+- Monster Finden (10)
+- Personen Finden (10)
+- Geheimtüren Finden (10)
+- Mystischer Kartenzeichnung (25)
+- Mystische Karte II (15)
+- Zeige Monster-LP (5)
+Total: 140
+
+10 * 16 = 160
+160 - 140 = 20
+
+
+Changes:
+
+- Monster Knowledge: 3 -> 15
+- Identification: 15 -> 35
+- Knowledge: 10 -> 5
+- Clairvoyance: 20 -> 15
+- Map View: 15 -> 20
+- Magical Compass: 2 -> 5
+- Find Traps: 10 -> 25
+- Find Monsters: 10 -> 25
+- Find Persons: 10 -> 25
+- Find Secret Doors: 10 -> 25
+- Mystical Mapping: 25 -> 70
+- Mystical Map I: 10 -> 75
+- Mystical Map II: 15 -> 80
+- Mystical Map III: 20 -> 85
+- Myst. Globe: 25 -> 100
+- Show Monster LP: 5 -> 15
+
+Keep:
+- See The Truth: 30
+
+Total: 650
+
+Targor keeps SLP/Lvl of 10. So she has 160 SLP with Level 16.
+
+- Monster Knowledge (15)
+- Show Monster LP (15)
+- Clairvoyance (15)
+- Mapview (20)
+- Magic Compass (5)
+- Find Traps (25)
+- Find Monsters (25)
+- Find Persons (25)
+- Find Secret Doors (25)
+
+160
+
+
+Valdyn: 16 (Lvl 8), 3/Lvl
+
+Max (< 25 INT): 150
+Max (100 INT): 350
+
+This can be kept.
+
+- Monsterwissen (3)
+- Zeige Monster-LP (5)
+Total: 8
+
+3 * 8 = 24
+24 - 8 = 16
+
+
+Changes:
+
+- Show Monster LP (15)
+
+
+----------------------------------------------
+
+
+Sabine: 4 (Lvl 6), 10/Lvl
+
+Max (< 25 INT): 500
+Max (100 INT): 700
+
+
+- Hand Auflegen
+- Furcht Lösen
+- Schatten Lösen
+- Schmerzen Lindern
+- Leichte Heilung
+- Gift Lösen
+- Mittlere Heilung
+- Zerstöre Untote
+
+
+Changes:
+
+- Healing Hand: 1 -> 5
+- Remove Fear: 2 -> 10
+- Remove Panic: 5 -> 20
+- Remove Shadows: 3 -> 10
+- Remove Blindness: 8 -> 20
+- Remove Pain: 5 -> 20
+- Remove Disease: 10 -> 30
+- Small Healing: 5 -> 20
+- Remove Poison: 10 -> 30
+- Neutralize Poison: 12 -> 45
+- Medium Healing: 15 -> 40
+- Destroy Undead: 15 -> 25
+- Holy Word: 20 -> 50
+- Wake The Dead: 15 -> 80
+- Change Ashes: 20 -> 50
+- Change Dust: 25 -> 50
+- Great Healing: 30 -> 75
+- Mass Healing: 20 -> 60
+- Resurrection: 30 -> 120
+- Remove Rigidness: 5 -> 25
+- Remove Lamedness: 10 -> 35
+- Heal Aging: 12 -> 15
+- Stop Aging: 15 -> 20
+- Stone To Flesh: 20 -> 55
+- Wake Up: 5 -> 10
+- Remove Irritation: 5 -> 25
+- Remove Drugs: 10 -> 15
+- Remove Madness: 15 -> 50
+- Restore Stamina: 15 -> 5
+
+Keep:
+- Dispell Undead: 10
+
+Total: 1025
+
+Sabine gets SLP/Lvl of 18. So she has 108 SLP with Level 6.
+
+- Healing Hand (5)
+- Small Healing (25)
+- Wake Up (10)
+- Remove Pain (20)
+- Remove Fear (10)
+- Heal Aging (15)
+- Remove Drugs (15)
+
+100
+
+
+Gryban: 19 (Lvl 35), 3/Lvl
+
+Max (< 25 INT): 150
+Max (100 INT): 350
+
+It is changed to 5/Lvl. This way he would have 175 SLP at Level 35.
+With his INT we assume a bit more.
+
+
+Changes:
+
+- Healing Hand (5)
+- Small Healing (25)
+- Wake Up (10)
+- Remove Panic (20)
+- Dispell Undead (10)
+- Destroy Undead (25)
+- Holy Word (50)
+- Remove Rigidness (25)
+
+Total: 170
+
