@@ -403,6 +403,7 @@ New labdata (020):
   - 39: Hole in floor and ceiling
   - 40: Two torches (left and right wall)
   - 41: Undead with flashing light (undeads with eye)
+  - 42: Teleporter
 - Object infos
   - 1: Black male statue
   - 2: Knight statue without weapon
@@ -434,6 +435,14 @@ New labdata (020):
   - 28: Chandelier candle
   - 29: Small table
   - 30: Iron chest
+  - 31: Pot with dried flower
+  - 32: Weapon rack
+  - 33: Small wooden table
+  - 34: Bottle 1
+  - 35: Small wooden chair
+  - 36: Bottle 2
+  - 37: Teleporter
+  - 38: Single eye
 
 New labdata (021):
 - For world Lyramion 2Map_data

@@ -1,4 +1,4 @@
-- 367 17,18 Climbing, Left
+.- 367 17,18 Climbing, Left
 - 369  4,16 Falling, Up
 - GlobVar 195: Teleporter switch in AA Level 3add
 - GlobVar 196: Teleporter off/on
