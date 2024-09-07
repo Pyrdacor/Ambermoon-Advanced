@@ -7,8 +7,8 @@ New palette 51.
 -   102 (66): Normal cave wall with 1 plant right
 -   103 (67): Normal cave wall with 1 plant left
 -   104 (68): Normal cave wall with 2 plants
--   105 (69): White wall **need to add**
--   106 (6A): Exit **need to add**
+-   105 (69): White wall
+-   106 (6A): Exit
 
 ## Objects
 
