@@ -22,7 +22,7 @@ New palette 51.
 -   06 (06): Ceiling root 1 (texture 190)
 -   07 (07): Ceiling root 1 (texture 191)
 -   08 (08): Light plant (texture 394 and 395)
--   09 (09): Stone portal (texture 396)
+-   09 (09): Krondir (texture 396)
 
 ## Object infos
 
@@ -35,4 +35,4 @@ New palette 51.
 -   07 (07): Ceiling root 1 (texture 191)
 -   08 (08): Light plant (texture 394)
 -   09 (09): White light (texture 395)
--   10 (0A): Stone portal (texture 396)
+-   10 (0A): Krondir (texture 396)
