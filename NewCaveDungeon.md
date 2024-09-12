@@ -27,6 +27,7 @@ New palette 51.
 -   11 (0B): Fruit plant (texture 397)
 -   12 (0C): Plant without fruit (texture 234)
 -   13 (0D): Shiny liquid (texture 398)
+-   14 (0E): Small shiny liquid (texture 398)
 
 ## Object infos
 
@@ -44,3 +45,4 @@ New palette 51.
 -   12 (0C): Fruit plant (texture 397)
 -   13 (0D): Plant without fruit (texture 234)
 -   14 (0E): Shiny liquid (texture 398)
+-   15 (0F): Small shiny liquid (texture 398)
