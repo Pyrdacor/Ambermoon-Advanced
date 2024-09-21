@@ -13,6 +13,7 @@ start "" AmbermoonPack.exe AMNP 3Overlay3D 3Overlay3D.amb
 start "" AmbermoonPack.exe AMNP 2Wall3D 2Wall3D.amb
 start "" AmbermoonPack.exe AMNP 3Wall3D 3Wall3D.amb
 
+start "" AmbermoonPack.exe AMNP Combat_background Combat_background.amb
 start "" AmbermoonPack.exe LOB Combat_graphics_ext/001 Combat_graphics
 start "" AmbermoonPack.exe AMPC Icon_data Icon_data.amb
 start "" AmbermoonPack.exe AMPC Monster_char Monster_char.amb

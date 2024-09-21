@@ -58,7 +58,7 @@ Your Cave - Lower Level
 |$+--------+--+#-+
 | $              |
 |$+---+-+---+ |  |
-| $  O|!|   | +- | 
+| $  O|!|   | +- |
 | +-+ | | | +#+  |
 | |L| +#+ | | | -+
 |   |     |O|!| O|
@@ -76,67 +76,68 @@ o: Ceiling hole is only added by an event
 K: Loot with Karl's remains and ring
 ```
 
-Labdata 2
----------
+## Labdata 2
+
 Walls:
-- 1: Plain wall
-- 2: Wall with rock 1
-- 3: Wall with rock 2
-- 4: Wall with rock 3
-- 5: Wall with rock 4
-- 6: Wall with all 4 rocks
-- 7: Fake wall (blocks sight)
-- 8: Fake wall (does not block sight)
-- 9: Spider web (player can pass)
-- 10: Broken spider web (player and monsters can pass)
-- 11: Spider web (player can not pass)
-- 14: Open door
-- Rest not relevant
-Objects infos:
-- 8: Small stone
-- 9: Hanging brown stuff (small)
-- 10: Hanging brown stuff (large)
-- 11: Barrel
-- 12: Stone pile
-- 13: Lizard
-- 14: Spider (small)
-- 18: Ceiling stone
-- 22: Ladder down
-- 23: Hole down
-- 24: Ladder up
-- 25: Hole up
-- 26: Lever (left)
-- 27: Lever (right)
-- 29: Pile of trash
-- 30: Wooden chest
-- 31: Bigger rock
-- 32: Medium rock
-- 33: Spider (large)
-- 34: Spider (ceiling)
-- 35: Spider (tiny)
-- 36: Earth pillar
-- We add 37: Bigger hole down
-- And 38: Bigger hole up
-Objects:
-- 9: Stones
-- 10: Hanging brown stuff (small)
-- 11: Barrel
-- 12: Pile of stones
-- 13: Lizard
-- 14: Spider (small)
-- 19: Bats
-- 20: Ladder down
-- 21: Ladder up
-- 22: Lever (left)
-- 23: Lever (right)
-- 24: Pile of trash
-- 25: Wooden chest
-- 26: Spider (large)
-- 27: Spider (ceiling)
-- 28: Spider (tiny)
-- 29: Earth pillar
-- We add 30: Hole down
-- And 31: Hole up
+
+-   1: Plain wall
+-   2: Wall with rock 1
+-   3: Wall with rock 2
+-   4: Wall with rock 3
+-   5: Wall with rock 4
+-   6: Wall with all 4 rocks
+-   7: Fake wall (blocks sight)
+-   8: Fake wall (does not block sight)
+-   9: Spider web (player can pass)
+-   10: Broken spider web (player and monsters can pass)
+-   11: Spider web (player can not pass)
+-   14: Open door
+-   Rest not relevant
+    Objects infos:
+-   8: Small stone
+-   9: Hanging brown stuff (small)
+-   10: Hanging brown stuff (large)
+-   11: Barrel
+-   12: Stone pile
+-   13: Lizard
+-   14: Spider (small)
+-   18: Ceiling stone
+-   22: Ladder down
+-   23: Hole down
+-   24: Ladder up
+-   25: Hole up
+-   26: Lever (left)
+-   27: Lever (right)
+-   29: Pile of trash
+-   30: Wooden chest
+-   31: Bigger rock
+-   32: Medium rock
+-   33: Spider (large)
+-   34: Spider (ceiling)
+-   35: Spider (tiny)
+-   36: Earth pillar
+-   We add 37: Bigger hole down
+-   And 38: Bigger hole up
+    Objects:
+-   9: Stones
+-   10: Hanging brown stuff (small)
+-   11: Barrel
+-   12: Pile of stones
+-   13: Lizard
+-   14: Spider (small)
+-   19: Bats
+-   20: Ladder down
+-   21: Ladder up
+-   22: Lever (left)
+-   23: Lever (right)
+-   24: Pile of trash
+-   25: Wooden chest
+-   26: Spider (large)
+-   27: Spider (ceiling)
+-   28: Spider (tiny)
+-   29: Earth pillar
+-   We add 30: Hole down
+-   And 31: Hole up
 
 # Hidden Sea Cave
 
@@ -146,17 +147,17 @@ when he was travelling with Torle. You can ask Torle about it as well. The keywo
 given to you by the map maker though.
 
 Torle will give his log book to his rescuers. There are the coordinates of 6 creatures.
-- A: Left of the hoimon desert is a giant turtle
-- B: Below the forest island is a big whale
-- C: North east of hoimon is a giant sea snake
-- D: Below the moaning desert is a sword fish
-- E: Below the black mountains is a piranha
-- X: North west of the forest island is a mermaid
+
+-   A: Left of the hoimon desert is a giant turtle
+-   B: Below the forest island is a big whale
+-   C: North east of hoimon is a giant sea snake
+-   D: Below the moaning desert is a sword fish
+-   E: Below the black mountains is a piranha
+-   X: North west of the forest island is a mermaid
 
 If you visit those places a text event will pop up and you get a little exp.
 After visiting A to E, the mermaid at X will calm the ocean and grant you access to
 the big vortex. You can then enter it.
-
 
 ```
 57x23
@@ -192,7 +193,6 @@ M Mountains/Rocks
 O Gate
 X Rock (can be removed later)
 ```
-
 
 In the cave there is a 2D map with beach and water. You have to swim a lot so having
 the skill high is good. It is a 2D swim maze. You eventually reach a beach with some
@@ -235,12 +235,12 @@ At the south of the village you find another passage for swimming. On the way yo
 onto some undeads, spiders and lizards. You finally reach a castle with some newer houses
 around. You can find a raft dealer there. Inside the town there are some buildings:
 
-- Vielauge's Inn (2D)
-- Vielauge's Castle (3D)
-- Raft dealer (Place)
-- Merchant (Place)
-- Blacksmith (Place)
-- Swim Trainer (Place)
+-   Vielauge's Inn (2D)
+-   Vielauge's Castle (3D)
+-   Raft dealer (Place)
+-   Merchant (Place)
+-   Blacksmith (Place)
+-   Swim Trainer (Place)
 
 ```
 Size: 26x18 (with map border)
@@ -321,204 +321,214 @@ rare items as well.
 ![Manyeyes' Castle - Level 0](Vielauge0.png)
 
 #### Upper Level
+
 ![Manyeyes' Castle - Level 1](Vielauge1.png)
 
 ### Underground Level
+
 ![Manyeyes' Castle - Level -1](Vielauge-1.png)
 
 #### Legend:
-- Black: Walls
-- Red: Monsters
-- Brighter red: Boss
-- Yellow: Treasure
-- Purple: Fake wall
-- Pink: Touch disappear wall
-- Azure: Ladder
-- Brown: Door
-- Light green: Lever
-- Dark green: Movable wall
+
+-   Black: Walls
+-   Red: Monsters
+-   Brighter red: Boss
+-   Yellow: Treasure
+-   Purple: Fake wall
+-   Pink: Touch disappear wall
+-   Azure: Ladder
+-   Brown: Door
+-   Light green: Lever
+-   Dark green: Movable wall
 
 New labdata (020):
-- For world Lyramion 2Map_data
-- Wall height 380
-- Floor texture: 3 (dark gray)
-- Ceiling texture: 4 (dark gray)
-- Walls
- 0x65 - Normal wall: 50
- 0x66 - Fake wall: 50
- 0x67 - Left border: 50, overlay 15 left (0, 0) (32x80)
- 0x68 - Right border: 50, overlay 16 right (128-32, 0) (32x80)
- 0x69 - Two borders: 50, with both overlay 15 and 16
- 0x6A - Large window: 50, with overlay 71 (centered, 64x64)
- 0x6B - Single small window: 50, with overlay 72 (centered, 32x58)
- 0x6C - Two small windows: 50, with 2x overlay 72 (32x58)
- 0x6D - Banner wall: 50, with overlay 70 (48x48)
- 0x6E - Sign wall: 50, with overlay 40 (32x19)
- 0x6F - Chains: 50, with overlays 33-36 (65,27 16x32, 46,27 16x26, 65,64 16x16, 41,64 16x16)
- 0x70 - Door: 46
- 0x71 - Darker wall: 146 (needs gfx from 3Walls3D.amb)
- 0x72 - Darker wall with light: 147 (place torch on it, needs gfx from 3Walls3D.amb)
- 0x73 - Darker door: 173 (new wall gfx)
- 0x74 - Darker fake wall: 146 (needs gfx from 3Walls3D.amb)
- 0x75 - Darker wall (146) with eye overlay (at 32,11 with size 64x41)
-- Objects
-  - 1: Black male statue
-  - 2: Knight statue without weapon
-  - 3: Knight statue with weapon
-  - 4: Burning torch upper wall
-  - 5: Burning torch lower wall
-  - 6: Burning torch left wall
-  - 7: Burning torch right wall
-  - 8: Pile of stones
-  - 9: Skeleton
-  - 10: Undead monster
-  - 11: Crystal orb
-  - 12: Small pile of skulls
-  - 13: Large pile of skulls
-  - 14: Single skull
-  - 15: Carpet 2
-  - 16: Carpet 4
-  - 17: Stone pillar
-  - 18: Cage empty
-  - 19: Cage with skeleton
-  - 20: Ladder down
-  - 21: Ladder up
-  - 22: Hole down
-  - 23: Hole up
-  - 24: Flashing lights (manyeyes)
-  - 25: Switch left
-  - 26: Switch right
-  - 27: Burning candles
-  - 28: Chandelier
-  - 29: Small table with chest on it
-  - 30: Iron chest
-  - 31: Table with pot with straw on it and a chair
-  - 32: Pot with straw
-  - 33: Flags in some container(upper right corner)
-  - 34: Flask
-  - 35: Wooden table
-  - 36: Flags in some container (lower mid)
-  - 37: Big and small flask
-  - 38: Two torches (top and bottom wall)
-  - 39: Hole in floor and ceiling
-  - 40: Two torches (left and right wall)
-  - 41: Undead with flashing light (undeads with eye)
-  - 42: Teleporter
-- Object infos
-  - 1: Black male statue
-  - 2: Knight statue without weapon
-  - 3: Knight statue with weapon
-  - 4: Flame
-  - 5: Torch
-  - 6: Pile of stones
-  - 7: Skeleton
-  - 8: Undead monster
-  - 9: Crystal orb
-  - 10: Small pile of skulls
-  - 11: Large pile of skulls
-  - 12: Single skull
-  - 13: Carpet 2
-  - 14: Carpet 4
-  - 15: Stone pillar
-  - 16: Cage empty
-  - 17: Cage with skeleton
-  - 18: Ladder down
-  - 19: Hole down
-  - 20: Ladder up
-  - 21: Hole up
-  - 22: Flashing light
-  - 23: Switch left
-  - 24: Switch right
-  - 25: Burning candle
-  - 26: Chandelier (wooden part)
-  - 27: Chandelier chain
-  - 28: Chandelier candle
-  - 29: Small table
-  - 30: Iron chest
-  - 31: Pot with dried flower
-  - 32: Weapon rack
-  - 33: Small wooden table
-  - 34: Bottle 1
-  - 35: Small wooden chair
-  - 36: Bottle 2
-  - 37: Teleporter
-  - 38: Single eye
+
+-   For world Lyramion 2Map_data
+-   Wall height 380
+-   Floor texture: 3 (dark gray)
+-   Ceiling texture: 4 (dark gray)
+-   Walls
+    0x65 - Normal wall: 50
+    0x66 - Fake wall: 50
+    0x67 - Left border: 50, overlay 15 left (0, 0) (32x80)
+    0x68 - Right border: 50, overlay 16 right (128-32, 0) (32x80)
+    0x69 - Two borders: 50, with both overlay 15 and 16
+    0x6A - Large window: 50, with overlay 71 (centered, 64x64)
+    0x6B - Single small window: 50, with overlay 72 (centered, 32x58)
+    0x6C - Two small windows: 50, with 2x overlay 72 (32x58)
+    0x6D - Banner wall: 50, with overlay 70 (48x48)
+    0x6E - Sign wall: 50, with overlay 40 (32x19)
+    0x6F - Chains: 50, with overlays 33-36 (65,27 16x32, 46,27 16x26, 65,64 16x16, 41,64 16x16)
+    0x70 - Door: 46
+    0x71 - Darker wall: 146 (needs gfx from 3Walls3D.amb)
+    0x72 - Darker wall with light: 147 (place torch on it, needs gfx from 3Walls3D.amb)
+    0x73 - Darker door: 173 (new wall gfx)
+    0x74 - Darker fake wall: 146 (needs gfx from 3Walls3D.amb)
+    0x75 - Darker wall (146) with eye overlay (at 32,11 with size 64x41)
+-   Objects
+    -   1: Black male statue
+    -   2: Knight statue without weapon
+    -   3: Knight statue with weapon
+    -   4: Burning torch upper wall
+    -   5: Burning torch lower wall
+    -   6: Burning torch left wall
+    -   7: Burning torch right wall
+    -   8: Pile of stones
+    -   9: Skeleton
+    -   10: Undead monster
+    -   11: Crystal orb
+    -   12: Small pile of skulls
+    -   13: Large pile of skulls
+    -   14: Single skull
+    -   15: Carpet 2
+    -   16: Carpet 4
+    -   17: Stone pillar
+    -   18: Cage empty
+    -   19: Cage with skeleton
+    -   20: Ladder down
+    -   21: Ladder up
+    -   22: Hole down
+    -   23: Hole up
+    -   24: Flashing lights (manyeyes)
+    -   25: Switch left
+    -   26: Switch right
+    -   27: Burning candles
+    -   28: Chandelier
+    -   29: Small table with chest on it
+    -   30: Iron chest
+    -   31: Table with pot with straw on it and a chair
+    -   32: Pot with straw
+    -   33: Flags in some container(upper right corner)
+    -   34: Flask
+    -   35: Wooden table
+    -   36: Flags in some container (lower mid)
+    -   37: Big and small flask
+    -   38: Two torches (top and bottom wall)
+    -   39: Hole in floor and ceiling
+    -   40: Two torches (left and right wall)
+    -   41: Undead with flashing light (undeads with eye)
+    -   42: Teleporter
+-   Object infos
+    -   1: Black male statue
+    -   2: Knight statue without weapon
+    -   3: Knight statue with weapon
+    -   4: Flame
+    -   5: Torch
+    -   6: Pile of stones
+    -   7: Skeleton
+    -   8: Undead monster
+    -   9: Crystal orb
+    -   10: Small pile of skulls
+    -   11: Large pile of skulls
+    -   12: Single skull
+    -   13: Carpet 2
+    -   14: Carpet 4
+    -   15: Stone pillar
+    -   16: Cage empty
+    -   17: Cage with skeleton
+    -   18: Ladder down
+    -   19: Hole down
+    -   20: Ladder up
+    -   21: Hole up
+    -   22: Flashing light
+    -   23: Switch left
+    -   24: Switch right
+    -   25: Burning candle
+    -   26: Chandelier (wooden part)
+    -   27: Chandelier chain
+    -   28: Chandelier candle
+    -   29: Small table
+    -   30: Iron chest
+    -   31: Pot with dried flower
+    -   32: Weapon rack
+    -   33: Small wooden table
+    -   34: Bottle 1
+    -   35: Small wooden chair
+    -   36: Bottle 2
+    -   37: Teleporter
+    -   38: Single eye
 
 New labdata (021):
-- For world Lyramion 2Map_data
-- Wall height 380
-- Floor texture: 3 (dark gray)
-- Ceiling texture: 0 (sky)
-- Walls
- 0x65 - Out wall: 153 (needs gfx from 3Walls3D.amb)
- 0x66 - Out destroyed wall: 154 (needs gfx from 3Walls3D.amb)
- 0x67 - Out door: 46, overlay 92 at 0,0 (16x80) and overlay 93 at 112,0 (16x80)
- - Objects
-  - 1: Pile of stones
-  - 2: Skeleton
-  - 3: Undead monster
-  - 4: Small pile of skulls
-  - 5: Large pile of skulls
-  - 6: Single skull
-  - 7: Carpet 2
-  - 8: Ladder down
-  - 9: Hole down
-  - 10: Burning candles
-  - 11: Iron chest
-- Object infos
-  - 1: Pile of stones
-  - 2: Skeleton
-  - 3: Undead monster
-  - 4: Small pile of skulls
-  - 5: Large pile of skulls
-  - 6: Single skull
-  - 7: Carpet 2
-  - 8: Ladder down
-  - 9: Hole down
-  - 10: Burning candle
-  - 11: Iron chest
 
+-   For world Lyramion 2Map_data
+-   Wall height 380
+-   Floor texture: 3 (dark gray)
+-   Ceiling texture: 0 (sky)
+-   Walls
+    0x65 - Out wall: 153 (needs gfx from 3Walls3D.amb)
+    0x66 - Out destroyed wall: 154 (needs gfx from 3Walls3D.amb)
+    0x67 - Out door: 46, overlay 92 at 0,0 (16x80) and overlay 93 at 112,0 (16x80)
+-   Objects
+-   1: Pile of stones
+-   2: Skeleton
+-   3: Undead monster
+-   4: Small pile of skulls
+-   5: Large pile of skulls
+-   6: Single skull
+-   7: Carpet 2
+-   8: Ladder down
+-   9: Hole down
+-   10: Burning candles
+-   11: Iron chest
+-   12: Skeleton lord
+-   Object infos
+    -   1: Pile of stones
+    -   2: Skeleton
+    -   3: Undead monster
+    -   4: Small pile of skulls
+    -   5: Large pile of skulls
+    -   6: Single skull
+    -   7: Carpet 2
+    -   8: Ladder down
+    -   9: Hole down
+    -   10: Burning candle
+    -   11: Iron chest
+    -   12: Skeleton lord
 
 The lever moves the wall away. As mentioned the upper level has a sky and broken walls. The monsters all
 are groups of undeads. Some of them are marked as bosses and/or have very high anti-magic so they won't be
 affected by holy spells. All doors beside the main entrance and boss door are unlocked so you can just pass them.
 
 The three chests behind the fake walls contain:
-- Holy horn
-- Much gold
-- Horned helmet
-- Alcohol
-- Healing potions
-- Spell potions
-- Rations
-- Scimitar
-- Silver cutlery
+
+-   Holy horn
+-   Much gold
+-   Horned helmet
+-   Alcohol
+-   Healing potions
+-   Spell potions
+-   Rations
+-   Scimitar
+-   Silver cutlery
 
 The other chest in the lower level contains a cursed dagger.
 
 The chests in the upper level just contain:
-- Alcohol
-- A little bit gold
-- Some healing potions
+
+-   Alcohol
+-   A little bit gold
+-   Some healing potions
 
 The chest in the upper level's central room instead contains the key to the boss room.
 
 The first end boss drops the first part of the unique item set for the adventurer. The equipment is not breakable.
-- Adventurer's Sword
-  Atk: 15, Def: 0, Hands: 1, Spell: Windhowler (**)
-  Str +5, Atk +15, Magic Attack Level max
--  Adventurer's Suit
-  Atk: 0, Def: 12, Spell: None
-  Sta +5, Search +15, Magic Defense Level 3
+
+-   Adventurer's Sword
+    Atk: 15, Def: 0, Hands: 1, Spell: Windhowler (\*\*)
+    Str +5, Atk +15, Magic Attack Level max
+-   Adventurer's Suit
+    Atk: 0, Def: 12, Spell: None
+    Sta +5, Search +15, Magic Defense Level 3
 
 The second end boss drops the second part of the unique item set.
-- Adventurer's Bow
-  Atk: 15, Def: 0, Hands: 1, Spell: Magic Projectile (**)
-  Str +5, Atk +15, Magic Attack Level max
-- Adventurer's Shoes
-  Atk: 0, Def: 5, Spell: Haste (25)
-  Spd + 5, Swi +99
-  
+
+-   Adventurer's Bow
+    Atk: 15, Def: 0, Hands: 1, Spell: Magic Projectile (\*\*)
+    Str +5, Atk +15, Magic Attack Level max
+-   Adventurer's Shoes
+    Atk: 0, Def: 5, Spell: Haste (25)
+    Spd + 5, Swi +99
+
 The first boss casts Thunderstorm and Whirlwind and attacks with the adventurer's bow and magic arrows.
 He has a huge amount of SP. He also has a Scimitar. He switches to it after he runs out of arrows.
 He has 51 of them and he has 3 attacks per round so he can attack 17 rounds at max. Then he switches
@@ -526,19 +536,19 @@ to the Scimitar.
 
 He has the following attributes and battle skills:
 
-- STR: 75
-- INT: 80
-- DEX: 50
-- STA: 80
-- LUK: 20
-- SPD: 95
-- A-M: 65
-- CHA: 1
+-   STR: 75
+-   INT: 80
+-   DEX: 50
+-   STA: 80
+-   LUK: 20
+-   SPD: 95
+-   A-M: 65
+-   CHA: 1
 
-- ATK: 95
-- PAR: 40
-- CRI: 0
-- U-M: 95
+-   ATK: 95
+-   PAR: 40
+-   CRI: 0
+-   U-M: 95
 
 His base damage is 50 and his variable damage 35.
 His magic attack level is max so you can't avoid the damage.
@@ -560,25 +570,25 @@ the large entrance door of the castle.
 
 ### NPCs
 
-- Marel: He is an older man who is the council of Vielauge's Town. He gives you his keys and informs
-         you about the castle.
-- The rest are only text popup NPCs. Some are inside the inn and some move through the town.
-- Town folks:
-  - A woman tells you about Ship's end and that she was born there. Sometimes she travels to the ghost
-   village with a raft. She informs you about the raft dealer in town.
-  - A man tells you that he just recently has landed here. His ship got into a big storm and he was
-    the only survivor. Who would have known which world lies here below the vortex.
-  - An older man tells you a bit about Vielauge and the castle. He remember the lore about the group
-    of heros who killed Vielauge. Then they moved here and left the village of Ship's End.
-- Inn folks:
-  - A mighty elf woman who stranded a couple of years here. She is an elfish princess who should be
-    married to some rich man in Newlake but on their honeymoon the ship crushed on a rock near the
-	vortex and she came here. She doesn't know what happened to her husband but she isn't sad about it.
-  - An old dwarf is there as well. He is very sad as he should be part of the mission to the green
-    jewel but Kire needed some materials and on the way his ship sunk and he landed here. He dreams
-	of the jewel every day. He not even can see it from here. :(
-  - A woman drinks lot of alcohol and is very drunk. She got depressed down here. No new people for
-    a long time. No good men.
-  - The innkeeper's small daughter is playing in her room. There are not many kids at her age so it
-    is really boring for her. Sometimes at night she plays near the castle and last night she heard
-	voices from inside. She ran home scared then. And now she prefers to stay inside.
+-   Marel: He is an older man who is the council of Vielauge's Town. He gives you his keys and informs
+    you about the castle.
+-   The rest are only text popup NPCs. Some are inside the inn and some move through the town.
+-   Town folks:
+    -   A woman tells you about Ship's end and that she was born there. Sometimes she travels to the ghost
+        village with a raft. She informs you about the raft dealer in town.
+    -   A man tells you that he just recently has landed here. His ship got into a big storm and he was
+        the only survivor. Who would have known which world lies here below the vortex.
+    -   An older man tells you a bit about Vielauge and the castle. He remember the lore about the group
+        of heros who killed Vielauge. Then they moved here and left the village of Ship's End.
+-   Inn folks:
+    -   A mighty elf woman who stranded a couple of years here. She is an elfish princess who should be
+        married to some rich man in Newlake but on their honeymoon the ship crushed on a rock near the
+        vortex and she came here. She doesn't know what happened to her husband but she isn't sad about it.
+    -   An old dwarf is there as well. He is very sad as he should be part of the mission to the green
+        jewel but Kire needed some materials and on the way his ship sunk and he landed here. He dreams
+        of the jewel every day. He not even can see it from here. :(
+    -   A woman drinks lot of alcohol and is very drunk. She got depressed down here. No new people for
+        a long time. No good men.
+    -   The innkeeper's small daughter is playing in her room. There are not many kids at her age so it
+        is really boring for her. Sometimes at night she plays near the castle and last night she heard
+        voices from inside. She ran home scared then. And now she prefers to stay inside.
