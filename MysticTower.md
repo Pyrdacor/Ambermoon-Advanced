@@ -16,6 +16,7 @@ Labdata 1 (same as Grandpa Cellar and Alchemist Tower) [Palette 6]
 -   43 (2b): Torch pillar **new**
 -   44 (2c): Torch flame **new**
 -   45 (2d): Demon **new**
+-   46 (2e): Medium spider **new**
 
 ## Objects
 
@@ -51,3 +52,4 @@ Labdata 1 (same as Grandpa Cellar and Alchemist Tower) [Palette 6]
 -   30 (1E): Glass orb **new**
 -   31 (1F): Standing torch **new**
 -   32 (20): Demon **new**
+-   33 (21): Medium spider **new**
