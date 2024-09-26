@@ -1,0 +1,27 @@
+x: 46 to 50
+y: 19 to 26
+
+rows:
+
+1156...
+1161...
+1166...
+1171...
+1176,1177,1411,1179,1180
+1176,1177,1412,1179,1180
+1181,1182,1413,1184,1185
+1186...
+
+Enter tower event at 48,25 (upper door) and 48,26 (lower door)
+(248,426)
+
+
+
+Other maps:
+
+- 085: Map with small pond
+	- Event 5376
+- 102: Map with lonely tree
+	- Event 6464
+- 134: Map with mountains
+	- Event 8512
