@@ -7,6 +7,8 @@ Labdata 1 (same as Grandpa Cellar and Alchemist Tower) [Palette 6]
 **Hex ID: Description**
 
 -   101 (65): Normal stone wall
+-   102 (66): Stone wall with more plants
+-   103 (67): Non-blocking door
 -   ...
 -   120 (78): Blocking door
 
