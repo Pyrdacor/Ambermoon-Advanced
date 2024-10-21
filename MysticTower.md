@@ -1,6 +1,8 @@
-# mystic Tower
+# Mystic Tower
 
 Labdata 1 (same as Grandpa Cellar and Alchemist Tower) [Palette 6]
+
+We also extend this a bit for the second thief quest.
 
 ## Walls
 
@@ -20,6 +22,7 @@ Labdata 1 (same as Grandpa Cellar and Alchemist Tower) [Palette 6]
 -   44 (2c): Torch flame **new**
 -   45 (2d): Demon **new**
 -   46 (2e): Medium spider **new**
+-   47 (2f): Light circle **new**
 
 ## Objects
 
@@ -56,3 +59,4 @@ Labdata 1 (same as Grandpa Cellar and Alchemist Tower) [Palette 6]
 -   31 (1F): Standing torch **new**
 -   32 (20): Demon **new**
 -   33 (21): Medium spider **new**
+-   34 (22): Standing torch with light circle **new**
