@@ -11,8 +11,17 @@ We also extend this a bit for the second thief quest.
 -   101 (65): Normal stone wall
 -   102 (66): Stone wall with more plants
 -   103 (67): Non-blocking door
+-   104 (68): Stone wall with grate
+-   105 (69): Normal wall with button (not pressed)
+-   106 (6A): Normal wall with button (pressed)
+-   107 (6B): Normal wall with riddlemouth
+-   108 (6C): Normal wall with sign
+-   109 (6D): Spider web (non-blocking)
+-   110 (6E): Broken spider web (non-blocking)
+-   111 (6F): Blocking spider web
 -   ...
 -   120 (78): Blocking door
+-   121 (79): Non-blocking door (but automap type is closed door)
 
 ## Object Infos
 
