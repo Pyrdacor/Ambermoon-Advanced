@@ -84,7 +84,7 @@ Elevator uses new labdata 39 (see at the end)
 -   2C: Poison puddle **new**
 -   2D: Male dwarf (forest walker) **new**
 -   2E: Dwarf skeleton **new**
--   2F: Skeleton **new**
+-   2F: Small fountain **new**
 -   30: Bigger plant **new**
 -   31: Large wasp (384x288) **new**
 -   32: Small elevator platform **new**
@@ -143,7 +143,7 @@ Elevator uses new labdata 39 (see at the end)
 -   2F: Pile **new**
 -   30: Elevator pillar active **new**
 -   31: Elevator hole + portal **new**
--   32: Poison puddle with skeletons **new**
+-   32: Poison puddle with small fountains **new**
 -   33: Male dwarf (forest walker) **new**
 -   34: Dwarf skeleton **new**
 -   35: Male dwarf fighting wasps **new**
