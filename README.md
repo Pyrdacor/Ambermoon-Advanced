@@ -1,12 +1,22 @@
 # Ambermoon-Advanced
 
+## Episodes
+
+As it is a major task for a single developer to finish such a huge project in a reasonable amount of time, I will release this extension as episodes which bring new content step by step. Five episodes are planned:
+
+1. Mysteries of the sea
+2. Elemental creatures
+3. The green jewel
+4. Beneath the sands
+5. Different worlds
+
 ## What it is
 
 Ambermoon Advanced is an inofficial extension of Ambermoon. It is developed and maintained by me (Pyrdacor).
 
-The first official release 1.0x is out now in english and german. It contains the first two episodes "Mysteries of the sea" and "Elemental creatures". Five episodes are planned in total.
+The first official release 1.0x is out now in english and german. It contains the first two episodes "Mysteries of the sea" and "Elemental creatures". The 3rd episode is out now for the remake [Ambermoon.net](https://github.com/Pyrdacor/Ambermoon.net) (currently only in german, translation is in progress), the Amiga version is not finished yet but I work on it.
 
-Please keep in mind that I develop this on my own in my free time. So expect bugs, typos, bad texts, bad translations, unbalanced sections, dead ends and even crashes. Save often! If you get stuck of find bugs, please get in touch here on GitHub in the issue tracker or via mail (trobt@web.de).
+Please keep in mind that I develop this on my own in my free time. So expect bugs, typos, bad texts, bad translations, unbalanced sections, dead ends and even crashes. Save often! If you get stuck or find bugs, please get in touch here on GitHub in the issue tracker or via mail (trobt@web.de).
 
 Ambermoon Advanced is playable on the Amiga. At least I hope so. I tested it with WinUAE so I am not 100% sure if it runs flawlessly on every Amiga hardware.
 
