@@ -23,6 +23,8 @@ Here is an overview of all released versions:
 | 1.03    | Released     | Released      | 2       |
 | 1.30    | Finalizing   | Released      | 3       |
 
+Of course higher episodes include lower episodes.
+
 ## What it is
 
 Ambermoon Advanced is an inofficial extension of Ambermoon. It is developed and maintained by me (Pyrdacor).
