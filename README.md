@@ -10,6 +10,10 @@ As it is a major task for a single developer to finish such a huge project in a 
 4. Beneath the sands
 5. Different worlds
 
+### Versions
+
+Episode 2 was released as version 1.02. I planned that the minor version resembles the episode but I had to drop this as fixes had to be made and so version 1.03 is still episode 2 with fixes. Everything below 1.02 is episode 1. The third episode was now released as version 1.30. The new version scheme is `1.EH` where `E` is the episode and `H` is the hotfix version for that episode. So hotfixes for episode 3 will be `1.31` and so on while the 4th episode will be `1.40` etc.
+
 ## What it is
 
 Ambermoon Advanced is an inofficial extension of Ambermoon. It is developed and maintained by me (Pyrdacor).
