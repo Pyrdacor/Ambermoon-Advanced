@@ -21,7 +21,7 @@ Here is an overview of all released versions:
 | 0.01    | Released     | Released      | 1       |
 | 1.02    | Released     | Released      | 2       |
 | 1.03    | Released     | Released      | 2       |
-| 1.30    | Finalizing   | Released      | 3       |
+| 1.30    | Released     | Released      | 3       |
 
 Of course higher episodes include lower episodes.
 
@@ -35,7 +35,6 @@ Please keep in mind that I develop this on my own in my free time. So expect bug
 
 Ambermoon Advanced is playable on the Amiga. At least I hope so. I tested it with WinUAE so I am not 100% sure if it runs flawlessly on every Amiga hardware.
 
-
 ## What it's not
 
 Ambermoon Advanced is no complete new game, so you will still play Ambermoon as you know it but of course with some additions and changes. For example monsters now have elements and spells have elements too. Therefore some monsters are now immune to certain spells. Don't bother shooting fire balls at fire dragons or rocks at stone golems. In the second episode elemental spells will also have increase or reduced damage against specific elemental monsters. Moreover spell damage is then increased by intelligence and level.
@@ -44,25 +43,27 @@ Also keep in mind that adding content is a lot of work so don't expect the whole
 
 If you want to play the episodes in succession you should pause before you leave Lyramion for the first time.
 
-
 ## Downloads
 
-### Ambermoon Advanced 1.03
+### Ambermoon Advanced 1.30
 
-Language | Downloads
---- | ---
-English | [zip](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/ambermoon_advanced_english_1.03_extracted.zip) [lha](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/ambermoon_advanced_english_1.03_extracted.lha) [tar.gz](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/ambermoon_advanced_english_1.03_extracted.tar.gz)
-Deutsch | [zip](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/ambermoon_advanced_german_1.03_extracted.zip) [lha](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/ambermoon_advanced_german_1.03_extracted.lha) [tar.gz](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/ambermoon_advanced_german_1.03_extracted.tar.gz)
-WHDLoad English | [download](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/Ambermoon-Advanced-1_03-English-WHDLoad.lha)
-WHDLoad German | [download](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/Ambermoon-Advanced-1_03-German-WHDLoad.lha)
+| Language | Downloads                                                                                                                                                                                                                                                                                                                                 |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| English  | [zip](https://downloads.pyrdacor.net/ambermoon-advanced/1.30/ambermoon_advanced_english_1.30_extracted.zip) [lha](https://downloads.pyrdacor.net/ambermoon-advanced/1.30/ambermoon_advanced_english_1.30_extracted.lha) [tar.gz](https://downloads.pyrdacor.net/ambermoon-advanced/1.30/ambermoon_advanced_english_1.30_extracted.tar.gz) |
+| Deutsch  | [zip](https://downloads.pyrdacor.net/ambermoon-advanced/1.30/ambermoon_advanced_german_1.30_extracted.zip) [lha](https://downloads.pyrdacor.net/ambermoon-advanced/1.30/ambermoon_advanced_german_1.30_extracted.lha) [tar.gz](https://downloads.pyrdacor.net/ambermoon-advanced/1.30/ambermoon_advanced_german_1.03_extracted.tar.gz)    |
 
+### Ambermoon Advanced 1.03 WHDLoad
+
+| Language        | Downloads                                                                                                      |
+| --------------- | -------------------------------------------------------------------------------------------------------------- |
+| WHDLoad English | [download](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/Ambermoon-Advanced-1_03-English-WHDLoad.lha) |
+| WHDLoad German  | [download](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/Ambermoon-Advanced-1_03-German-WHDLoad.lha)  |
 
 ## Walkthrough Tips
 
 As many players struggle with the new content, I started to write a small hint section to make it easier to proceed. Of course I will also try to improve the game in the future to make this obsolete.
 
 [Walkthrough Tips](WalkthroughTips.md)
-
 
 ## Prepare for the second episode
 
@@ -77,7 +78,6 @@ Note: **Always backup your saves beforehand!**
 
 Note: **The patcher only works with Ambermoon Advanced savegames. Don't use original savegames!**
 
-
 ## Game manual
 
 As a little surprise I created a real physical manual for Ambermoon Advanced which can be ordered and printed on demand. Unfortunately it is still in the preparation phase. I will inform you if it is available.
@@ -90,7 +90,6 @@ I also bought a few illustrations to make the manual a bit nicer so that it isn'
 
 The manual will cost a bit. Basically the price will cover the production and illustration costs, print service fee and the rest is some kind of project support. In the end I will get around 2-3 euros per sold manual and you get a nice little illustrated book. Don't expect too much, I am neither an artist nor a writer. ;) But I thought this would be a cool idea.
 
-
 ## Feedback and support
 
 Your feedback is very welcome. For bug reports you may use the issue tracker here on github but you can also join our [discord server](https://discord.gg/CCTt3bAh7g) or [email](mailto:trobt@web.de) me.
@@ -101,21 +100,19 @@ If you want to support this or other projects, you can donate or become a patron
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=76DV5MK5GNEMS&source=url) [![Flattr](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=Pyrdacor&url=https://github.com/Pyrdacor/Ambermoon.net&title=Ambermoon.net&language=C#&tags=github&category=software) \
 Thank you very much.
 
-
 ## FAQ
 
-- Where can I find the disk images?
+-   Where can I find the disk images?
 
-  Unfortunately at the current state there are none. The problem is that the new content is huge and the data won't fit onto the original 9+1 disks anymore. I invented some new compression algorithms but it still does not fit yet. I will try to make it possible later.
+    Unfortunately at the current state there are none. The problem is that the new content is huge and the data won't fit onto the original 9+1 disks anymore. I invented some new compression algorithms but it still does not fit yet. I will try to make it possible later.
 
-- How to play it on the Amiga?
+-   How to play it on the Amiga?
 
-  Well basically the archives contain all the files like if you would install the game on a HDD. So just copy all the files into a folder on your Amiga HDD and start the game by clicking the Ambermoon icon in the root folder.
+    Well basically the archives contain all the files like if you would install the game on a HDD. So just copy all the files into a folder on your Amiga HDD and start the game by clicking the Ambermoon icon in the root folder.
 
-- How to play on modern systems like Windows, Linux or Mac?
+-   How to play on modern systems like Windows, Linux or Mac?
 
-  Just head over to https://github.com/Pyrdacor/Ambermoon.net and check the downloads there. The remake contains the most recent version of Ambermoon Advanced as well. You can select it when you start the game.
-
+    Just head over to https://github.com/Pyrdacor/Ambermoon.net and check the downloads there. The remake contains the most recent version of Ambermoon Advanced as well. You can select it when you start the game.
 
 ## Screenshots
 
@@ -147,7 +144,6 @@ Thank you very much.
   <a href="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser13.png"><img src="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser13.png" width="400" alt="Inside the black mountains" /></a>
   <a href="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser14.png"><img src="https://github.com/Pyrdacor/Ambermoon-Advanced/raw/main/screenshots/Teaser14.png" width="400" alt="Hall of fame" /></a>
 </p>
-
 
 ## Honorable mentions
 
