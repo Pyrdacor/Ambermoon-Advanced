@@ -1,0 +1,6 @@
+CrateOverlay: 48,38 auf Texture 65
+CrateOverlay2: 45,67 auf Texture 65
+DoorOverlay1: 40,29 auf Texture 68
+DoorOverlay2: 40,29 auf Texture 68
+StairsOverlay: 25,29 auf Texture 68
+Scribble: 27,42 auf Texture 65
