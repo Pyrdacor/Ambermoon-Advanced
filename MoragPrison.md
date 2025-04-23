@@ -20,9 +20,18 @@ Labdata 42 [Palette 5]
 ## Object Infos
 
 -   01: Table (Texture 159)
--   02: Moranian guard (Texture 402)
+-   02: Moranian guard (Texture 402, 1 frame)
+-   03: Skeleton (Texture 036)
+-   04: Moranian guard (Texture 402, 3 frames)
 
 ## Objects
 
 -   01: Moranian guard behind table
 -   02: Table
+-   03: Skeleton
+-   04: Moranian guard (moving monster)
+
+## Chars
+
+-   01: Guard (as monster)
+-   02: Guard (as NPC)
