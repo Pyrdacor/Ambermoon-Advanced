@@ -5,3 +5,5 @@ DoorOverlay2: 40,29 auf Texture 68
 StairsOverlay: 25,29 auf Texture 68
 Scribble: 27,42 auf Texture 65
 DoorOverlay3: 40,29 auf Texture 68
+PressedStoneOverlay: 48,40 auf Texture 65
+LooseWallStones: 46,40 auf Texture 65
