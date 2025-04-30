@@ -46,3 +46,4 @@ Labdata 42 [Palette 5]
 -   02: Guard (as NPC)
 -   03: Guard (second key, monster)
 -   04: Prisoner (NPC)
+-   05: Guard (third key, monster)
