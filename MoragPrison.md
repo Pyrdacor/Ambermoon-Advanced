@@ -29,6 +29,7 @@ Labdata 42 [Palette 5]
 -   05: Prisoner (Texture 403)
 -   06: Lizard (Texture 039)
 -   07: Wall brick
+-   08: Iron chest
 
 ## Objects
 
@@ -39,6 +40,7 @@ Labdata 42 [Palette 5]
 -   05: Prisoner
 -   06: Moranian guard with lizard
 -   07: Wall remains
+-   08: Iron chest
 
 ## Chars
 
