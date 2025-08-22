@@ -23,6 +23,8 @@ Here is an overview of all released versions:
 | 1.03    | Released     | Released      | 2       |
 | 1.30    | Released     | Released      | 3       |
 | 1.31    | Released     | Released      | 3       |
+| 1.32    | Released     | Released      | 3       |
+| 1.33    | Released     | Released      | 3       |
 
 Of course higher episodes include lower episodes.
 
@@ -46,12 +48,12 @@ If you want to play the episodes in succession you should pause before you leave
 
 ## Downloads
 
-### Ambermoon Advanced 1.31
+### Ambermoon Advanced 1.33
 
 | Language | Downloads                                                                                                                                                                                                                                                                                                                                 |
 | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| English  | [zip](https://downloads.pyrdacor.net/ambermoon-advanced/1.31/ambermoon_advanced_english_1.31_extracted.zip) [lha](https://downloads.pyrdacor.net/ambermoon-advanced/1.31/ambermoon_advanced_english_1.31_extracted.lha) [tar.gz](https://downloads.pyrdacor.net/ambermoon-advanced/1.31/ambermoon_advanced_english_1.31_extracted.tar.gz) |
-| Deutsch  | [zip](https://downloads.pyrdacor.net/ambermoon-advanced/1.31/ambermoon_advanced_german_1.31_extracted.zip) [lha](https://downloads.pyrdacor.net/ambermoon-advanced/1.31/ambermoon_advanced_german_1.31_extracted.lha) [tar.gz](https://downloads.pyrdacor.net/ambermoon-advanced/1.31/ambermoon_advanced_german_1.31_extracted.tar.gz)    |
+| English  | [zip](https://downloads.pyrdacor.net/ambermoon-advanced/1.33/ambermoon_advanced_english_1.33_extracted.zip) [lha](https://downloads.pyrdacor.net/ambermoon-advanced/1.33/ambermoon_advanced_english_1.33_extracted.lha) [tar.gz](https://downloads.pyrdacor.net/ambermoon-advanced/1.33/ambermoon_advanced_english_1.33_extracted.tar.gz) |
+| Deutsch  | [zip](https://downloads.pyrdacor.net/ambermoon-advanced/1.33/ambermoon_advanced_german_1.33_extracted.zip) [lha](https://downloads.pyrdacor.net/ambermoon-advanced/1.33/ambermoon_advanced_german_1.33_extracted.lha) [tar.gz](https://downloads.pyrdacor.net/ambermoon-advanced/1.33/ambermoon_advanced_german_1.33_extracted.tar.gz)    |
 
 ### Ambermoon Advanced 1.03 WHDLoad
 
