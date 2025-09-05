@@ -62,6 +62,17 @@ If you want to play the episodes in succession you should pause before you leave
 | WHDLoad English | [download](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/Ambermoon-Advanced-1_03-English-WHDLoad.lha) |
 | WHDLoad German  | [download](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/Ambermoon-Advanced-1_03-German-WHDLoad.lha)  |
 
+
+### Changelog
+
+I only started tracking this since episode 3. I won't list every single small adjustment, but only major changes or important updates. Sometimes there are also minor text adjustments etc.
+
+- 1.30: Base version of episode 3
+- 1.31: Fix some APR calculation and map event issues on Amiga
+- 1.32: Fix crash when entering airship on forest moon with nav stones (english only)
+- 1.33: New hint for Antique Area 3 light riddle, fixed another APR calculation issue
+
+
 ## Walkthrough Tips
 
 As many players struggle with the new content, I started to write a small hint section to make it easier to proceed. Of course I will also try to improve the game in the future to make this obsolete.
