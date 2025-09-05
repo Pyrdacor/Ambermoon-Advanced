@@ -16,15 +16,16 @@ Episode 2 was released as version 1.02. I planned that the minor version resembl
 
 Here is an overview of all released versions:
 
-| Version | Status Amiga | Status Remake | Episode |
-| ------- | ------------ | ------------- | ------- |
-| 0.01    | Released     | Released      | 1       |
-| 1.02    | Released     | Released      | 2       |
-| 1.03    | Released     | Released      | 2       |
-| 1.30    | Released     | Released      | 3       |
-| 1.31    | Released     | Released      | 3       |
-| 1.32    | Released     | Released      | 3       |
-| 1.33    | Released     | Released      | 3       |
+| Version | Status Amiga   | Status Remake   | Episode |
+| ------- | -------------- | --------------- | ------- |
+| 0.01    | Released       | Released        | 1       |
+| 1.02    | Released       | Released        | 2       |
+| 1.03    | Released       | Released        | 2       |
+| 1.30    | Released       | Released        | 3       |
+| 1.31    | Released       | Released        | 3       |
+| 1.32    | Released       | Released        | 3       |
+| 1.33    | Released       | Released        | 3       |
+| 1.40    | In development | In development  | 4       |
 
 Of course higher episodes include lower episodes.
 
