@@ -411,3 +411,11 @@ you get a green orb which can be used in the Antique Area
 level 4 to travel to a new world with the world teleporter.
 You will also unlock a direct teleporter from the ancient
 vault to the antique area.
+
+### Strange new world
+
+With the reward of the antique vault (see last section) you
+can enter a strange new world where you meet a female feline
+from Valdyn's world. You can explore the world and finally
+return. You will meet Krondirs and witness the birth of the
+Iskai (hello Albion).
