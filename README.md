@@ -1,23 +1,5 @@
 # Ambermoon-Advanced
 
-## What it is
-
-Ambermoon Advanced is an inofficial extension of Ambermoon. It is developed and maintained by me (Pyrdacor).
-
-The 3rd episode is out now. It contains episodes "Mysteries of the sea", "Elemental creatures" and "The green jewel". 
-
-Please keep in mind that I develop this on my own in my free time. So expect bugs, typos, bad texts, bad translations, unbalanced sections, dead ends and even crashes. Save often! If you get stuck or find bugs, please get in touch here on GitHub in the issue tracker or via mail (trobt@web.de).
-
-Ambermoon Advanced is playable on the Amiga. At least I hope so. I tested it with WinUAE so I am not 100% sure if it runs flawlessly on every Amiga hardware.
-
-## What it's not
-
-Ambermoon Advanced is no complete new game, so you will still play Ambermoon as you know it but of course with some additions and changes. For example monsters now have elements and spells have elements too. Therefore some monsters are now immune to certain spells. Don't bother shooting fire balls at fire dragons or rocks at stone golems. In the second episode elemental spells will also have increase or reduced damage against specific elemental monsters. Moreover spell damage is then increased by intelligence and level.
-
-Also keep in mind that adding content is a lot of work so don't expect the whole world to change or secrets in every dungeon. As Ambermoon Advanced is released in episodes the current changes focus on the early to late game on Lyramion as well as the forest moon. The desert moon Morag has no new content so far. This will change in the next episode of course.
-
-If you want to play the episodes in succession you should pause after you reached Morag.
-
 ## Episodes
 
 As it is a major task for a single developer to finish such a huge project in a reasonable amount of time, I will release this extension as episodes which bring new content step by step. Five episodes are planned:
@@ -46,6 +28,29 @@ Here is an overview of all released versions:
 | 1.40    | In development | In development  | 4       |
 
 Of course higher episodes include lower episodes.
+
+## What it is
+
+Ambermoon Advanced is an inofficial extension of Ambermoon. It is developed and maintained by me (Pyrdacor).
+
+The 3rd episode is out now. It contains episodes "Mysteries of the sea", "Elemental creatures" and "The green jewel". 
+
+Please keep in mind that I develop this on my own in my free time. So expect bugs, typos, bad texts, bad translations, unbalanced sections, dead ends and even crashes. Save often! If you get stuck or find bugs, please get in touch here on GitHub in the issue tracker or via mail (trobt@web.de).
+
+Ambermoon Advanced is playable on the Amiga. At least I hope so. I tested it with WinUAE so I am not 100% sure if it runs flawlessly on every Amiga hardware.
+
+If you are interested in the new content or want to make sure you did not miss anything, here you can check (spoiler alert!):
+
+- [General game changes](Changes.md)
+- [New content like quests and dungeons](NewContent.md)
+
+## What it's not
+
+Ambermoon Advanced is no complete new game, so you will still play Ambermoon as you know it but of course with some additions and changes. For example monsters now have elements and spells have elements too. Therefore some monsters are now immune to certain spells. Don't bother shooting fire balls at fire dragons or rocks at stone golems. In the second episode elemental spells will also have increase or reduced damage against specific elemental monsters. Moreover spell damage is then increased by intelligence and level.
+
+Also keep in mind that adding content is a lot of work so don't expect the whole world to change or secrets in every dungeon. As Ambermoon Advanced is released in episodes the current changes focus on the early to late game on Lyramion as well as the forest moon. The desert moon Morag has no new content so far. This will change in the next episode of course.
+
+If you want to play the episodes in succession you should pause after you reached Morag.
 
 ## Downloads
 
