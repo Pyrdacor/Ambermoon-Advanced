@@ -23,6 +23,19 @@ Long ranged weapon on the other hand get a bonus of Dexterity / 25 and Strength 
 So it might be beneficial to increase dexterity for characters which use such weapons like rangers.
 
 
+## HP increase on level up
+
+In the original when you level up, you gain Intelligence/25 additional SP and SLP. For example if
+you have 80 intelligence, the value would be 80/25 (rounded down) which would be 3. In this scenario
+you receive 3 additional SP and SLP on each level up.
+
+In the advanced version the same in now true for Stamina and HP. So you will gain Stamina/25 additional
+HP on each level up.
+
+**Note**: This is missing in the remake version currently. The Amiga version is not considering bonus
+intelligence or stamina. But this was also the case in original which might be a bug.
+
+
 ## Item changes
 
 No new items are mentioned here explicitely. There are a lot. Mostly quest items, new equipment and
