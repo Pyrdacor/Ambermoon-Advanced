@@ -9,10 +9,11 @@ Combat background 13 (new with graphic 13 -> desert)
 -   103 (0x67): Broken wall (155, all can pass, transparent)
 -   104 (0x68): Open Door (187, like 150 with stairs behind it, not transparent, player can pass only, used for central building)
 -   105 (0x69): Open Door (188, transparent, all can pass, used for ruin)
--   106 (0x6A): Door with switch off (153, block all, overlay 120)
--   107 (0x6B): Door with switch on (153, block all, overlay 121)
--   108 (0x6C): Door with screen off (153, block all, overlay 122)
--   109 (0x6D): Door with screen on (153, block all, overlay 123)
+-   106 (0x6A): Wall with switch off (153, block all, overlay 120)
+-   107 (0x6B): Wall with switch on (153, block all, overlay 121)
+-   108 (0x6C): Wall with screen off (153, block all, overlay 122)
+-   109 (0x6D): Wall with screen on (153, block all, overlay 123)
+-   110 (0x6E): Closed Door
 
 ## Objects
 
