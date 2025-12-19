@@ -45,3 +45,4 @@ Palette 055 (new)
 -   108 (0x6C): Closed Door
 -   109 (0x6D): Wall with wall storage (closed)
 -   110 (0x6E): Wall with wall storage (open)
+-   111 (0x6F): Wall with wall storage (open and card in it)
