@@ -19,14 +19,7 @@ Combat background 13 (new with graphic 13 -> desert)
 
 ## Objects
 
--   01 (0x01): 3 laser barriers north of tile
--   02 (0x02): 3 laser barriers east of tile
--   03 (0x03): 3 laser barriers south of tile
--   04 (0x04): 3 laser barriers west of tile
-
 ## Object data
-
--   01 (0x01): Laser barrier (405, rotated spark)
 
 # Buildings (all 4 outer = 1 map)
 
@@ -46,3 +39,11 @@ Palette 055 (new)
 -   109 (0x6D): Wall with wall storage (closed)
 -   110 (0x6E): Wall with wall storage (open)
 -   111 (0x6F): Wall with wall storage (open and card in it)
+
+## Objects
+
+-   01 (0x01): Inactive robot
+
+## Object data
+
+-   01 (0x01): Inactive robot
