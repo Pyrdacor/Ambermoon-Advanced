@@ -18,7 +18,7 @@ So the attack damage is the damage from all equipped items combined plus your st
 In the expansion this is only the case for close ranged weapons and they get an additional bonus of
 Dexterity / 50.
 
-Long ranged weapon on the other hand get a bonus of Dexterity / 25 and Strength / 50 instead.
+Long ranged weapons on the other hand get a bonus of Dexterity / 25 and Strength / 50 instead.
 
 So it might be beneficial to increase dexterity for characters which use such weapons like rangers.
 
@@ -62,7 +62,7 @@ Only changed items are listed here.
 
 ## Elements
 
-The element of damage dealing spells now depends on the target's element. Monsters with the same element as the spell
+The damage of elemental spells now depends on the target's element. Monsters with the same element as the spell
 are completely immune to the spell. For example fire dragons are immune to fire spells and stone golems are immune to
 earth spells.
 
@@ -70,7 +70,7 @@ The mystic has a new spell to reveal the monster's element. The spell "Monster k
 element of the monster.
 
 You can find the item "Elemental table" which gives information about elemental damage bonuses and maluses. For example
-water spells deal increased damage to fire monsters, while wind spells do less damage to fire monsters.
+water/ice spells deal increased damage to fire monsters, while wind spells do less damage to fire monsters.
 
 The mystic can acquire new spells to change the element of a target monster.
 
@@ -78,7 +78,7 @@ The mystic can acquire new spells to change the element of a target monster.
 ## Search skill
 
 The search skill is now used in many places. Some chests are hidden and you can only find them with a high search skill.
-Some quest rely on it as well, especially when the NPC says that it is not easy to find. Often you get a hint in form of
+Some quests rely on it as well, especially when the NPC says that it is not easy to find. Often you get a hint in form of
 a text popup when your search skill is too low.
 
 
@@ -87,7 +87,7 @@ a text popup when your search skill is too low.
 The alchemist can learn a new spell called "Ghost Inferno" which works exactly like "Ghost Weapon" but fires it at
 every single enemy, making it a great damage dealing ability. The spell can only be obtained from a quest.
 
-The mystic can learn a lot now spells:
+The mystic can learn many new spells:
 
 - "Show Elements": For the rest of the battle you can see the monsters' elements as a tooltip.
 - "Recognize Weak Point" / "See Weaknesses" / "Knowledge Of The Weakness": Weakens the targets for the rest of the battle to receive 30% (bosses 15%) increased damage from attacks and spells.
@@ -121,7 +121,7 @@ The mystic can learn a lot now spells:
 
   ## New mount
 
-  Through a quest you can unlock a new mount on the forest moon. But only in a later stage of the progression there. This allows for faster and secure travel there.
+  Through a quest you can unlock a new mount on the forest moon. But only in a later stage of the progression there. This allows for faster and secure travel.
 
 
   ## New map markers
