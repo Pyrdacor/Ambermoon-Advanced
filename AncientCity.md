@@ -43,7 +43,11 @@ Palette 055 (new)
 ## Objects
 
 -   01 (0x01): Inactive robot
+-   02 (0x02): Destroyed robot (left of tile)
+-   03 (0x03): Destroyed robot (top of tile)
+-   04 (0x04): Destroyed robot (bottom of tile)
 
 ## Object data
 
 -   01 (0x01): Inactive robot
+-   02 (0x02): Destroyed robot
