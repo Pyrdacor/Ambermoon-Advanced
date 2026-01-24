@@ -40,6 +40,7 @@ Palette 055 (new)
 - 110 (0x6E): Wall with wall storage (open)
 - 111 (0x6F): Wall with wall storage (open and card in it)
 - 112 (0x70): Wall with screen on (only upper right part) (153, block all, overlay 128)
+- 113 (0x71): Wall with screen on (text shown) (153, block all, overlay 129)
 
 ## Objects
 
