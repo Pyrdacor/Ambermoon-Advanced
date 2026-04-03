@@ -41,6 +41,7 @@ Palette 055 (new)
 - 111 (0x6F): Wall with wall storage (open and card in it)
 - 112 (0x70): Wall with screen on (only upper right part) (153, block all, overlay 128)
 - 113 (0x71): Wall with screen on (text shown) (153, block all, overlay 129)
+- 114 (0x72): 4 pillars
 
 ## Objects
 
@@ -49,9 +50,15 @@ Palette 055 (new)
 - 03 (0x03): Destroyed robot (top of tile)
 - 04 (0x04): Destroyed robot (bottom of tile)
 - 05 (0x05): Teleporter
+- 06 (0x06): Small robot
+- 07 (0x07): Deactivated platform
+- 08 (0x08): Activated platform
 
 ## Object data
 
 - 01 (0x01): Inactive robot
 - 02 (0x02): Destroyed robot
 - 03 (0x03): Teleporter
+- 04 (0x04): Small robot
+- 05 (0x05): Deactivated platform
+- 06 (0x06): Activated platform
