@@ -31109,7 +31109,7 @@ LAB_00236d1c:
 	bra.b .Done
 .AllPos:
 	lea ($0240,A2),A2 ; adjust pointer for next char (+288 positions = +576 bytes)
-.Done
+.Done:
 	move.l (SP)+,D1
 	bra.b LAB_00236d5c
 LAB_00236d4e: ; single position (monster, random or stationary)
@@ -31747,6 +31747,7 @@ FUN_UpdateCharacterPosition2DByTimeSlot:
 	jsr GetObjectPointer
 	movea.l D0,A0
 	adda.l ($0018,A1),A0 ; Offset to map char positions
+	moveq #0,D0
 	move.w DAT_CurrentTimeSlot,D0
 	btst.l #$00000006,D1 ; Hour movement?
 	beq.b .GetPos
@@ -31777,10 +31778,11 @@ FUN_UpdateCharacterPosition3D:
 	jsr GetObjectPointer
 	movea.l D0,A0
 	adda.l ($0018,A1),A0 ; Offset to map char positions
+	moveq #0,D0
 	move.w DAT_CurrentTimeSlot,D0
 	btst.l #$00000006,D1 ; hour movement?
 	beq.b .GetPos
-	divu #12,D0
+	divu.w #12,D0
 	swap D0 ; time slot modulo 12
 .GetPos:
 	add.w D0,D0 ; 2 bytes per time slot (x and y)
