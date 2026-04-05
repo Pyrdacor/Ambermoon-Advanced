@@ -59,16 +59,18 @@ Palette 055 (new)
 - 10 (0x0A): Activated signal (small podest with pulsating light) [x center, y bottom]
 - 11 (0x0B): Deactivated signal (small podest without pulsating light) [x left, y top]
 - 12 (0x0C): Activated signal (small podest with pulsating light) [x left, y top]
-- 13 (0x0D): Small stone
+- 13 (0x0D): Small stone (sand color)
 - 14 (0x0E): Small inactive robot
+- 15 (0x0F): Small stones (pattern for active robots)
 
 ## Object data
 
-- 01 (0x01): Inactive robot
-- 02 (0x02): Destroyed robot
-- 03 (0x03): Teleporter
-- 04 (0x04): Small robot
-- 05 (0x05): Small podest
-- 06 (0x06): Pulsating light
-- 07 (0x07): Small stone
-- 08 (0x08): Small inactive robot
+- 01 (0x01): Inactive robot (texture 405)
+- 02 (0x02): Destroyed robot (texture 406)
+- 03 (0x03): Teleporter (texture 275)
+- 04 (0x04): Small robot (texture 407)
+- 05 (0x05): Small podest (texture 360)
+- 06 (0x06): Pulsating light (texture 408)
+- 07 (0x07): Small stone (sand color, texture 012)
+- 08 (0x08): Small inactive robot (texture 409)
+- 09 (0x09): Small stone (orange, texture 410)
