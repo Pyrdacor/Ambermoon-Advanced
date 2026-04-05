@@ -39,10 +39,11 @@ Palette 055 (new)
 - 109 (0x6D): Wall with wall storage (closed)
 - 110 (0x6E): Wall with wall storage (open)
 - 111 (0x6F): Wall with wall storage (open and card in it)
-- 112 (0x70): Wall with screen on (only upper right part) (153, block all, overlay 128)
+- 112 (0x70): Wall with screen on (only lower right part) (153, block all, overlay 128)
 - 113 (0x71): Wall with screen on (text shown) (153, block all, overlay 129)
 - 114 (0x72): 4 pillars
 - 115 (0x73): Door with dark stairs down
+- 116 (0x70): Wall with screen on (only upper left part) (153, block all, overlay 130)
 
 ## Objects
 
@@ -52,8 +53,14 @@ Palette 055 (new)
 - 04 (0x04): Destroyed robot (bottom of tile)
 - 05 (0x05): Teleporter
 - 06 (0x06): Small robot
-- 07 (0x07): Deactivated signal (small podest without pulsating light)
-- 08 (0x08): Activated signal (small podest with pulsating light)
+- 07 (0x07): Deactivated signal (small podest without pulsating light) [x center, y top]
+- 08 (0x08): Activated signal (small podest with pulsating light) [x center, y top]
+- 09 (0x09): Deactivated signal (small podest without pulsating light) [x center, y bottom]
+- 10 (0x0A): Activated signal (small podest with pulsating light) [x center, y bottom]
+- 11 (0x0B): Deactivated signal (small podest without pulsating light) [x left, y top]
+- 12 (0x0C): Activated signal (small podest with pulsating light) [x left, y top]
+- 13 (0x0D): Small stone
+- 14 (0x0E): Small inactive robot
 
 ## Object data
 
@@ -63,3 +70,5 @@ Palette 055 (new)
 - 04 (0x04): Small robot
 - 05 (0x05): Small podest
 - 06 (0x06): Pulsating light
+- 07 (0x07): Small stone
+- 08 (0x08): Small inactive robot
