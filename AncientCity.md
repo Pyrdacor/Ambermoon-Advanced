@@ -42,6 +42,7 @@ Palette 055 (new)
 - 112 (0x70): Wall with screen on (only upper right part) (153, block all, overlay 128)
 - 113 (0x71): Wall with screen on (text shown) (153, block all, overlay 129)
 - 114 (0x72): 4 pillars
+- 115 (0x73): Door with dark stairs down
 
 ## Objects
 
@@ -51,8 +52,8 @@ Palette 055 (new)
 - 04 (0x04): Destroyed robot (bottom of tile)
 - 05 (0x05): Teleporter
 - 06 (0x06): Small robot
-- 07 (0x07): Deactivated platform
-- 08 (0x08): Activated platform
+- 07 (0x07): Deactivated signal (small podest without pulsating light)
+- 08 (0x08): Activated signal (small podest with pulsating light)
 
 ## Object data
 
@@ -60,5 +61,5 @@ Palette 055 (new)
 - 02 (0x02): Destroyed robot
 - 03 (0x03): Teleporter
 - 04 (0x04): Small robot
-- 05 (0x05): Deactivated platform
-- 06 (0x06): Activated platform
+- 05 (0x05): Small podest
+- 06 (0x06): Pulsating light
