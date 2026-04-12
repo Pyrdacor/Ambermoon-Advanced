@@ -43,7 +43,9 @@ Palette 055 (new)
 - 113 (0x71): Wall with screen on (text shown) (153, block all, overlay 129)
 - 114 (0x72): 4 pillars
 - 115 (0x73): Door with dark stairs down
-- 116 (0x70): Wall with screen on (only upper left part) (153, block all, overlay 130)
+- 116 (0x74): Wall with screen on (only upper left part) (153, block all, overlay 130)
+- 117 (0x75): Wall with screen on (only lower left part) (153, block all, overlay 131)
+- 118 (0x76): Battle overlay (153, block all, overlay 132)
 
 ## Objects
 

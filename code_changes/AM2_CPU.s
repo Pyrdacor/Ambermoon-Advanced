@@ -16472,16 +16472,17 @@ LAB_0022bed2:
 	move.b D6,DAT_PartyCanMoveBattleFlags
 	movem.l (SP)+,D0/D1/D6/D7/A0/A1
 	rts
+; Returns the tile flags in d0
 FUN_GetTileFlagsAtPos:
 	movem.l A1/A0/D7/D6/D5/D4/D3/D2/D1,-(SP)
-	move.w D0,D4
-	move.w D1,D5
+	move.w D0,D4 ; X
+	move.w D1,D5 ; Y
 	cmpi.b #$00000002,DAT_MapType
-	bpl.w LAB_0022bfd2
+	bpl.w LAB_0022bfd2 ; If 3D, branch
 	tst.b DAT_MapType
-	bne.w LAB_0022bf06
-	move.b DAT_CurrentMapDataHandle,D7
-	bra.w LAB_0022bf62
+	bne.w LAB_0022bf06 ; If world map, branch to map handle determination
+	move.b DAT_CurrentMapDataHandle,D7 ; Otherwise for normal 2D maps, set the current map handle
+	bra.w LAB_0022bf62 ; and continue 2D logic
 LAB_0022bf06:
 	move.w DAT_WorldMapDrawFlags,D2
 	cmp.w #$0001,D0
@@ -16509,140 +16510,140 @@ LAB_0022bf54:
 	lea DAT_WorldMapUpLeft,A1
 	mulu.w #$0004,D2
 	move.b ($00,A1,D2.w),D7
-LAB_0022bf62:
+LAB_0022bf62: ; 2D logic, D7 holds the map handle
 	move.b D7,D0
-	jsr GetObjectPointer
+	jsr GetObjectPointer ; get map data
 	movea.l D0,A1
-	lea ($014c,A1),A1
+	lea ($014c,A1),A1 ; go to tile data
 	move.l D0,-(SP)
 	move.b DAT_CurrentTilesetOrLabdataPointerIndex,D0
-	jsr GetObjectPointer
+	jsr GetObjectPointer ; get tileset data
 	movea.l D0,A0
 	move.l (SP)+,D0
-	move.w D5,D0
-	subq.w #$00000001,D0
-	mulu.w DAT_MapWidth,D0
-	lsl.l #$00000002,D0
-	adda.l D0,A1
-	move.w D4,D0
-	subq.w #$00000001,D0
-	lsl.w #$00000002,D0
-	adda.w D0,A1
+	move.w D5,D0 ; y
+	subq.w #$00000001,D0 ; -1 (1-based to 0-based)
+	mulu.w DAT_MapWidth,D0 ; * map width
+	lsl.l #$00000002,D0 ; * 4 (4 bytes per map tile)
+	adda.l D0,A1 ; A1 now points to map tile row
+	move.w D4,D0 ; x
+	subq.w #$00000001,D0 ; again -1
+	lsl.w #$00000002,D0 ; and * 4
+	adda.w D0,A1 ; A1 now points to correct map tile
 	moveq #$00000000,D0
-	move.b (A1),D0
-	beq.b LAB_0022bfa4
-	lsl.w #$00000003,D0
-	move.l (-$06,A0,D0.w),D0
+	move.b (A1),D0 ; back tile index
+	beq.b LAB_0022bfa4 ; if 0, skip and go to front tile handling
+	lsl.w #$00000003,D0 ; * 8 (8 bytes per tileset tile data)
+	move.l (-$06,A0,D0.w),D0 ; -6 to get the tile flags (first 4 bytes) as we used 1-based index which points to next tile data
 LAB_0022bfa4:
 	moveq #$00000000,D1
-	move.w ($0002,A1),D1
-	beq.b LAB_0022bfb2
+	move.w ($0002,A1),D1 ; front tile index
+	beq.b LAB_0022bfb2 ; if 0, skip
 	lsl.w #$00000003,D1
-	move.l (-$06,A0,D1.w),D1
+	move.l (-$06,A0,D1.w),D1 ; again get tile flags
 LAB_0022bfb2:
 	move.w D0,-(SP)
 	move.b D7,D0
-	jsr ReleaseObjectPointer
+	jsr ReleaseObjectPointer ; release map data
 	move.w (SP)+,D0
 	move.w D0,-(SP)
 	move.b DAT_CurrentTilesetOrLabdataPointerIndex,D0
-	jsr ReleaseObjectPointer
+	jsr ReleaseObjectPointer ; release tileset data
 	move.w (SP)+,D0
-	bra.w LAB_0022c076
-LAB_0022bfd2:
+	bra.w LAB_0022c076 ; go to tile flag logic
+LAB_0022bfd2: ; this is 3D tile flag handling
 	move.l D0,-(SP)
 	move.b DAT_CurrentMapDataHandle,D0
-	jsr GetObjectPointer
+	jsr GetObjectPointer ; get map data
 	movea.l D0,A0
 	move.l (SP)+,D0
-	lea ($014c,A0),A0
+	lea ($014c,A0),A0 ; go to block data
 	move.l D0,-(SP)
 	move.b DAT_CurrentTilesetOrLabdataPointerIndex,D0
-	jsr GetObjectPointer
+	jsr GetObjectPointer ; get lab data
 	movea.l D0,A1
 	move.l (SP)+,D0
-	move.w D4,D0
-	subq.w #$00000001,D0
-	add.w D0,D0
-	adda.w D0,A0
-	move.w D5,D0
-	subq.w #$00000001,D0
-	mulu.w DAT_MapWidth,D0
-	add.w D0,D0
-	adda.w D0,A0
-	moveq #$00000000,D0
-	move.b (A0),D0
-	beq.b LAB_0022c022
+	move.w D4,D0 ; x
+	subq.w #$00000001,D0 ; -1
+	add.w D0,D0 ; * 2 (2 bytes per map block)
+	adda.w D0,A0 ; add to block data addr
+	move.w D5,D0 ; y
+	subq.w #$00000001,D0 ; -1
+	mulu.w DAT_MapWidth,D0 ; * map width
+	add.w D0,D0 ; * 2 (for block data length)
+	adda.w D0,A0 ; add to addr, now at correct block data
+	moveq #$00000000,D0 ; init tile flags with 0
+	move.b (A0),D0 ; object/wall index
+	beq.b LAB_0022c022 ; if 0, skip, tile flags are 0
 	cmp.b #-$01,D0
-	beq.b LAB_0022c022
-	cmp.b #$65,D0
-	bcc.b LAB_0022c036
-LAB_0022c022:
+	beq.b LAB_0022c022 ; if map border, also skip
+	cmp.b #$65,D0 ; check for wall threshold
+	bcc.b LAB_0022c036 ; branch if wall
+LAB_0022c022: ; object handling
 	moveq #$00000000,D0
-	move.w ($0002,A1),D0
-	andi.w #$000f,D0
-	ror.l #$00000004,D0
-	ori.l #$007fff00,D0
-	bra.b LAB_0022c054
-LAB_0022c036:
+	move.w ($0002,A1),D0 ; default combat background index (in labdata header)
+	andi.w #$000f,D0 ; mask
+	ror.l #$00000004,D0 ; position the same as normal tile flags (upper 4 bit in dword)
+	ori.l #$007fff00,D0 ; allow movement for all travel types (collision classes)
+	bra.b LAB_0022c054 ; branch
+LAB_0022c036: ; wall handling
 	lea DAT_WallDataOffsets,A0
 	subi.w #$00000065,D0
 	cmp.w DAT_LabdataWallCount,D0
 	bmi.b LAB_0022c04c
-	moveq #$00000000,D0
+	moveq #$00000000,D0 ; if invalid wall, just use 0 as tile flags
 	bra.b LAB_0022c054
 LAB_0022c04c:
 	lsl.w #$00000002,D0
 	adda.l ($00,A0,D0.w),A1
-	move.l (A1),D0
+	move.l (A1),D0 ; for valid walls, use the wall's tile flags
 LAB_0022c054:
 	move.w D0,-(SP)
 	move.b DAT_CurrentTilesetOrLabdataPointerIndex,D0
-	jsr ReleaseObjectPointer
+	jsr ReleaseObjectPointer ; release lab data
 	move.w (SP)+,D0
 	move.w D0,-(SP)
 	move.b DAT_CurrentMapDataHandle,D0
-	jsr ReleaseObjectPointer
+	jsr ReleaseObjectPointer ; release map data
 	move.w (SP)+,D0
-	moveq #$00000000,D1
-LAB_0022c076:
+	moveq #$00000000,D1 ; for 3D blocks, the front tile flags are always 0
+LAB_0022c076: ; here d0 holds back tile flags and d1 holds front tile flags (or 0 if not given)
 	moveq #$00000000,D2
 	cmpi.b #$00000001,DAT_MapType
-	beq.b LAB_0022c0be
-	lea DAT_MapCharactersData,A0
-	move.l DAT_CurrentMapCharacterBits,D6
+	beq.b LAB_0022c0be ; skip for world maps
+	lea DAT_MapCharactersData,A0 ; otherwise check map characters
+	move.l DAT_CurrentMapCharacterBits,D6 ; which map characters are active
 	moveq #$00000000,D7
 LAB_0022c090:
-	tst.b (A0)
-	beq.b LAB_0022c0b2
-	btst.l D7,D6
-	bne.b LAB_0022c0b2
-	cmp.w DAT_CurrentMapCharacter,D7
-	beq.b LAB_0022c0b2
-	cmp.w ($000a,A0),D4
-	bne.b LAB_0022c0b2
-	cmp.w ($000c,A0),D5
-	bne.b LAB_0022c0b2
-	move.l ($0006,A0),D2
-	bra.b LAB_0022c0be
+	tst.b (A0) ; is there a map character?
+	beq.b LAB_0022c0b2 ; if not, skip
+	btst.l D7,D6 ; is it active
+	bne.b LAB_0022c0b2 ; if not, skip
+	cmp.w DAT_CurrentMapCharacter,D7 ; matches the causing map char?
+	beq.b LAB_0022c0b2 ; if not, skip
+	cmp.w ($000a,A0),D4 ; current X matches char's X
+	bne.b LAB_0022c0b2 ; if not, skip
+	cmp.w ($000c,A0),D5 ; current Y matches char's Y
+	bne.b LAB_0022c0b2 ; if not, skip
+	move.l ($0006,A0),D2 ; set tile flags
+	bra.b LAB_0022c0be ; and leave the loop
 LAB_0022c0b2:
-	lea ($0020,A0),A0
-	addq.w #$00000001,D7
-	cmpi.w #$00000020,D7
-	bmi.b LAB_0022c090
+	lea ($0020,A0),A0 ; next map char
+	addq.w #$00000001,D7 ; inc count
+	cmpi.w #$00000020,D7 ; check for count
+	bmi.b LAB_0022c090 ; continue loop if count is less than 32
 LAB_0022c0be:
-	tst.l D2
-	beq.b LAB_0022c0cc
-	btst.l #$00000005,D2
-	bne.b LAB_0022c0cc
-	move.l D2,D0
-	bra.b LAB_0022c0d8
+	tst.l D2 ; any map char flags?
+	beq.b LAB_0022c0cc ; no? skip
+	btst.l #$00000005,D2 ; is the "use background tile" flag set?
+	bne.b LAB_0022c0cc ; yes? skip
+	move.l D2,D0 ; otherwise use it as background tile flags
+	bra.b LAB_0022c0d8 ; and continue to end
 LAB_0022c0cc:
-	tst.l D1
-	beq.b LAB_0022c0d8
-	btst.l #$00000005,D1
-	bne.b LAB_0022c0d8
-	move.l D1,D0
+	tst.l D1 ; otherwise are there any front tile flags?
+	beq.b LAB_0022c0d8 ; if not, end
+	btst.l #$00000005,D1 ; is the "use background tile" flag set?
+	bne.b LAB_0022c0d8 ; if yes, end
+	move.l D1,D0 ; otherwise use the front tile flags
 LAB_0022c0d8:
 	movem.l (SP)+,D1/D2/D3/D4/D5/D6/D7/A0/A1
 	rts
