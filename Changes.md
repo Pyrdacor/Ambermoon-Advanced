@@ -10,8 +10,6 @@ Each ration has a weight of 25 instead of 250 now. So it is possible to carry mu
 
 ## Weapon damage adjustments
 
-**NOTE**: This is currently only implemented for the Amiga version and is still missing from the remake.
-
 In the original, you get a damage bonus of Strength / 25 (rounded down) to your attack damage.
 So the attack damage is the damage from all equipped items combined plus your strength divided by 25.
 
@@ -29,7 +27,7 @@ In the original when you level up, you gain Intelligence/25 additional SP and SL
 you have 80 intelligence, the value would be 80/25 (rounded down) which would be 3. In this scenario
 you receive 3 additional SP and SLP on each level up.
 
-In the advanced version the same in now true for Stamina and HP. So you will gain Stamina/25 additional
+In the advanced version the same is now true for Stamina and HP. So you will gain Stamina/25 additional
 HP on each level up.
 
 **Note**: This is missing in the remake version currently. The Amiga version is not considering bonus
