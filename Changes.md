@@ -41,6 +41,7 @@ some new spell scrolls.
 
 Only changed items are listed here.
 
+- Early game weapons like knives, daggers or short swords now have bonuses to the attack skill, so you can hit more often with them, which is useful in early game. The weaker the weapon (damage), the higher is the hit chance bonus.
 - Water of life now grants "Wake the dead" instead of "Resurrection". So only reviving 1 person instead of the whole group.
   However through a quest later you can produce golden water from water of life which again grants "Resurrection" but needs
   two more ingredients: a golden scale and a fire thistle. It was a bit overpowered to have almost unlimited access to
