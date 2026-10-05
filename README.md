@@ -29,6 +29,15 @@ Here is an overview of all released versions:
 
 Of course higher episodes include lower episodes.
 
+
+## Downloads Ambermoon Advanced 1.33
+
+| Language | Downloads                                                                                                                                                                                                                                                                                                                                 |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| English  | [zip](https://downloads.pyrdacor.net/ambermoon-advanced/1.33/ambermoon_advanced_english_1.33_extracted.zip) [lha](https://downloads.pyrdacor.net/ambermoon-advanced/1.33/ambermoon_advanced_english_1.33_extracted.lha) [tar.gz](https://downloads.pyrdacor.net/ambermoon-advanced/1.33/ambermoon_advanced_english_1.33_extracted.tar.gz) |
+| Deutsch  | [zip](https://downloads.pyrdacor.net/ambermoon-advanced/1.33/ambermoon_advanced_german_1.33_extracted.zip) [lha](https://downloads.pyrdacor.net/ambermoon-advanced/1.33/ambermoon_advanced_german_1.33_extracted.lha) [tar.gz](https://downloads.pyrdacor.net/ambermoon-advanced/1.33/ambermoon_advanced_german_1.33_extracted.tar.gz)    |
+
+
 ## What it is
 
 Ambermoon Advanced is an inofficial extension of Ambermoon. It is developed and maintained by me (Pyrdacor).
@@ -52,24 +61,8 @@ Also keep in mind that adding content is a lot of work so don't expect the whole
 
 If you want to play the episodes in succession you should pause after you reached Morag.
 
-## Downloads
 
-### Ambermoon Advanced 1.33
-
-| Language | Downloads                                                                                                                                                                                                                                                                                                                                 |
-| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| English  | [zip](https://downloads.pyrdacor.net/ambermoon-advanced/1.33/ambermoon_advanced_english_1.33_extracted.zip) [lha](https://downloads.pyrdacor.net/ambermoon-advanced/1.33/ambermoon_advanced_english_1.33_extracted.lha) [tar.gz](https://downloads.pyrdacor.net/ambermoon-advanced/1.33/ambermoon_advanced_english_1.33_extracted.tar.gz) |
-| Deutsch  | [zip](https://downloads.pyrdacor.net/ambermoon-advanced/1.33/ambermoon_advanced_german_1.33_extracted.zip) [lha](https://downloads.pyrdacor.net/ambermoon-advanced/1.33/ambermoon_advanced_german_1.33_extracted.lha) [tar.gz](https://downloads.pyrdacor.net/ambermoon-advanced/1.33/ambermoon_advanced_german_1.33_extracted.tar.gz)    |
-
-### Ambermoon Advanced 1.03 WHDLoad
-
-| Language        | Downloads                                                                                                      |
-| --------------- | -------------------------------------------------------------------------------------------------------------- |
-| WHDLoad English | [download](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/Ambermoon-Advanced-1_03-English-WHDLoad.lha) |
-| WHDLoad German  | [download](https://downloads.pyrdacor.net/ambermoon-advanced/1.03/Ambermoon-Advanced-1_03-German-WHDLoad.lha)  |
-
-
-### Changelog
+## Changelog
 
 I only started tracking this since episode 3. I won't list every single small adjustment, but only major changes or important updates. Sometimes there are also minor text adjustments etc.
 
@@ -84,19 +77,6 @@ I only started tracking this since episode 3. I won't list every single small ad
 As many players struggle with the new content, I started to write a small hint section to make it easier to proceed. Of course I will also try to improve the game in the future to make this obsolete.
 
 [Walkthrough Tips](WalkthroughTips.md)
-
-## Prepare for the second episode
-
-The second episode is out now. Unfortunately it wasn't possible to keep the savegames compatible with the ones from the first episode. However there is a savegame patcher online which you can use to patch your savegame to use it for the second episode. You can find it online at https://ambermoon-advanced.pyrdacor.net. Just drag&drop your savegame folders (e.g. Save.00) there and you will be able to
-download the patched version as a zip file.
-
-If you use the remake Ambermoon.net you don't need to do this as the remake automatically upgrades your savegames on loading.
-
-Note: **The patched savegames might be incompatible when playing the first episode with them.**
-
-Note: **Always backup your saves beforehand!**
-
-Note: **The patcher only works with Ambermoon Advanced savegames. Don't use original savegames!**
 
 ## Game manual
 
