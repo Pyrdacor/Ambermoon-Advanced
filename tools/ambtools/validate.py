@@ -4,6 +4,7 @@ import struct
 import sys
 
 import ambcontainer as amb
+import labdata as lab
 import mapmodel as mm
 
 A = sys.argv[1] if len(sys.argv) > 1 else r'C:\Users\Robert\source\repos\Ambermoon-Advanced\german\Amberfiles'
@@ -120,6 +121,14 @@ for idx, m in sorted(maps.items()):
             ev = mm.tile_event(m, x, y)
             if ev and ev > len(m.heads):
                 problems.append(f'map {idx} tile ({x},{y}): event chain {ev} missing')
+
+# Overlays must be aligned to 8 pixels (the Amiga uses x & 0xf8)
+for li, raw in amb.read_container(os.path.join(A, '2Lab_data.amb')).items():
+    if raw:
+        for wi, (header, overlays) in enumerate(lab.parse(raw).walls, 1):
+            for oi, o in enumerate(overlays):
+                if o[2] % 8:
+                    problems.append(f'labdata {li} wall {wi} overlay {oi}: PositionX {o[2]} is not a multiple of 8')
 
 print('\n'.join(problems) if problems else 'No problems found.')
 print(f'checked {len(ONLY) if ONLY else len(maps)} maps')
