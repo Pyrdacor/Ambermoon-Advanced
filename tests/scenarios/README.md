@@ -27,6 +27,10 @@ Each check prints `PASS`/`FAIL`, at the end a summary like
 | `state` | print map, position, window, popup and battle state |
 | `var <index> [0\|1]` | print/check a global variable |
 | `count <item> [amount]` | print/check the amount of an item in the party |
+| `waitbattle [timeout ms]` | wait until a battle starts, presses Return on popups meanwhile ("Wollt ihr kämpfen?" → Ja) |
+| `yes` | answer a decision popup with yes (Return) |
+| `closewindow` | close the current window like the exit button (e.g. battle loot) |
+| `battlebg [index]` | print/check the combat background of the active battle |
 | `log <text>` | print text |
 | `exit` | close the game (add a short `wait` before if a screenshot was taken) |
 
@@ -41,3 +45,11 @@ Each check prints `PASS`/`FAIL`, at the end a summary like
 | `morag_riddle_4_wrong_letter_closed_storage.txt` | wrong letters on closed storages | 16/16 |
 
 Negative control: scripts 3 and 3b fail with the map data before the fix (`6c355c40^`), the letters are lost.
+
+## Combat backgrounds
+
+| Script | Case | Result 2026-10-06 |
+|---|---|---|
+| `combat_background_ancient_city.txt` | Monster in map 483 uses background 13 (char tile flags), event battle in 484 uses the labdata 44 default (4) | 2/2 |
+
+Background 13 is rendered as the desert graphic (13) only with the remake fix in `CombatBackgrounds.AdvancedReplacements3D` (branch `aa4-fixes`). Before it showed graphic 1.

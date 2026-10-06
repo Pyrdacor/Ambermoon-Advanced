@@ -1,0 +1,27 @@
+# Combat backgrounds in the ancient city.
+# Map 483: monster characters use tile flags 0xD0000301 -> combat background 13 (desert).
+# Map 484: battles are started by events -> background from the labdata 44 header (word at offset 2).
+
+wait 2000
+cheat godmode
+# dust devil starts at (11,17), stand right above it
+cheat teleport 483 11 16 down
+waitbattle 30000
+wait 1500
+battlebg 13
+screenshot combat_bg_483
+cheat win
+wait 3000
+closewindow
+wait 2000
+state
+
+# mechanic guard 1 room in the ancient building (event chain 12, battle group 161)
+cheat teleport 484 25 16 right
+waitbattle 30000
+wait 1500
+# currently 4 (labdata 44 default), change the expectation if labdata 44 gets background 13
+battlebg 4
+screenshot combat_bg_484
+wait 1000
+exit
