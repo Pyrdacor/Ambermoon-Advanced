@@ -89,7 +89,9 @@ for ds in ('original', 'advanced'):
 scrolls = {ds: set(int(r['spell']) for r in tsv(f'scrolls_{ds}.tsv') if 'SPRUCH -' not in r['name']) for ds in ('original', 'advanced')}
 known = {ds: set(int(x) for r in party[ds].values() for x in r['learned'].split(',') if x) for ds in party}
 exists = {ds: scrolls[ds] | known[ds] for ds in party}
-learnable = scrolls
+# not learned via scrolls in Advanced (not counted for the learning demand)
+EXCLUDED_ADVANCED = {60: 'nur in Alchemistenwaffe', 90: 'erhält Targor geschenkt'}
+learnable = {'original': scrolls['original'], 'advanced': scrolls['advanced'] - set(EXCLUDED_ADVANCED)}
 cost = {'original': spells_o, 'advanced': spells_a}
 
 
@@ -201,7 +203,7 @@ w('')
 
 w('## 3. Zauber je Schule')
 w('')
-w('SLP- und SP-Kosten, Original → Advanced. „–“ = existiert in dieser Version nicht. „(keine Rolle)“ = Zauber existiert, aber es gibt keine Schriftrolle, er zählt daher nicht zum Lernbedarf. Fett = geändert.')
+w('SLP- und SP-Kosten, Original → Advanced. „–“ = existiert in dieser Version nicht. Zauber mit Anmerkung in Klammern (keine Rolle, nur in Waffe, geschenkt) zählen nicht zum Lernbedarf. Fett = geändert.')
 for school, rng in SCHOOL_RANGE.items():
     w('')
     w(f'### {SCHOOL_DE[school]}')
@@ -226,7 +228,7 @@ for school, rng in SCHOOL_RANGE.items():
             if v is None:
                 return '–'
             return f'**{v}**' if other is not None and other != v else str(v)
-        note = '' if (i in learnable['advanced'] or not ea) else ' (keine Rolle)'
+        note = '' if (i in learnable['advanced'] or not ea) else f" ({EXCLUDED_ADVANCED.get(i, 'keine Rolle')})"
         w(f"| {i} | {spell_name(i)}{note} | {fmt(so and so[1], sa and sa[1]) if so else '–'} | {fmt(sa and sa[1], so and so[1]) if sa else '–'} | "
           f"{fmt(so and so[0], sa and sa[0]) if so else '–'} | {fmt(sa and sa[0], so and so[0]) if sa else '–'} |")
     w(f"| | **Summe lernbar** | **{tot['original']}** ({cnt['original']} Rollen) | **{tot['advanced']}** ({cnt['advanced']} Rollen) | | |")

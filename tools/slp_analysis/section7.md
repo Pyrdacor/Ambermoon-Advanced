@@ -4,16 +4,16 @@
 Stand nach der SLP-Anpassung vom 06.10.2026 (72 Zauber verbilligt, Amiga `DAT_SpellInfos` und Remake `adjustedSLP`).
 
 ### Befunde
-1. **Schulsummen** (lernbar, Original → Advanced): Heilung 373 → 546, Alchemie 367 → 676, Mystik 235 → 460, Zerstörung 361 → 361. Vor der Anpassung waren es 781, 1010 und 880.
+1. **Schulsummen** (lernbar, Original → Advanced): Heilung 373 → 546, Alchemie 367 → 621, Mystik 235 → 460, Zerstörung 361 → 361. Vor der Anpassung waren es 781, 1010 und 880. Nicht mitgezählt sind Geisterinferno (nur in einer Alchemistenwaffe) und Mystische Imitation (erhält Targor geschenkt).
 2. **Vollmagier** werden jetzt alle komplett (Erwartungswert, Start-INT):
    - Sabine bei Level 39.
    - Nelvin bei Level 40, unverändert.
-   - Leonaria bei Level 48.
-   - Targor als Einziger nicht ganz: bis Level 50 hat er 19 von 20 Zaubern, alles nur mit maximalem INT bei Level 52. Für „komplett bis 50“ bräuchte er etwa 12 SLP/Lvl statt 10.
-3. **Halbmagier** liegen jetzt über der Hälfte ihrer Schule:
-   - Thalion: 315 von 676 SLP bis Level 50, 21 von 30 Zaubern.
-   - Valdyn: 240 von 452, 21 von 28.
-   - Gryban: 191 von 450, 14 von 22. Er tritt mit 90 Start-SLP bei.
+   - Leonaria bei Level 45.
+   - Targor als Einziger nicht ganz: bis Level 50 hat er 19 von 20 lernbaren Zaubern, alles nur mit maximalem INT bei Level 52. Für „komplett bis 50“ bräuchte er etwa 12 SLP/Lvl statt 10.
+3. **Halbmagier** erreichen bis Level 50 etwa die Hälfte ihrer Schule:
+   - Thalion: 315 von 621 SLP (51 %), 21 von 29 Zaubern.
+   - Valdyn: 240 von 452 (53 %), 21 von 28.
+   - Gryban: 191 von 450 (42 %), 14 von 22. Er tritt mit 90 Start-SLP bei.
    - „Günstigste zuerst“ zählt dabei viele billige Zauber. Die teuren Spitzenzauber (Globus, Wiederbelebung, Element zu X usw.) bekommen Halbmagier nur, wenn sie andere auslassen.
 4. **Magische Klassen bleiben nötig:** Kein Halbmagier schafft seine Schule bis Level 55. Mystik und Alchemie haben aber jeweils einen Halbmagier (Valdyn, Thalion), der die meisten Hilfszauber selbst lernen kann. Das ist gewollt, sollte aber bewusst so sein.
 5. **Früher Spielverlauf und R-M** bleiben unverändert. Thalion startet mit R-M 23 %, ein Fehlschlag kostet SLP und Rolle, effektiv also etwa das 4,3-Fache. Licht (5) und Fackel (10) sind weiterhin teurer als im Original (2/5).
