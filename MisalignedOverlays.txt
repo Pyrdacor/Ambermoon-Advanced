@@ -1,15 +1,8 @@
-Labdata 5, Wall 22 (Texture: 100), Overlay 0 (PositionX: 47, Texture: 37)
-Labdata 5, Wall 23 (Texture: 100), Overlay 0 (PositionX: 47, Texture: 38)
-Labdata 5, Wall 24 (Texture: 98), Overlay 0 (PositionX: 81, Texture: 40)
-Labdata 5, Wall 25 (Texture: 98), Overlay 0 (PositionX: 18, Texture: 40)
-Labdata 5, Wall 30 (Texture: 98), Overlay 0 (PositionX: 34, Texture: 74)
-Labdata 20, Wall 11 (Texture: 50), Overlay 0 (PositionX: 65, Texture: 33)
-Labdata 38, Wall 9 (Texture: 88), Overlay 0 (PositionX: 28, Texture: 95)
-Labdata 40, Wall 10 (Texture: 50), Overlay 0 (PositionX: 30, Texture: 33)
-Labdata 41, Wall 2 (Texture: 179), Overlay 0 (PositionX: 62, Texture: 109)
-Labdata 41, Wall 3 (Texture: 179), Overlay 0 (PositionX: 18, Texture: 110)
-Labdata 41, Wall 4 (Texture: 179), Overlay 0 (PositionX: 18, Texture: 110)
-Labdata 42, Wall 2 (Texture: 68), Overlay 0 (PositionX: 25, Texture: 111)
-Labdata 42, Wall 6 (Texture: 65), Overlay 0 (PositionX: 27, Texture: 113)
-Labdata 42, Wall 8 (Texture: 65), Overlay 0 (PositionX: 45, Texture: 114)
-Labdata 42, Wall 11 (Texture: 65), Overlay 1 (PositionX: 46, Texture: 118)
+Fixed on 2026-10-06: all overlays now use a PositionX that is a multiple of 8.
+
+The Amiga code uses (x & 0xf8) for overlay positions. Each misaligned overlay got a
+padded copy of its texture (overlays 133-150 in 2Overlay3D.amb and 3Overlay3D.amb)
+so the result in the remake is pixel-identical and the Amiga now matches it.
+
+To check again: python tools/ambtools/fix_overlays.py is not in the repo, but
+labdata.py can be used to list overlays with (x % 8) != 0.
