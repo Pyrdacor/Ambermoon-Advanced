@@ -26,3 +26,16 @@ python tools/ambtools/validate.py
 Texts are changed in `AllTexts` and then imported with
 `AmbermoonTextManager -i german/Amberfiles german/Amberfiles/AllTexts -f 2Map_texts.amb`.
 The release creator imports `AllTexts`, so `AllTexts` must always contain the current texts.
+
+## Testing with the remake
+
+`make_testdata.py <dir>` builds a complete data folder (german 1.20 original + Advanced files,
+Save.00 also as Initial). The remake (branch `aa4-fixes` in Ambermoon.net) can then be started
+directly into the game, e.g. to look at the ancient city:
+
+```
+Ambermoon.net --data <dir>/Amberfiles --skip-intro --load 0 --cheat 3 "teleport 483 22 9 down" --screenshot 6 --exit-after 8
+```
+
+Screenshots are written to the `Screenshots` folder next to the executable. `Ambermoon.net --help`
+lists all options.
