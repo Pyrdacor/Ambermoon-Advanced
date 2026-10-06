@@ -1,0 +1,23 @@
+# MORAG riddle: correct letter G again on the closed storage 5 (event 310).
+
+wait 2000
+cheat teleport 484 16 22 left
+wait 1500
+dismissall
+cheat give 555 2
+
+cheat teleport 484 16 22 left
+wait 800
+useitem 555
+dismissall
+var 445 1
+var 450 1
+count 555 1
+useitem 555
+dismissall
+count 555 1
+var 445 1
+var 450 1
+var 451 0
+wait 500
+exit

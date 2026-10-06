@@ -1,0 +1,52 @@
+# MORAG riddle: using a wrong letter on a closed storage.
+# Expected: text 20, the wrong letter is given back, storage state unchanged.
+
+wait 2000
+cheat teleport 484 16 26 left
+wait 1500
+dismissall
+cheat give 551
+cheat give 552
+cheat give 553
+cheat give 555
+
+# close storage 1 with the correct M, then try O, R and G on it
+cheat teleport 484 16 26 left
+wait 800
+useitem 551
+dismissall
+var 441 1
+var 446 1
+
+useitem 552
+wait 2500
+screenshot riddle4_wrong_letter_closed
+dismissall
+count 552 1
+useitem 553
+dismissall
+count 553 1
+useitem 555
+dismissall
+count 555 1
+var 441 1
+var 446 1
+var 442 0
+var 443 0
+var 445 0
+
+# close storage 3 with a wrong letter (O), then try the correct R on it
+cheat teleport 484 16 24 left
+wait 800
+useitem 552
+dismissall
+var 443 1
+var 448 0
+count 552 0
+useitem 553
+dismissall
+count 553 1
+var 443 1
+var 448 0
+wait 500
+exit

@@ -1,0 +1,76 @@
+# MORAG riddle: wrong order (O M R A G instead of M O R A G).
+# Expected: after the 5th letter a beep (text 15), all storages open again,
+# vars 441-450 reset to 0, 451 stays 0 and all letters are given back (text 21).
+
+wait 2000
+cheat teleport 484 16 26 left
+wait 1500
+dismissall
+cheat give 551
+cheat give 552
+cheat give 553
+cheat give 554
+cheat give 555
+
+# storage 1 (y=26) gets O, storage 2 (y=25) gets M
+cheat teleport 484 16 26 left
+wait 800
+useitem 552
+dismissall
+var 441 1
+var 446 0
+var 447 0
+
+cheat teleport 484 16 25 left
+wait 800
+useitem 551
+dismissall
+var 442 1
+var 447 0
+
+cheat teleport 484 16 24 left
+wait 800
+useitem 553
+dismissall
+var 448 1
+
+cheat teleport 484 16 23 left
+wait 800
+useitem 554
+dismissall
+var 449 1
+
+cheat teleport 484 16 22 left
+wait 800
+useitem 555
+wait 2500
+screenshot riddle2_after_last_letter
+dismissall 20000
+
+log all storages must be open again and all letters back in the inventory
+var 451 0
+var 441 0
+var 442 0
+var 443 0
+var 444 0
+var 445 0
+var 446 0
+var 447 0
+var 448 0
+var 449 0
+var 450 0
+count 551 1
+count 552 1
+count 553 1
+count 554 1
+count 555 1
+
+# the riddle must still be solvable afterwards
+cheat teleport 484 16 26 left
+wait 800
+useitem 551
+dismissall
+var 441 1
+var 446 1
+wait 500
+exit
