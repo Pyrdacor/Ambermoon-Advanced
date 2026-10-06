@@ -1,7 +1,7 @@
 
 ## 7. Einordnung
 
-Stand nach der SLP-Anpassung vom 06.10.2026: 72 Zauber verbilligt (Amiga `DAT_SpellInfos`, Remake `adjustedSLP`), SLP/Level von Thalion 9 → 10, Sabine 18 → 15, Valdyn 7 → 8, Targor 10 → 14, Leonaria 20 → 15, Gryban 7 → 9.
+Stand nach der SLP-Anpassung vom 06.10.2026: 72 Zauber verbilligt (Amiga `DAT_SpellInfos`, Remake `adjustedSLP`), SLP/Level von Thalion 9 (unverändert), Sabine 18 → 15, Valdyn 7 → 8, Targor 10 → 14, Leonaria 20 → 16, Gryban 7 → 9.
 
 ### Befunde
 1. **Schulsummen** (lernbar, Original → Advanced): Heilung 373 → 546, Alchemie 367 → 621, Mystik 235 → 460, Zerstörung 361 → 361. Vor der Anpassung waren es 781, 1010 und 880. Nicht mitgezählt sind Geisterinferno (nur in einer Alchemistenwaffe) und Mystische Imitation (erhält Targor geschenkt).
@@ -9,9 +9,9 @@ Stand nach der SLP-Anpassung vom 06.10.2026: 72 Zauber verbilligt (Amiga `DAT_Sp
    - Nelvin hat seine Schule bei Level 40 komplett, unverändert.
    - Sabine (15 SLP/Lvl) bei Level 46 (43).
    - Targor (14 SLP/Lvl) bei Level 46 (44).
-   - Leonaria (15 SLP/Lvl) bei Level 51 (49); bei Level 50 fehlen ihr im Erwartungswert 4 SLP (354 von 358). Sie tritt erst mit Level 25 bei, deshalb wirkt bei ihr jeder SLP/Lvl-Punkt über weniger Level.
+   - Leonaria (16 SLP/Lvl) bei Level 49 (48). Sie tritt erst mit Level 25 bei, deshalb wirkt bei ihr jeder SLP/Lvl-Punkt über weniger Level.
 3. **Halbmagier** erreichen bis Level 50 etwa die Hälfte ihrer Schule:
-   - Thalion (10): 355 von 621 SLP (57 %), 22 von 29 Zaubern.
+   - Thalion (9): 315 von 621 SLP (51 %), 21 von 29 Zaubern.
    - Valdyn (8): 274 von 452 (61 %), 22 von 28.
    - Gryban (9): 214 von 450 (48 %), 15 von 22. Er tritt mit 90 Start-SLP bei.
    - „Günstigste zuerst“ zählt dabei viele billige Zauber. Die teuren Spitzenzauber (Globus, Wiederbelebung, Element zu X usw.) bekommen Halbmagier nur, wenn sie andere auslassen.
