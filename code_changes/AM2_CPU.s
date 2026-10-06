@@ -22174,9 +22174,8 @@ LAB_002306b2:
 	move.w DAT_CurrentRenderBlockX,D5
 	move.w DAT_CurrentRenderBlockY,D6
 	move.w D6,D0 ; Map square y
-	mulu.w ($4,A0),D0 ; BUG?: In original the 4 is Map_width. But this is just an offset into map data.
-				      ; Most likely it was meant to read the real map width here with ($4,A0).
-				      ; This code was previously: mulu.w $4,D0
+	mulu.w DAT_MapWidth,D0 ; ADVANCED: The original used 'mulu.w $4,D0' (Map_width is an offset equate, so it read address 4).
+				      ; Hash for random object animations is now x + y * map width as intended (Ambermoon #127).
 	add.w D5,D0 ; Add map square x
 	move.b D0,DAT_ObjectRenderHash
 	moveq #$00000009,D0
