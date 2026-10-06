@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Ambermoon.net must be checked out next to Ambermoon-Advanced -->
+    <ProjectReference Include="..\..\..\Ambermoon.net\Ambermoon.Data.Legacy\Ambermoon.Data.Legacy.csproj" />
+  </ItemGroup>
+</Project>
