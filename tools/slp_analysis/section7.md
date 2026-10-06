@@ -1,42 +1,27 @@
 
 ## 7. Einordnung
 
+Stand nach der SLP-Anpassung vom 06.10.2026 (72 Zauber verbilligt, Amiga `DAT_SpellInfos` und Remake `adjustedSLP`).
+
 ### Befunde
-1. **Mystik ist der Engpass.** Die lernbare Mystik kostet in Advanced 880 SLP statt 235. Das liegt an 12 neuen Zaubern (78–89) und an teuren Hilfszaubern (Mystische Karte I–III 65–75, Globus 100, Mystische Skizze 60).
-   - Targor (Mystiker, 10 SLP/Lvl) schafft bis Level 50 nur 13 von 20 Zaubern. Im Original hatte er bei Level 25 alles.
-   - Für 100 % bis Level 50 bräuchte er etwa 27 SLP/Lvl.
-2. **Alchemie** kostet 1010 statt 367 SLP (Faktor 2,8). Leonaria hat mit 20 SLP/Lvl bis Level 55 immer noch nicht alles, nötig wären etwa 30.
-3. **Heilung** kostet 781 statt 373 SLP. Sabine (18 SLP/Lvl) ist erst mit Level 52–55 komplett.
-4. **Zerstörung** ist unverändert (361). Nelvin hat bei Level 40 alles, wie im Original. Damit ist der Magier relativ zu den anderen Vollmagiern jetzt deutlich im Vorteil.
-5. **Halbmagier** liegen weit unter „die Hälfte der Schule“:
-   - Thalion: 315 von 505 SLP bis Level 50.
-   - Valdyn: 240 von 425.
-   - Gryban: 191 von 249. Er ist gut dran, weil er mit 90 Start-SLP beitritt.
-6. **Früher Spielverlauf und R-M.** Thalion startet mit R-M 23 %. Jeder Lernversuch kostet die SLP auch bei Misserfolg, effektiv also etwa das 4,3-Fache (Licht: 5 SLP → effektiv ≈ 22 SLP).
-   - Zusammen mit den erhöhten Kosten der billigen Zauber (Licht 2 → 5, Fackel 5 → 10, Monsterwissen 3 → 15) ist das ein wahrscheinlicher Grund für die Beschwerden.
-   - In Advanced ist R-M-Max für alle 99, im Original war es für Halbmagier nur 50.
-7. **INT gesenkt:** Thalion 27 → 20 und Valdyn 38 → 24. Damit fällt der INT/25-Bonus (+1 SLP pro Level) weg, gerade bei den Halbmagiern.
+1. **Schulsummen** (lernbar, Original → Advanced): Heilung 373 → 546, Alchemie 367 → 676, Mystik 235 → 460, Zerstörung 361 → 361. Vor der Anpassung waren es 781, 1010 und 880.
+2. **Vollmagier** werden jetzt alle komplett (Erwartungswert, Start-INT):
+   - Sabine bei Level 39.
+   - Nelvin bei Level 40, unverändert.
+   - Leonaria bei Level 48.
+   - Targor als Einziger nicht ganz: bis Level 50 hat er 19 von 20 Zaubern, alles nur mit maximalem INT bei Level 52. Für „komplett bis 50“ bräuchte er etwa 12 SLP/Lvl statt 10.
+3. **Halbmagier** liegen jetzt über der Hälfte ihrer Schule:
+   - Thalion: 315 von 676 SLP bis Level 50, 21 von 30 Zaubern.
+   - Valdyn: 240 von 452, 21 von 28.
+   - Gryban: 191 von 450, 14 von 22. Er tritt mit 90 Start-SLP bei.
+   - „Günstigste zuerst“ zählt dabei viele billige Zauber. Die teuren Spitzenzauber (Globus, Wiederbelebung, Element zu X usw.) bekommen Halbmagier nur, wenn sie andere auslassen.
+4. **Magische Klassen bleiben nötig:** Kein Halbmagier schafft seine Schule bis Level 55. Mystik und Alchemie haben aber jeweils einen Halbmagier (Valdyn, Thalion), der die meisten Hilfszauber selbst lernen kann. Das ist gewollt, sollte aber bewusst so sein.
+5. **Früher Spielverlauf und R-M** bleiben unverändert. Thalion startet mit R-M 23 %, ein Fehlschlag kostet SLP und Rolle, effektiv also etwa das 4,3-Fache. Licht (5) und Fackel (10) sind weiterhin teurer als im Original (2/5).
+6. **INT gesenkt:** Thalion 27 → 20 und Valdyn 38 → 24. Damit fällt der INT/25-Bonus (+1 SLP pro Level) weg.
 
-### Stellschrauben
-Jeweils kombinierbar. Die Werte aus Abschnitt 6 dienen als Orientierung.
+### Mögliche nächste Schritte
+- **Targor:** SLP/Lvl 10 → 12, damit Mystik bis Level 50 komplett ist. Alternativ Mystik um etwa 40–50 SLP verbilligen.
+- **Halbmagier:** Wenn sie weniger bekommen sollen, Thalion/Valdyn/Gryban um 1–2 SLP/Lvl senken. Abschnitt 6 zeigt die Werte für exakt 50 % der Schule.
+- **Frühspiel:** Halbe SLP bei Fehlschlag (Code Amiga + Remake) oder eine höhere Start-R-M für Thalion. Alternativ Licht und Fackel zurück auf 2/5.
 
-- **A) Hilfszauber billiger, Kampf- und Heilzauber teuer lassen.** Kandidaten sind die SLP-Treiber ohne Kampfwert:
-  - Mystische Karte I–III (65/70/75), Mystischer Globus (100), Mystische Skizze (60), die „… finden“-Zauber (je 15)
-  - Levitation (65), Alchemistischer Globus (100), Duplikation (65), Gegenstand laden (60), Wort des Markierens/der Rückkehr (50/40)
-  - Das entlastet Voll- und Halbmagier gleichermaßen.
-- **B) SLP/Level der Vollmagier angleichen.** Ziel z. B. „Schule bei ~Level 45–50 komplett“. Bei den heutigen Kosten wären das etwa:
-  - Sabine 20–23
-  - Leonaria 30
-  - Targor 27–32
-  - Nelvin 8–9 (heute 10, kann bleiben)
-  - Alternativ mit A die Schulsummen auf etwa 600–650 senken; dann reichen für alle Vollmagier ~16–20.
-- **C) Halbmagier:** Ziel „gute Auswahl, aber nicht alles“, z. B. 40–50 % der Schul-SLP bis Level 50. Das wären etwa:
-  - Thalion ~13–15
-  - Valdyn ~12–13
-  - Gryban ~13, oder er behält 7 und die hohen Start-SLP.
-  - Den INT von Thalion und Valdyn wieder auf ≥ 25 zu setzen, gibt +1 SLP/Lvl ohne Datenänderung an SLP/Lvl.
-- **D) Lernversuch:** Fehlschläge kosten aktuell die vollen SLP plus die Rolle.
-  - Die halben SLP bei Fehlschlag (Code-Änderung Amiga + Remake) oder höhere Start-R-M für Thalion würden den Frühspiel-Frust stark senken.
-  - Die Balance im Late-Game ändert das kaum, weil R-M dort ohnehin hoch ist.
-
-Hinweis zum Werkzeug: Die Tabellen werden mit `slp_report.py` aus den Spieldaten erzeugt. Nach Datenänderungen lässt sich das Dokument neu generieren und vergleichen.
+Hinweis zum Werkzeug: Die Tabellen werden mit `tools/slp_analysis/slp_report.py` aus den Spieldaten erzeugt. Nach Datenänderungen lässt sich das Dokument neu generieren und vergleichen.

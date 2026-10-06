@@ -129,7 +129,11 @@ w('- **Original:** deutsche Version 1.20 (`Ambermoon/Disks/German`), Partymitgli
 w('- **Advanced Ep4:** `german/Amberfiles/Save.00/Party_char.amb` (Branch episode4), Zauberkosten aus der Amiga-Tabelle `DAT_SpellInfos` in `code_changes/AM2_CPU.s`.')
 w('- Schriftrollen aus den Item-Daten beider Versionen.')
 w('')
-w(f'Abweichung Remake ↔ Amiga (Advanced): nur Zauber 66 „{spell_name(66)}“ (Remake {remake_a[66]} SLP, Amiga {amiga[66][1]} SLP). Das Remake sollte angepasst werden.')
+diffs = [i for i in sorted(amiga) if i in remake_a and remake_a[i] != amiga[i][1]]
+if diffs:
+    w('Abweichungen Remake ↔ Amiga (Advanced, SLP): ' + ', '.join(f'{i} „{spell_name(i)}“ (Remake {remake_a[i]}, Amiga {amiga[i][1]})' for i in diffs) + '.')
+else:
+    w('Remake und Amiga (Advanced) haben identische SLP-Kosten.')
 w('')
 w('## 1. Mechanik')
 w('')

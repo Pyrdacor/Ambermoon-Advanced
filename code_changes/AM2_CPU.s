@@ -271086,13 +271086,13 @@ DAT_SpellInfos:
 	; Remove Fear
 	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $05 ; SpellInfo.SP
-	dc.b $0a ; SpellInfo.SLP
+	dc.b $05 ; SpellInfo.SLP
 	dc.b $01 ; = SingleAlly ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
 	; Remove Panic
 	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $0f ; SpellInfo.SP
-	dc.b $14 ; SpellInfo.SLP
+	dc.b $0f ; SpellInfo.SLP
 	dc.b $04 ; = AllAllies ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
 	; Remove Shadows
@@ -271104,7 +271104,7 @@ DAT_SpellInfos:
 	; Remove Blindness
 	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $14 ; SpellInfo.SP
-	dc.b $14 ; SpellInfo.SLP
+	dc.b $0f ; SpellInfo.SLP
 	dc.b $04 ; = AllAllies ; SpellInfo.Target
 	dc.b $02 ; = Physical ; SpellInfo.Element
 	; Remove Pain
@@ -271116,31 +271116,31 @@ DAT_SpellInfos:
 	; Remove Disease
 	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $14 ; SpellInfo.SP
-	dc.b $1e ; SpellInfo.SLP
+	dc.b $19 ; SpellInfo.SLP
 	dc.b $04 ; = AllAllies ; SpellInfo.Target
 	dc.b $02 ; = Physical ; SpellInfo.Element
 	; Small Healing
 	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $0f ; SpellInfo.SP
-	dc.b $0f ; SpellInfo.SLP
+	dc.b $0a ; SpellInfo.SLP
 	dc.b $01 ; = SingleAlly ; SpellInfo.Target
 	dc.b $02 ; = Physical ; SpellInfo.Element
 	; Remove Poison
 	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $0f ; SpellInfo.SP
-	dc.b $14 ; SpellInfo.SLP
+	dc.b $0a ; SpellInfo.SLP
 	dc.b $01 ; = SingleAlly ; SpellInfo.Target
 	dc.b $03 ; = Undead ; SpellInfo.Element
 	; Neutralize Poison
 	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $19 ; SpellInfo.SP
-	dc.b $1e ; SpellInfo.SLP
+	dc.b $0f ; SpellInfo.SLP
 	dc.b $04 ; = AllAllies ; SpellInfo.Target
 	dc.b $03 ; = Undead ; SpellInfo.Element
 	; Medium Healing
 	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $32 ; SpellInfo.SP
-	dc.b $23 ; SpellInfo.SLP
+	dc.b $19 ; SpellInfo.SLP
 	dc.b $01 ; = SingleAlly ; SpellInfo.Target
 	dc.b $02 ; = Physical ; SpellInfo.Element
 	; Dispell Undead
@@ -271152,61 +271152,61 @@ DAT_SpellInfos:
 	; Destroy Undead
 	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $32 ; SpellInfo.SP
-	dc.b $19 ; SpellInfo.SLP
+	dc.b $14 ; SpellInfo.SLP
 	dc.b $10 ; = EnemyRow ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; Holy Word
 	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $64 ; SpellInfo.SP
-	dc.b $23 ; SpellInfo.SLP
+	dc.b $1e ; SpellInfo.SLP
 	dc.b $20 ; = AllEnemies ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; Wake The Dead
 	dc.b $e8 ; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $64 ; SpellInfo.SP
-	dc.b $3c ; SpellInfo.SLP
+	dc.b $19 ; SpellInfo.SLP
 	dc.b $01 ; = SingleAlly ; SpellInfo.Target
 	dc.b $03 ; = Undead ; SpellInfo.Element
 	; Change Ashes
 	dc.b $e8 ; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $96 ; SpellInfo.SP
-	dc.b $1e ; SpellInfo.SLP
+	dc.b $14 ; SpellInfo.SLP
 	dc.b $01 ; = SingleAlly ; SpellInfo.Target
 	dc.b $03 ; = Undead ; SpellInfo.Element
 	; Change Dust
 	dc.b $e8 ; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $fa ; SpellInfo.SP
-	dc.b $1e ; SpellInfo.SLP
+	dc.b $14 ; SpellInfo.SLP
 	dc.b $01 ; = SingleAlly ; SpellInfo.Target
 	dc.b $03 ; = Undead ; SpellInfo.Element
 	; Great Healing
 	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $64 ; SpellInfo.SP
-	dc.b $2d ; SpellInfo.SLP
+	dc.b $28 ; SpellInfo.SLP
 	dc.b $01 ; = SingleAlly ; SpellInfo.Target
 	dc.b $02 ; = Physical ; SpellInfo.Element
 	; Mass Healing
 	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $96 ; SpellInfo.SP
-	dc.b $2d ; SpellInfo.SLP
+	dc.b $23 ; SpellInfo.SLP
 	dc.b $04 ; = AllAllies ; SpellInfo.Target
 	dc.b $02 ; = Physical ; SpellInfo.Element
 	; Resurrection
 	dc.b $e8 ; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $fa ; SpellInfo.SP
-	dc.b $50 ; SpellInfo.SLP
+	dc.b $32 ; SpellInfo.SLP
 	dc.b $04 ; = AllAllies ; SpellInfo.Target
 	dc.b $03 ; = Undead ; SpellInfo.Element
 	; Remove Rigidness
 	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $0f ; SpellInfo.SP
-	dc.b $19 ; SpellInfo.SLP
+	dc.b $05 ; SpellInfo.SLP
 	dc.b $01 ; = SingleAlly ; SpellInfo.Target
 	dc.b $02 ; = Physical ; SpellInfo.Element
 	; Remove Lamedness
 	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $1e ; SpellInfo.SP
-	dc.b $23 ; SpellInfo.SLP
+	dc.b $0a ; SpellInfo.SLP
 	dc.b $04 ; = AllAllies ; SpellInfo.Target
 	dc.b $02 ; = Physical ; SpellInfo.Element
 	; Heal Aging
@@ -271230,13 +271230,13 @@ DAT_SpellInfos:
 	; Wake Up
 	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $0a ; SpellInfo.SP
-	dc.b $0a ; SpellInfo.SLP
+	dc.b $05 ; SpellInfo.SLP
 	dc.b $01 ; = SingleAlly ; SpellInfo.Target
 	dc.b $02 ; = Physical ; SpellInfo.Element
 	; Remove Irritation
 	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $0a ; SpellInfo.SP
-	dc.b $0f ; SpellInfo.SLP
+	dc.b $0a ; SpellInfo.SLP
 	dc.b $01 ; = SingleAlly ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
 	; Remove Drugs
@@ -271248,7 +271248,7 @@ DAT_SpellInfos:
 	; Remove Madness
 	dc.b $e8 ; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $64 ; SpellInfo.SP
-	dc.b $1e ; SpellInfo.SLP
+	dc.b $14 ; SpellInfo.SLP
 	dc.b $01 ; = SingleAlly ; SpellInfo.Target
 	dc.b $02 ; = Physical ; SpellInfo.Element
 	; Restore Stamina
@@ -271260,7 +271260,7 @@ DAT_SpellInfos:
 	; Charge Item
 	dc.b $e8 ; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $fa ; SpellInfo.SP
-	dc.b $3c ; SpellInfo.SLP
+	dc.b $23 ; SpellInfo.SLP
 	dc.b $40 ; = Item ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; Light
@@ -271278,43 +271278,43 @@ DAT_SpellInfos:
 	; Magical Lantern
 	dc.b $ef ; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $19 ; SpellInfo.SP
-	dc.b $14 ; SpellInfo.SLP
+	dc.b $0f ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; Magical Sun
 	dc.b $ef ; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $32 ; SpellInfo.SP
-	dc.b $23 ; SpellInfo.SLP
+	dc.b $14 ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; Ghost Weapon
 	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $0a ; SpellInfo.SP
-	dc.b $19 ; SpellInfo.SLP
+	dc.b $0a ; SpellInfo.SLP
 	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; Create Food
 	dc.b $ef ; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $19 ; SpellInfo.SP
-	dc.b $1e ; SpellInfo.SLP
+	dc.b $0f ; SpellInfo.SLP
 	dc.b $04 ; = AllAllies ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; Remove Curses
 	dc.b $e8 ; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $64 ; SpellInfo.SP
-	dc.b $14 ; SpellInfo.SLP
+	dc.b $0f ; SpellInfo.SLP
 	dc.b $01 ; = SingleAlly ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; Blink
 	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $14 ; SpellInfo.SP
-	dc.b $0f ; SpellInfo.SLP
+	dc.b $0a ; SpellInfo.SLP
 	dc.b $80 ; = Blink ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; Jump
 	dc.b $e4 ; = Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $32 ; SpellInfo.SP
-	dc.b $1e ; SpellInfo.SLP
+	dc.b $14 ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; Escape
@@ -271326,73 +271326,73 @@ DAT_SpellInfos:
 	; Word Of Marking
 	dc.b $27 ; = WorldMap | Map2D | Map3D | Lyramion ; SpellInfo.UseConditions
 	dc.b $96 ; SpellInfo.SP
-	dc.b $32 ; SpellInfo.SLP
+	dc.b $23 ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; Word Of Returning
 	dc.b $27 ; = WorldMap | Map2D | Map3D | Lyramion ; SpellInfo.UseConditions
 	dc.b $fa ; SpellInfo.SP
-	dc.b $28 ; SpellInfo.SLP
+	dc.b $23 ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; Magical Shield
 	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $0f ; SpellInfo.SP
-	dc.b $14 ; SpellInfo.SLP
+	dc.b $0a ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; Magical Wall
 	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $1e ; SpellInfo.SP
-	dc.b $19 ; SpellInfo.SLP
+	dc.b $0f ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; Magical Barrier
 	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $32 ; SpellInfo.SP
-	dc.b $1e ; SpellInfo.SLP
+	dc.b $14 ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; Magical Weapon
 	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $0f ; SpellInfo.SP
-	dc.b $14 ; SpellInfo.SLP
+	dc.b $0a ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; Magical Assault
 	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $1e ; SpellInfo.SP
-	dc.b $19 ; SpellInfo.SLP
+	dc.b $0f ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; Magical Attack
 	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $32 ; SpellInfo.SP
-	dc.b $1e ; SpellInfo.SLP
+	dc.b $14 ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; Levitation
 	dc.b $e4 ; = Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $19 ; SpellInfo.SP
-	dc.b $41 ; SpellInfo.SLP
+	dc.b $1e ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; Anti-Magic Wall
 	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $19 ; SpellInfo.SP
-	dc.b $19 ; SpellInfo.SLP
+	dc.b $0f ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; Anti-Magic Sphere
 	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $32 ; SpellInfo.SP
-	dc.b $28 ; SpellInfo.SLP
+	dc.b $14 ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; Alchemistic Globe
 	dc.b $e8 ; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $c8 ; SpellInfo.SP
-	dc.b $64 ; SpellInfo.SLP
+	dc.b $50 ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; Hurry
@@ -271404,31 +271404,31 @@ DAT_SpellInfos:
 	; Mass Hurry
 	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $32 ; SpellInfo.SP
-	dc.b $28 ; SpellInfo.SLP
+	dc.b $23 ; SpellInfo.SLP
 	dc.b $04 ; = AllAllies ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; Repair Item
 	dc.b $e8 ; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $64 ; SpellInfo.SP
-	dc.b $28 ; SpellInfo.SLP
+	dc.b $23 ; SpellInfo.SLP
 	dc.b $40 ; = Item ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; Duplicate Item
 	dc.b $e8 ; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $fa ; SpellInfo.SP
-	dc.b $41 ; SpellInfo.SLP
+	dc.b $23 ; SpellInfo.SLP
 	dc.b $40 ; = Item ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; LP Stealer
 	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $19 ; SpellInfo.SP
-	dc.b $19 ; SpellInfo.SLP
+	dc.b $08 ; SpellInfo.SLP
 	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
 	dc.b $03 ; = Undead ; SpellInfo.Element
 	; SP Stealer
 	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $19 ; SpellInfo.SP
-	dc.b $19 ; SpellInfo.SLP
+	dc.b $08 ; SpellInfo.SLP
 	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; Ghost Inferno (ADVANCED)
@@ -271440,13 +271440,13 @@ DAT_SpellInfos:
 	; Monster Knowledge
 	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $05 ; SpellInfo.SP
-	dc.b $0f ; SpellInfo.SLP
+	dc.b $05 ; SpellInfo.SLP
 	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
 	; Identification
 	dc.b $e8 ; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $32 ; SpellInfo.SP
-	dc.b $23 ; SpellInfo.SLP
+	dc.b $0f ; SpellInfo.SLP
 	dc.b $40 ; = Item ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
 	; Knowledge
@@ -271464,115 +271464,115 @@ DAT_SpellInfos:
 	; See The Truth
 	dc.b $ef ; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $3c ; SpellInfo.SP
-	dc.b $1e ; SpellInfo.SLP
+	dc.b $19 ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
 	; Map View
 	dc.b $ef ; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $32 ; SpellInfo.SP
-	dc.b $14 ; SpellInfo.SLP
+	dc.b $0a ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
 	; Magical Compass
 	dc.b $e7 ; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $05 ; SpellInfo.SP
-	dc.b $05 ; SpellInfo.SLP
+	dc.b $02 ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
 	; Find Traps
 	dc.b $e7 ; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $19 ; SpellInfo.SP
-	dc.b $0f ; SpellInfo.SLP
+	dc.b $0a ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
 	; Find Monsters
 	dc.b $e7 ; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $19 ; SpellInfo.SP
-	dc.b $0f ; SpellInfo.SLP
+	dc.b $0a ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
 	; Find Persons
 	dc.b $e7 ; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $19 ; SpellInfo.SP
-	dc.b $0f ; SpellInfo.SLP
+	dc.b $0a ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
 	; Find Secret Doors
 	dc.b $e7 ; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $19 ; SpellInfo.SP
-	dc.b $0f ; SpellInfo.SLP
+	dc.b $0a ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
 	; Mystical Mapping
 	dc.b $e7 ; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $64 ; SpellInfo.SP
-	dc.b $3c ; SpellInfo.SLP
+	dc.b $14 ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
 	; Mystical Map I
 	dc.b $e7 ; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $19 ; SpellInfo.SP
-	dc.b $41 ; SpellInfo.SLP
+	dc.b $19 ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
 	; Mystical Map II
 	dc.b $e7 ; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $23 ; SpellInfo.SP
-	dc.b $46 ; SpellInfo.SLP
+	dc.b $1e ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
 	; Mystical Map III
 	dc.b $e7 ; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $2d ; SpellInfo.SP
-	dc.b $4b ; SpellInfo.SLP
+	dc.b $23 ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
 	; Mystical Globe
 	dc.b $ef ; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $64 ; SpellInfo.SP
-	dc.b $64 ; SpellInfo.SLP
+	dc.b $32 ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
 	; Show Monster LP
 	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $0f ; SpellInfo.SP
-	dc.b $0f ; SpellInfo.SLP
+	dc.b $08 ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
 	; Show Elements
 	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $0a ; SpellInfo.SP
-	dc.b $0a ; SpellInfo.SLP
+	dc.b $05 ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
 	; Recognize Weak Point
 	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $0f ; SpellInfo.SP
-	dc.b $14 ; SpellInfo.SLP
+	dc.b $0f ; SpellInfo.SLP
 	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; See Weaknesses
 	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $1e ; SpellInfo.SP
-	dc.b $19 ; SpellInfo.SLP
+	dc.b $14 ; SpellInfo.SLP
 	dc.b $10 ; = EnemyRow ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; Knowledge Of The Weakness
 	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $2d ; SpellInfo.SP
-	dc.b $1e ; SpellInfo.SLP
+	dc.b $19 ; SpellInfo.SLP
 	dc.b $20 ; = AllEnemies ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; Foresee Magic
 	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $0f ; SpellInfo.SP
-	dc.b $14 ; SpellInfo.SLP
+	dc.b $0f ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
 	; Foresee Attack
 	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $0f ; SpellInfo.SP
-	dc.b $14 ; SpellInfo.SLP
+	dc.b $0f ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
 	; Mystic Decay
@@ -271584,31 +271584,31 @@ DAT_SpellInfos:
 	; Protection Sphere
 	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $32 ; SpellInfo.SP
-	dc.b $14 ; SpellInfo.SLP
+	dc.b $0f ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; Element to earth
 	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $4b ; SpellInfo.SP
-	dc.b $23 ; SpellInfo.SLP
+	dc.b $0a ; SpellInfo.SLP
 	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
 	dc.b $10 ; = Earth ; SpellInfo.Element
 	; Element to wind
 	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $4b ; SpellInfo.SP
-	dc.b $23 ; SpellInfo.SLP
+	dc.b $0a ; SpellInfo.SLP
 	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
 	dc.b $20 ; = Wind ; SpellInfo.Element
 	; Element to fire
 	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $4b ; SpellInfo.SP
-	dc.b $23 ; SpellInfo.SLP
+	dc.b $0a ; SpellInfo.SLP
 	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
 	dc.b $40 ; = Fire ; SpellInfo.Element
 	; Element to water
 	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $4b ; SpellInfo.SP
-	dc.b $23 ; SpellInfo.SLP
+	dc.b $0a ; SpellInfo.SLP
 	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
 	dc.b $80 ; = Water ; SpellInfo.Element
 	; Mystic Imitation
