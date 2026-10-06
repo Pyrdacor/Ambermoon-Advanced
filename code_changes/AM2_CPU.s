@@ -13971,6 +13971,7 @@ LAB_0022a26a:
 ; D6=X, D7=Y, D3=TravelType, D0 can be freely used
 ; Returns 0 if not blocking, otherwise non-zero
 FUN_CheckIfJumpTargetIsBlocking:
+	movem.l D1-D7/A0-A6,-(SP) ; event processing might change registers
 	; First check for blocking walls/objects
 	jsr FUN_GetTileFlagsAtPos
 	btst.l #$00000007,D0 ; block all bit set?
@@ -13978,6 +13979,8 @@ FUN_CheckIfJumpTargetIsBlocking:
 	btst.l D3,D0 ; check if travel type allow bit is set
 	beq.b .Block ; if not, block
 	; Check for specific events
+	move.w D6,D0 ; X (D0 holds the tile flags here)
+	move.w D7,D1 ; Y
 	jsr FUN_GetMapEventFromPosition
 	bmi.w .NoBlock
 	jsr FUN_CheckIfMapEventIsActive
@@ -14007,6 +14010,7 @@ FUN_CheckIfJumpTargetIsBlocking:
 .Block:
 	moveq #-$00000001,D0
 .End:
+	movem.l (SP)+,D1-D7/A0-A6 ; does not change the condition codes
 	rts
 ; Executes all condition events until some other
 ; event is reached, the end of chain is reached
