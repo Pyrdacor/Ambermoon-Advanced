@@ -4,5 +4,4 @@ The Amiga code uses (x & 0xf8) for overlay positions. Each misaligned overlay go
 padded copy of its texture (overlays 133-150 in 2Overlay3D.amb and 3Overlay3D.amb)
 so the result in the remake is pixel-identical and the Amiga now matches it.
 
-To check again: python tools/ambtools/fix_overlays.py is not in the repo, but
-labdata.py can be used to list overlays with (x % 8) != 0.
+tools/ambtools/validate.py reports new misaligned overlays.
