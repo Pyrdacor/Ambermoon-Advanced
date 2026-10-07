@@ -1,0 +1,144 @@
+# Bandit house (map 274): the curved wall pieces (tiles 666/668 at (10,6) and (12,6))
+# are walkable on top of a wall, but they are replaced by the lever in the left
+# fireplace before you can reach them. This test walks the intended way and
+# checks where you can walk around the opened passage.
+
+wait 2500
+cheat godmode
+# in front of the house (target of the lower exit teleport)
+cheat teleport 141 27 12 up
+wait 1000
+dismissall 8000
+key Up
+wait 1500
+dismissall 8000
+state
+
+# to the left fireplace
+key Left
+wait 450
+key Left
+wait 450
+key Left
+wait 450
+key Left
+wait 450
+key Left
+wait 450
+key Up
+wait 450
+key Up
+wait 450
+key Up
+wait 450
+key Up
+wait 450
+key Up
+wait 450
+key Up
+wait 450
+key Up
+wait 450
+state
+# the lever: text, then the decision popup
+key Up
+wait 1000
+dismiss
+wait 1000
+screenshot bandit_lever
+yes
+wait 1000
+dismissall 6000
+state
+
+# to the archway (row 9), its popup spawns the bandits
+key Down
+wait 450
+key Down
+wait 450
+key Right
+wait 450
+key Right
+wait 450
+key Right
+wait 450
+key Right
+wait 450
+key Right
+wait 450
+key Up
+wait 450
+key Up
+wait 450
+key Up
+wait 1000
+dismissall 6000
+cheat berserk
+wait 1000
+dismissall 4000
+state
+
+# row 8: the wall above is open now
+key Up
+wait 600
+state
+# (11,7)
+key Up
+wait 600
+state
+key Left
+wait 600
+state
+key Right
+wait 600
+state
+key Right
+wait 600
+state
+key Left
+wait 600
+state
+# (11,6)
+key Up
+wait 600
+state
+key Left
+wait 600
+state
+key Right
+wait 600
+state
+key Right
+wait 600
+state
+key Left
+wait 600
+state
+screenshot bandit_passage
+# (11,5) into the upper room, its popup spawns another bandit
+key Up
+wait 1000
+dismissall 6000
+cheat berserk
+wait 1000
+dismissall 4000
+state
+key Left
+wait 600
+state
+key Down
+wait 600
+state
+key Up
+wait 600
+key Right
+wait 600
+key Right
+wait 600
+state
+key Down
+wait 600
+state
+screenshot bandit_end
+wait 500
+exit

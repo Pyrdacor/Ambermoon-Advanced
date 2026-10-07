@@ -53,3 +53,14 @@ Negative control: scripts 3 and 3b fail with the map data before the fix (`6c355
 | `combat_background_ancient_city.txt` | Monster in map 483 uses background 13 (char tile flags), event battle in 484 uses the labdata 44 default (4) | 2/2 |
 
 Background 13 is rendered as the desert graphic (13) only with the remake fix in `CombatBackgrounds.AdvancedReplacements3D` (branch `aa4-fixes`). Before it showed graphic 1.
+
+## Bandit house passage (map 274)
+
+| Script | Case | Result 2026-10-07 |
+|---|---|---|
+| `bandit_house_passage.txt` | Enter from map 141, pull the lever in the left fireplace, pass the archway (`cheat berserk` removes the bandits), then try all steps around the opened passage | exploration, no checks |
+
+Observed in the remake: after the lever (11,7), (10,6), (11,6) and (12,6) are walkable, (10,7) and (12,7) block.
+The lever's tile changes (to 50/52) set the background tile, so the curved wall pieces 666-669 stay
+visible and the player stands half behind them on (10,6)/(12,6). Before the lever (10,6)/(12,6) can be
+entered from the upper room (which is also reachable from map 276).
