@@ -399,8 +399,8 @@ Test_active_weight:
 	beq.s	.Next
 	subq.w	#1,d1			; Yes -> Get data
 	mulu.w	#Item_data_size,d1
-	lea.l	Object_data+4,a2
-	add.l	d1,a2
+	move.l	Object_data_ptr,a2		; BUILD: Was "lea.l Object_data+4,a2"
+	add.l	d1,a2			;  (item data is loaded from a file now)
 	move.w	Weight(a2),d1		; Get weight
 	moveq.l	#0,d2			; Get quantity
 	move.b	Quantity(a1),d2
@@ -422,6 +422,27 @@ Test_active_weight:
 	jsr	Exit_diagnostic_screen
 	movem.l	(sp)+,d0-d7/a0-a6
 	rts
+
+;*****************************************************************************
+; [ Print a number on the diagnostic screen ]
+;   IN : d0 - Number (.b / .w / .l)
+; All registers are restored
+; NOTE :
+;   - BUILD: These were part of the original diagnostic screen code, which is
+;     missing. They use the reconstructed routines in KERNEL/DI_SCREEN.S.
+;*****************************************************************************
+DI_DecB:
+	move.l	d0,-(sp)
+	andi.w	#$00ff,d0
+	jsr	DI_Print_number
+	move.l	(sp)+,d0
+	rts
+
+DI_DecW:
+	jmp	DI_Print_number
+
+DI_DecL:
+	jmp	DI_Print_long
 
 ;*****************************************************************************
 ; [ Print diagnostic numbers ]

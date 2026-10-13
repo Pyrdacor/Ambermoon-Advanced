@@ -99,7 +99,7 @@ Wall_width	EQU 128
 Wall_size	EQU 80*8*2*planes
 
 Gold_weight	EQU 5			; Weight of 1 gold coin
-Food_weight	EQU 250			; Weight of 1 food unit
+Food_weight	EQU 25			; Weight of 1 food unit (ADVANCED: was 250)
 
 M2_movement_speed	EQU 8
 

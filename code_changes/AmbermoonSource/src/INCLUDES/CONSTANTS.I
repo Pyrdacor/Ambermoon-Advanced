@@ -4,7 +4,9 @@
 ; kernel include files). The values were recovered from AM2_CPU.
 
 ; ---------- Assembly flags --------------------------
-Cheat	EQU	0
+	ifnd	Cheat
+Cheat	EQU	0			; Diagnostic keys (Amiga + key), build with -DCheat=1
+	endc
 FALSE	EQU	0
 Fingerprint	EQU	0
 
