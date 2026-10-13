@@ -729,10 +729,6 @@ Sage_DisInit:
 	jsr	Display_control_icons
 	jsr	Hide_Lay3_objects		; Hide slots
 	jmp	Places_DisInit
-
-; ********** Sage - Examine body item *************
-Examine_body_item:
-; ---------- Enough money ? -----------------------
 FUN_UpdatePlaceCost:
 	; D0 is the byte offset
 	; cost is written to DAT_PlaceCost
@@ -750,6 +746,10 @@ FUN_UpdatePlaceCost:
 	jsr Free_pointer
 	movem.l (SP)+,D0/D1/A0
 	rts
+
+; ********** Sage - Examine body item *************
+Examine_body_item:
+; ---------- Enough money ? -----------------------
 	moveq #2,D0
 	jsr FUN_UpdatePlaceCost
 	move.w	Current_gold,d0
@@ -785,10 +785,6 @@ FUN_UpdatePlaceCost:
 .Exit:	jsr	Hide_Lay3_objects		; Hide slots
 	jsr	Update_screen
 .Exit2:	rts
-
-; ********** Sage - Examine backpack item *********
-Examine_backpack_item:
-; ---------- Enough money ? -----------------------
 FUN_SageShowSLP:
 	move.l A2,-(SP)
 	moveq #4,D0
@@ -797,6 +793,10 @@ FUN_SageShowSLP:
 	jsr FUN_SageIdentifyInventoryItemOrScroll
 	move.l (SP)+,A2
 	rts
+
+; ********** Sage - Examine backpack item *********
+Examine_backpack_item:
+; ---------- Enough money ? -----------------------
 	move.l A2,-(SP)
 	moveq #2,D0
 	jsr FUN_UpdatePlaceCost
@@ -830,12 +830,6 @@ FUN_SageIdentifyInventoryItemOrScroll:
 .Exit:	jsr	Hide_Lay3_objects		; Hide slots
 	jsr	Update_screen
 .Exit2:	rts
-
-;*****************************************************************************
-; [ Examine object ]
-;   IN : d0 - Slot index {0...32} (.w)
-; No registers are restored
-;*****************************************************************************
 DAT_ScrollSLPTextBuffer:
 	dc.b 0
 	dc.b 0
@@ -913,6 +907,12 @@ LAB_ShowSLPIsScroll:
 	; End of SLP message drawing
 LAB_ShowScrollSPEnd:
 	rts
+
+;*****************************************************************************
+; [ Examine object ]
+;   IN : d0 - Slot index {0...32} (.w)
+; No registers are restored
+;*****************************************************************************
 Do_examine:
 	Get	Active_handle,a2		; Get object packet address
 	lea.l	Char_inventory(a2),a2

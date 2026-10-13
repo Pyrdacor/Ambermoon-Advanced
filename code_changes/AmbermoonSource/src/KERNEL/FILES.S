@@ -92,16 +92,6 @@ Load_subfile_sizes_Skip3:
 ;*****************************************************************************
 Close_file:
 	jmp	Close_current_file
-
-;*****************************************************************************
-; [ Load a subfile ]
-;   IN : d0 - Subfile number (.w)
-;        d1 - File number (.w)
-;  OUT : d0 - Memory handle (.b)
-; NOTE (disassembly) :
-;   D1 = File index
-;   D0 = Sub file index (texture index)
-;*****************************************************************************
 ; ADVANCED CHANGES - START
 FUN_SeekToSubFileOffset:
 	move.l A0,-(SP)
@@ -270,6 +260,16 @@ FUN_ReadCurrentFileBytesWithErrorCode: ; D3 is the size in bytes
 	moveq #-2,D0
 LAB_ReadCurrentFileBytesWithErrorCode_End:
 	rts
+
+;*****************************************************************************
+; [ Load a subfile ]
+;   IN : d0 - Subfile number (.w)
+;        d1 - File number (.w)
+;  OUT : d0 - Memory handle (.b)
+; NOTE (disassembly) :
+;   D1 = File index
+;   D0 = Sub file index (texture index)
+;*****************************************************************************
 Load_subfile:
 	movem.l	d1-d7/a0-a6,-(sp)
 	lea.l	-28(sp),sp

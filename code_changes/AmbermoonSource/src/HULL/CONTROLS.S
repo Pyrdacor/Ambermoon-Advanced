@@ -1158,15 +1158,6 @@ Do_prompt:
 	jsr	Do_text
 	move.l	(sp)+,a0
 	rts
-
-;*****************************************************************************
-; [ Print a text, wait for the user and erase the text ]
-;   IN : d0 - Text block number (.w)
-;        a0 - Pointer to text file (.l)
-; All registers are	restored
-; Note :
-;  - This routine assumes a PA has been installed.
-;*****************************************************************************
 FUN_DrawTextWithClickCursorAndNameAtFront:
 	move.l A0,-(SP)
 	movea.l Prompts_ptr,A0
@@ -1193,6 +1184,15 @@ FUN_PrintTextWithNameAtFront:
 	jsr Free_pointer
 	movem.l (SP)+,D0/A0/A1
 	rts	
+
+;*****************************************************************************
+; [ Print a text, wait for the user and erase the text ]
+;   IN : d0 - Text block number (.w)
+;        a0 - Pointer to text file (.l)
+; All registers are	restored
+; Note :
+;  - This routine assumes a PA has been installed.
+;*****************************************************************************
 Do_text:
 	jsr	Print_text_and_wait		; Print, wait
 	jsr	Erase_PA			; Erase
@@ -1316,14 +1316,6 @@ Create_string_graphics:
 	move.w	(sp)+,d7
 	movem.l	(sp)+,d1-d5/a0
 	rts
-
-;*****************************************************************************
-; [ Find a text block in a LARGE text file ]
-;   IN : d0 - Text block number [0...] (.w)
-;        a0 - Pointer to large text file (.l)
-;  OUT : a0 - Pointer to text (.l)
-; Changed registers : a0
-;*****************************************************************************
 FUN_GetTextMessageLength:
 	move.l A0,-(SP)
 	move.w (A0)+,D7
@@ -1340,6 +1332,14 @@ FUN_GetTextMessageLength:
 .End:
 	move.l (SP)+,A0
 	rts
+
+;*****************************************************************************
+; [ Find a text block in a LARGE text file ]
+;   IN : d0 - Text block number [0...] (.w)
+;        a0 - Pointer to large text file (.l)
+;  OUT : a0 - Pointer to text (.l)
+; Changed registers : a0
+;*****************************************************************************
 Find_large_text:
 	movem.l	d0/d7/a1,-(sp)
 	move.w	(a0)+,d7			; Get number of texts

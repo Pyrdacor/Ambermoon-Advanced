@@ -1428,14 +1428,14 @@ Access_bit_array:
 	dc.l Max_words,WD
 	dc.l Max_words,New_words
 	dc.l Max_Goto_points,Goto_points
+	dc.l $0000007f ; Number of variables in savegame
+	dc.l DAT_ExtendedChestLockStates ; Start address of variables
 
 ;*****************************************************************************
 ; [ Pool gold ]
 ;  OUT : d0 - Pooled gold coins (.w)
 ; Changed registers : d0
 ;*****************************************************************************
-	dc.l $0000007f ; Number of variables in savegame
-	dc.l DAT_ExtendedChestLockStates ; Start address of variables
 Pool_gold:    
 	movem.l	d1/d2/d6/d7/a0/a1,-(sp)
 	lea.l	Party_handles,a0		; Calculate gold demand

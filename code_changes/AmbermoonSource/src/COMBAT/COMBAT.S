@@ -591,11 +591,6 @@ Parade:
 OK_combat:
 	lea.l	CombatDisplay_Mod,a0
 	jmp	Push_Module
-
-;*****************************************************************************
-; [ Do combat round ]
-; No registers are restored
-;*****************************************************************************
 ; AMBERMOON ADVANCED
 FUN_CheckBattleConditionsAtRoundStart:
 	; Note: DAT_Combat_monsters holds all monsters
@@ -702,6 +697,11 @@ DAT_BattleAgingInfo:
 	dc.b 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 ; 24 bytes
 DAT_SleepMask: EQU $0004
 DAT_DeadMask: EQU $e000
+
+;*****************************************************************************
+; [ Do combat round ]
+; No registers are restored
+;*****************************************************************************
 Do_combat_round:
 	st	Fighting			; Start !
 	sf	Random_animating
@@ -882,17 +882,17 @@ Do_combat_round:
 	; ADVANCED
 	jsr FUN_AfterBattleRound
 	jmp	Update_screen
-
-;*****************************************************************************
-; [ Update participant control status ]
-; All registers are restored
-;*****************************************************************************
 FUN_AfterBattleRound:
 	; Reset flags which should only last for 1 round
 	sf Foresee_magic
 	sf Foresee_attack
 	clr.b Protected_party_members
 	rts
+
+;*****************************************************************************
+; [ Update participant control status ]
+; All registers are restored
+;*****************************************************************************
 Update_control_status:
 	movem.l	d0/d1/d7/a0-a2,-(sp)
 	lea.l	Combat_matrix,a1		; Search matrix
@@ -1060,14 +1060,6 @@ Do_move:
 ;*****************************************************************************
 Do_parade:
 	rts
-
-;*****************************************************************************
-; [ Combat action - Close-range weapon ]
-;   IN : a0 - Pointer to participant data (.l)
-; No registers are restored
-;*****************************************************************************
-Do_close_range:
-; ---------- Find defender ------------------------
 ; AMBERMOON ADVANCED
 ; Advanced combat functions
 ;  a0 - Pointer to attacker's participant data
@@ -1169,6 +1161,14 @@ FUN_TestDefenderParry:
 	jsr Probe_100
 	movem.l (SP)+,D0/D1/D2
 	rts
+
+;*****************************************************************************
+; [ Combat action - Close-range weapon ]
+;   IN : a0 - Pointer to participant data (.l)
+; No registers are restored
+;*****************************************************************************
+Do_close_range:
+; ---------- Find defender ------------------------
 	lea.l	Combat_matrix,a1		; Get defender data
 	move.w	Part_target(a0),d0
 	lsl.w	#2,d0
@@ -1296,17 +1296,6 @@ FUN_TestDefenderParry:
 .Exit:	Free	Part_handle(a0)		; Exit
 	Free	Part_handle(a1)
 .Exit2:	rts
-
-;*****************************************************************************
-; [ Calculate attacker's damage & defender's protection ]
-;   IN : a0 - Pointer to attacker's participant data (.l)
-;        a1 - Pointer to defender's participant data (.l)
-;        a2 - Pointer to attacker's character data (.l)
-;        a3 - Pointer to defender's character data (.l)
-;  OUT : d1 - Attacker's damage (.w)
-;        d2 - Defender's protection (.w)
-; All registers are restored
-;*****************************************************************************
 FUN_IsWeaponABow:
 	; A2 should be the character data
 	movem.l D0/A0,-(SP)
@@ -1489,6 +1478,17 @@ FUN_ApplyBattleDefenseEffects:
 	asr.w #1,D2 ; half the damage	
 .End_Adv:
 	rts
+
+;*****************************************************************************
+; [ Calculate attacker's damage & defender's protection ]
+;   IN : a0 - Pointer to attacker's participant data (.l)
+;        a1 - Pointer to defender's participant data (.l)
+;        a2 - Pointer to attacker's character data (.l)
+;        a3 - Pointer to defender's character data (.l)
+;  OUT : d1 - Attacker's damage (.w)
+;        d2 - Defender's protection (.w)
+; All registers are restored
+;*****************************************************************************
 Calculate_damage_and_protection:
 	move.l	d0,-(sp)
 ; ---------- Calculate damage ---------------------
@@ -2607,13 +2607,6 @@ Display_combat_text:
 	jsr	Delay
 .Exit:	move.l	(sp)+,d1
 	rts
-
-;*****************************************************************************
-; [ Do damage to party member in combat ]
-;   IN : d0 - Amount of damage (.w)
-;        a0 - Pointer to party member's participant data (.l)
-; All registers are	restored
-;*****************************************************************************
 FUN_IsPartyMemberProtected:
 	movem.l D1/D0,-(SP)
 	moveq #0,D0
@@ -2623,6 +2616,13 @@ FUN_IsPartyMemberProtected:
 	btst.l D0,D1
 	movem.l (SP)+,D0/D1
 	rts
+
+;*****************************************************************************
+; [ Do damage to party member in combat ]
+;   IN : d0 - Amount of damage (.w)
+;        a0 - Pointer to party member's participant data (.l)
+; All registers are	restored
+;*****************************************************************************
 Do_combat_damage:
 	movem.l	d0-d3/a1,-(sp)
 	Get	Part_handle(a0),a1
@@ -2671,13 +2671,6 @@ Do_combat_damage:
 .Exit:	Free	Part_handle(a0)
 	movem.l	(sp)+,d0-d3/a1
 	rts
-
-;*****************************************************************************
-; [ Do damage to monster ]
-;   IN : d0 - Amount of damage (.w)
-;        a0 - Pointer to monster's participant data (.l)
-; All registers are	restored
-;*****************************************************************************
 FUN_IsMonsterWeakened:
 	movem.l A0/D7/D0,-(SP)
 	moveq #0,D0
@@ -2698,6 +2691,13 @@ FUN_IsMonsterWeakened:
 .End:
 	movem.l (SP)+,D0/D7/A0
 	rts
+
+;*****************************************************************************
+; [ Do damage to monster ]
+;   IN : d0 - Amount of damage (.w)
+;        a0 - Pointer to monster's participant data (.l)
+; All registers are	restored
+;*****************************************************************************
 Do_damage_to_monster:
 	movem.l	d0/d1/a0-a2,-(sp)
 	Get	Part_handle(a0),a1		; Can be damaged ?

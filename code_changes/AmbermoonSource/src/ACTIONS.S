@@ -599,15 +599,6 @@ Print_visible_event:
 .Exit:	tst.w	d0			; Well ?
 	movem.l	(sp)+,d0/a0
 	rts
-
-;*****************************************************************************
-; [ Touch ]
-;   IN : d0 - Map X-coordinate (.w)
-;        d1 - Map Y-coordinate (.w)
-;  OUT : eq - No luck
-;        ne - I felt something
-; All registers are restored
-;*****************************************************************************
 ; Check for eye, hand, mouth or multicursor events
 ; in false branch of use item event.
 ; Of after skipping some other conditions.
@@ -653,6 +644,15 @@ FUN_CheckUseItemFalseBranch:
 	moveq #-1,D2
 .Abort:
 	rts
+
+;*****************************************************************************
+; [ Touch ]
+;   IN : d0 - Map X-coordinate (.w)
+;        d1 - Map Y-coordinate (.w)
+;  OUT : eq - No luck
+;        ne - I felt something
+; All registers are restored
+;*****************************************************************************
 Touch:
 	movem.l	d0-d2/a5,-(sp)
 	moveq.l	#0,d2			; Default is no luck

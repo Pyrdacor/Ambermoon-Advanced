@@ -10,11 +10,6 @@
 ;
 
 	SECTION	Program,code
-;*****************************************************************************
-; [ Spell select window module ]
-; Note :
-;  - This module will exit if no spells are known in this class.
-;*****************************************************************************
 ; ADVANCED CHANGES - START
 FUN_GetSPCost:
 	; A1 points to the current spell info (5 bytes)
@@ -54,6 +49,11 @@ LAB_SetSPCost:
 	move.b ($0001,A1),D0
 	move.l (SP)+,A1
 	rts
+;*****************************************************************************
+; [ Spell select window module ]
+; Note :
+;  - This module will exit if no spells are known in this class.
+;*****************************************************************************
 SpSelW_ModInit:
 	clr.w	Selected_spell		; Clear
 ; ---------- Make list of spells & status ---------
@@ -660,14 +660,14 @@ Wake_the_dead:
 .Go:	jsr	Do_all_targets
 	jsr	Wait_4_sparkles		; Wait
 .Exit:	rts
+; ADVANCED CHANGES - START
+DAT_ReviveMessageId:
+	dc.w $0039
 
 ; [ Wake the dead ]
 ;   IN : d7 - Member number [1...6] (.w)
 ;        a0 - Pointer to character data (.l)
 ; No registers are restored
-; ADVANCED CHANGES - START
-DAT_ReviveMessageId:
-	dc.w $0039
 Wake_the_dead_Do1:
 LAB_00229d92:
 	move.w	Body_conditions(a0),d0	; Get conditions
@@ -1140,9 +1140,6 @@ Do_condition_events:
 .Exit:	sf	Success
 	sf	Handling_event
 	rts
-
-; *** Word of marking ***
-Word_of_marking:
 ; Executes all condition events until some other
 ; event is reached, the end of chain is reached
 ; or the condition was not fulfilled and had no
@@ -1173,6 +1170,9 @@ FUN_ExecuteConditionEventsExcept:
 	sf Success
 	sf Handling_event
 	rts
+
+; *** Word of marking ***
+Word_of_marking:
 ; ADVANCED CHANGES - START
 	tst.b Bool_NoMarkOfReturn
 	beq.b .LAB_CanMarkPosition
@@ -1586,9 +1586,6 @@ Mystical_globe:
 	moveq.l	#6,d7			; Set mystical map
 	jsr	Set_permanent_spell
 .Exit:	rts
-
-; ********** Class 6 spells ***********************
-; *** Call giant eagle ***
 FUN_SpellMountWasp:
 	tst.w Travel_mode
 	beq .OnFoot
@@ -1612,6 +1609,9 @@ FUN_SpellMountWasp:
 	jsr Set_new_travel_mode
 .End:
 	rts
+
+; ********** Class 6 spells ***********************
+; *** Call giant eagle ***
 Call_eagle:
 	tst.w	Travel_mode		; On foot ?
 	beq.s	.Ok1
@@ -1975,11 +1975,6 @@ Drug:
 	move.w	d7,d0			; Sparkle!
 	jsr	Do_sparkle
 .Exit2:	rts
-
-;*****************************************************************************
-; [ Show giant eagle flying in ]
-; All registers are restored
-;*****************************************************************************
 ; ADVANCED CHANGES - START
 FUN_SpellSelfHealing:
 	jsr Handle_spell
@@ -2169,6 +2164,11 @@ FUN_GetInitialCharData:
 	move.l (SP)+,D0
 	move.l (SP)+,D1
 	rts
+
+;*****************************************************************************
+; [ Show giant eagle flying in ]
+; All registers are restored
+;*****************************************************************************
 Show_eagle_flying_in:
 	movem.l	d0/d1/d7/a0,-(sp)
 	tst.b	Stygian			; Darkness ?

@@ -62,11 +62,6 @@ GoInv1_5:	move.l	#5*256,d0
 	bra	Inv1_Mright
 GoInv1_6:	move.l	#6*256,d0
 	bra	Inv1_Mright
-
-;*****************************************************************************
-; [ Right mouse-button clicked on party member ] MOUSE EVENT / INVENTORY 2
-; All registers are restored
-;*****************************************************************************
 FUN_IsItemUsableByClass: ; D5: item index, D4: class
 	movem.l A0/D5/D4,-(SP)
 	subq.w #$00000001,D5
@@ -79,6 +74,11 @@ FUN_IsItemUsableByClass: ; D5: item index, D4: class
 	btst.l D4,D5
 	movem.l (SP)+,D4/D5/A0
 	rts
+
+;*****************************************************************************
+; [ Right mouse-button clicked on party member ] MOUSE EVENT / INVENTORY 2
+; All registers are restored
+;*****************************************************************************
 Inv2_Mright:
 	movem.l A0/D5/D4/D3/D2/D1/D0,-(SP)
 	andi.l	#$0000ff00,d0		; Get member number
@@ -783,8 +783,6 @@ Exit_Inv2:
 	jsr	Save_scroll_bar_position
 	Pop	Module			; Exit
 	jmp	Init_display
-
-; ********** Inventory 2 - Use an item ************
 ; ADVANCED CHANGES - START
 FUN_IsCurrentInventoryDead:
 	movem.l A0/D0,-(SP)
@@ -800,6 +798,8 @@ FUN_IsCurrentInventoryDead:
 	tst.w D0
 	movem.l (SP)+,D0/A0
 	rts
+
+; ********** Inventory 2 - Use an item ************
 Use_item:
 	jsr	Destroy_ghosts		; Destroy !
 	move.w	#30,ItemSelect_prompt	; Select item
@@ -876,7 +876,6 @@ Use_item:
 	move.w	Selected_item,d0
 	mulu.w	#Object_packet_size,d0
 	add.l	d0,a1
-; ---------- Check if item is magical -------------
 .LAB_NoMatchingEventFound:
 	cmpi.b #$00000002,Current_map_type
 	bmi.w .No_event ; for 2D maps, don't check the forward position
@@ -889,6 +888,7 @@ Use_item:
 	jsr Get_coordinates_in_front
 	jsr FUN_IsWallAtPosition
 	bne.w .LAB_CheckEventAtPosition ; try again with the forward position if there is a wall
+; ---------- Check if item is magical -------------
 .No_event:
 	tst.b	Spell_number(a2)		; Any magic in this item ?
 	beq	.No_magic

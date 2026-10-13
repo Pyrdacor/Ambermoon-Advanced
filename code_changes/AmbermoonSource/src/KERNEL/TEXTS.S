@@ -251,12 +251,6 @@ Button_graphics_disk:
 Last_file_slot_disk:
 	dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 	dc.b	0
-
-;*****************************************************************************
-; [ Load the item data from the object file ]
-; NOTE :
-;   - Item data is no longer part of the executable (see [ Object_data_ptr ]).
-;*****************************************************************************
 DAT_DebugTextBuffer:
 	dc.b $00
 	dc.b $00
@@ -290,6 +284,12 @@ FUN_DebugPrint: ; D0 = number, D7 = length (num digits)
 	jsr Free_blitter_usage
 	movem.l (SP)+,D0/D1/D2/D3/D4/D5/D6/D7/A0/A1/A2/A3/A4/A5/A6
 	rts	
+
+;*****************************************************************************
+; [ Load the item data from the object file ]
+; NOTE :
+;   - Item data is no longer part of the executable (see [ Object_data_ptr ]).
+;*****************************************************************************
 Load_items:
 	moveq.l	#46,d0		; Objects.amb
 	jsr	Load_file

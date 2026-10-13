@@ -47,7 +47,7 @@ automatically, with the scripts in `tools/`.
    (`.s` → `.w`).
 8. **Verify** (`bincmp.py`, `review.py`, `relcheck.py`), see below.
 
-`run_all.sh` runs steps 1–7. The inputs (`base/*.s` from the Ambermoon history, `adv.s` = old
+`run_all.sh` runs steps 1–7, `verify.sh` steps 6–8 on a fresh copy of the base commit. The inputs (`base/*.s` from the Ambermoon history, `adv.s` = old
 `code_changes/AM2_CPU.s`, `src121/` = `AmbermoonSource` at Ambermoon `d7c23c1a`, the listings and
 `lst.pkl` from `lstmap.py`) were prepared by hand in the working directory (the parent of `tools/`).
 The scripts are kept for reference. They are not needed to build the game.
@@ -65,6 +65,7 @@ The scripts are kept for reference. They are not needed to build the game.
 | Item data buffer (`KERNEL/TEXTS.S`) | Size 36000 bytes (600 items). |
 | Patch space (`KERNEL/TEXTS.S`) | The new code that Advanced placed in the unused `dcb.b 8322,0` at the end of the Texts code hunk replaces that line. |
 | `Combat_data_size` | Defined in the source at the same address, so Advanced's `EQU` is not needed. |
+| `FUN_ProcessConversationEvent` | In the base disassembly this was `Dia_action`. Advanced renamed it to `FUN_HandleConversationEventTriggers` and gave the old name to `Handle_DIA_event` (`EQUIV`). |
 | `Party_or_monster` | Advanced's label is the same symbol as the source label (`EXTRA_ALIASES`). |
 | Datachange random values (`EVENTS.S`) | Advanced and the source both fixed "random value 0…max-1 → 1…max". Only the source fix (`addq.w #1,d2`) is kept, otherwise 1 would be added twice. |
 | `Remove_member` (`EVENTS.S`) | Both fixed the item dump loops. The source uses `d1` as loop counter and sets `d1` before saving the chest; Advanced used `d7`. Only the source fix is kept, because Advanced's counter doesn't fit the source loops. |
@@ -105,6 +106,11 @@ The old Advanced build (`code_changes/AM2_CPU.s`) was compared with the build of
   - Offsets inside routines that became shorter because of the optimizations above.
   - The #98 decision (`FUN_ExecuteConditionEvents` → `Do_condition_events`).
 
+- **Labels** (`labelcheck.py`): The checks above compare the byte stream and the relocation
+  targets, but they can't see a label that sits in front of or behind inserted code. This happened
+  where comment lines are between a label and its first instruction. For every label pair, the
+  bytes behind the label must be the same in both builds. Only optimized instructions and the
+  known name differences remain.
 - **Double fixes** (`overlap.py`): Some original bugs were fixed in Advanced and, independently,
   in Ambermoon after `62823505`. The review above treats a difference which equals an original fix
   as known, so it can't see a fix that is applied twice. `overlap.py` therefore lists every applied

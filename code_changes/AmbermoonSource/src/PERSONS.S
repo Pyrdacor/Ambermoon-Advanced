@@ -824,12 +824,6 @@ Choose_random_path_2D:
 	add.w	d0,d1
 .Left_exit:
 	rts
-
-;*****************************************************************************
-; [ Random NPC movement routine (3D map) ]
-;   IN : a1 - Pointer to NPC data (.l)
-; All registers are restored
-;*****************************************************************************
 ; In D0: Offset relative to the map char position data in bytes
 ; Out A0: Pointer to the data
 ; Don't forget to release the map data when you are done
@@ -848,6 +842,12 @@ FUN_FreeMapData:
 	jsr Free_pointer
 	move.l (SP)+,D0
 	rts
+
+;*****************************************************************************
+; [ Random NPC movement routine (3D map) ]
+;   IN : a1 - Pointer to NPC data (.l)
+; All registers are restored
+;*****************************************************************************
 Random_person_3D:
 	movem.l	d0-d3/d7,-(sp)
 	btst	#Movement_ended,VFlags(a1)	; Movement ended ?

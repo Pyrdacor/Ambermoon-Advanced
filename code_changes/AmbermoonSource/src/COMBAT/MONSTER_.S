@@ -10,11 +10,6 @@
 ;
 
 	SECTION	Program,code
-;*****************************************************************************
-; [ Determine monster action ]
-;   IN : a0 - Pointer to monster's participant data (.l)
-; All registers are restored
-;*****************************************************************************
 ; Element tooltip
 DAT_ElementTextBuffer:
 	ds.b 32 ; should be enough
@@ -68,6 +63,11 @@ Create_tactic_element:
 .End:
 	movem.l (SP)+,D0/D1/D2/D3/D6/D7/A0/A5
 	rts
+;*****************************************************************************
+; [ Determine monster action ]
+;   IN : a0 - Pointer to monster's participant data (.l)
+; All registers are restored
+;*****************************************************************************
 Determine_monster_action:
 	movem.l	d0-d2/a1,-(sp)
 	Get	Part_handle(a0),a1

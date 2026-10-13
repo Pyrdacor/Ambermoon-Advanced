@@ -72,6 +72,9 @@ MANUAL = {
 # Advanced names for variables which the source already has under another name (same address).
 EQUIV = {
     'DAT_YearsPassedSince978': 'Time_data_year',
+    # The base disassembly called Dia_action FUN_ProcessConversationEvent. Advanced renamed it to
+    # FUN_HandleConversationEventTriggers and gave the old name to Handle_DIA_event.
+    'FUN_ProcessConversationEvent': 'Handle_DIA_event',
 }
 
 
@@ -127,6 +130,25 @@ def scope_lines(src, ln):
 # Advanced labels which are the same symbol as the source label of the same name (find_aliases
 # can't see it because the surrounding lines changed).
 EXTRA_ALIASES = {'Party_or_monster'}
+
+
+def before_labels(src, ln):
+    """Insert position for code which belongs in front of the label(s) of source line ln: walk back
+    over label-only, comment and blank lines; if there is a label among them, the new code goes in
+    front of all of them (directly behind the previous statement), so the labels keep pointing to
+    their original code."""
+    k = ln
+    has_label = False
+    while k > 1:
+        code, _ = symbols.strip_comment(src[k - 2])
+        if code.strip() and DEF.match(code) and code[:1] not in ' \t' and not code[DEF.match(code).end():].lstrip(':').strip():
+            has_label = True
+            k -= 1
+        elif not code.strip():
+            k -= 1
+        else:
+            break
+    return k if has_label else ln
 
 
 def skip_reason(h):
@@ -524,7 +546,10 @@ def main():
         if rule['mode'] == 'replace-line':
             edits.setdefault(f, []).append((ln, ln + 1, text, hid))
         else:
-            edits.setdefault(f, []).append((ln, ln, text, hid))
+            pos = ln
+            if h['b1'] < len(blines62) and blines62[h['b1']].endswith(':'):
+                pos = before_labels(open(os.path.join(target, f), encoding='latin1').read().split('\n'), ln)
+            edits.setdefault(f, []).append((pos, pos, text, hid))
         post_fixes += rule.get('post', [])
         region_done.add(hid)
         log.append((hid, 'manual', f, ln, rule.get('why', '')))
@@ -632,16 +657,7 @@ def main():
                 log.append((hid, 'skip', 'head-mapping', h['base_lines'], h.get('target'))); continue
             next_is_label = blines62[h['b1']].endswith(':') if h['b1'] < len(blines62) else False
             src = open(os.path.join(target, f), encoding='latin1').read().split('\n')
-            # walk back over label-only lines directly before the emitting line
-            lab_start = ln
-            while lab_start > 1:
-                code, _ = symbols.strip_comment(src[lab_start - 2])
-                if code.strip() and DEF.match(code) and code[:1] not in ' \t' and not code[DEF.match(code).end():].strip():
-                    lab_start -= 1
-                elif not code.strip() and src[lab_start - 2].strip().startswith(';'):
-                    break
-                else:
-                    break
+            lab_start = before_labels(src, ln)
             tscope = R.src_scope_at(f, ln)
             text, problems = translate(raw, a_first, f, tscope)
             if problems:

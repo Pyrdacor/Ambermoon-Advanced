@@ -39,10 +39,6 @@ Init_texts_and_resources:
 	jsr FUN_DetermineVBlankFreq
 	jsr FUN_CloseAllWindows
 	rts
-
-;*****************************************************************************
-; [ Initializations before the program starts (fast memory check etc.) ]
-;*****************************************************************************
 FUN_DetermineVBlankFreq:
 	movem.l A6/D0,-(SP)
 	lea     4.w,A6         ; ExecBase
@@ -56,6 +52,10 @@ FUN_DetermineVBlankFreq:
 	rts
 DAT_VBlankFreq:
 	dc.w 50
+
+;*****************************************************************************
+; [ Initializations before the program starts (fast memory check etc.) ]
+;*****************************************************************************
 Pre_start:
 	jsr	Pre_start_initializations
 	bra.s	Start_program

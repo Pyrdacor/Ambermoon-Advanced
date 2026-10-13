@@ -30,14 +30,14 @@ Event_handler:
 	jsr	Handle_event_chain		; Handle
 .Exit:	movem.l	(sp)+,d0/d1
 	rts
+Is_first_event_of_chain:
+	dc.b 0
+	dc.b 0
 
 ;*****************************************************************************
 ; [ Handle chain of events ]
 ; All registers are restored
 ;*****************************************************************************
-Is_first_event_of_chain:
-	dc.b 0
-	dc.b 0
 Handle_event_chain:
 	sf	Success
 	st	Handling_event
@@ -83,7 +83,7 @@ Handle_DIA_event_chain:
 	sf	Success
 	st	Handling_event
 .Again:
-	jsr Dia_action
+	jsr Handle_DIA_event
 	tst.b	Break_event		; Break ?
 	bne.s	.Exit
 	jsr	Chain_to_next_event		; Next event
@@ -220,26 +220,6 @@ Chain_to_next_event:
 	moveq.l	#0,d0			; Force pl
 .Exit:	movem.l	(sp)+,d0/d7/a0/a1
 	rts
-
-;*****************************************************************************
-; [ Find map event ]
-;   IN : d0 - Map X-coordinate (.w)
-;        d1 - Map Y-coordinate (.w)
-;  OUT : pl - Event
-;        mi - No event
-; All registers are restored
-; Notes :
-;   - In 2D wilderness, the coordinates may fall outside the map, but	must
-;     refer to the current map. They may not fall outside the quad-map !
-;   - This routine initializes
-;      [ Current_event_data ],
-;      [ Current_event_map_nr ],
-;      [ Current_event_handle ],
-;      [ Current_event_text_handle ],
-;      [ Current_event_entry_nr ] and
-;      [ Current_event_base ].
-;   - It calls [ Get_first_event ] !
-;*****************************************************************************
 FUN_IsWallAtPosition:
 	; D0: 1-based x position
 	; D1: 1-based y position
@@ -270,6 +250,26 @@ LAB_IsWallEnd:
 	tst.b D2
 	movem.l (SP)+,D0/D1/D2/A0
 	rts
+
+;*****************************************************************************
+; [ Find map event ]
+;   IN : d0 - Map X-coordinate (.w)
+;        d1 - Map Y-coordinate (.w)
+;  OUT : pl - Event
+;        mi - No event
+; All registers are restored
+; Notes :
+;   - In 2D wilderness, the coordinates may fall outside the map, but	must
+;     refer to the current map. They may not fall outside the quad-map !
+;   - This routine initializes
+;      [ Current_event_data ],
+;      [ Current_event_map_nr ],
+;      [ Current_event_handle ],
+;      [ Current_event_text_handle ],
+;      [ Current_event_entry_nr ] and
+;      [ Current_event_base ].
+;   - It calls [ Get_first_event ] !
+;*****************************************************************************
 Find_event:
 	movem.l	d0-d7/a0/a1,-(sp)
 	move.w	d0,d4			; Save coordinates
@@ -2467,12 +2467,6 @@ Datachange:
 
 .Ptrs1:	dc.l .Attribute,.Skill,.LP,.SP,.SLP
 	dc.l .Conditions,.Spell_classes,.Languages,.XP
-
-; [ Data type handlers ]
-;   IN : d1 - -1 (default maximum value) (.l)
-;        a0 - Pointer to character data (.l)
-; No registers are restored
-
 	dc.l .FUN_EventRewardMaxAttribute
 	dc.l .FUN_EventRewardAPR
 	dc.l .FUN_EventRewardTP
@@ -2487,6 +2481,12 @@ Datachange:
 	dc.l .FUN_EventRewardMBA ; magic armor level
 	dc.l .FUN_EventRewardMBW ; magic weapon level
 	dc.l .FUN_EventRewardSpell
+
+; [ Data type handlers ]
+;   IN : d1 - -1 (default maximum value) (.l)
+;        a0 - Pointer to character data (.l)
+; No registers are restored
+
 .Attribute:
 	lea.l	Attributes(a0),a1		; Select attribute
 	move.w	Event_w6(a5),d2
@@ -2602,13 +2602,6 @@ Datachange:
 	jsr	.Do			; Change
 	move.l	d0,Experience_points(a0)	; Store
 	jmp	Check_member_levels		; Check !
-
-; [ Select & execute data changer ]
-;   IN : d0 - Data longword (.l)
-;        d1 - Maximum value (.l)
-;        a5 - Pointer to event data (.l)
-;  OUT : d0 - New data longword (.l)
-; Changed registers : d0
 .FUN_EventRewardMaxAttribute:
 	lea ($002c,A0),A1
 	move.w ($0006,A5),D2
@@ -2809,6 +2802,13 @@ Datachange:
 	jsr Kill_memory ; release the old image
 .LAB_EventRewardChangePortraitEnd:
 	rts
+
+; [ Select & execute data changer ]
+;   IN : d0 - Data longword (.l)
+;        d1 - Maximum value (.l)
+;        a5 - Pointer to event data (.l)
+;  OUT : d0 - New data longword (.l)
+; Changed registers : d0
 .Do:
 	movem.l	d2/a1,-(sp)
 	moveq.l	#0,d2			; Get change type
@@ -3231,11 +3231,6 @@ Query:
 .Seen:
 	move.b	Eye_flag,Query_result	; Copy flag
 	rts
-
-;*****************************************************************************
-; [ Modify event ]
-; No registers are restored
-;*****************************************************************************
 	; ADVANCED CHANGES - START
 FUN_EventConditionCheckMouthCursor:
 	move.b Mouth_flag,Query_result
@@ -3375,6 +3370,11 @@ FUN_EventConditionCheckSkill:
 	cmp.b ($0003,A5),D0
 	spl Query_result
 	rts
+
+;*****************************************************************************
+; [ Modify event ]
+; No registers are restored
+;*****************************************************************************
 Modify:
 	lea.l	Current_event_data,a5
 	moveq.l	#0,d0			; Get modify type
@@ -3966,15 +3966,6 @@ Remove_member:
 ; ---------- Remove party member ------------------
 	jsr	Remove_party_member		; Goodbye !
 .Exit:	rts
-
-;*****************************************************************************
-; [ Lockpick breaks ]
-;   IN : d0 - X-coordinate of lock (.w)
-;        d1 - Y-coordinate of lock (.w)
-;        d2 - Slot number (1...24)
-;        d3 - Prompt number (.w)
-; All registers are restored
-;*****************************************************************************
 FUN_EventShake:
 	lea Current_event_data,A5
 	moveq #0,D7
@@ -4437,6 +4428,15 @@ FUN_CopyInitialSavegameFile:
 	moveq.l #16,D1 ; was missing
 	jsr Save_subfile ; save chest data
 	rts
+
+;*****************************************************************************
+; [ Lockpick breaks ]
+;   IN : d0 - X-coordinate of lock (.w)
+;        d1 - Y-coordinate of lock (.w)
+;        d2 - Slot number (1...24)
+;        d3 - Prompt number (.w)
+; All registers are restored
+;*****************************************************************************
 Lockpick_breaks:
 	movem.l	d0-d4/d6/d7/a0/a1,-(sp)
 	move.w	d0,Lock_X			; Save input

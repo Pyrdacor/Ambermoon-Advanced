@@ -193,12 +193,6 @@ Wait_4_user:
 	jsr	Wait_4_unclick
 	move.l	(sp)+,a0
 	rts
-
-;*****************************************************************************
-; [ Delay	]
-;   IN : d0 - Number of VBL's	to delay (.w)
-; All registers are	restored
-;*****************************************************************************
 ; D0w: Duration in vertical blanks
 Wait_4_sequence:
 	move.w D0,WindowData_WaitForSequence_DurationInVbls
@@ -215,6 +209,12 @@ FUN_WaitForSequenceVbl:
 	jsr Pop_Module
 .End:
 	rts
+
+;*****************************************************************************
+; [ Delay	]
+;   IN : d0 - Number of VBL's	to delay (.w)
+; All registers are	restored
+;*****************************************************************************
 Delay:    
 	move.l	d0,-(sp)
 	bra.s	.Entry

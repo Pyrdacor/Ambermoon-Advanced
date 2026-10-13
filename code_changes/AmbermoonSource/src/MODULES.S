@@ -216,8 +216,6 @@ Wait_4_user_Mod:
 	dc.l -1,-1,Wait_Mev,Wait_Kev
 	dc.l 0,0,0,0
 	dc.l -1,Click_Mptr,-1,-1
-
-; ********** Inventory 1 **************************
 WindowData_WaitForSequence:
 	; struct WindowData
 	dc.b $01 ; Bit0: Unknown, Bit1: Maybe states that sprites were allocated
@@ -243,6 +241,8 @@ WindowData_WaitForSequence_VblQ:
 	dc.l Time_AutoIcon
 	dc.l FUN_WaitForSequenceVbl
 	dc.l $00000000 ; null pointer address
+
+; ********** Inventory 1 **************************
 Inv1_Mod:
 	dc.b Global_mod,Inv1_ID
 	dc.l Inv1_DisUpd
