@@ -66,6 +66,10 @@ The scripts are kept for reference. They are not needed to build the game.
 | Patch space (`KERNEL/TEXTS.S`) | The new code that Advanced placed in the unused `dcb.b 8322,0` at the end of the Texts code hunk replaces that line. |
 | `Combat_data_size` | Defined in the source at the same address, so Advanced's `EQU` is not needed. |
 | `Party_or_monster` | Advanced's label is the same symbol as the source label (`EXTRA_ALIASES`). |
+| Datachange random values (`EVENTS.S`) | Advanced and the source both fixed "random value 0…max-1 → 1…max". Only the source fix (`addq.w #1,d2`) is kept, otherwise 1 would be added twice. |
+| `Remove_member` (`EVENTS.S`) | Both fixed the item dump loops. The source uses `d1` as loop counter and sets `d1` before saving the chest; Advanced used `d7`. Only the source fix is kept, because Advanced's counter doesn't fit the source loops. |
+| `Copy_data` (`KERNEL/TEXTS.S`) | Same `btst` fix in both. The source lines (with their comments) are kept. |
+| `Write_file_data` (`KERNEL/FILES.S`) | The source writes in a loop until everything is written (PFS fix). Advanced instead reported a partial write as custom error 501. The source version is kept, so the 501 message mapping in `HULL/CONTROLS.S` is no longer used for writes. |
 | `World_data` (`KERNEL/DATA.S`) | The inserted monster tables end on an odd address, so an `even` was added before the label. Before, only the `dc.w` was auto-aligned, not the label. |
 
 ## Labels
@@ -100,6 +104,13 @@ The old Advanced build (`code_changes/AM2_CPU.s`) was compared with the build of
   - New Advanced labels that are local now (`FUN_EventRewardAttribute` = `.Attribute`, …).
   - Offsets inside routines that became shorter because of the optimizations above.
   - The #98 decision (`FUN_ExecuteConditionEvents` → `Do_condition_events`).
+
+- **Double fixes** (`overlap.py`): Some original bugs were fixed in Advanced and, independently,
+  in Ambermoon after `62823505`. The review above treats a difference which equals an original fix
+  as known, so it can't see a fix that is applied twice. `overlap.py` therefore lists every applied
+  hunk near a line that changed between `62823505` and `382eaeda`, or between 1.21 and the current
+  source. Each of these hunks was checked by hand, which found the Datachange, `Remove_member` and
+  `Copy_data` cases above.
 
 The ported source has not been tested in the game yet. Test it in the remake and on the Amiga before
 it replaces `code_changes/AM2_CPU`.

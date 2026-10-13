@@ -2843,7 +2843,6 @@ Datachange:
 	andi.l	#$0000ffff,d0
 	divu.w	d2,d0
 	swap	d0
-	addq.w #1,D0 ; FIX: values should be 1 to given value if random and not 0 to given value minus 1
 	move.w	d0,d2
 	addq.w	#1,d2			; FIX: Random value 0...max-1 -> 1...max
 	move.l	(sp)+,d0
@@ -2863,7 +2862,6 @@ Datachange:
 	andi.l	#$0000ffff,d0
 	divu.w	d2,d0
 	swap	d0
-	addq.w #1,D0 ; FIX: values should be 1 to given value if random and not 0 to given value minus 1
 	move.w	d0,d2
 	addq.w	#1,d2			; FIX: Random value 0...max-1 -> 1...max
 	move.l	(sp)+,d0
@@ -2882,7 +2880,6 @@ Datachange:
 	andi.l	#$0000ffff,d0
 	divu.w	d2,d0
 	swap	d0
-	addq.w #1,D0 ; FIX: values should be 1 to given value if random and not 0 to given value minus 1
 	move.w	d0,d2
 	addq.w	#1,d2			; FIX: Random value 0...max-1 -> 1...max
 	move.l	(sp)+,d0
@@ -2905,7 +2902,6 @@ Datachange:
 	andi.l	#$0000ffff,d0
 	divu.w	d2,d0
 	swap	d0
-	addq.w #1,D0 ; FIX: values should be 1 to given value if random and not 0 to given value minus 1
 	move.w	d0,d2
 	addq.w	#1,d2			; FIX: Random value 0...max-1 -> 1...max
 	move.l	(sp)+,d0
@@ -3911,7 +3907,7 @@ Remove_member:
 	jsr	Load_subfile
 	move.b	d0,d4
 	moveq.l	#1,d2			; Dump body items
-	moveq #$00000008,D7 ; (was D1 before) this should be D7 as it gives the equip slot amount
+	moveq.l	#9-1,d1
 .Loop2:	tst.w	Object_index(a0)		; Anything there ?
 	beq.s	.Next2
 	Copy_packet a0,a1			; FIX: Remove the item from the
@@ -3928,8 +3924,6 @@ Remove_member:
 	Get	d4,a0			; Save chest
 	move.w	d5,d0
 	moveq.l	#Chest_data_file,d1		; FIX: d1 was not set
-	; D1 should be set to 16 here but is 8 above (would write the chest to XIcon_gfx.amb instead)
-	moveq.l #16,D1 ; was missing
 	jsr	Save_subfile
 	move.b	d4,d0			; Free memory
 	jsr	Free_pointer
@@ -3945,7 +3939,7 @@ Remove_member:
 	move.b	d0,d4
 	moveq.l	#9+1,d2			; Dump backpack items
 					; FIX: Was 1 (backpack slots are 10...33)
-	moveq #$00000017,D7 ; (was D1 before) amount of inventory slots (should be set to D7 and not D1)
+	moveq.l	#Items_per_char-1,d1
 .Loop3:	tst.w	Object_index(a0)		; Anything there ?
 	beq.s	.Next3
 	Copy_packet a0,a1			; FIX: See above
@@ -3963,7 +3957,6 @@ Remove_member:
 	Get	d4,a0			; Save chest
 	move.w	d5,d0
 	moveq.l	#Chest_data_file,d1		; FIX: d1 was not set
-	moveq.l #16,D1 ; was missing
 	jsr	Save_subfile
 	move.b	d4,d0			; Free memory
 	jsr	Free_pointer

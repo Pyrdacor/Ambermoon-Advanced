@@ -31,6 +31,21 @@ MANUAL = {
     # Year change: 1.21 already increments Time_data_year (same variable as Advanced's
     # DAT_YearsPassedSince978). Advanced's own increment would count the year twice.
     (22355, 23489): {'mode': 'skip', 'why': 'already fixed in 1.21 (Time_data_year)'},
+    # Datachange random values 1...max: the source already has the fix (addq.w #1,d2), Advanced's
+    # own fix (addq.w #1,d0) would add 1 twice.
+    (25238, 26823): {'mode': 'skip', 'why': 'random value fix already in source'},
+    (25257, 26843): {'mode': 'skip', 'why': 'random value fix already in source'},
+    (25275, 26862): {'mode': 'skip', 'why': 'random value fix already in source'},
+    (25297, 26885): {'mode': 'skip', 'why': 'random value fix already in source'},
+    # Remove_member: the source fixed the loops with dbra d1 and sets d1 = Chest_data_file before
+    # saving. Advanced fixed it with d7 as counter, which doesn't fit the source loops.
+    (26148, 27983): {'mode': 'skip', 'why': 'Remove_member fix already in source'},
+    (26167, 28005): {'mode': 'skip', 'why': 'Remove_member fix already in source'},
+    (26180, 28019): {'mode': 'skip', 'why': 'Remove_member fix already in source'},
+    (26200, 28039): {'mode': 'skip', 'why': 'Remove_member fix already in source'},
+    # Copy_data: same btst fix in source and Advanced (keeps the source comments).
+    (272946, 276003): {'mode': 'skip', 'why': 'btst fix already in source'},
+    (272950, 276007): {'mode': 'skip', 'why': 'btst fix already in source'},
     # Jump target check: 1.21 has it as Check_jump_target / Do_condition_events (#98).
     # Only FUN_ExecuteConditionEventsExcept is new (used by ACTIONS.S).
     (13232, 13973): {'mode': 'insert', 'from_line': 14036, 'why': 'jump check already in 1.21, only ExecuteConditionEventsExcept'},
