@@ -3195,7 +3195,7 @@ LAB_CheckWeaponChange:
 	bne .End ; no? end
 	; If this is a right hand item, we have to adjust the left hand item damage influence.
 	jsr FUN_GetAmmoData
-	tst.l A2
+	cmpa.w #0,A2 ; FIX: Was "tst.l A2", which needs a 68020
 	beq .End ; no left hand item? end
 	tst.b D0 ; weapon added or removed?
 	bne .WeaponRemoved
@@ -3286,14 +3286,14 @@ FUN_AddItemDamage:
 	beq.b .CheckNonAmmo
 	; Here it is ammunition
 	jsr FUN_GetWeaponData
-	tst.l A2
+	cmpa.w #0,A2 ; FIX: Was "tst.l A2", which needs a 68020
 	beq.b .End_Adv4 ; no weapon? don't add the damage for ammunition
 	cmp.b ($0010,A2),D0 ; compare weapon's used ammunition type with given ammunition
 	bne.b .End_Adv4 ; mismatch? don't add the damage
 	bra.b .AddDamage ; otherwise add the damage as the ammunition matches the weapon
 .CheckNonAmmo:
 	jsr FUN_GetWeaponData
-	tst.l A2
+	cmpa.w #0,A2 ; FIX: Was "tst.l A2", which needs a 68020
 	beq.b .AddDamage ; if no weapon is carried, the char can only perform closed-ranged attacks so add the damage (e.g. for second hand daggers)
 	cmpi.b #6,($0001,A2) ; is long-ranged weapon?
 	beq.b .End_Adv4 ; if so don't add damage and end
