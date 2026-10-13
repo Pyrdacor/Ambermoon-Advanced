@@ -22,7 +22,9 @@ Apres_combat:
 	move.b	Apres_pool_handle,d0	; Free memory
 	jsr	Free_memory
 	jmp	Game_over			; Game over!
-.Not_over:	cmp.b	#Combat_fled,Combat_result	; Everyone fled ?
+.Not_over:
+	jsr FUN_RestoreMystics ; If they imitated a monster in battle
+	cmp.b	#Combat_fled,Combat_result; Everyone fled ?
 	bne.s	.Heroic
 	jsr	Restore_coordinates		; Back !
 	sf	Success
@@ -125,6 +127,8 @@ Divide_EP:
 	move.w	Body_conditions(a1),d0	; Alive and kicking ?
 	andi.w	#Alive_mask,d0
 	bne.s	.Done
+	cmpi.b #9,($0003,A1)
+	bpl.b .Done ; skip animals, monsters, etc
 	add.l	d1,Experience_points(a1)	; Yes -> Experience
 .Done:	Free	(a0)
 .Next:	addq.l	#1,a0			; Next member
@@ -308,7 +312,7 @@ Transfer_food_APRES:
 	Get	(a1),a0
 	move.l	InputNr_number,d0
 	add.w	d0,Food_rations(a0)
-	mulu.w	#Food_weight,d0
+	mulu.w #$0019,D0 ; food weight, ADVANCED changed to 25
 	add.l	d0,Weight_normal(a0)
 	Free	(a1)
 .Exit:	rts

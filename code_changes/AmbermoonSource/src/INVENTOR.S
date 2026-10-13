@@ -15,7 +15,7 @@
 ; All registers are restored
 ;*****************************************************************************
 Inv1_Mright:
-	movem.l	d0-d3/a0,-(sp)
+	movem.l A0/D5/D3/D2/D1/D0,-(SP)
 	andi.l	#$0000ff00,d0		; Get member number
 	beq.s	.Exit
 	lsr.w	#8,d0
@@ -29,6 +29,7 @@ Inv1_Mright:
 	jsr	Claim_pointer		; Get flag
 	move.l	d0,a0
 	move.b	Secret_inventory(a0),d3
+	move.b ($0003,A0),D5 ; class
 	move.b	d2,d0
 	jsr	Free_pointer
 	tst.b	d3			; Secret inventory ?
@@ -42,14 +43,15 @@ Inv1_Mright:
 	jsr	Destroy_ghosts		; Kill!
 	jsr	Display_Inv1_member_info	; Show info
 	jsr	Update_screen
-.Exit:	movem.l	(sp)+,d0-d3/a0
+.Exit:
+	movem.l (SP)+,D0/D1/D2/D3/D5/A0
 	rts
 
 ;*****************************************************************************
 ; [ Inventory 1 selected (in Inventory 1) by keys F1...F6 ] KEY EVENT
 ;*****************************************************************************
 GoInv1_1:	move.l	#1*256,d0
-	bra.s	Inv1_Mright
+	bra.w	Inv1_Mright
 GoInv1_2:	move.l	#2*256,d0
 	bra	Inv1_Mright
 GoInv1_3:	move.l	#3*256,d0
@@ -65,10 +67,22 @@ GoInv1_6:	move.l	#6*256,d0
 ; [ Right mouse-button clicked on party member ] MOUSE EVENT / INVENTORY 2
 ; All registers are restored
 ;*****************************************************************************
+FUN_IsItemUsableByClass: ; D5: item index, D4: class
+	movem.l A0/D5/D4,-(SP)
+	subq.w #$00000001,D5
+	mulu.w #$003c,D5
+	movea.l Object_data_ptr,A0
+	adda.w D5,A0
+	moveq #0,D5
+	move.w ($0022,A0),D5
+	and.l #$ff,D4
+	btst.l D4,D5
+	movem.l (SP)+,D4/D5/A0
+	rts
 Inv2_Mright:
-	movem.l	d0-d4/a0,-(sp)
+	movem.l A0/D5/D4/D3/D2/D1/D0,-(SP)
 	andi.l	#$0000ff00,d0		; Get member number
-	beq.s	.Exit
+	beq.w	.Exit
 	lsr.w	#8,d0
 	cmp.w	Inventory_member,d0		; Same as now ?
 	beq	.Exit
@@ -81,6 +95,7 @@ Inv2_Mright:
 	move.l	d0,a0
 	move.w	Body_conditions(a0),d3
 	move.b	Secret_inventory(a0),d4
+	move.b ($0003,A0),D5 ; class
 	move.b	d2,d0
 	jsr	Free_pointer
 	tst.b	d4			; Secret inventory ?
@@ -89,7 +104,22 @@ Inv2_Mright:
 	move.w	#286,d0			; "Begone!"
 	jsr	Do_prompt_window
 	bra.s	.Exit
-.No:	andi.w	#Inv2_mask,d3		; Not allowed ?
+.No:
+; ADVANCED CHANGES - START
+	; don't allow switching to animal inventory if dragging a non-usable item
+	cmpi.b #9,D5 ; is animal?
+	bne.b .LAB_OpenInventoryPassedAnimalCheck2
+	lea Inter_packet,A1
+	tst.b (A1)
+	beq.b .LAB_OpenInventoryPassedAnimalCheck2
+	tst.w ($0004,A1)
+	beq.b .LAB_OpenInventoryPassedAnimalCheck2
+	move.b D5,D4
+	move.w ($0004,A1),D5
+	jsr FUN_IsItemUsableByClass
+	beq.b .Exit ; no? abort
+.LAB_OpenInventoryPassedAnimalCheck2:
+	andi.w	#Inv2_mask,d3; Not allowed ?
 	bne.s	.Exit
 	jsr	Save_scroll_bar_position
 	move.b	d2,Inventory_handle		; Store new
@@ -97,7 +127,8 @@ Inv2_Mright:
 	jsr	Destroy_ghosts		; Kill!
 	jsr	Display_Inv2_member_info	; Show info
 	jsr	Update_screen
-.Exit:	movem.l	(sp)+,d0-d4/a0
+.Exit:
+	movem.l (SP)+,D0/D1/D2/D3/D4/D5/A0
 	rts
 
 ;*****************************************************************************
@@ -430,9 +461,6 @@ Display_small_member_info:
 	jsr	Put_text_line
 ; ---------- Print character class ----------------
 	move.b	Char_race(a1),d0		; Special or monster ?
-	move.w	#Special_race_mask,d1
-	btst	d0,d1
-	bne	.No_class
 	move.l	Class_names_ptr,a0		; Get class name address
 	moveq.l	#0,d0
 	move.b	Char_class(a1),d0
@@ -468,6 +496,10 @@ Display_small_member_info:
 	move.l	Age_txt_ptr,a0
 	jsr	Put_text_line
 ; ---------- Print experience points --------------
+	; ADVANCED CHANGES - START
+	; added to hide EP for animals
+	cmpi.b #9,($0003,A1)
+	beq.b LAB_EndDrawCharInfo
 	move.l	Experience_points(a1),d0	; Convert experience points
 	moveq.l	#6,d7
 	move.l	Experience_nr_ptr,a0
@@ -477,6 +509,7 @@ Display_small_member_info:
 	move.l	Experience_txt_ptr,a0
 	jsr	Put_text_line
 ; ---------- Exit ---------------------------------
+LAB_EndDrawCharInfo:
 	Free	Inventory_handle
 	jsr	Update_small_member_info	; Do the rest
 	movem.l	(sp)+,d0-d7/a0/a1
@@ -573,6 +606,7 @@ Update_small_member_info:
 .Go_on:	move.l	ProtDam_txt_ptr,a2
 	move.w	Protection(a1),d0		; Get protection
 	add.w	Protection_magic(a1),d0
+	jsr FUN_AddDefenseAttributeBonus
 	move.w	Spell_2_data,d1		; Add spell's effect (if any)
 	beq.s	.Zero
 	addi.w	#100,d1
@@ -595,6 +629,7 @@ Update_small_member_info:
 .No:	move.w	#2,Ink_colour		; No
 .Go_on:	move.w	Damage(a1),d0		; Get damage
 	add.w	Damage_magic(a1),d0
+	jsr FUN_AddDamageAttributeBonus
 	move.w	Spell_3_data,d1		; Add spell's effect (if any)
 	beq.s	.Zero
 	addi.w	#100,d1
@@ -750,6 +785,21 @@ Exit_Inv2:
 	jmp	Init_display
 
 ; ********** Inventory 2 - Use an item ************
+; ADVANCED CHANGES - START
+FUN_IsCurrentInventoryDead:
+	movem.l A0/D0,-(SP)
+	move.b Inventory_handle,D0
+	jsr Claim_pointer
+	movea.l D0,A0
+	move.w ($001e,A0),D0
+	andi.w #$e000,D0
+	move.l D0,-(SP)
+	move.b Inventory_handle,D0
+	jsr Free_pointer
+	move.l (SP)+,D0
+	tst.w D0
+	movem.l (SP)+,D0/A0
+	rts
 Use_item:
 	jsr	Destroy_ghosts		; Destroy !
 	move.w	#30,ItemSelect_prompt	; Select item
@@ -782,15 +832,34 @@ Use_item:
 	bne	.No_event
 	move.w	Map_Xcoord,d0		; Find event
 	move.w	Map_Ycoord,d1
+.LAB_CheckEventAtPosition:
 	jsr	Find_event
-	bmi	.No_event
+	bmi.w .LAB_NoMatchingEventFound
 	jsr	Check_event_save_status	; Already saved ?
-	bne	.No_event
+	bne.w .LAB_NoMatchingEventFound
 	lea.l	Current_event_data,a5	; No -> Examine event
+.CheckEvent:
 	cmp.b	#Query_type,(a5)		; Query ?
-	bne	.No_event
+	bne.w .LAB_NoMatchingEventFound
 	cmp.b	#Item_used_QM_type,Event_b1(a5)	; For used item ?
-	bne	.No_event
+	; AMBERMOON ADVANCED - allow hand, eye, mouth, multicursor with failed branch to Use Item condition.
+	beq.b .UseItemEvent
+	moveq #0,D0
+	move.b ($0001,A5),D0
+	move.l D1,-(SP)
+	move.l #$b04000,D1 ; bit mask for hand, eye, mouth, multicursor events
+	btst.l D0,D1
+	sne D0
+	move.l (SP)+,D1
+	tst.b D0
+	beq.w .LAB_NoMatchingEventFound ; not a supported event -> abort
+	move.w ($0008,A5),D0
+	cmpi.w #-1,D0
+	beq.w .LAB_NoMatchingEventFound ; no fail event given -> abort
+	move.w D0,($000a,A5)
+	jsr Chain_to_next_event
+	bra.b .CheckEvent
+.UseItemEvent:
 	move.w	Object_index(a1),Used_object_index	; Yes -> Do
 	move.w	Selected_item,d0
 	addq.w	#1,d0
@@ -808,6 +877,18 @@ Use_item:
 	mulu.w	#Object_packet_size,d0
 	add.l	d0,a1
 ; ---------- Check if item is magical -------------
+.LAB_NoMatchingEventFound:
+	cmpi.b #$00000002,Current_map_type
+	bmi.w .No_event ; for 2D maps, don't check the forward position
+	cmp.w Map_Xcoord,D0
+	bne.b .No_event ; already a different positon? forward position was calculated and checked already
+	cmp.w Map_Ycoord,D1
+	bne.b .No_event ; already a different positon? forward position was calculated and checked already
+	; don't check events at forward position if there is no wall, because then you could just move there
+	; this is meant to be used for events which are placed on walls
+	jsr Get_coordinates_in_front
+	jsr FUN_IsWallAtPosition
+	bne.w .LAB_CheckEventAtPosition ; try again with the forward position if there is a wall
 .No_event:
 	tst.b	Spell_number(a2)		; Any magic in this item ?
 	beq	.No_magic
@@ -824,7 +905,29 @@ Use_item:
 	move.w	#243,d0			; No -> "Wrong class!"
 	jsr	Do_prompt
 	bra	.Exit
-.Class_OK:	lea.l	Spell_data,a3		; Get pointer to spell data
+.Class_OK:
+; ADVANCED CHANGES - START
+	; If map disallows magic, avoid using spell scrolls
+	tst.b Battling
+	bne.b .LAB_ItemCastSpell ; but not when in battle
+	cmpi.b #9,($0001,A2) ; is the item a spell scroll?
+	bne.b .LAB_ItemCastSpell ; if not, proceed
+	move.l D0,-(SP)
+	move.b Mapdata_handle,D0
+	jsr Claim_pointer
+	movea.l D0,A3
+	move.w (A3),D1 ; get map flags
+	move.b Mapdata_handle,D0
+	jsr Free_pointer
+	move.l (SP)+,D0
+	btst.l #$0000000b,D1 ; magic allowed?
+	bne.b .LAB_ItemCastSpell ; yes? proceed
+	move.w #$00f4,D0 ; otherwise show message and abort ("wrong place to use item")
+	jsr Do_prompt
+	bra.w .Exit
+; ADVANCED CHANGES - END
+.LAB_ItemCastSpell:
+	lea.l	Spell_data,a3; Get pointer to spell data
 	moveq.l	#0,d0
 	move.b	Spell_class(a2),d0
 	moveq.l	#0,d1
@@ -853,6 +956,25 @@ Use_item:
 	move.w	d0,Selected_class
 	move.b	Spell_number(a2),d0
 	move.w	d0,Selected_spell
+; ADVANCED CHANGES - START
+	cmpi.w #6,Selected_class ; this is 0-based, check for school "function" here
+	bne.b .LAB_CastItemSpell
+	cmpi.w #23,Selected_spell ; this is a 1-based index, 23 = self revive
+	beq.b .LAB_CheckReviveItemCast
+	cmpi.w #22,Selected_spell ; 22 = self heal
+	bne.b .LAB_CastItemSpell
+	jsr FUN_IsCurrentInventoryDead
+	beq.b .LAB_CastItemSpell
+	move.w #$011a,D0 ; "item can't be used here" message id
+	jsr Do_prompt
+	bra.w .Exit
+.LAB_CheckReviveItemCast:
+	jsr FUN_IsCurrentInventoryDead
+	bne.b .LAB_CastItemSpell
+	move.w #$00f9,D0 ; "is not dead" message id
+	jsr FUN_DrawTextWithClickCursorAndNameAtFront
+	bra.w .Exit
+.LAB_CastItemSpell:
 	st	Magic_object_flag		; Signal objectness
 	tst.b	Battling			; In combat ?
 	bne.s	.Combat
@@ -920,7 +1042,6 @@ Use_item:
 	jsr	Free_memory
 	move.w	Selected_item,d0		; Destroy object
 	addq.w	#1,d0
-	jsr	Destroy_used_item
 	bra	.Exit
 ; ---------- Check if it's a transportation -------
 .No_text_scroll:
@@ -937,6 +1058,16 @@ Use_item:
 	beq.s	.Error
 	moveq.l	#0,d7			; Get new travelmode
 	move.b	Misc_1(a2),d7
+	; ADVANCED CHANGES - START
+	; D7 is the item's travel type
+	cmpi.b #8,D7 ; 8 = broom
+	bne.b .LAB_CheckTravelTypeBlocking
+	tst.b Bool_NoEagleOrBroom
+	beq.b .LAB_CheckTravelTypeBlocking
+	move.w #$00f4,D0 ; "wrong place to use" message id
+	jsr Do_prompt
+	bra.b .Exit
+.LAB_CheckTravelTypeBlocking:
 	move.l	Current_location_status,d0	; Way blocked ?
 	move.w	d7,d1
 	add.w	#Blocked_foot_bit,d1
@@ -981,7 +1112,15 @@ Drop_item:
 	moveq.l	#29,d0			; Print "Don't ..."
 	jsr	Do_prompt
 	bra	.Exit
-.Drop:	move.l	#1,InputNr_number		; Single
+.Drop:
+	; AMBERMOON ADVANCED - START
+	btst.b #3,($0003,A2) ; Bit 3 of item slot flags is "locked"
+	beq.b .LAB_ThrowAwayItemSlotNotLocked
+	move.l #$0000012f,D0 ; "this can't be moved"
+	jsr Do_prompt
+	bra.w .Exit
+.LAB_ThrowAwayItemSlotNotLocked:
+	move.l	#1,InputNr_number; Single
 	btst	#Multiple,Item_bits_STATIC(a1)	; Multiple item ?
 	beq.s	.Ask
 	cmpi.b	#1,Quantity(a2)		; More than one ?
@@ -1054,7 +1193,7 @@ Drop_food:
 	Get	Inventory_handle,a0		; Drop food
 	move.l	InputNr_number,d0
 	sub.w	d0,Food_rations(a0)
-	mulu.w	#Food_weight,d0
+	mulu.w #$0019,D0 ; food weight, ADVANCED changed to 25
 	sub.l	d0,Weight_normal(a0)
 	Free	Inventory_handle
 .Exit:	rts
@@ -1147,7 +1286,7 @@ Transfer_food:
 	Get	Inventory_handle,a0		; Remove food
 	move.l	InputNr_number,d0
 	sub.w	d0,Food_rations(a0)
-	mulu.w	#Food_weight,d0
+	mulu.w #$0019,D0 ; food weight, ADVANCED changed to 25
 	sub.l	d0,Weight_normal(a0)
 	Free	Inventory_handle
 	lea.l	Party_handles-1,a1		; Add food
@@ -1155,7 +1294,7 @@ Transfer_food:
 	Get	(a1),a0
 	move.l	InputNr_number,d0
 	add.w	d0,Food_rations(a0)
-	mulu.w	#Food_weight,d0
+	mulu.w #$0019,D0 ; food weight, ADVANCED changed to 25
 	add.l	d0,Weight_normal(a0)
 	Free	(a1)
 .Exit:	rts
@@ -1172,6 +1311,13 @@ Drop_item_CHEST:
 	addi.w	#9,d0
 	mulu.w	#Object_packet_size,d0
 	add.l	d0,a2
+	; AMBERMOON ADVANCED - START
+	btst.b #3,($0003,A2) ; Bit 3 of item slot flags is "locked"
+	beq.b .LAB_StoreItemSlotNotLocked
+	move.l #$0000012f,D0 ; "this can't be moved"
+	jsr Do_prompt
+	bra.w .Exit
+.LAB_StoreItemSlotNotLocked:
 	move.w	Object_index(a2),d0		; Get object data address
 	subq.w	#1,d0
 	mulu.w	#Item_data_size,d0
@@ -1283,7 +1429,7 @@ Drop_food_CHEST:
 	move.l	InputNr_number,d0
 	sub.w	d0,Food_rations(a0)
 	move.w	d0,d1
-	mulu.w	#Food_weight,d1
+	mulu.w #$0019,D1 ; food weight, ADVANCED changed to 25
 	sub.l	d1,Weight_normal(a0)
 	Free	Inventory_handle
 	Get	Chest_data_handle,a0	; ...in chest
@@ -1590,12 +1736,20 @@ Inv2_CIL_evaluate:
 	move.b	Char_race(a1),d0		; Special or monster ?
 	move.w	#Special_race_mask,d1
 	btst	d0,d1
-	beq.s	.Race_OK
-	bset	#7,2(a0)			; Disable	{Use item}
-	bset	#7,12(a0)			; Disable	{View item}
+	beq.b .LAB_CheckInvButtonsNoAnimal ; skip if not
 	bset	#7,14(a0)			; Disable	{Transfer	gold}
 	bset	#7,16(a0)			; Disable	{Transfer	food}
 ; ---------- Check if character CARRIES items -----
+	move.w ($001e,A1),D0 ; ailments
+	andi.w #$05ae,D0 ; = $05a0 (check for petrified, paralyzed, unknown and drugs)
+	beq.b .Race_OK
+	bset.b #$00000007,($0002,A0) ; disable use item (if one of the ailments is active)
+	bra.b .Race_OK
+.LAB_CheckInvButtonsNoAnimal:
+	move.w ($001e,A1),D0 ; ailments
+	andi.w #-$1a52,D0 ; = $e5ae (check for death, petrified, paralyzed, unknown, drugs, panic, sleep and crazy)
+	beq.b .Race_OK
+	bset.b #$00000007,($0002,A0) ; disable use item (if one of the ailments is active)
 .Race_OK:	lea.l	Char_inventory+Backpack_slots(a1),a2
 	moveq.l	#0,d0
 	moveq.l	#Items_per_char-1,d7
@@ -1646,7 +1800,7 @@ Display_Inv2_member_info:
 .Skip:	move.w	#-1,Current_ghost_index
 	move.b	Inventory_handle,Slotbase_handle
 	move.l	#Char_inventory+Backpack_slots,Slotbase_offset
-	move.l	#Backpack_pos_list,Object_pos_list
+	move.l #Backpack_pos_list,Object_pos_list
 	lea.l	Inventory_scroll_bar_positions,a0	; Get old
 	move.w	Inventory_member,d0		;  scroll bar position
 	add.w	d0,d0
@@ -1822,7 +1976,7 @@ Scan_4_food_victims:
 	lea.l	Party_handles,a1
 	move.w	d0,d1
 	move.w	d0,d2
-	mulu.w	#Food_weight,d2
+	mulu.w #$0019,D2 ; food weight, ADVANCED changed to 25
 	move.w	#Special_race_mask,d4
 	moveq.l	#1,d5
 	moveq.l	#0,d6
@@ -1942,7 +2096,7 @@ ItemView1_DisInit:
 .No_type:	move.l	Class_names_ptr,a3		; Print classes
 	lea.l	Classname_pos_list,a4
 	moveq.l	#0,d2
-	move.w	#Special_class_mask,d3
+	move.w #$0400,D3 ; this will hide monster class in item's usable section (was $0600 before to hide animals as well)
 	not.w	d3
 	and.w	Class_use(a2),d3
 .Loop:	btst	d2,d3			; Usable ?
@@ -1954,7 +2108,7 @@ ItemView1_DisInit:
 	move.w	(a4)+,d1
 	jsr	Put_text_line
 .Next:	addq.w	#1,d2			; Next class
-	cmp.w	#Max_classes,d2
+	cmp.w #$000c,D2 ; Changed in Ambermoon Advanced from b to c (to allow 10 classes in total)
 	bmi.s	.Loop
 	move.w	#30,Ink_colour
 	move.w	#ItemView1_X+145,d0		; Print "CLASSES:"
@@ -2235,7 +2389,15 @@ Move_body_item:
 	moveq.l	#42,d0			; Cursed !
 	jsr	Do_prompt
 	bra	.Exit
-.No1:	tst.b	Battling			; Are we fighting ?
+.No1:
+	; AMBERMOON ADVANCED - START
+	btst.b #3,($0003,A2) ; Bit 3 of item slot flags is "locked"
+	beq.b .LAB_ItemSlotNotLocked
+	move.l #$0000012f,D0 ; "this can't be moved"
+	jsr Do_prompt
+	bra.w .Exit
+.LAB_ItemSlotNotLocked:
+	tst.b	Battling; Are we fighting ?
 	beq.s	.No2
 	btst	#Combat_equip,Item_bits_STATIC(a1)	; Can it be
 	bne.s	.No2			;  un-equipped ?
@@ -2286,6 +2448,13 @@ Enter_backpack_item:
 	move.w	Object_index(a2),d0		; Get object index
 	beq	.Exit			; Anything there ?
 	jsr	Destroy_ghosts		; Remove name
+	; AMBERMOON ADVANCED - START
+	btst.b #3,($0003,A2) ; Bit 3 of item slot flags is "locked"
+	beq.b .LAB_InvItemSlotNotLocked
+	move.l #$0000012f,D0 ; "this can't be moved"
+	jsr Do_prompt
+	bra.w .Exit
+.LAB_InvItemSlotNotLocked:
 	move.l	Object_data_ptr,a1		; Get data address
 	subq.w	#1,d0
 	mulu.w	#Item_data_size,d0
@@ -2410,7 +2579,15 @@ Body_item_moved:
 	moveq.l	#42,d0			; Cursed !
 	jsr	Do_prompt
 	bra	.Exit
-.No:	tst.b	Battling			; Are we fighting ?
+.No:
+; AMBERMOON ADVANCED - START
+	btst.b #3,($0003,A3) ; Bit 3 of item slot flags is "locked"
+	beq.b .LAB_ExchangeEquipItemSlotNotLocked
+	move.l #$0000012f,D0 ; "this can't be moved"
+	jsr Do_prompt
+	bra.w .Exit
+.LAB_ExchangeEquipItemSlotNotLocked:
+	tst.b	Battling; Are we fighting ?
 	beq.s	.Swap
 	btst	#Combat_equip,Item_bits_STATIC(a4)	; Can it be
 	bne.s	.Swap			;  un-equipped ?
@@ -2535,6 +2712,14 @@ Backpack_item_moved:
 	subq.w	#1,d0
 	mulu.w	#Object_packet_size,d0
 	add.l	d0,a2
+	; AMBERMOON ADVANCED - START
+	btst.b #3,($0003,A2) ; Bit 3 of item slot flags is "locked"
+	beq.b .LAB_ExchangeInvItemSlotNotLocked
+	jsr Destroy_ghosts
+	move.l #$0000012f,D0 ; "this can't be moved"
+	jsr Do_prompt
+	bra.w .Exit
+.LAB_ExchangeInvItemSlotNotLocked:
 	lea.l	Inter_packet,a3
 	move.l	Object_data_ptr,a1		; Get data address
 	move.w	Object_index(a3),d0
@@ -2681,6 +2866,18 @@ Auto_move_to_backpack:
 	mulu.w	#Item_data_size,d0
 	add.l	d0,a1
 ; ---------- Scan for slots with this item --------
+; ADVANCED CHANGES - START
+	move.b ($0003,A0),D2
+	cmpi.b #9,D2
+	blt.w .LAB_DropForNonAnimal
+	; for animals and races above we check if
+	; the item is usable by the class
+	moveq #$00000000,D3
+	move.w ($0022,A1),D3
+	btst.l D2,D3
+	beq.w .Skip ; skip if not usable for animal or above race
+; ADVANCED CHANGES - END
+.LAB_DropForNonAnimal:
 	btst	#Multiple,Item_bits_STATIC(a1)	; Multiple ?
 	beq	.Single
 	move.l	a3,a4			; Get backpack slots
@@ -2819,7 +3016,9 @@ Remove_item:
 	bra.s	.Go_on
 .Cursed:	jsr	Positive_boni		; Add boni
 ; ---------- Remove body item ---------------------
-.Go_on:	moveq.l	#0,d0			; Remove weight
+.Go_on:
+	jsr FUN_CheckWeaponRemoved
+	moveq.l	#0,d0; Remove weight
 	move.w	Weight(a1),d0
 	sub.l	d0,Weight_normal(a0)
 	clr.w	Object_index(a2)		; Destroy item
@@ -2891,7 +3090,9 @@ Add_item_2_body:
 	bra.s	.Go_on
 .Cursed:	jsr	Negative_boni		; Remove boni
 ; ---------- Add one item -------------------------
-.Go_on:	moveq.l	#0,d0			; Add weight
+.Go_on:
+	jsr FUN_CheckWeaponAdded
+	moveq.l	#0,d0; Add weight
 	move.w	Weight(a1),d0
 	add.l	d0,Weight_normal(a0)
 	subq.b	#1,Quantity(a4)		; Remove 1 item
@@ -2937,8 +3138,8 @@ Positive_boni:
 .No2:	moveq.l	#0,d2			; Protection bonus
 	move.b	Protection_pts(a1),d2
 	add.w	d2,Protection_magic(a0)
-	move.b	Damage_pts(a1),d2		; Armour bonus
-	add.w	d2,Damage_magic(a0)
+	moveq #0,D1 ; not cursed / equipped / add
+	jsr FUN_AddItemDamage
 	movem.l	(sp)+,d0-d2/a2
 	rts
 
@@ -2976,9 +3177,136 @@ Negative_boni:
 .No2:	moveq.l	#0,d2			; Protection bonus
 	move.b	Protection_pts(a1),d2
 	sub.w	d2,Protection_magic(a0)
+	moveq #-1,D1 ; cursed / unequipped / remove dmg
+	jsr FUN_AddItemDamage
+	movem.l (SP)+,D0/D1/D2/A2
+	rts
+FUN_CheckWeaponAdded:
+	moveq #0,D0
+	bra.b LAB_CheckWeaponChange
+FUN_CheckWeaponRemoved:
+	moveq #-1,D0
+LAB_CheckWeaponChange:
+	; A0: Char data
+	; A1: Weapon item data
+	; D0: Removed?
+	move.l A2,-(SP)
+	cmpi.b #4,($0002,A1) ; is right hand slot?
+	bne .End ; no? end
+	; If this is a right hand item, we have to adjust the left hand item damage influence.
+	jsr FUN_GetAmmoData
+	tst.l A2
+	beq .End ; no left hand item? end
+	tst.b D0 ; weapon added or removed?
+	bne .WeaponRemoved
+	; Here a new weapon was added. So we check if a bonus to damage is granted.
+	; Before there is no weapon. Even exchanging would call a remove item routine first.
+	; As there was no weapon, it was no long-ranged weapon and no ammo-using weapon.
+	; So if there is a bonus already, it is for closed range weapons.
+	; So we only have to add a bonus if the left hand item is matching ammo.
+	; And we have to remove the bonus if the weapon is a long-ranged weapon and there is no matching ammo.
+	move.b ($0010,A1),D0 ; weapon ammo type
+	beq .CheckLongRanged ; weapon is not using ammo, check second case
+	cmp.b ($000F,A2),D0 ; does ammo match?
+	bne .End ; no? nothing to do, end
+	moveq #0,D0 ; otherwise add the ammo damage
+	move.b ($000e,A2),D0 ; ammo damage
+	add.w D0,($00dc,A0) ; Inc char dmg
+	bra .End
+.CheckLongRanged:
+	cmpi.b #6,($0001,A1) ; is long-ranged weapon?
+	bne .End ; no? end
+	tst.b ($000F,A2) ; test if left hand is ammo
+	bne.b .End ; yes? end
+	moveq #0,D0 ; otherwise if it is a long-ranged weapon, remove the left hand item damage
+	move.b ($000e,A2),D0 ; item damage
+	sub.w D0,($00dc,A0) ; Dec char dmg
+	bra .End
+.WeaponRemoved:
+	; Here the weapon was removed.
+	; If the left hand item was matching ammo, we have to remove the bonus.
+	; Otherwise if it was a long ranged weapon, we have to add the damage now.
+	; But not if the left hand item is ammo!
+	move.b ($0010,A1),D0 ; weapon ammo type
+	beq .CheckWasLongRanged ; weapon is not using ammo, check second case
+	cmp.b ($000F,A2),D0 ; did ammo match?
+	bne .End ; no? end
+	moveq #0,D0 ; if so, remove the ammo damage bonus now
+	move.b ($000e,A2),D0 ; ammo damage
+	sub.w D0,($00dc,A0) ; Dec char dmg
+	bra .End
+.CheckWasLongRanged:
+	cmpi.b #6,($0001,A1) ; was long-ranged weapon?
+	bne .End ; no? end
+	tst.b ($000F,A2) ; test if left hand is ammo
+	bne.b .End ; yes? end
+	moveq #0,D0 ; otherwise add the left hand item damage now
+	move.b ($000e,A2),D0 ; item damage
+	add.w D0,($00dc,A0) ; Inc char dmg
+.End:
+	move.l (SP)+,A2
+	rts
+FUN_GetAmmoData:
+	; A0: Char data
+	; Returns A2 as item pointer (0 = no item)
+	suba.l A2,A2 ; clear A2 to 0
+	move.l D0,-(SP)
+	move.w ($0144,A0),D0 ; left hand item index
+	beq.b .End_Adv ; end if no item
+	movea.l Object_data_ptr,A2
+	subq.w #$00000001,D0
+	mulu.w #$003c,D0
+	adda.l D0,A2 ; A2 now points to the item
+.End_Adv:
+	move.l (SP)+,D0
+	rts
+FUN_GetWeaponData:
+	; A0: Char data
+	; Returns A2 as item pointer (0 = no item)
+	suba.l A2,A2 ; clear A2 to 0
+	move.l D0,-(SP)
+	move.w ($0138,A0),D0 ; right hand item index
+	beq.b .End_Adv3 ; end if no item
+	movea.l Object_data_ptr,A2
+	subq.w #$00000001,D0
+	mulu.w #$003c,D0
+	adda.l D0,A2 ; A2 now points to the item
+.End_Adv3:
+	move.l (SP)+,D0
+	rts
+FUN_AddItemDamage:
+	; A0: Char data
+	; A1: Item data
+	; D1: Cursed / Remove damage
+	; If the item is ammunition, the damage is only added if the weapon uses this ammunition.
+	; If the item is no ammunition but in left hand slot, the damage is only added if the weapon is no long-ranged weapon.
+	cmp.b #6,($0002,A1) ; equipment slot == left hand?
+	bne.b .AddDamage ; if not left hand, just proceed adding the damage
+	move.b ($000f,A1),D0 ; ammunition type of item
+	beq.b .CheckNonAmmo
+	; Here it is ammunition
+	jsr FUN_GetWeaponData
+	tst.l A2
+	beq.b .End_Adv4 ; no weapon? don't add the damage for ammunition
+	cmp.b ($0010,A2),D0 ; compare weapon's used ammunition type with given ammunition
+	bne.b .End_Adv4 ; mismatch? don't add the damage
+	bra.b .AddDamage ; otherwise add the damage as the ammunition matches the weapon
+.CheckNonAmmo:
+	jsr FUN_GetWeaponData
+	tst.l A2
+	beq.b .AddDamage ; if no weapon is carried, the char can only perform closed-ranged attacks so add the damage (e.g. for second hand daggers)
+	cmpi.b #6,($0001,A2) ; is long-ranged weapon?
+	beq.b .End_Adv4 ; if so don't add damage and end
+.AddDamage:
+	tst.b D1
+	beq.b .Add
 	move.b	Damage_pts(a1),d2		; Armour bonus
 	sub.w	d2,Damage_magic(a0)
-	movem.l	(sp)+,d0-d2/a2
+	bra.b .End_Adv4
+.Add:
+	move.b ($000e,A1),D2
+	add.w D2,($00dc,A0) ; Inc char dmg
+.End_Adv4:
 	rts
 
 ;*****************************************************************************
@@ -3132,7 +3460,14 @@ Scan_4_transfer_victims:
 	move.w	#Special_race_mask,d3	; Special or monster ?
 	move.b	Char_race(a2),d0
 	btst	d0,d3
-	bne.s	.Done
+	beq.b .LAB_AfterAnimalItemCheck ; skip check if not an animal (or above)
+	moveq #0,D3
+	moveq #0,D4
+	move.w ($0022,A3),D3 ; get item usable classes
+	move.b ($0003,A2),D4 ; get party member class
+	btst.l D4,D3 ; animals (and above races) can only carry items they can use
+	beq.b .Done ; so disallow for all other item types
+.LAB_AfterAnimalItemCheck:
 ; ---------- Check if member is alive -------------
 	move.w	#Alive_mask,d3
 	and.w	Body_conditions(a2),d3
@@ -3286,7 +3621,7 @@ Reset_party_weight:
 	mulu.w	#Gold_weight,d1
 	add.l	d1,d0
 	move.w	Food_rations(a0),d1		; Add weight of food
-	mulu.w	#Food_weight,d1
+	mulu.w #$0019,D1 ; food weight, ADVANCED changed to 25
 	add.l	d1,d0
 	move.l	d0,Weight_normal(a0)	; Repair weight
 	move.b	(a3),d0			; Next party member
@@ -3493,14 +3828,54 @@ Bodymind_pos:
 
 ; The following two lists MUST follow each other !
 Body_pos_list:
-	dc.w 20,72,52,72,84,72
-	dc.w 20,124,84,97,84,124
-	dc.w 20,176,52,176,84,176
+	dc.w $0014 ; X
+DAT_EquipItemSlotPositionsY:
+	dc.w $0048 ; Y
+	dc.w $0034 ; X
+	dc.w $0048 ; Y
+	dc.w $0054 ; X
+	dc.w $0048 ; Y
+	dc.w $0014 ; X
+	dc.w $007c ; Y
+	dc.w $0054 ; X
+	dc.w $0061 ; Y
+DAT_00265fd8:
+	dc.w $0054 ; X
+DAT_00265fda:
+	dc.w $007c ; Y
+	dc.w $0014 ; X
+	dc.w $00b0 ; Y
+	dc.w $0034 ; X
+	dc.w $00b0 ; Y
+DAT_00265fe4:
+	dc.w $0054 ; X
+DAT_00265fe6:
+	dc.w $00b0 ; Y
 Backpack_pos_list:
-	dc.w 109,76,131,76,153,76
-	dc.w 109,105,131,105,153,105
-	dc.w 109,134,131,134,153,134
-	dc.w 109,163,131,163,153,163
+	dc.w $006d ; X
+	dc.w $004c ; Y
+	dc.w $0083 ; X
+	dc.w $004c ; Y
+	dc.w $0099 ; X
+	dc.w $004c ; Y
+	dc.w $006d ; X
+	dc.w $0069 ; Y
+	dc.w $0083 ; X
+	dc.w $0069 ; Y
+	dc.w $0099 ; X
+	dc.w $0069 ; Y
+	dc.w $006d ; X
+	dc.w $0086 ; Y
+	dc.w $0083 ; X
+	dc.w $0086 ; Y
+	dc.w $0099 ; X
+	dc.w $0086 ; Y
+	dc.w $006d ; X
+	dc.w $00a3 ; Y
+	dc.w $0083 ; X
+	dc.w $00a3 ; Y
+	dc.w $0099 ; X
+	dc.w $00a3 ; Y
 
 Inv2_scroll_bar:
 	dc.w Items_per_char,3,4,112,175,76
@@ -3514,15 +3889,29 @@ Charges_txt:	dc.b "(01)",0
 	dc.b 0,0,0
 Classname_pos_list:
 y	set 0
-	rept 5
-	dc.w ItemView1_X+145,ItemView1_Y+7+y
-y	set y+7
-	endr
-y	set 0
-	rept 4
-	dc.w ItemView1_X+145+54,ItemView1_Y+7+y
-y	set y+7
-	endr
+	dc.w $00b1 ; x[0][0]
+DAT_ItemClassNameDrawOffsetsY:
+	; undefined2
+	dc.w $006b ; y[0][0]
+	dc.w $00b1 ; x[0][1]
+	dc.w $0072 ; y[0][1]
+	dc.w $00b1 ; x[0][2]
+	dc.w $0079 ; y[0][2]
+	dc.w $00b1 ; x[0][3]
+	dc.w $0080 ; y[0][3]
+	dc.w $00b1 ; x[0][4]
+	dc.w $0087 ; y[0][4]
+	; second row
+	dc.w $00e7 ; x[1][0]
+	dc.w $006b ; y[1][0]
+	dc.w $00e7 ; x[1][1]
+	dc.w $0072 ; y[1][1]
+	dc.w $00e7 ; x[1][2]
+	dc.w $0079 ; y[1][2]
+	dc.w $00e7 ; x[1][3]
+	dc.w $0080 ; y[1][3]
+	dc.w $00e7 ; x[1][4] (added in Ambermoon Advanced)
+	dc.w $0087 ; y[1][4] (added in Ambermoon Advanced)
 
 Move_item_HDOB:
 	dc.w 0,0

@@ -10,6 +10,18 @@
 ; pointers to the version and date/language strings when the texts are loaded.
 ;*****************************************************************************
 Start:
+;---- Debug printing
+	macro DebugPrint
+	movem.l D7/D0,-(SP)
+	move.l \+,D0
+	IFNB \.
+		move.l #\.,D7
+	ELSE
+		moveq #10,D7
+	ENDIF
+	jsr FUN_DebugPrint
+	movem.l (SP)+,D0/D7
+	endm
 	jmp	Check_start
 
 Version_string1_ptr:
@@ -24,12 +36,26 @@ Version_string2_ptr:
 Init_texts_and_resources:
 	jsr	Load_texts
 	jsr	Load_resources
-	jsr	Reset_module_stack
+	jsr FUN_DetermineVBlankFreq
+	jsr FUN_CloseAllWindows
 	rts
 
 ;*****************************************************************************
 ; [ Initializations before the program starts (fast memory check etc.) ]
 ;*****************************************************************************
+FUN_DetermineVBlankFreq:
+	movem.l A6/D0,-(SP)
+	lea     4.w,A6         ; ExecBase
+    move.w  $1A4(A6),D0    ; VBlankFrequency (Offset $1A4)
+	cmpi.w  #60,D0
+	beq.b   .Set
+	moveq   #50,D0
+.Set:
+	move.w  D0,DAT_VBlankFreq
+	movem.l (SP)+,D0/A6
+	rts
+DAT_VBlankFreq:
+	dc.w 50
 Pre_start:
 	jsr	Pre_start_initializations
 	bra.s	Start_program
@@ -109,6 +135,10 @@ Exit_to_loader:
 	jmp	(a0)
 
 
+	SECTION	Chip_DATA,data_c
+	SECTION	Longword_BSS,bss
+MysticBackupData:
+	ds.w	99			; 33 per possible char
 	SECTION	Chip_DATA,data_c
 	dc.w	$ffff		; Copper commands
 	dc.w	$fffe

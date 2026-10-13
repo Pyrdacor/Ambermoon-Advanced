@@ -78,7 +78,33 @@ CMMagical_projectiles:
 	Get	Part_handle(a1),a2		; Get caster's level
 	moveq.l	#0,d0
 	move.b	Level_nr(a2),d0
+	move.w ($0072,A2),D2 ; base spell dmg bonus
+	move.w ($0074,A2),D3 ; max spell dmg bonus
+	move.w ($0078,A2),D4 ; percentage damage
 	Free	Part_handle(a1)
+	; ADVANCED CHANGES - START
+	move.l D4,-(SP)
+	move.w D0,D4 ; backup damage
+	jsr Random	
+	mulu.w D3,D0 ; random max bonus
+	swap D0
+	add.w D2,D0 ; total random bonus
+	add.w D4,D0 ; add initial damage
+	move.l (SP)+,D4
+	tst.w D4
+	beq.b .LAB_CalcSpellDamageMagicProjectileMonster
+	cmpi.w #-99,D4
+	bpl.b .LAB_CalcPercDamageMagicProjectileMonster
+	moveq #1,D0 ; limit to 1 damage if perc value is -100% or lower
+	bra.b .LAB_CalcSpellDamageMagicProjectileMonster
+.LAB_CalcPercDamageMagicProjectileMonster:
+	add.w #100,D4
+	mulu.w D4,D0
+	divu.w #100,D0
+	bgt.b .LAB_CalcSpellDamageMagicProjectileMonster
+	moveq #1,D0 ; deal at least 1 damage
+.LAB_CalcSpellDamageMagicProjectileMonster:
+	jsr FUN_CalculateSpellDamage
 	jsr	Do_combat_damage		; Do damage !
 	move.l	a1,a0			; Process
 	jsr	Process_damage
@@ -675,7 +701,8 @@ Monster_comma_class_ptrs:
 	dc.l 0,0,0,0
 	dc.l 0,0,0,0
 	dc.l 0,0,0,CLP_stealer
-	dc.l CPP_stealer,0
+	dc.l CPP_stealer
+	dc.l CGhost_weapon ; ADVANCED: Ghost Inferno / Geisterstunde
 .Class_3_ptrs:
 	dc.l CMMagical_projectiles,CMMagical_projectiles,CCondition,CCondition
 	dc.l CCondition,CCondition,CCondition,CCondition

@@ -166,7 +166,7 @@ Display_2D_map:
 	move.w	#Map2D_Y,d1
 	moveq.l	#Mapbuf_height,d7		; +1 !
 	move.w	Travel_mode,d0		; Above or below ?
-	move.w	#Above_mask,d3
+	move.w #$0960,D3 ; ADVANCED: was $0160 (added wasp bit so it appears above the tiles)
 	btst	d0,d3
 	bne.s	.Loop7
 	move.w	Mapbuf_Y,d3		; Get party offset
@@ -208,7 +208,7 @@ Display_2D_map:
 ; ---------- Display party & sky overlays ---------
 .Skip1:	jsr	Display_2D_sky		; Display in-sky icons
 	move.w	Travel_mode,d0		; Above or below ?
-	move.w	#Above_mask,d1
+	move.w #$0960,D1 ; ADVANCED: was $0160 (added wasp bit so it appears above the tiles)
 	btst	d0,d1
 	beq.s	.Skip2
 	jsr	Display_2D_party		; Display party in sky

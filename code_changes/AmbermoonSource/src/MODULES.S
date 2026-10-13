@@ -218,6 +218,31 @@ Wait_4_user_Mod:
 	dc.l -1,Click_Mptr,-1,-1
 
 ; ********** Inventory 1 **************************
+WindowData_WaitForSequence:
+	; struct WindowData
+	dc.b $01 ; Bit0: Unknown, Bit1: Maybe states that sprites were allocated
+	dc.b $00 ; For identification?
+	dc.l $ffffffff ; No update function
+	dc.l WindowData_WaitForSequence_VblQ ; Vertical blank handler function queue (don't increase game time)
+	dc.l Basic_ScrQ ; Screen handler function queue
+	dc.l WindowData_WaitForSequence_EmptyHandlers ; Linked list of mouse event handlers
+	dc.l WindowData_WaitForSequence_EmptyHandlers ; Linked list of keyboard event handlers
+	dc.l $00000000 ; null pointer address ; Module Init handler
+	dc.l $00000000 ; null pointer address ; Module Exit handler
+	dc.l $00000000 ; null pointer address ; Display Init handler
+	dc.l $00000000 ; null pointer address ; Display Exit handler
+	dc.l $ffffffff ; invalid address marker ; Render data
+	dc.l Default_Mptr+2700 ; Cursor changes to Zzz
+	dc.l $ffffffff ; Palette data?
+	dc.l $ffffffff ; Mouse trap area?
+WindowData_WaitForSequence_EmptyHandlers:
+	dc.l $00000000
+WindowData_WaitForSequence_DurationInVbls:
+	dc.w $0000
+WindowData_WaitForSequence_VblQ:
+	dc.l Time_AutoIcon
+	dc.l FUN_WaitForSequenceVbl
+	dc.l $00000000 ; null pointer address
 Inv1_Mod:
 	dc.b Global_mod,Inv1_ID
 	dc.l Inv1_DisUpd
@@ -504,7 +529,15 @@ Inv2_Mod:
 	Scrollbar_keys
 	dc.l $0000ff00,0,Schnism_check
 	dc.l 0
-.PA:	dc.w 21,181,50,70,2,0,Window_colour
+.PA:
+	; I guess this is the area for the inventory messages
+	dc.w $0015 ; min X = 21
+	dc.w $00b5 ; max X = 181
+	dc.w $0032 ; min Y = 50
+	dc.w $0046 ; max Y = 70
+	dc.w $0002 ; text color = white
+	dc.w $0000 ; text shadow color = black
+	dc.w $001c ; background color = darker gray
 
 ; ********** Move item (Inventory 2) **************
 Move_item_Mod:

@@ -58,9 +58,10 @@ Combat_ModInit:
 	move.w	#Combat_spell_area,Spell_area_type
 	move.w	Active_member,d7		; Activate member (!)
 	jsr	Activate_member
-	lea.l	Combat_data,a0		; Clear combat data
+	; Clear combat data
+	lea Combat_data,A0
 	moveq.l	#0,d0
-	move.w	#Combat_data_size/2-1,d7
+	move.w #Combat_data_size/2-1,D7
 .Loop:	move.w	d0,(a0)+
 	dbra	d7,.Loop
 	jsr	Init_COMOBs		; Initialize
@@ -595,6 +596,112 @@ OK_combat:
 ; [ Do combat round ]
 ; No registers are restored
 ;*****************************************************************************
+; AMBERMOON ADVANCED
+FUN_CheckBattleConditionsAtRoundStart:
+	; Note: DAT_Combat_monsters holds all monsters
+	; in a sequence. If a slot is free, the monster
+	; is already removed (dead or fled).
+	movem.l A1/A0/D7/D0,-(SP)
+	lea Combat_monsters,A0
+	move.w Nr_monsters,D7
+	bra.b .Loop_Adv
+.Next_Adv:
+	tst.b (A0) ; Any monster there?
+	beq.b .Skip_Adv ; No? Skip.
+	move.b ($0005,A0),D0 ; Get character data handle
+	jsr Claim_pointer
+	movea.l D0,A1
+	move.b ($0005,A0),D0
+	jsr Free_pointer ; Release character data handle
+	moveq #0,D0
+	move.w Nr_monsters,D0
+	sub.w D7,D0
+	jsr FUN_ApplyBattleRoundConditions
+.Skip_Adv:
+	lea ($0028,A0),A0
+.Loop_Adv:
+	dbf D7,.Next_Adv
+	; Now party members
+	lea Combat_party,A0
+	moveq #5,D7
+	moveq #18,D0
+.NextPartyMember:
+	tst.b (A0) ; Any party member there?
+	beq.b .SkipPartyMember ; No? Skip.
+	move.l D0,-(SP)
+	move.b ($0005,A0),D0 ; Get character data handle
+	jsr Claim_pointer
+	movea.l D0,A1
+	move.b ($0005,A0),D0
+	jsr Free_pointer ; Release character data handle
+	move.l (SP)+,D0
+	jsr FUN_ApplyBattleRoundConditions
+.SkipPartyMember:
+	lea ($0028,A0),A0
+	addq #1,D0
+	dbf D7,.NextPartyMember
+	movem.l (SP)+,D0/D7/A0/A1
+	rts
+; D0 is the index (0 to 17 for monsters, 18 to 23 for party members)
+; A0 points to the participant data
+; A1 points to the character data
+; This checks for poison and deals damage to all affected participants.
+; It also checks for aging and will increase the aging rounds.
+FUN_ApplyBattleRoundConditions:
+	movem.l A0/D3/D2/D1/D0,-(SP)
+	move.w ($1e,A1),D1
+	btst #9,D1 ; Poisoned?
+	beq.b .CheckAging
+	; Handle poison
+	move.l D0,-(SP)
+	move.w ($cc,A1),D0 ; max HP
+	add.w ($ce,A1),D0 ; bonus HP
+	divu.w #20,D0 ; 5% of max HP
+	tst.w D0
+	beq.b .ZeroDamage ; handle a value of zero
+	move.l D0,D2
+	jsr Random
+	mulu.w D2,D0
+	swap D0 ; random value from 0 to 5% of MaxHp - 1
+	addq.w #$00000001,D0 ; now 1 to 5% of MaxHp
+	bra.b .PoisonDamage
+.ZeroDamage:
+	moveq #1,D0 ; At least do 1 damage	
+.PoisonDamage:
+	; Preserve sleep state!
+	move.l D1,D2
+	and.l #DAT_SleepMask,D2
+	tst.b (A1) ; 0: Party member, 2: Monster
+	beq.b .PoisonParty
+	jsr Do_damage_to_monster
+	bra.b .EndPoison
+.PoisonParty:
+	jsr Do_combat_damage
+.EndPoison:
+	move.l (SP)+,D0
+	move.w ($1e,A1),D1 ; re-get conditions
+	move.l D1,D3
+	and.l #DAT_DeadMask,D3
+	bne.b .End ; don't restore sleep condition if already dead and don't check anything else
+	or.w D2,D1 ; restore sleep if needed
+	move.w D1,($1e,A1) ; update in char data as well
+.CheckAging:
+	btst #12,D1 ; Aging?
+	beq.b .End ; No. End.
+	lea DAT_BattleAgingInfo,A0
+	moveq #0,D1
+	move.b 0(A0,D0.w),D1
+	cmp.b #5,D1
+	bpl.b .End ; Already at 5? End.
+	addq #1,D1 ; Increase by 1
+	move.b D1,0(A0,D0.w) ; And store it
+.End:
+	movem.l (SP)+,D0/D1/D2/D3/A0
+	rts
+DAT_BattleAgingInfo:
+	dc.b 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 ; 24 bytes
+DAT_SleepMask: EQU $0004
+DAT_DeadMask: EQU $e000
 Do_combat_round:
 	st	Fighting			; Start !
 	sf	Random_animating
@@ -616,7 +723,10 @@ Do_combat_round:
 	Free	FXGFX_handle
 	jsr	Update_screen
 ; ---------- Determine actions for monsters -------
-	jsr	Calculate_global_danger
+	jsr FUN_CheckBattleConditionsAtRoundStart
+	jsr Update_screen
+; ---------- Determine actions for monsters -------	
+	jsr FUN_Calculate_global_danger
 	lea.l	Combat_monsters,a0
 	move.w	Nr_monsters,d7
 	bra.s	.Entry
@@ -676,7 +786,12 @@ Do_combat_round:
 ; ---------- Handle all participants --------------
 	lea.l	Combat_speed_list,a1
 	move.w	Nr_participants,d7
-	subq.w	#1,d7
+	; subq.w #$00000001,D7 ; ADVANCED: Commented out
+	; As we potentially poison participants when the round starts,
+	; we want to check for battle end in the first iteration.
+	; So keep the loop count 1 higher but jump straight to the
+	; end battle checks.
+	bra .LAB_BattleRoundEndCheck
 .Loop1:	move.l	(a1)+,a0			; Get participant data
 ; ***** Execute chosen action *****
 	moveq.l	#0,d0			; Any action ?
@@ -685,10 +800,10 @@ Do_combat_round:
 	cmp.b	#1,Part_type(a0)		; Party or monster ?
 	bne.s	.Monster1
 	move.w	#White,Combat_ink_colour	; Party
-	sf	Party_or_monster
+	sf Party_or_monster
 	bra.s	.Go_on1
 .Monster1:	move.w	#Light_red,Combat_ink_colour	; Monster
-	st	Party_or_monster
+	st Party_or_monster
 	jsr	Wait_4_animation		; Finish animation
 .Go_on1:	lea.l	Combat_action_table,a2	; Get action data
 	subq.w	#1,d0
@@ -706,6 +821,7 @@ Do_combat_round:
 	move.l	(a2),a2
 	jsr	(a2)
 	movem.l	(sp)+,d0-d7/a0-a6
+.LAB_BattleRoundEndCheck:
 	jsr	Update_control_status	; Remove incapable participants
 	jsr	Update_combat_screen
 	jsr	Update_combat_screen	; !
@@ -763,12 +879,20 @@ Do_combat_round:
 	move.w	#31,Combat_ink_colour	; Reset ink
 .Leave:	sf	Fighting			; Stop !
 	st	Random_animating
+	; ADVANCED
+	jsr FUN_AfterBattleRound
 	jmp	Update_screen
 
 ;*****************************************************************************
 ; [ Update participant control status ]
 ; All registers are restored
 ;*****************************************************************************
+FUN_AfterBattleRound:
+	; Reset flags which should only last for 1 round
+	sf Foresee_magic
+	sf Foresee_attack
+	clr.b Protected_party_members
+	rts
 Update_control_status:
 	movem.l	d0/d1/d7/a0-a2,-(sp)
 	lea.l	Combat_matrix,a1		; Search matrix
@@ -826,7 +950,7 @@ Update_control_status:
 ; No registers are restored
 ;*****************************************************************************
 Do_move:
-	tst.b	Party_or_monster		; Party or monster ?
+	tst.b Party_or_monster
 	bne	.Monster
 ; ---------- Move party member --------------------
 	move.w	#228,d0			; " moves!"
@@ -944,6 +1068,107 @@ Do_parade:
 ;*****************************************************************************
 Do_close_range:
 ; ---------- Find defender ------------------------
+; AMBERMOON ADVANCED
+; Advanced combat functions
+;  a0 - Pointer to attacker's participant data
+;  a1 - Pointer to defender's participant data
+;  a2 - Pointer to attacker's character data
+;  a3 - Pointer to defender's character data
+FUN_GetAttackerAgingValue:
+    move.l A1,-(SP)
+	moveq #0,D0
+	cmp #2,(A0)
+	beq .SkipPartyMemberOffset
+	moveq #18,D0 ; Party members start at index 18
+.SkipPartyMemberOffset:
+	add.b ($01,A0),D0 ; Add nr of monster/party member
+	lea DAT_BattleAgingInfo,A1
+	move.b 0(A1,D0.w),D0
+	mulu.w #10,D0
+	movea.l (SP)+,A1
+	rts
+; -----------------------------------------------
+FUN_GetDefenderAgingValue:
+    move.l A1,-(SP)
+	moveq #0,D0
+	cmp #2,(A1)
+	beq .SkipPartyMemberOffset_Adv
+	moveq #18,D0 ; Party members start at index 18
+.SkipPartyMemberOffset_Adv:
+	add.b ($01,A1),D0 ; Add nr of monster/party member
+	lea DAT_BattleAgingInfo,A1
+	move.b 0(A1,D0.w),D0
+	mulu.w #10,D0
+	movea.l (SP)+,A1
+	rts
+; -----------------------------------------------
+FUN_TestAttackerHit:
+	movem.l D2/D1/D0,-(SP)
+	moveq #0,D2
+	move.w ($007a,A2),D0 ; Get attack skill
+	add.w ($007e,A2),D0 ; Add attack skill bonus
+	move.w ($001e,A2),D1
+	btst #5,D1 ; Drugged?
+	beq .CheckBlind
+	moveq #25,D2 ; Init reduction with 25% when drugged
+.CheckBlind:
+	btst #4,D1 ; Blind?
+	bne .Half
+.CheckAging:
+	btst #12,D1 ; Aging
+	beq .Calc
+	move.w D0,D1 ; Backup attack skill value
+	jsr FUN_GetAttackerAgingValue
+	exg D0,D1 ; D1 then holds aging value, D0 again the attack skill value
+	add.b D1,D2
+	bra .Calc
+.Half:
+	add.w #50,D2
+.Calc:
+	btst #2,($12,A2) ; Boss?
+	beq .Test ; No? Skip this
+	lsr.w #1,D2 ; Half the penalty against bosses
+.Test:
+	tst.b Foresee_attack
+	beq .NotForeseen
+	add.w #25,D2
+.NotForeseen:
+	sub.w D2,D0
+	bpl .Roll
+	moveq #0,D0
+.Roll:
+	jsr Probe_100
+	movem.l (SP)+,D0/D1/D2
+	rts
+; -----------------------------------------------
+FUN_TestDefenderParry:
+	movem.l D2/D1/D0,-(SP)
+	moveq #0,D2
+	move.w ($0082,A3),D0 ; Get parade skill
+	add.w ($0086,A3),D0 ; Add parade skill bonus
+	move.w ($001e,A3),D1
+	btst #4,D1 ; Blind?
+	bne .Half_Adv
+	btst #12,D1 ; Aging
+	beq .Calc_Adv
+	move.w D0,D2 ; Backup attack skill value
+	jsr FUN_GetDefenderAgingValue
+	exg D0,D2 ; D2 then holds aging value, D0 again the attack skill value
+	bra .Calc_Adv
+.Half_Adv:
+	moveq #50,D2
+.Calc_Adv:
+	btst #2,($12,A3) ; Boss?
+	beq .Test_Adv ; No? Skip this
+	lsr.w #1,D2 ; Half the penalty for bosses
+.Test_Adv:
+	sub.w D2,D0
+	bpl .Roll_Adv
+	moveq #0,D0
+.Roll_Adv:
+	jsr Probe_100
+	movem.l (SP)+,D0/D1/D2
+	rts
 	lea.l	Combat_matrix,a1		; Get defender data
 	move.w	Part_target(a0),d0
 	lsl.w	#2,d0
@@ -952,7 +1177,7 @@ Do_close_range:
 	bne.s	.Yes
 	clr.b	Part_action(a0)		; Reset action
 	move.w	#-1,Part_target(a0)
-	tst.b	Party_or_monster		; Monster ?
+	tst.b Party_or_monster
 	beq	.Party0
 	move.l	Part_COMOB_ptr(a0),a1	; Yes -> Move forward
 	subq.w	#1,COMOB_3D_Z(a1)
@@ -989,7 +1214,18 @@ Do_close_range:
 	jsr	Do_part_prompt
 	bra	.Exit
 ; ---------- Get number of attacks ----------------
-.Ok1:	moveq.l	#0,d6			; Get
+.Ok1:
+	exg A0,A1 ; we need the defender participant data in A0
+	jsr FUN_IsPartyMemberProtected
+	exg A0,A1 ; this won't affect the CCR register (Z bit)
+	beq .NumAttacks
+	jsr Show_closerange_attack
+	move.w #$00d6,D0 ; "Attack was deflected !"
+	jsr Do_part_prompt
+	bra.w .Exit
+; ---------- Get number of attacks ----------------
+.NumAttacks:
+	moveq.l	#0,d6; Get
 	move.b	Attacks_per_round(a2),d6
 	bclr	#Part_hurried,Part_flags(a0)	; Hurried ?
 	beq.s	.No
@@ -998,9 +1234,8 @@ Do_close_range:
 .Loop:	sf	Abort_attack		; Clear
 	jsr	Show_closerange_attack	; Show
 ; ---------- Probe attacker's attack skill --------
-	move.w	SAttack(a2),d0		; Get attack skill
-	add.w	SAttack+Magic(a2),d0
-	jsr	Probe_100			; Monster -> Probe
+; ---------- Probe attacker's attack skill --------
+	jsr FUN_TestAttackerHit
 	bpl.s	.Ok2
 	move.w	#213,d0			; "Attack failed !"
 	jsr	Do_part_prompt
@@ -1008,9 +1243,7 @@ Do_close_range:
 ; ---------- Probe defender's parade skill --------
 .Ok2:	cmp.b	#Parade_action,Part_action(a1)	; Defending ?
 	bne	.Ok3
-	move.w	SParade(a3),d0		; Get parade skill
-	add.w	SParade+Magic(a3),d0
-	jsr	Probe_100			; Probe
+	jsr FUN_TestDefenderParry
 	bpl.s	.Ok3
 	move.w	#214,d0			; "Attack was deflected !"
 	jsr	Do_part_prompt
@@ -1074,16 +1307,196 @@ Do_close_range:
 ;        d2 - Defender's protection (.w)
 ; All registers are restored
 ;*****************************************************************************
+FUN_IsWeaponABow:
+	; A2 should be the character data
+	movem.l D0/A0,-(SP)
+	move.w ($0138,A2),D0 ; item index of weapon hand
+	subq.w #$00000001,D0
+	mulu.w #$003c,D0
+	movea.l Object_data_ptr,A0
+	adda.l D0,A0 ; get item data of weapon
+	moveq #$00000000,D0 ; by default it is no bow
+	cmpi.b #6,($0001,A0) ; is item type long-ranged?
+	bne.b LAB_IsWeaponABowEnd
+	tst.b ($0010,A0) ; test if the weapon has an ammunition type
+	beq.b LAB_IsWeaponABowEnd
+	; if so set the return value to true
+	moveq #-$00000001,D0
+LAB_IsWeaponABowEnd:
+	tst.b D0
+	movem.l (SP)+,D0/A0
+	rts
+FUN_AddDamageAttributeBonus:
+	; Adds the damage attribute bonus to D0
+	; Expects the char data in A1
+	movem.l A2/D1,-(SP)
+	movea.l A1,A2
+	jsr FUN_CalculateDamageAttributeBonus
+	add.w D1,D0
+	movem.l (SP)+,D1/A2
+	rts
+FUN_AddDefenseAttributeBonus:
+	; Adds the defense attribute bonus to D0
+	; Expects the char data in A1
+	move.l D1,-(SP)
+	moveq #0,D1
+	move.w ($004a,A1),D1 ; current STA
+	add.w ($004e,A1),D1 ; bonus STA
+	divu.w #$0019,D1 ; divide by 25
+	add.w D1,D0
+	move.l (SP)+,D1
+	rts
+FUN_CalculateDamageAttributeBonus:
+	; Bonus is returned in D1
+	; A2 must hold the character data
+	; For bows DEX gives a bonus of DEX/25 and STR only STR/50
+	; For other weapons STR gives a bonus of STR/25 and DEX/50
+	move.l D0,-(SP)
+	moveq #$00000000,D0
+	moveq #$00000000,D1
+	jsr FUN_IsWeaponABow
+	bne.b LAB_BowAttributeBonus
+	; here the normal bonus is calculated
+	move.w ($002a,A2),D0 ; current STR
+	add.w ($002e,A2),D0 ; bonus STR
+	divu.w #$0019,D0 ; divide by 25
+	move.w ($003a,A2),D1 ; current DEX
+	add.w ($003e,A2),D1 ; bonus DEX
+	divu.w #$0032,D1 ; divide by 50
+	add.w D0,D1
+	bra.b LAB_CalculateDamageAttributeBonusEnd
+LAB_BowAttributeBonus:
+	; and here the bow bonus
+	move.w ($003a,A2),D0 ; current DEX
+	add.w ($003e,A2),D0 ; bonus DEX
+	divu.w #$0019,D0 ; divide by 25
+	move.w ($002a,A2),D1 ; current STR
+	add.w ($002e,A2),D1 ; bonus STR
+	divu.w #$0032,D1 ; divide by 50
+	add.w D0,D1
+LAB_CalculateDamageAttributeBonusEnd:
+	andi.l #$ffff,D1 ; ensure only the lower word is filled
+	move.l (SP)+,D0
+	rts
+FUN_ApplyBattleMagicEffects:
+	; In/Out D0: Use magic skill value
+	; In A0: Caster data
+	; Drugged casters have their use magic skill value reduced by 25% (less chance that a spell works)
+	move.l D1,-(SP)
+	moveq #0,D1
+	move.b Foresee_magic,D1
+	cmpi.b #2,(A0) ; caster is monster?
+	beq .Yes
+	; no, then don't foresee
+	moveq #0,D1
+.Yes:	
+	btst.b #5,($1f,A2) ; drugged? (use offset $1f here as btst uses only one byte)
+	beq .NotDrugged
+	tst.b D1 ; foreseen?
+	beq .NotForeseenOrNotDrugged
+	; Here the target is drugged and the cast was foreseen.
+	; In this case the success chance just halves.
+	lsr.l #1,D0
+	bra .Done
+.NotDrugged:
+	tst.b D1 ; foreseen?
+	beq .Done ; not drugged and not foreseen? we are done
+	; Here the target is not drugged but the cast was foreseen.
+	; So just proceed with 25% reduction.
+.NotForeseenOrNotDrugged:
+	move.l D0,D1
+	add.l D1,D1 ; = 2 * D0
+	add.l D1,D0 ; = 3 * D0
+	lsr.l #2,D0 ; = 3 * D0 / 4 (which is 75% of the value or 25% reduction)
+.Done:
+	move.l (SP)+,D1
+	rts
+FUN_ApplyBattleDamageEffects:
+	; In/Out D1: Damage
+	; In A2: Attacker char data
+	; Disease halves the damage for non-boss monsters.
+	; It reduces the damage by 25% for boss monsters.
+	; Aging will stack 10% (5%) reduction every following
+	; round up to 50% (25% for bosses).
+	move.w ($1e,A2),D0 ; conditions
+	btst #11,D0 ; diseased?
+	bne .FullEffect ; yes. apply full effect
+	btst #12,D0 ; aging?
+	beq .End ; no? end
+	jsr FUN_GetAttackerAgingValue
+	beq .End ; Not aged yet? just end
+	cmp #5,D0
+	beq .FullEffect ; already at full stacks? apply full effect
+	mulu.w #10,D0 ; 10% per aging stack
+	btst #4,($12,A2) ; is boss?
+	beq .NoBossAging
+	lsr #1,D0
+.NoBossAging:
+	move.l D1,-(SP)
+	moveq #100,D1
+	sub.w D0,D1
+	move.l (SP)+,D0
+	muls.w D0,D1
+	divs.w #100,D1
+	bra .End
+.FullEffect:
+	btst #4,($12,A2) ; is boss?
+	beq.b .NoBoss
+	move.w D1,D0
+	asr.w #2,D0 ; get a quarter of the damage
+	sub.w D0,D1 ; subtract the quarter (= 25% reduction)	
+	bra .End
+.NoBoss:
+	asr.w #1,D1 ; half the damage	
+.End:
+	rts
+FUN_ApplyBattleDefenseEffects:
+	; In/Out D2: Defense
+	; In A3: Defender char data
+	; Disease halves the defense for non-boss monsters.
+	; It reduces the defense by 25% for boss monsters.
+	; Aging will stack 10% (5%) reduction every following
+	; round up to 50% (25% for bosses).
+	move.w ($1e,A3),D0 ; conditions
+	btst #11,D0 ; diseased?
+	bne .FullEffect_Adv ; yes. apply full effect
+	btst #12,D0 ; aging?
+	beq .End_Adv ; no? end
+	jsr FUN_GetDefenderAgingValue
+	beq .End_Adv ; Not aged yet? just end
+	cmp #5,D0
+	beq .FullEffect_Adv ; already at full stacks? apply full effect
+	mulu.w #10,D0 ; 10% per aging stack
+	btst #4,($12,A2) ; is boss?
+	beq .NoBossAging_Adv
+	lsr #1,D0
+.NoBossAging_Adv:
+	move.l D2,-(SP)
+	moveq #100,D2
+	sub.w D0,D2
+	move.l (SP)+,D0
+	muls.w D0,D2
+	divs.w #100,D2
+	bra .End_Adv
+.FullEffect_Adv:
+	btst #4,($12,A3) ; is boss?
+	beq.b .NoBoss_Adv
+	move.w D2,D0
+	asr.w #2,D0 ; get a quarter of the damage
+	sub.w D0,D2 ; subtract the quarter (= 25% reduction)	
+	bra .End_Adv
+.NoBoss_Adv:
+	asr.w #1,D2 ; half the damage	
+.End_Adv:
+	rts
 Calculate_damage_and_protection:
 	move.l	d0,-(sp)
 ; ---------- Calculate damage ---------------------
 	move.w	Damage(a2),d0		; Calculate maximum damage
 	add.w	Damage_magic(a2),d0
-	moveq.l	#0,d1
-	move.w	AStrength(a2),d1
-	add.w	AStrength+Magic(a2),d1
-	divu.w	#25,d1
+	jsr FUN_CalculateDamageAttributeBonus
 	add.w	d0,d1
+	jsr FUN_ApplyBattleDamageEffects
 	cmp.b	#1,Part_type(a0)		; Party ?
 	bne.s	.Zero1
 	move.w	Spell_3_data,d0		; Add spell's effect (if any)
@@ -1110,6 +1523,7 @@ Calculate_damage_and_protection:
 	add.w	AConstitution+Magic(a3),d2
 	divu.w	#25,d2
 	add.w	d0,d2
+	jsr FUN_ApplyBattleDefenseEffects
 	cmp.b	#1,Part_type(a0)		; Party ?
 	bne.s	.Zero2
 	move.w	Spell_2_data,d0		; Add spell's effect (if any)
@@ -1188,7 +1602,7 @@ Break_defender:
 ;*****************************************************************************
 Show_closerange_attack:
 	jsr	Print_attacking		; Tell 'em
-	tst.b	Party_or_monster		; Party or monster ?
+	tst.b Party_or_monster
 	bne.s	.Monster
 	jsr	Show_slash		; Party -> Slash!
 	bra.s	.Exit
@@ -1247,7 +1661,7 @@ Do_long_range:
 	Get	Part_handle(a0),a2		; Remove ammunition
 	jsr	Remove_ammo
 	Free	Part_handle(a0)
-	tst.b	Party_or_monster		; Monster ?
+	tst.b Party_or_monster
 	beq	.Party0
 	move.l	Part_COMOB_ptr(a0),a1	; Yes -> Move forward
 	subq.w	#1,COMOB_3D_Z(a1)
@@ -1284,7 +1698,17 @@ Do_long_range:
 	jsr	Do_part_prompt
 	bra	.Exit
 ; ---------- Get number of attacks ----------------
-.Ok1:	moveq.l	#0,d6			; Get
+.Ok1:
+	exg A0,A1 ; we need the defender participant data in A0
+	jsr FUN_IsPartyMemberProtected
+	exg A0,A1 ; this won't affect the CCR register (Z bit)
+	beq .NumAttacks
+	jsr Show_longrange_attack
+	move.w #$00d6,D0 ; "Attack was deflected !"
+	jsr Do_part_prompt
+	bra.w .Exit
+.NumAttacks:
+	moveq.l	#0,d6; Get
 	move.b	Attacks_per_round(a2),d6
 	bclr	#Part_hurried,Part_flags(a0)	; Hurried ?
 	beq.s	.No
@@ -1293,9 +1717,7 @@ Do_long_range:
 .Loop:	sf	Abort_attack		; Clear
 	jsr	Show_longrange_attack	; Show
 ; ---------- Probe attacker's attack skill --------
-	move.w	SAttack(a2),d0		; Get attack skill
-	add.w	SAttack+Magic(a2),d0
-	jsr	Probe_100			; Monster -> Probe
+	jsr FUN_TestAttackerHit
 	bpl.s	.Ok2
 	move.w	#213,d0			; "Attack failed !"
 	jsr	Do_part_prompt
@@ -1303,9 +1725,7 @@ Do_long_range:
 ; ---------- Probe defender's parade skill --------
 .Ok2:	cmp.b	#Parade_action,Part_action(a1)	; Defending ?
 	bne	.Ok3
-	move.w	SParade(a2),d0		; Get parade skill
-	add.w	SParade+Magic(a2),d0
-	jsr	Probe_100			; Probe
+	jsr FUN_TestDefenderParry
 	bpl.s	.Ok3
 	move.w	#214,d0			; "Attack was deflected !"
 	jsr	Do_part_prompt
@@ -1370,7 +1790,7 @@ Do_long_range:
 Show_longrange_attack:
 	move.l	a4,-(sp)
 	jsr	Print_attacking		; Tell 'em
-	tst.b	Party_or_monster		; Monster ?
+	tst.b Party_or_monster
 	bne.s	.Monster
 	jsr	Show_moving_projectile	; No -> Fiuuuww... Thud!
 	jsr	Remove_ammo		; Remove ammunition
@@ -1634,7 +2054,7 @@ Do_flee:
 	bset	#Fleeing,d0
 	move.w	d0,Body_conditions(a1)
 	Free	Part_handle(a0)
-	tst.b	Party_or_monster		; Party or monster ?
+	tst.b Party_or_monster
 	bne.s	.Monster
 	addq.w	#1,Fled_members		; Count
 	bra.s	.Done
@@ -2194,6 +2614,15 @@ Display_combat_text:
 ;        a0 - Pointer to party member's participant data (.l)
 ; All registers are	restored
 ;*****************************************************************************
+FUN_IsPartyMemberProtected:
+	movem.l D1/D0,-(SP)
+	moveq #0,D0
+	moveq #0,D1
+	move.b ($0001,A0),D0
+	move.b Protected_party_members,D1
+	btst.l D0,D1
+	movem.l (SP)+,D0/D1
+	rts
 Do_combat_damage:
 	movem.l	d0-d3/a1,-(sp)
 	Get	Part_handle(a0),a1
@@ -2249,6 +2678,26 @@ Do_combat_damage:
 ;        a0 - Pointer to monster's participant data (.l)
 ; All registers are	restored
 ;*****************************************************************************
+FUN_IsMonsterWeakened:
+	movem.l A0/D7/D0,-(SP)
+	moveq #0,D0
+	move.b ($0005,A0),D0 ; monster handle
+	moveq #17,D7 ; check up to 18 slots for weakened monsters
+	lea Weakened_monsters,A0
+.Next:
+	tst.b (A0)
+	beq .No ; free slot reached? monster was not in the weakened array
+	cmp.b (A1)+,D0 ; check if the handle is there
+	beq .Yes ; yes? fine
+	dbf D7,.Next ; otherwise keep looking or eventually proceed to "no"
+.No:
+	moveq #0,D0
+	bra .End
+.Yes:
+	moveq #-1,D0
+.End:
+	movem.l (SP)+,D0/D7/A0
+	rts
 Do_damage_to_monster:
 	movem.l	d0/d1/a0-a2,-(sp)
 	Get	Part_handle(a0),a1		; Can be damaged ?
@@ -2262,7 +2711,19 @@ Do_damage_to_monster:
 	bclr	#Asleep,d1
 	move.w	d1,Body_conditions(a1)
 ; ---------- Show ---------------------------------
-.Skip:	move.w	d0,Part_damage(a0)		; Show in tactic window
+.Skip:
+	jsr FUN_IsMonsterWeakened
+	beq .No_Adv
+	moveq #30,D1 ; 30% dmg increase
+	btst.b #2,($0012,A1) ; is boss?
+	beq .NoBoss
+	lsr.b #1,D1 ; half the bonus dmg
+.NoBoss:
+	; * bonus / 100
+	mulu.w D1,D0
+	divu.w #100,D0
+.No_Adv:
+	move.w	d0,Part_damage(a0); Show in tactic window
 	move.b	#Combat_damage_interval,Part_damage_timer(a0)
 	movem.l	d0/a0,-(sp)
 	Set_anim	Hit_anim,a0		; Hit animation
@@ -3371,12 +3832,26 @@ Very_small_buffer:	ds.w 5
 
 	SECTION	Fast_BSS,bss
 Combat_data:
-Combat_zoom_screen_handle:	ds.b 1		; Combat flags
-Party_or_monster:	ds.b 1
+Combat_zoom_screen_handle:
+	; undefined2
+	dx.b 1
+Party_or_monster:
+	dx.b 1
 Tactic_bg_handle:	ds.b 1
 Abort_attack:	ds.b 1
 Apres_pool_handle:	ds.b 1
 Show_monsters:	ds.b 1
+Show_elements:
+	dx.b 1
+Foresee_magic:
+	dx.b 1
+Foresee_attack:
+	dx.b 1
+Protected_party_members:
+	; bit flag (bit 0 = slot 0, ...)
+	dx.b 1
+Weakened_monsters:
+	dx.b 18 ; up to 18 monster char handles
 Combat_result:	ds.b 1
 CellA_completed:	ds.b 1
 Combat_icons:	ds.b 6

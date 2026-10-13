@@ -1167,6 +1167,32 @@ Do_prompt:
 ; Note :
 ;  - This routine assumes a PA has been installed.
 ;*****************************************************************************
+FUN_DrawTextWithClickCursorAndNameAtFront:
+	move.l A0,-(SP)
+	movea.l Prompts_ptr,A0
+	jsr FUN_PrintTextWithNameAtFront
+	jsr Erase_PA
+	jsr Update_screen
+	movea.l (SP)+,A0
+	rts
+FUN_PrintTextWithNameAtFront:
+	movem.l A1/A0/D0,-(SP)
+	jsr Find_large_text
+	lea Text_list,A1	
+	move.l A0,($0004,A1) ; set message as second text
+	move.b Inventory_handle,D0
+	jsr Claim_pointer
+	movea.l D0,A0
+	lea ($0112,A0),A0 ; char name
+	move.l A0,(A1) ; set char name as first text
+	clr.l ($0008,A1) ; set end marker after second text
+	movea.l A1,A0
+	moveq #$00000000,D0
+	jsr Display_text_and_wait
+	move.b Inventory_handle,D0
+	jsr Free_pointer
+	movem.l (SP)+,D0/A0/A1
+	rts	
 Do_text:
 	jsr	Print_text_and_wait		; Print, wait
 	jsr	Erase_PA			; Erase
@@ -1298,6 +1324,22 @@ Create_string_graphics:
 ;  OUT : a0 - Pointer to text (.l)
 ; Changed registers : a0
 ;*****************************************************************************
+FUN_GetTextMessageLength:
+	move.l A0,-(SP)
+	move.w (A0)+,D7
+	cmp.w D7,D0
+	bmi.b .Valid
+	moveq #0,D7
+	bra .End
+.Valid:
+	moveq #0,D7
+	move.w D0,D7
+	add.w D7,D7
+	adda.w D7,A0
+	move.w (A0)+,D7
+.End:
+	move.l (SP)+,A0
+	rts
 Find_large_text:
 	movem.l	d0/d7/a1,-(sp)
 	move.w	(a0)+,d7			; Get number of texts
@@ -1635,23 +1677,39 @@ Disk_error_handler:
 
 Disk_errors:
 	dc.w ERROR_NO_FREE_STORE,1
-	dc.w ERROR_OBJECT_IN_USE,2
-	dc.w ERROR_OBJECT_EXISTS,3
-	dc.w ERROR_DIR_NOT_FOUND,4
-	dc.w ERROR_OBJECT_NOT_FOUND,5
-	dc.w ERROR_OBJECT_TOO_LARGE,6
-	dc.w ERROR_INVALID_COMPONENT_NAME,7
-	dc.w ERROR_OBJECT_WRONG_TYPE,8
-	dc.w ERROR_DISK_NOT_VALIDATED,9
-	dc.w ERROR_RENAME_ACROSS_DEVICES,10
-	dc.w ERROR_SEEK_ERROR,11
-	dc.w ERROR_DISK_FULL,12
-	dc.w ERROR_WRITE_PROTECTED,14
-	dc.w ERROR_READ_PROTECTED,15
-	dc.w ERROR_NOT_A_DOS_DISK,16
-	dc.w ERROR_INCOMPLETE_READ,13
-	dc.w ERROR_INCOMPLETE_WRITE,17
-	dc.w 0
+	dc.w $00ca ; DOS Error - File in use
+	dc.w $0002 ; Map to message 2
+	dc.w $00cb ; DOS Error - File already exists
+	dc.w $0003 ; Map to message 3
+	dc.w $00cc ; DOS Error - Directory not found
+	dc.w $0004 ; Map to message 4
+	dc.w $00cd ; DOS Error - File not found
+	dc.w $0005 ; Map to message 5
+	dc.w $00cf ; DOS Error - File too large
+	dc.w $0006 ; Map to message 6
+	dc.w $00d2 ; DOS Error - Invalid component name
+	dc.w $0007 ; Map to message 7
+	dc.w $00d4 ; DOS Error - File has wrong type
+	dc.w $0008 ; Map to message 8
+	dc.w $00d5 ; DOS Error - Disk not validated
+	dc.w $0009 ; Map to message 9
+	dc.w $00d7 ; DOS Error - Rename accross devices
+	dc.w $000a ; Map to message 10
+	dc.w $00db ; DOS Error - Seek error
+	dc.w $000b ; Map to message 11
+	dc.w $00dd ; DOS Error - Disk full
+	dc.w $000c ; Map to message 12
+	dc.w $00df ; DOS Error - Write protected
+	dc.w $000e ; Map to message 14
+	dc.w $00e0 ; DOS Error - Read protected
+	dc.w $000f ; Map to message 15
+	dc.w $00e1 ; DOS Error - Not a DOS disk
+	dc.w $0010 ; Map to message 16
+	dc.w $01f4 ; Custom Error 500 - Not read enough bytes
+	dc.w $000d ; Map to message 13
+	dc.w $01f5 ; Custom Error 501 - Not written enough bytes
+	dc.w $0011 ; Map to message 17
+	dc.w $0000 ; end marker
 
 ;*****************************************************************************
 ; [ Disk requester ]

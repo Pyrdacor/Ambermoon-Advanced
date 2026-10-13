@@ -228,11 +228,11 @@ Copy_data:
 	move.l	(a2)+,(a3)+
 .Skip:
 	dbra	d6,.Loop
-	btst	#1,d7		; FIX: Was "btst d7,#1" (operands swapped), which tests
+	btst.l #$01,D7
 	beq.s	.Skip2		; bit (d7 & 7) of the constant 1. So if the size was
 	move.w	(a2)+,(a3)+	; a multiple of 8, one word too much was copied.
 .Skip2:				; Load_button_graphics copies 12168 bytes into
-	btst	#0,d7		; Control_icons, which fills its hunk completely, so
+	btst.l #$00,D7
 	beq.s	.Exit		; 2 bytes behind the hunk were overwritten (memory
 				; list corrupted -> Guru 8100 0005 on exit).
 	move.b	(a2)+,(a3)+
@@ -257,6 +257,39 @@ Last_file_slot_disk:
 ; NOTE :
 ;   - Item data is no longer part of the executable (see [ Object_data_ptr ]).
 ;*****************************************************************************
+DAT_DebugTextBuffer:
+	dc.b $00
+	dc.b $00
+	dc.b $00
+	dc.b $00
+	dc.b $00
+	dc.b $00
+	dc.b $00
+	dc.b $00
+	dc.b $00
+	dc.b $00
+	dc.b $00
+	dc.b $00
+FUN_DebugPrint: ; D0 = number, D7 = length (num digits)
+	movem.l A6/A5/A4/A3/A2/A1/A0/D7/D6/D5/D4/D3/D2/D1/D0,-(SP)
+	jsr Own_blitter
+	moveq #$20,D6
+	lea DAT_DebugTextBuffer,A0
+	jsr DecR_convert
+	lea Text_list,A1
+	lea DAT_DebugTextBuffer,A0
+	move.l A0,(A1)
+	clr.l ($0004,A1)
+	move.l A1,TxtW_ptr
+	lea TxtW_Mod,A0
+	jsr Push_Module
+	;move.l A1,DAT_002889fa
+	;st Bool_AllowNoButton
+	;lea WindowData_PopupYesNo,A0
+	;jsr FUN_ShowWindow
+	jsr Free_blitter_usage
+	movem.l (SP)+,D0/D1/D2/D3/D4/D5/D6/D7/A0/A1/A2/A3/A4/A5/A6
+	rts	
 Load_items:
 	moveq.l	#46,d0		; Objects.amb
 	jsr	Load_file
@@ -264,9 +297,9 @@ Load_items:
 	jsr	Claim_pointer
 	move.l	d0,a2
 	move.w	(a2)+,d7
-	cmpi.w	#500,d7		; Read item count
+	cmpi.w #$00000258,D7 ; Read item count
 	ble.s	.Skip
-	move.w	#500,d7		; Limit to 500 items
+	move.w #$0258,D7 ; Limit to 600 items
 .Skip:
 	lea.l	Item_data,a3
 	mulu.w	#60,d7
@@ -295,7 +328,7 @@ Load_button_graphics:
 	jsr	Claim_pointer
 	move.l	d0,a2
 	lea.l	Control_icons,a3
-	move.w	#12168,d7		; 78 * 156 bytes
+	move.l #$2f88,D7 ; 78 * 156 bytes
 	jsr	Copy_data
 	move.b	d5,d0
 	jsr	Free_pointer
@@ -309,7 +342,113 @@ Load_resources:
 	jsr	Load_items
 	jsr	Load_button_graphics
 	rts
-	dcb.b	8322,0			; (unused space, e.g. for patches)
+FUN_CalculateSpellDamage:
+	; D0: regular damage
+	movem.l A1/A0/D5/D4/D3/D2/D1,-(SP)
+	moveq #0,D1
+	move.w D0,D1 ; damage
+	move.b ($0005,A0),D4 ; target handle
+	move.b ($0005,A1),D5 ; caster handle
+	move.b D5,D0
+	jsr Claim_pointer
+	movea.l D0,A0 ; Now A0 is the character data
+	moveq #0,D2
+	moveq #0,D3
+	move.b ($0005,A0),D2 ; Get current character level
+	move.w ($0032,A0),D3 ; Get current INT
+	add.w ($0036,A0),D3 ; Add bonus INT
+	move.b D5,D0
+	jsr Free_pointer
+	lea Spell_data,A1
+	move.w Selected_class,D0
+	mulu.w #30,D0
+	add.w Selected_spell,D0
+	subq.w #$00000001,D0
+	mulu.w #$0005,D0 ; Calc index to spell info struct (5 bytes long)
+	adda.w D0,A1
+	; add together all percentage values
+	; (INT-50)/5 + level
+	sub.w #50,D3
+	ext.l D3
+	divs.w #5,D3
+	add.w D3,D2
+	; element bonus
+	moveq #0,D3
+	move.b ($0004,A1),D3 ; spell element
+	lsl.b #3,D3 ; Multiply by 8 (8 entries per element)
+	move.b D4,D0
+	jsr Claim_pointer
+	movea.l D0,A0 ; Now A0 is the target data
+	move.b ($0013,A0),D5 ; get target element bits
+	move.b D4,D0
+	jsr Free_pointer
+	jsr FUN_GetWorstElementBonus ; D3 now holds the element bonus in percent
+	moveq #0,D0
+	move.b D3,D0
+	tst.b D0
+	beq.b LAB_SkipElementBonus
+	add.w D0,D2 ; + bonus
+	; Note: In theory we have to sub 100 to get the
+	; right elemental bonus. But in addition we have to
+	; add 100% as well as the total value is a bonus.
+	; Both would cancel each other out.
+LAB_SkipElementBonus:
+	; D2 now holds the total damage bonus in percent
+	tst.w D2
+	bpl.b LAB_PositiveFactor
+	moveq #1,D0 ; limit to at least 1 damage
+	bra.b LAB_ReturnDamage
+LAB_PositiveFactor:
+	mulu.w D2,D1 ; multiply bonus with damage
+	divu.w #100,D1 ; divide by 100
+	moveq #0,D0
+	move.w D1,D0
+	move.w ($0076,A0),D1 ; possible magic damage reduction
+	muls.w D0,D1
+	divs.w #100,D1
+	sub.w D1,D0
+	tst.w D0
+	bgt.b LAB_ReturnDamage
+	moveq #1,D0 ; limit to at least 1 damage
+LAB_ReturnDamage:
+	movem.l (SP)+,D1/D2/D3/D4/D5/A0/A1
+	rts
+	; element table
+DAT_ElementTable:
+	dc.b 0,100,100,100,100,100,100,100 ; Mental spells
+	dc.b 125,0,150,150,100,100,100,100 ; Spirit spells
+	dc.b 100,100,0,100,100,100,100,100 ; Physical spells
+	dc.b 100,100,100,0,100,100,100,100 ; Undead spells
+	dc.b 75,100,100,75,0,50,100,150 ; Earth spells
+	dc.b 75,100,100,75,150,0,50,150 ; Wind spells
+	dc.b 75,75,100,125,100,150,0,50 ; Fire spells
+	dc.b 75,100,100,75,50,100,150,0 ; Water spells
+FUN_GetWorstElementBonus:
+	movem.l A1/D7/D6/D5/D4,-(SP)
+	; In D3 : row offset into element table
+	; In D5 : target element bits
+	; Out D3 : worst element bonus
+	move.b D3,D4
+	move.b #$ff,D3
+	addq.b #7,D4
+	lea DAT_ElementTable,A1
+	moveq #7,D7 ; 8 iterations (element bits)
+LAB_ElementLoop:
+	btst.l D7,D5
+	beq.b LAB_SkipElement
+	move.b ($0,A1,D4.w),D6 ; elemental bonus
+	cmp.b D6,D3
+	bmi LAB_SkipElement
+	move.b D6,D3
+LAB_SkipElement:
+	subq.b #1,D4
+	dbf D7,LAB_ElementLoop
+	cmpi.b #$ff,D3
+	bne.b LAB_ElementEnd
+	moveq #100,D3 ; if no element at all, use 100% as factor
+LAB_ElementEnd:
+	movem.l (SP)+,D4/D5/D6/D7/A1
+	rts
 
 
 	SECTION	Text_pointers,data

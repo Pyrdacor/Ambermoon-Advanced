@@ -19,7 +19,7 @@ Push_Tree:
 	move.l	a1,-(sp)
 	movea.l	Tree_Sp,a1
 	addq.l	#4,a1
-	cmpa.l	#TreeStack_end,a1		; Possible ?
+	cmpa.l #TreeStack_end,A1
 	beq.s	.Exit
 	move.l	a0,(a1)			; Push
 	move.w	(a0),Offset_X		; Set offset
@@ -35,7 +35,7 @@ Push_Tree:
 Pop_Tree:      
 	move.l	a0,-(sp)
 	movea.l	Tree_Sp,a0
-	cmpa.l	#TreeStack_start,a0		; Possible ?
+	cmpa.l #TreeStack_start,A0
 	beq.s	.Exit
 	subq.l	#4,a0			; Pop
 	move.l	a0,Tree_Sp

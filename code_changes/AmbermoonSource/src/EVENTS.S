@@ -35,17 +35,23 @@ Event_handler:
 ; [ Handle chain of events ]
 ; All registers are restored
 ;*****************************************************************************
+Is_first_event_of_chain:
+	dc.b 0
+	dc.b 0
 Handle_event_chain:
 	sf	Success
 	st	Handling_event
+	st Is_first_event_of_chain
 .Again:	sf	Break_event		; Handle event
 	jsr	Handle_event
+	sf Is_first_event_of_chain
 	tst.b	Break_event		; Break ?
 	bne.s	.Exit
 	jsr	Chain_to_next_event		; Next event
 	bpl.s	.Again			; Last ?
 .Exit:	sf	Success
 	sf	Handling_event
+	sf Is_first_event_of_chain
 	tst.b	Faded_flag
 	bne.s	.Leave
 	jsr	Init_display
@@ -76,7 +82,8 @@ DIA_event_handler:
 Handle_DIA_event_chain:
 	sf	Success
 	st	Handling_event
-.Again:	jsr	Handle_DIA_event		; Handle event
+.Again:
+	jsr Dia_action
 	tst.b	Break_event		; Break ?
 	bne.s	.Exit
 	jsr	Chain_to_next_event		; Next event
@@ -233,6 +240,36 @@ Chain_to_next_event:
 ;      [ Current_event_base ].
 ;   - It calls [ Get_first_event ] !
 ;*****************************************************************************
+FUN_IsWallAtPosition:
+	; D0: 1-based x position
+	; D1: 1-based y position
+	; this does not check the map and assumes it is a 3D map!
+	movem.l A0/D2/D1/D0,-(SP)
+	moveq #0,D2 ; default result: no wall
+	move.l D0,-(SP)
+	move.b Mapdata_handle,D0
+	jsr Claim_pointer
+	movea.l D0,A0 ; map data
+	lea ($014c,A0),A0 ; map tile data
+	move.l (SP)+,D0
+	subq.w #$00000001,D0
+	subq.w #$00000001,D1
+	cmp.w Width_of_map,D0
+	bhi.w LAB_IsWallEnd
+	cmp.w Height_of_map,D1
+	bhi.w LAB_IsWallEnd
+	mulu.w Width_of_map,D1
+	add.w D0,D1 ; tile index
+	add.w D1,D1 ; * 2
+	move.b ($00,A0,D1.w),D1 ; wall/object index of the current tile
+	cmp.b #$65,D1 ; > 100?
+	spl.b D2 ; if so it is a wall ($ff counts here as well)
+LAB_IsWallEnd:
+	move.b Mapdata_handle,D0
+	jsr Free_pointer
+	tst.b D2
+	movem.l (SP)+,D0/D1/D2/A0
+	rts
 Find_event:
 	movem.l	d0-d7/a0/a1,-(sp)
 	move.w	d0,d4			; Save coordinates
@@ -369,7 +406,7 @@ Find_DIA_event:
 	bne	.Next1
 	cmp.b	Event_b1(a2),d0		; Correct action type ?
 	bne	.Next1
-	jsr	Dia_action		; Correct value ?
+	jsr FUN_HandleConversationEventTriggers
 	bne	.Next1
 	clr.w	Current_event_map_nr	; Yes -> Set event info
 	move.w	-2(a0),Current_event_entry_nr
@@ -401,14 +438,14 @@ Handle_event:
 	move.b	Current_event_data,d0
 	tst.w	d0			; Legal ?
 	beq.s	.Exit
-	cmpi.w	#Max_events+1,d0
+	cmpi.w #$0000001c,D0 ; max index is 27
 	bpl.s	.Exit
 
 	ifne	Cheat
 	jsr	Print_current_event
 	endc
 
-	move.l	#Map_event_mask,d1		; Possible in map ?
+	move.l #$0f58fffe,D1 ; valid events for maps (no conversation, print text, create, exit, interact)
 	btst	d0,d1
 	beq.s	.Exit
 	move.l	#Clear_success_mask,d1	; Clear success ?
@@ -435,14 +472,14 @@ Handle_DIA_event:
 	move.b	Current_event_data,d0
 	tst.w	d0			; Legal ?
 	beq.s	.Exit
-	cmpi.w	#Max_events+1,d0
+	cmpi.w #$0000001c,D0 ; max index is 27
 	bpl.s	.Exit
 
 	ifne	Cheat
 	jsr	Print_current_event
 	endc
 
-	move.l	#Dia_event_mask,d1		; Possible in dialogue ?
+	move.l #$0ff77e8a,D1 ; possible conversation events (excluded are: door, text popup, spinner, trap, riddlemouth, dice roll and question popup)
 	btst	d0,d1
 	beq.s	.Exit
 	move.l	#Clear_success_mask,d1	; Clear success ?
@@ -494,6 +531,9 @@ Normal_MX:
 	jsr	Do_MX
 	jsr	Do_MX2
 	jsr	Jumped
+	sf Eye_flag
+	sf Hand_flag
+	sf Mouth_flag
 	jsr	Init_display
 .Exit:	rts
 
@@ -504,6 +544,9 @@ Teleport:
 	jsr	Do_MX			; Yes -> Just jump
 	jsr	Do_MX2
 	jsr	Jumped
+	sf Eye_flag
+	sf Hand_flag
+	sf Mouth_flag
 	jsr	Update_display
 	jmp	After_move
 
@@ -914,7 +957,13 @@ Item_found:
 ; ---------- Is the chest already open ? ----------
 	moveq.l	#0,d0			; Well ?
 	move.b	Event_b4(a5),d0
+	btst.b #$00000002,($0005,A5) ; extended chest?
+	beq.b .LAB_CheckNormalChest
+	moveq #$00000008,D1 ; extended chest
+	bra.b .LAB_CheckChest
+.LAB_CheckNormalChest:
 	moveq.l	#Chest_bit_array,d1
+.LAB_CheckChest:
 	moveq.l	#3,d2
 	jsr	Access_bit_array
 	bne.s	.Open
@@ -1110,7 +1159,13 @@ Chest_opened:
 	jsr	Do_prompt			; Show text
 .Skip:	moveq.l	#0,d0			; Save
 	move.b	Event_b4(a5),d0
+	btst.b #$00000002,($0005,A5) ; extended chest?
+	beq.b LAB_UpdateNormalChest
+	moveq #$00000008,D1 ; extended chest
+	bra.b LAB_UpdateChest
+LAB_UpdateNormalChest:
 	moveq.l	#Chest_bit_array,d1
+LAB_UpdateChest:
 	moveq.l	#1,d2
 	jsr	Access_bit_array
 	st	Success			; Success !
@@ -1132,6 +1187,10 @@ OpenedChest_ModInit:
 	moveq.l	#0,d0			; Load chest data
 	move.b	Event_b4(a5),d0
 	addq.w	#1,d0			; !!!
+	btst.b #2,($0005,A5) ; extended chest?
+	beq.b LAB_LoadNormalChest ; no? skip
+	add.w #256,D0 ; otherwise add 256 to the index
+LAB_LoadNormalChest:
 	moveq.l	#Chest_data_file,d1
 	jsr	Load_subfile
 	move.b	d0,Chest_data_handle
@@ -1172,6 +1231,10 @@ OpenedChest_ModExit:
 	moveq.l	#0,d0			; Yes -> Save chest data
 	move.b	Event_b4(a5),d0
 	addq.w	#1,d0			; !!!
+	btst.b #2,($0005,A5) ; extended chest?
+	beq.b .LAB_SaveNormalChest
+	add.w #256,D0 ; add 256 for extended chests
+.LAB_SaveNormalChest:
 	moveq.l	#Chest_data_file,d1
 	Get	Chest_data_handle,a0
 	jsr	Save_subfile
@@ -1412,7 +1475,7 @@ Transfer_food_CHEST:
 	Get	(a1),a0
 	move.l	InputNr_number,d0
 	add.w	d0,Food_rations(a0)
-	mulu.w	#Food_weight,d0
+	mulu.w #$0019,D0 ; food weight, ADVANCED changed to 25
 	add.l	d0,Weight_normal(a0)
 	Free	(a1)
 .Exit:	rts
@@ -2024,6 +2087,8 @@ Event_trap:
 ;*****************************************************************************
 Anti_magic:
 	lea.l	Current_event_data,a5
+	tst.b ($0002,A5)
+	bne.b .LAB_AddBuff
 	move.b	Event_b1(a5),d0		; All or one ?
 	bne.s	.One
 	lea.l	Spell_1_duration,a0		; Clear all spells
@@ -2031,7 +2096,7 @@ Anti_magic:
 	moveq.l	#6-1,d7
 .Loop:	move.l	d0,(a0)+
 	dbra	d7,.Loop
-	bra.s	.Exit
+	bra.w	.Exit
 .One:	lea.l	Spell_1_duration,a0		; Clear one spell
 	ext.w	d0
 	subq.w	#1,d0
@@ -2040,6 +2105,49 @@ Anti_magic:
 	add.w	d0,d0
 	add.w	d0,a0
 	clr.l	(a0)
+	bra.b .Exit
+.LAB_AddBuff:
+	move.b ($0001,A5),D0
+	bne.b .LAB_AddSpecificBuff
+	lea Spell_1_duration,A0
+	move.l ($0004,A5),D0 ; value and duration
+	swap D0
+	moveq #$00000005,D7
+.LAB_AddBuffIteration:
+	move.l D0,(A0)+
+	dbf D7,.LAB_AddBuffIteration
+	jsr Update_light_status ; as all buffs were added, update the light
+	bra.b .Exit
+.LAB_AddSpecificBuff:
+	lea Spell_1_duration,A0
+	ext.w D0
+	subq.w #$00000001,D0
+	move.w D0,D7
+	cmp.w #$0006,D0
+	bpl.b .Exit
+	lsl.w #2,D0
+	adda.w D0,A0
+	move.l ($0004,A5),D0 ; new values
+	swap D0
+	move.l (A0),D1 ; old values
+	tst.w D1 ; if 0 (duration), we just override
+	bne.b .BuffIsActive
+	move.l D0,(A0)
+	bra.b .End
+.BuffIsActive:
+	cmp.w D1,D0
+	ble .CheckLevel
+	move.w D0,($2,A0)
+.CheckLevel:
+	swap D0
+	swap D1
+	cmp.w D1,D0
+	ble .End
+	move.w D0,(A0)
+.End:
+	tst.w D7 ; if 0 this is the light buff
+	bne.b .Exit
+	jsr Update_light_status ; so init the light again
 .Exit:	rts
 
 ;*****************************************************************************
@@ -2238,32 +2346,124 @@ Datachange:
 	lea.l	Current_event_data,a5
 	moveq.l	#0,d2			; Get change type
 	move.b	Event_b1(a5),d2
-	cmp.w	#8+1,d2			; Legal ?
-	bpl.s	.Exit_all
+	cmp.w #$0017,D2 ; max reward type is $16 right now
+	bpl.w	.Exit_all
 	lea.l	.Ptrs1,a1			; Get handler address
 	lsl.w	#2,d2
 	move.l	0(a1,d2.w),a1
 	moveq.l	#-1,d1			; Default maximum value
-	tst.b	Event_b4(a5)		; Active or party ?
-	beq	.Active
+	moveq #$00000000,D2
+	move.b ($0004,A5),D2 ; target
+	tst.b D2
+	beq.w .LAB_ApplyToActivePlayer ; 0 = active player
+	cmpi.b #2,D2
+	beq.w .LAB_ApplyToRandomTarget ; 2 = random target
 	lea.l	Party_handles,a2		; Party
 	moveq.l	#6-1,d7
 .Loop:	move.b	(a2)+,d0			; Anyone there ?
-	beq.s	.Next
-	Get	d0,a0
+	beq.w	.Next
+	jsr Claim_pointer
+	movea.l D0,A0
+	; ADVANCED: allow remove conditions also for dead and petrified players
+	move.w ($0001,A5),D0 ; copy reward type and operation
+	cmpi.w #$0505,D0 ; = remove condition ?
+	beq.b .AfterDisableCheck
 	move.w	Body_conditions(a0),d0	; Alive and kicking ?
 	andi.w	#Alive_mask,d0
 	bne.s	.Done
-	movem.l	d7/a1/a2,-(sp)		; Change data
+.AfterDisableCheck:
+	cmpi.b #1,D2 ; target = all?
+	beq .LAB_ApplyRewardEffects ; yes? apply effects
+	; If target >= 100, check index
+	cmpi.w #100,D2
+	blt .CheckAnimal
+	movem.l A0/D7/D2,-(SP)
+	sub.w #99,D2 ; get 1-based party member index
+	lea Member_nrs,A0
+	neg.w D7
+	add.w #5,D7
+	lsl.w #1,D7
+	move.w (0,A0,D7.w),D7 ; Character index
+	cmpi.w #101,D2
+	blt.b .Not200Plus
+	sub.w #100,D2
+	cmp.b D2,D7
+	movem.l (SP)+,D2/D7/A0
+	bne.b .LAB_ApplyRewardEffects
+	bra.b .Done ; continue with next character
+.Not200Plus:
+	cmp.b D2,D7
+	movem.l (SP)+,D2/D7/A0
+	bne.b .Done ; check next character
+	movem.l A5-A1/D7-D0,-(SP)
 	jsr	(a1)	
-	movem.l	(sp)+,d7/a1/a2
+	movem.l (SP)+,D0-D7/A1-A5
+	bra.w .Exit_all ; and end
+.CheckAnimal:
+	; If we are here the target is "FIRST ANIMAL"
+	cmpi.b #13,($0002,A0) ; animal race
+	bne.b .Done ; no? continue with next character
+	movem.l A5-A1/D7-D0,-(SP)
+	jsr (A1) ; apply to the character
+	movem.l (SP)+,D0-D7/A1-A5
+	bra.w .Exit_all ; and end
+.LAB_ApplyRewardEffects:
+	movem.l A5-A1/D7-D0,-(SP)
+	jsr (A1)
+	movem.l (SP)+,D0-D7/A1-A5
 .Done:	Free	-1(a2)
 .Next:	dbra	d7,.Loop			; Next member
 	bra.s	.Exit_all
+.LAB_ApplyToActivePlayer:
 .Active:	Get	Active_handle,a0		; Active member only
 	jsr	(a1)			; Change data
 	Free	Active_handle
-.Exit_all:	rts
+	bra.b .Exit_all
+.LAB_ApplyToRandomTarget:
+	move.l D0,-(SP)
+	lea Party_handles,A2
+.LAB_FindRandomTarget:
+	sf D3 ; Reset "try again marker"
+	movea.l A2,A3
+	jsr Random
+	mulu.w #$0006,D0 ; 6 character slots
+	swap D0
+	add.l D0,A3
+	move.b (A3),D0 ; this now holds the character index
+	move.b D0,D4
+	beq.b .LAB_FindRandomTarget ; skip non-existing characters
+	jsr Claim_pointer
+	movea.l D0,A0
+	move.w ($001e,A0),D0
+	andi.w #-$1b80,D0 ; no dead or petrified characters
+	bne.b .LAB_NextRandomTry
+	movem.l A2/A1/D7,-(SP)
+	jsr (A1) ; apply to the character
+	movem.l (SP)+,D7/A1/A2
+	bra.b .LAB_EndRandomApply ; and end
+.LAB_NextRandomTry:
+	st D3 ; Try again
+.LAB_EndRandomApply:
+	move.b D4,D0
+	jsr Free_pointer
+	tst.l D3
+	bne.b .LAB_FindRandomTarget
+	move.w (SP)+,D0
+.Exit_all:
+	; Check if the leader died
+	move.b Active_handle,D0
+	jsr Claim_pointer
+	movea.l D0,A0
+	move.w ($001e,A0),D7
+	andi.w #$e000,D7
+	move.b Active_handle,D0
+	jsr Free_pointer
+	tst.w D7
+	beq.b .End
+	; Leader dead? Pick a new one.
+	jsr Select_new_active_member
+.End:
+	rts
 
 .Ptrs1:	dc.l .Attribute,.Skill,.LP,.SP,.SLP
 	dc.l .Conditions,.Spell_classes,.Languages,.XP
@@ -2273,6 +2473,20 @@ Datachange:
 ;        a0 - Pointer to character data (.l)
 ; No registers are restored
 
+	dc.l .FUN_EventRewardMaxAttribute
+	dc.l .FUN_EventRewardAPR
+	dc.l .FUN_EventRewardTP
+	dc.l .FUN_EventRewardLevel
+	dc.l .FUN_EventRewardDamage
+	dc.l .FUN_EventRewardDefense
+	dc.l .FUN_EventRewardMaxHP
+	dc.l .FUN_EventRewardMaxSP
+	dc.l .FUN_EventRewardEmpowerSpell
+	dc.l .FUN_EventRewardChangePortrait
+	dc.l .FUN_EventRewardMaxSkill
+	dc.l .FUN_EventRewardMBA ; magic armor level
+	dc.l .FUN_EventRewardMBW ; magic weapon level
+	dc.l .FUN_EventRewardSpell
 .Attribute:
 	lea.l	Attributes(a0),a1		; Select attribute
 	move.w	Event_w6(a5),d2
@@ -2313,6 +2527,16 @@ Datachange:
 	add.w	Life_points+Magic(a0),d1
 	jsr	.Do			; Change
 	move.w	d0,Life_points(a0)		; Store
+	bne.b .End_Adv
+	; at 0 hp we will kill the player, but silently
+	move.w ($001e,A0),D0
+	bset.l #$0000000d,D0
+	move.w D0,($001e,A0)
+	neg.w D7
+	addq #6,D7
+	jsr Show_death
+	jsr Force_status_update
+.End_Adv:
 	rts
 
 .SP:
@@ -2335,8 +2559,24 @@ Datachange:
 .Conditions:
 	moveq.l	#0,d0			; Get conditions
 	move.w	Body_conditions(a0),d0
+	move.l D0,-(SP)
 	jsr	.Do			; Change
 	move.w	d0,Body_conditions(a0)	; Store
+	move.l (SP)+,D2 ; previous ailments
+	eor.w D2,D0
+	andi.w #$2000,D0
+	beq.b .End_Adv3
+	; Here the dead bit changed so the player
+	; was revived.
+	move.w #$0001,($00ca,A0) ; set 1 hp
+	; note: D7 is the loop var for the 6 slots (so 5 is first slot and 0 is last slot)
+	; this won't work with targets other than "all" though!
+	moveq #6,D1
+	sub.b D7,D1
+	exg D1,D7
+	jsr Force_status_update
+	move.l D1,D7
+.End_Adv3:
 	rts
 
 .Spell_classes:
@@ -2354,6 +2594,10 @@ Datachange:
 	rts
 
 .XP:
+	cmpi.b #9,($0003,A0) ; is animal or monster?
+	bmi.b .LAB_ChangeExp ; no? change exp
+	rts ; yes? return
+.LAB_ChangeExp:
 	move.l	Experience_points(a0),d0	; Get experience points
 	jsr	.Do			; Change
 	move.l	d0,Experience_points(a0)	; Store
@@ -2365,6 +2609,206 @@ Datachange:
 ;        a5 - Pointer to event data (.l)
 ;  OUT : d0 - New data longword (.l)
 ; Changed registers : d0
+.FUN_EventRewardMaxAttribute:
+	lea ($002c,A0),A1
+	move.w ($0006,A5),D2
+	cmp.w #$0008,D2
+	bpl.b .LAB_RewardMaxAttributeEnd ; invalid attribute, skip
+	mulu.w #$0008,D2
+	adda.w D2,A1
+	moveq #$00000000,D0
+	move.w (A1),D0
+	move.l D0,D1
+	add.w ($0008,A5),D1 ; max is max attribute value + event value
+	jsr .Do
+	move.w D0,(A1) ; save new max attribute
+	move.w (-$02,A1),D1 ; current attribute value
+	cmp.w D0,D1
+	bls.w .LAB_RewardMaxAttributeEnd
+	move.w D0,(-$02,A1) ; if current attribute is higher than maximum possible, limit it to that
+.LAB_RewardMaxAttributeEnd:
+	rts
+.FUN_EventRewardMaxSkill:
+	lea ($007c,A0),A1
+	move.w ($0006,A5),D2
+	cmp.w #$000a,D2
+	bpl.b .LAB_RewardMaxSkillEnd ; invalid skill, skip
+	mulu.w #$0008,D2
+	adda.w D2,A1
+	moveq #$00000000,D0
+	move.w (A1),D0
+	move.l D0,D1
+	add.w ($0008,A5),D1 ; max is max skill value + event value
+	jsr .Do
+	move.w D0,(A1) ; save new max skill
+	move.w (-$02,A1),D1 ; current skill value
+	cmp.w D0,D1
+	bls.w .LAB_RewardMaxSkillEnd
+	move.w D0,(-$02,A1) ; if current skill is higher than maximum possible, limit it to that
+.LAB_RewardMaxSkillEnd:
+	rts
+.FUN_EventRewardAPR:
+	moveq #$00000000,D0
+	move.b ($0011,A0),D0
+	move.l #255,D1 ; max value
+	move.l D0,D2 ; backup current APR
+	jsr .Do
+	tst.l D0
+	bgt.b .Ok
+	moveq #1,D0 ; limit to a minimum of 1 APR
+.Ok:
+	move.b D0,($0011,A0)
+	cmp.b D0,D2 ; Changed APR?
+	beq .End_Adv4
+	moveq #0,D2
+	move.w ($00e2,A0),D2 ; APR level increases
+	cmpi.b #1,D0 ; changed down to 1?
+	bne.b .Not1
+	; --- Changed down to 1 APR ---
+	tst.w D2
+	beq.b .End_Adv4 ; already APR/Lvl is 0, so just end
+	moveq #0,D0
+	move.b ($0005,A0),D0 ; character level
+	move.w D0,($00e2,A0) ; update APR/lvl value (it matches the level as APRLvlValue = level / APR = level / 1 = level)
+	bra.b .End_Adv4
+.Not1:
+	; --- Change to APR > 1 ---
+	moveq #0,D2
+	move.b ($0005,A0),D2 ; character level
+	divu.w D0,D2 ; level / APR
+	tst.w D2 ; is new APR/lvl value ok (> 0)?
+	bne.b .ValueOk
+	moveq #1,D2 ; If not, set it to 1
+.ValueOk:
+	move.w D2,($00e2,A0) ; update APR/lvl value
+.End_Adv4:
+	rts
+.FUN_EventRewardTP:
+	moveq #$00000000,D0
+	move.w ($0016,A0),D0
+	jsr .Do
+	move.w D0,($0016,A0)
+	rts
+.FUN_EventRewardLevel:
+	; note: D7 is the loop var for the 6 slots (so 5 is first slot and 0 is last slot)
+	; this won't work with targets other than "all, first animal, etc" though!
+	moveq #$00000000,D0
+	move.b ($0005,A0),D0 ; level
+	move.b D0,D2
+	moveq #50,D1
+	cmp.b D1,D0
+	bpl.b .LAB_LevelUpEnd
+	jsr .Do
+	sub.b D2,D0 ; we only want to know the added levels
+	moveq #5,D1
+	sub.b D7,D1
+	lea Make_level_counters,A1
+	add.l D1,A1
+	move.b D0,(A1)
+	lea Make_levels_Mod,A0
+	jsr Push_Module
+.LAB_LevelUpEnd:
+	rts
+.FUN_EventRewardDamage:
+	moveq #$00000000,D0
+	move.w ($00dc,A0),D0
+	jsr .Do
+	move.w D0,($00dc,A0)
+	rts
+.FUN_EventRewardDefense:
+	moveq #$00000000,D0
+	move.w ($00d8,A0),D0
+	jsr .Do
+	move.w D0,($00d8,A0)
+	rts
+.FUN_EventRewardMaxHP:
+	moveq #$00000000,D0
+	move.w ($00cc,A0),D0
+	jsr .Do
+	move.w D0,($00cc,A0)
+	cmp.w ($00ca,A0),D0
+	bpl.b .FUN_RewardMaxHPEnd
+	move.w D0,($00ca,A0)
+.FUN_RewardMaxHPEnd:
+	rts
+.FUN_EventRewardMaxSP:
+	moveq #$00000000,D0
+	move.w ($00d2,A0),D0
+	jsr .Do
+	move.w D0,($00d2,A0)
+	cmp.w ($00d0,A0),D0
+	bpl.b .FUN_RewardMaxSPEnd
+	move.w D0,($00d0,A0)
+.FUN_RewardMaxSPEnd:
+	rts
+.FUN_EventRewardMBA: ; magic armor level
+	moveq #$00000000,D0
+	move.w ($00e0,A0),D0
+	jsr .Do
+	move.w D0,($00e0,A0)
+	rts
+.FUN_EventRewardMBW: ; magic weapon level
+	moveq #$00000000,D0
+	move.w ($00de,A0),D0
+	jsr .Do
+	move.w D0,($00de,A0)
+	rts
+.FUN_EventRewardSpell:
+	moveq #0,D0
+	moveq #0,D1
+	move.b ($04,A0),D1 ; usable spell types
+	andi.b #$f,D1
+	beq.b .End_Adv5 ; if no magic is usable, just end
+	moveq #3,D7 ; check all 4 basic magic types
+.Loop_Adv:
+	btst.l D0,D1
+	bne.b .Apply
+	addq.l #1,D0
+	dbf D7,.Loop_Adv
+	bra.b .End_Adv5
+.Apply:
+	; D0 now is 0 to 3
+	lsl.w #2,D0 ; index to long address
+	add.l #$F2,D0 ; at $F2 start the learned spells
+	move.l ($0,A0,D0.w),D1 ; currently learned spells
+	exg D0,D1 ; move learned spells to D0 for operation func
+	jsr .Do
+	move.l D0,($0,A0,D1.w) ; D1 now holds the address after exg
+.End_Adv5:
+	rts
+.FUN_EventRewardEmpowerSpell:
+	move.b ($0012,A0),D0
+	move.w ($0008,A5),D2
+	cmp.w #$0003,D2
+	bpl.b .LAB_InvalidRewardEmpowerSpellIndex
+	addq.w #4,D2 ; the empower bits start at bit 4
+	moveq #1,D1
+	lsl.b D2,D1
+	or.b D1,D0
+	move.b D0,($0012,A0)
+.LAB_InvalidRewardEmpowerSpellIndex:
+	rts
+.FUN_EventRewardChangePortrait:
+	moveq.l #0,D0
+	move.b ($0009,A5),D0 ; get new portrait id from event data
+	cmp.b ($000a,A0),D0 ; compare new and old portrait
+	beq.b .LAB_EventRewardChangePortraitEnd ; same? end
+	move.b D0,($000a,A0) ; update portrait index inside the char data	
+	moveq #$00000005,D1 ; "Portraits.amb"
+	jsr Load_unique_subfile ; load portrait image
+	moveq.l #6,D1
+	sub.b D7,D1 ; D1 now holds the 1-based index to the character slot
+	lea Portrait_handles,A1
+	move.b (-$01,A1,D1.w),D2 ; old portrait file handle
+	move.b D0,(-$01,A1,D1.w) ; set new portrait file handle
+	move.l D2,-(SP) ; put old handle on stack
+	move.l D1,D7 ; 1-based char slot index
+	move.l D2,D0 ; D0 must hold the portrait to remove in the animation (= the old portrait handle)
+	jsr FUN_PlayPartyMemberPortraitChangeAnimation ; this plays the portrait animation and afterwards displays the new portrait
+	move.l (SP)+,D0 ; get old handle
+	jsr Kill_memory ; release the old image
+.LAB_EventRewardChangePortraitEnd:
+	rts
 .Do:
 	movem.l	d2/a1,-(sp)
 	moveq.l	#0,d2			; Get change type
@@ -2399,6 +2843,7 @@ Datachange:
 	andi.l	#$0000ffff,d0
 	divu.w	d2,d0
 	swap	d0
+	addq.w #1,D0 ; FIX: values should be 1 to given value if random and not 0 to given value minus 1
 	move.w	d0,d2
 	addq.w	#1,d2			; FIX: Random value 0...max-1 -> 1...max
 	move.l	(sp)+,d0
@@ -2418,6 +2863,7 @@ Datachange:
 	andi.l	#$0000ffff,d0
 	divu.w	d2,d0
 	swap	d0
+	addq.w #1,D0 ; FIX: values should be 1 to given value if random and not 0 to given value minus 1
 	move.w	d0,d2
 	addq.w	#1,d2			; FIX: Random value 0...max-1 -> 1...max
 	move.l	(sp)+,d0
@@ -2436,6 +2882,7 @@ Datachange:
 	andi.l	#$0000ffff,d0
 	divu.w	d2,d0
 	swap	d0
+	addq.w #1,D0 ; FIX: values should be 1 to given value if random and not 0 to given value minus 1
 	move.w	d0,d2
 	addq.w	#1,d2			; FIX: Random value 0...max-1 -> 1...max
 	move.l	(sp)+,d0
@@ -2458,6 +2905,7 @@ Datachange:
 	andi.l	#$0000ffff,d0
 	divu.w	d2,d0
 	swap	d0
+	addq.w #1,D0 ; FIX: values should be 1 to given value if random and not 0 to given value minus 1
 	move.w	d0,d2
 	addq.w	#1,d2			; FIX: Random value 0...max-1 -> 1...max
 	move.l	(sp)+,d0
@@ -2530,6 +2978,12 @@ Encounter:
 	move.w	Active_member,Previous_active_member	; Save
 	jsr	Exit_display		; Fight !
 	Push	Module,Combat_Mod
+	; ADVANCED, init display (map screen)
+	; if there are chained events (like delay or text popup).
+	cmpi.w #$ffff,($000a,A5)
+	beq.b .End
+	jsr Init_display
+.End:
 	rts
 
 ;*****************************************************************************
@@ -2541,7 +2995,7 @@ Query:
 	sf	Query_result		; Clear result
 	moveq.l	#0,d0			; Get query type
 	move.b	Event_b1(a5),d0
-	cmp.w	#Max_QM_type,d0		; Legal ?
+	cmp.w #$001e,D0 ; ADVANCED: changed $15 to $1e
 	bpl.s	.Exit
 	lsl.w	#2,d0			; Execute query
 	move.l	.Ptrs(pc,d0.w),a0
@@ -2565,6 +3019,15 @@ Query:
 ;   IN : a5 - Pointer to current event data (.l)
 ; No registers are restored
 
+	dc.l FUN_EventConditionCheckMouthCursor
+	dc.l FUN_EventConditionCheckTransportAtLocation
+	dc.l FUN_EventConditionCheckMultipleCursors
+	dc.l FUN_EventConditionCheckCurrentTravelType
+	dc.l FUN_EventConditionCheckLeadClass
+	dc.l FUN_EventConditionCheckEmpoweredSpell
+	dc.l FUN_EventConditionCheckNight
+	dc.l FUN_EventConditionCheckAttribute
+	dc.l FUN_EventConditionCheckSkill
 .Quest:	moveq.l	#Quest_bit_array,d1
 	bra	.Do
 
@@ -2574,8 +3037,16 @@ Query:
 .Door:	moveq.l	#Door_bit_array,d1
 	bra	.Do
 
-.Chest:	moveq.l	#Chest_bit_array,d1
-	bra	.Do
+.Chest:
+	move.w ($0006,A5),D0
+	cmpi.w #$ff,D0
+	ble.b .LAB_ConditionCheckNormalChest
+	moveq #$00000008,D1
+	sub.w #$100,D0
+	bra.b .FUN_EventConditionCheckSavegameBitWithIndex
+.LAB_ConditionCheckNormalChest:
+	moveq.l	#Chest_bit_array,d1
+	bra.b .FUN_EventConditionCheckSavegameBitWithIndex
 
 .CD:	moveq.l	#CD_bit_array,d1
 	bra	.Do
@@ -2583,6 +3054,7 @@ Query:
 .WD:	moveq.l	#WD_bit_array,d1
 
 .Do:	move.w	Event_w6(a5),d0		; Get bit number
+.FUN_EventConditionCheckSavegameBitWithIndex:
 	moveq.l	#3,d2			; Get bit
 	jsr	Access_bit_array
 	sne	Query_result
@@ -2592,12 +3064,31 @@ Query:
 	st	Query_result
 	move.w	Event_w6(a5),d0		; Get character number
 	lea.l	Member_nrs,a0		; Search party
+	move.w ($0004,A5),D1 ; disallowed ailments
 	moveq.l	#6-1,d7
 .Loop1:	cmp.w	(a0)+,d0			; Is this the one ?
 	beq.s	.Done
 	dbra	d7,.Loop1			; Next member
 	sf	Query_result		; No luck
-.Done:	rts
+	rts
+.Done:
+	tst.w D1
+	beq.b .LAB_CheckPartyMemberDone
+	moveq #5,D0
+	sub.w D7,D0
+	lea Party_handles,A0
+	add.l D0,A0
+	move.b (A0),D0
+	move.b D0,D7
+	jsr Claim_pointer
+	movea.l D0,A1 ; Get pointer to party member
+	move.w ($001e,A1),D2
+	move.b D7,D0
+	jsr Free_pointer
+	and.w D2,D1
+	seq Query_result
+.LAB_CheckPartyMemberDone:
+	rts
 
 ; [ Seek x items of type y in the party member's inventories ]
 .Item_carried:
@@ -2684,8 +3175,24 @@ Query:
 
 .Word_spoken:
 	sf	Query_result		; Default is no luck
+	tst.b Is_first_event_of_chain
+	bne .CheckMouthCursor ; if so, check for mouth cursor
+	; otherwise we have to show the input window
+	moveq #$0000001c,D0
+	jsr Load_file
+	move.b D0,Dictionary_handle
+	lea WSelW_Mod,A0
+	jsr Push_Module
+	move.b Dictionary_handle,D0
+	jsr Free_memory
+	tst.b No_word_selected
+	bne.b .Exit4 ; end if aborted
+	move.w Selected_word,QM_spoken_word
+	bra .Proceed
+.CheckMouthCursor:
 	tst.b	Mouth_flag		; Speaking ?
 	beq.s	.Exit4
+.Proceed:
 	move.w	QM_spoken_word,d0		; Yes -> Get spoken word
 	cmp.w	#-1,d0			; In dictionary ?
 	beq.s	.Exit4
@@ -2733,6 +3240,145 @@ Query:
 ; [ Modify event ]
 ; No registers are restored
 ;*****************************************************************************
+	; ADVANCED CHANGES - START
+FUN_EventConditionCheckMouthCursor:
+	move.b Mouth_flag,Query_result
+	rts
+FUN_EventConditionCheckTransportAtLocation:
+	sf Query_result
+	move.w Current_event_X,D0
+	move.w Current_event_Y,D1
+	move.w Map_nr,D2
+	jsr Seek_transport
+	tst.b D0
+	beq.b LAB_END_TRANSPORT_CHECK
+	move.w ($0006,A5),D2
+	st Query_result
+	tst.b D2	
+	beq.b LAB_END_TRANSPORT_CHECK
+	cmp.b D2,D0
+	seq Query_result
+LAB_END_TRANSPORT_CHECK:
+	rts
+FUN_EventConditionCheckMultipleCursors:
+	sf Query_result
+	move.w ($0006,A5),D0
+	tst.b Hand_flag
+	beq.b LAB_CHECK_EYE_CURSOR
+	btst.l #0,D0
+	sne Query_result
+	bra.b LAB_END_MULTI_CURSOR_CHECK
+LAB_CHECK_EYE_CURSOR:
+	tst.b Eye_flag
+	beq.b LAB_CHECK_MOUTH_CURSOR
+	btst.l #1,D0
+	sne Query_result
+	bra.b LAB_END_MULTI_CURSOR_CHECK
+LAB_CHECK_MOUTH_CURSOR:
+	tst.b Mouth_flag
+	beq.b LAB_END_MULTI_CURSOR_CHECK
+	btst.l #2,D0
+	sne Query_result
+LAB_END_MULTI_CURSOR_CHECK:
+	rts
+FUN_EventConditionCheckCurrentTravelType:
+	move.w ($0006,A5),D0
+	cmp.w Travel_mode,D0
+	seq Query_result
+	rts
+FUN_EventConditionCheckLeadClass:
+	move.b Active_handle,D0
+	jsr Claim_pointer
+	movea.l D0,A0
+	moveq #0,D0
+	move.b ($0003,A0),D0 ; get class
+	move.w D0,-(SP)
+	move.b Active_handle,D0
+	jsr Free_pointer
+	move.w (SP)+,D0
+	cmp.w ($0006,A5),D0
+	seq Query_result
+	rts
+FUN_EventConditionCheckEmpoweredSpell:
+	move.b Active_handle,D0
+	jsr Claim_pointer
+	movea.l D0,A0
+	moveq #0,D0
+	move.b ($0012,A0),D0 ; get battle flags
+	move.w D0,-(SP)
+	move.b Active_handle,D0
+	jsr Free_pointer
+	move.w (SP)+,D0
+	move.w ($0006,A5),D1
+	cmpi.w #3,D1
+	bmi.b LAB_CheckEmpoweredSpell
+	sf Query_result
+	bra.b LAB_CheckEmpoweredSpellEnd
+LAB_CheckEmpoweredSpell:
+	addq.w #4,D1
+	btst.l D1,D0
+	sne Query_result
+LAB_CheckEmpoweredSpellEnd:
+	rts
+FUN_EventConditionCheckNight:
+	st Query_result
+	cmpi.w #5,Hour
+	bmi.b LAB_CheckNightEnd
+	cmpi.w #22,Hour
+	bpl.b LAB_CheckNightEnd
+	sf Query_result
+LAB_CheckNightEnd:
+	rts
+FUN_EventConditionCheckAttribute:
+	move.l D1,-(SP)
+	move.b Active_handle,D0
+	jsr Claim_pointer
+	movea.l D0,A0
+	move.w ($0006,A5),D0 ; attribute index
+	move.l D0,D1 ; backup attribute index
+	mulu.w #8,D0 ; 8 bytes per attribute
+	add.w D0,A0
+	move.w ($2a,A0),D0 ; = current value
+	add.w ($2e,A0),D0 ; + bonus value
+	cmpi.b #7,D1 ; Anti-magic attribute?
+	bne.b .AfterAttributeBonus
+	tst.w DAT_AntiMagicBuffDuration ; Anti-magic buff active?
+	beq.b .AfterAttributeBonus
+	add.w Spell_4_data,D0 ; Add bonus
+.AfterAttributeBonus:
+	move.l (SP)+,D1
+	move.w D0,-(SP)
+	move.b Active_handle,D0
+	jsr Free_pointer
+	move.w (SP)+,D0
+	cmp.b ($0003,A5),D0
+	spl Query_result
+	rts
+FUN_EventConditionCheckSkill:
+	move.l D1,-(SP)
+	move.b Active_handle,D0
+	jsr Claim_pointer
+	movea.l D0,A0
+	move.w ($0006,A5),D0 ; skill index
+	move.l D0,D1 ; backup skill index
+	mulu.w #8,D0 ; 8 bytes per skill
+	add.w D0,A0
+	move.w ($7a,A0),D0 ; = current value
+	add.w ($7e,A0),D0 ; + bonus value
+	cmpi.b #7,D1 ; Search skill?
+	bne.b .AfterSkillBonus
+	tst.w Spell_5_duration ; Clairvoyance buff active?
+	beq.b .AfterSkillBonus
+	add.w DAT_ClairvoyanceBuffValue,D0 ; Add bonus
+.AfterSkillBonus:
+	move.l (SP)+,D1
+	move.w D0,-(SP)
+	move.b Active_handle,D0
+	jsr Free_pointer
+	move.w (SP)+,D0
+	cmp.b ($0003,A5),D0
+	spl Query_result
+	rts
 Modify:
 	lea.l	Current_event_data,a5
 	moveq.l	#0,d0			; Get modify type
@@ -2766,16 +3412,24 @@ Modify:
 .Door:	moveq.l	#Door_bit_array,d1
 	bra	.Do
 
-.Chest:	moveq.l	#Chest_bit_array,d1
-	bra	.Do
+.Chest:
+	move.w ($0006,A5),D0
+	cmpi.w #$ff,D0
+	ble.b .LAB_ActionChangeNormalChest
+	moveq #$00000008,D1
+	sub.w #$100,D0
+	bra.b .FUN_EventActionChangeSavegameBitWithIndex
+.LAB_ActionChangeNormalChest:	
+	moveq.l	#Chest_bit_array,d1
+	bra.b .FUN_EventActionChangeSavegameBitWithIndex
 
 .CD:	moveq.l	#CD_bit_array,d1
 	bra	.Do
 
 .Do:	move.w	Event_w6(a5),d0		; Get bit number
+.FUN_EventActionChangeSavegameBitWithIndex:
 	move.b	Event_b2(a5),d2		; Modify bit
-	jsr	Access_bit_array
-	rts
+	jmp Access_bit_array
 
 .WD:	move.w	Event_w6(a5),d0		; Get info
 	tst.b	Map_or_dialogue		; Map or dialogue ?
@@ -2785,7 +3439,37 @@ Modify:
 	jsr	Access_bit_array
 .Map:	moveq.l	#WD_bit_array,d1		; Modify bit
 	move.b	Event_b2(a5),d2
-	jsr	Access_bit_array
+	jmp Access_bit_array
+.FUN_AddItems:
+	; D1: Amount
+	; D4: Item index
+	movem.l A1/A0/D4/D0,-(SP)
+	movea.l Object_data_ptr,A0
+	lea Inter_packet,A1
+	move.w D4,($0004,A1)
+	subq.w #$00000001,D4
+	mulu.w #$003c,D4
+	adda.l D4,A0
+	move.b D1,(A1) ; amount
+	move.b ($19,A0),($1,A1) ; initial charges
+	move.b ($1a,A0),($2,A1) ; initial recharge count
+	move.b ($21,A0),($3,A1) ; default item slot flags
+	lea Party_handles,A0
+	moveq #$00000005,D4
+	moveq #0,D0
+	exg A0,A1 ; A0 now points to the item (slot) to add/drop, A1 points to the party
+.LoopPartyMembers:
+	tst.b (A1) ; anybody there?
+	beq.b .Next ; no? go to next
+	move.b (A1),D0 ; index to party member
+	jsr Auto_move_to_backpack ; add/drop item(s)
+	tst.b (A0)
+	beq.b .End ; end early if the remaining item count reaches 0
+.Next:
+	addq.l #$00000001,A0
+	dbf D4,.LoopPartyMembers
+.End:
+	movem.l (SP)+,D0/D4/A0/A1
 	rts
 
 ; [ Destroy x items of type y in the party member's inventories ]
@@ -2793,6 +3477,12 @@ Modify:
 	moveq.l	#0,d1			; Get required number
 	move.b	Event_b3(a5),d1
 	move.w	Event_w6(a5),d4		; Get item number
+	tst.b ($0002,A5)
+	beq.b .Remove
+	; --- Add items ---
+	jsr .FUN_AddItems
+	bra .Exit2
+.Remove:
 	lea.l	Party_handles,a0		; Search party
 	moveq.l	#6-1,d7
 .Loop1:	tst.b	(a0)			; Anyone there ?
@@ -2869,7 +3559,7 @@ Modify:
 	move.w	d0,d1			; Yes -> Clip
 .Ok2:	sub.w	d1,d0			; Remove food
 	move.w	d0,Food_rations(a0)
-	mulu.w	#Food_weight,d1		; Remove weight
+	mulu.w #$0019,D1 ; food weight, ADVANCED changed to 25
 	sub.l	d1,Weight_normal(a0)
 	Free	Active_handle
 	rts
@@ -2921,6 +3611,7 @@ Chance:
 ;     a dummy entry in { Event_ptrs } ensures that nothing happens.
 ;*****************************************************************************
 Dia_action:
+FUN_HandleConversationEventTriggers:
 	movem.l	d0/d1/d7/a0,-(sp)
 	moveq.l	#0,d7			; Default is OK
 	moveq.l	#0,d0			; Get action type
@@ -3044,7 +3735,7 @@ Dia_give:
 .Food:	Get	Active_handle,a0		; Take this food
 	move.w	Event_w6(a5),d0
 	add.w	d0,Food_rations(a0)
-	mulu.w	#Food_weight,d0
+	mulu.w #$0019,D0 ; food weight, ADVANCED changed to 25
 	add.l	d0,Weight_normal(a0)
 	Free	Active_handle
 .Exit:	rts
@@ -3162,7 +3853,7 @@ Dia_execute:
 	bls.s	.Ok2
 	move.w	Food_rations(a0),d1		; No -> clip
 .Ok2:	sub.w	d1,Food_rations(a0)		; Remove food
-	mulu.w	#Food_weight,d1
+	mulu.w #$0019,D1 ; food weight, ADVANCED changed to 25
 	sub.l	d1,Weight_normal(a0)
 	Free	DIAC_victim_handle
 	rts
@@ -3220,7 +3911,7 @@ Remove_member:
 	jsr	Load_subfile
 	move.b	d0,d4
 	moveq.l	#1,d2			; Dump body items
-	moveq.l	#9-1,d1
+	moveq #$00000008,D7 ; (was D1 before) this should be D7 as it gives the equip slot amount
 .Loop2:	tst.w	Object_index(a0)		; Anything there ?
 	beq.s	.Next2
 	Copy_packet a0,a1			; FIX: Remove the item from the
@@ -3237,6 +3928,8 @@ Remove_member:
 	Get	d4,a0			; Save chest
 	move.w	d5,d0
 	moveq.l	#Chest_data_file,d1		; FIX: d1 was not set
+	; D1 should be set to 16 here but is 8 above (would write the chest to XIcon_gfx.amb instead)
+	moveq.l #16,D1 ; was missing
 	jsr	Save_subfile
 	move.b	d4,d0			; Free memory
 	jsr	Free_pointer
@@ -3252,7 +3945,7 @@ Remove_member:
 	move.b	d0,d4
 	moveq.l	#9+1,d2			; Dump backpack items
 					; FIX: Was 1 (backpack slots are 10...33)
-	moveq.l	#Items_per_char-1,d1
+	moveq #$00000017,D7 ; (was D1 before) amount of inventory slots (should be set to D7 and not D1)
 .Loop3:	tst.w	Object_index(a0)		; Anything there ?
 	beq.s	.Next3
 	Copy_packet a0,a1			; FIX: See above
@@ -3270,6 +3963,7 @@ Remove_member:
 	Get	d4,a0			; Save chest
 	move.w	d5,d0
 	moveq.l	#Chest_data_file,d1		; FIX: d1 was not set
+	moveq.l #16,D1 ; was missing
 	jsr	Save_subfile
 	move.b	d4,d0			; Free memory
 	jsr	Free_pointer
@@ -3288,6 +3982,468 @@ Remove_member:
 ;        d3 - Prompt number (.w)
 ; All registers are restored
 ;*****************************************************************************
+FUN_EventShake:
+	lea Current_event_data,A5
+	moveq #0,D7
+	move.w ($0006,A5),D7 ; num shakes
+	jmp FUN_Shake
+; IN: D7 = Num shakes
+FUN_Shake:
+	movem.l D7/D0,-(SP)
+.Again:
+	jsr Switch_screens
+	jsr	Random
+	and.w #$0007,d0
+	subq.w #3,d0
+	move.w d0,Vertical_screen_offset
+	moveq #6,d0
+	jsr Delay
+	sub.w #1,D7 ; end?
+	bgt.s .Again
+	clr.w Vertical_screen_offset	; Stop
+	movem.l (SP)+,D0/D7
+	rts
+; ADVANCED CHANGES - START
+; This event introduces a delay.
+; This is basically a loop so no input is possible during the delay.
+; It is used between some text windows and map changes to see changes for a duration.
+FUN_EventDelay:
+	jsr Switch_screens
+	lea Current_event_data,A5
+	moveq #$00000000,D0
+	move.w ($0006,A5),D0 ; milliseconds
+	moveq #0,D1
+	move.w DAT_VBlankFreq,D1 ; fps (50 or 60)
+	; ticks = milliseconds * fps / 1000
+	; D1 = fps
+	; D0 = milliseconds
+	; -> ticks = D0 * D1 / 1000
+	mulu.w D1,D0
+	divu.w #1000,D0
+	jmp Wait_4_sequence
+; PartyMemberConditionEvent
+	rsreset
+	rs.b 1 ; type = 26 ($1a)
+PMCE_CondType:		rs.b 1
+PCME_CondValIndex:	rs.b 1
+PCME_Target:		rs.b 1
+PMCE_ForbidConds:	rs.w 1
+PCME_Value:			rs.w 1
+PCME_FalseBranch:	rs.w 1
+PCME_TrueBranch:	rs.w 1
+	rsreset
+; condition types
+PMCE_Level:			rs.b 1
+PMCE_Attribute:		rs.b 1
+PMCE_Skill:			rs.b 1
+PMCE_TP:			rs.b 1
+PMCE_TypeCount:		rs.b 0
+	rsreset
+; targets
+PCME_T_Act:			rs.b 1
+PCME_T_All:			rs.b 1
+PCME_T_Any:			rs.b 1
+PCME_T_Min:			rs.b 1
+PCME_T_Max:			rs.b 1
+PCME_T_Avg:			rs.b 1
+PCME_T_Rnd:			rs.b 1
+PCME_T_FirstChar:	rs.b 1
+PCME_T_Inv: 			EQU 255 (or -1)
+PTR_PartyMemberConditionEventFunctions:
+	dc.l FUN_PartyMemberConditionLevel
+	dc.l FUN_PartyMemberConditionAttribute
+	dc.l FUN_PartyMemberConditionSkill
+	dc.l FUN_PartyMemberConditionTP
+; ---- Targets
+	dc.l FUN_PartyMemberConditionInv ; Has index - 1 (255)
+PTR_PartyMemberConditionEventCheckFunctions:
+	dc.l FUN_PartyMemberConditionAct
+	dc.l FUN_PartyMemberConditionAll
+	dc.l FUN_PartyMemberConditionAny
+	dc.l FUN_PartyMemberConditionMin
+	dc.l FUN_PartyMemberConditionMax
+	dc.l FUN_PartyMemberConditionAvg
+	dc.l FUN_PartyMemberConditionRnd
+FUN_PartyMemberCondition:
+	lea Current_event_data,A5
+	sf Query_result
+	moveq #$00000000,D0
+	move.b PMCE_CondType(A5),D0
+	cmp.w #PMCE_TypeCount,D0
+	bpl.b .End
+	lsl.w #$00000002,D0
+	movea.l (PTR_PartyMemberConditionEventFunctions,PC,D0.w),A0
+	jsr (A0)
+	tst.b Query_result
+	bne.b .End
+	move.w PCME_FalseBranch(A5),PCME_TrueBranch(A5)
+.End:
+	rts
+FUN_PartyMemberConditionLevel:
+	lea .GetLevel,A3
+	jmp FUN_PartyMemberConditionCheck
+.GetLevel:
+	moveq #0,D0
+	move.b ($05,A2),D0 ; level
+	rts
+FUN_PartyMemberConditionAttribute:
+	lea .GetAttribute,A3
+	jmp FUN_PartyMemberConditionCheck
+.GetAttribute:
+	moveq #0,D0
+	move.b PCME_CondValIndex(A5),D0
+	lsl.w #3,D0 ; 8 bytes per attribute
+	add.w #$2a,D0 ; offset for attributes
+	adda D0,A2
+	move.w (A2),D0 ; current attribute
+	add.w ($04,A2),D0 ; + bonus attribute
+	rts
+FUN_PartyMemberConditionSkill:
+	lea .GetSkill,A3
+	jmp FUN_PartyMemberConditionCheck
+.GetSkill:
+	moveq #0,D0
+	move.b PCME_CondValIndex(A5),D0
+	lsl.w #3,D0 ; 8 bytes per skill
+	add.w #$7a,D0 ; offset for skills
+	adda D0,A2
+	move.w (A2),D0 ; current skill
+	add.w ($04,A2),D0 ; + bonus skill
+	rts
+FUN_PartyMemberConditionTP:
+	lea .GetTP,A3
+	jmp FUN_PartyMemberConditionCheck
+.GetTP:
+	moveq #0,D0
+	move.w ($16,A2),D0 ; TP
+	rts
+FUN_PartyMemberConditionCheck:
+	moveq #$00000000,D0
+	move.b PCME_Target(A5),D0
+	cmpi.b #PCME_T_Inv,D0
+	bne.b .NotActiveInventory
+	moveq #-4,D0
+	bra.b .ExecFunc
+.NotActiveInventory:
+	cmpi.b #PCME_T_FirstChar,D0
+	bpl.b .CharIndex
+	lsl.w #$00000002,D0
+.ExecFunc:
+	movea.l (PTR_PartyMemberConditionEventCheckFunctions,PC,D0.w),A0
+	bra .Exec
+.CharIndex:
+	lea FUN_PartyMemberConditionCharIndex,A0
+.Exec:
+	jmp (A0)
+FUN_RunFunctionForFilteredPartyMembers:
+	; A0 = function which gets the party member data in A2
+	; A5 = event data
+	movem.l A2/A1/D7/D2/D1/D0,-(SP)
+	lea Party_handles,A1
+	move.w PMCE_ForbidConds(A5),D1 ; forbidden conditions
+	moveq #0,D0
+	moveq #0,D7 ; every party member slot
+.Loop:
+	move.b (A1)+,D0
+	beq .Next
+	move.l D0,-(SP)
+	jsr Claim_pointer
+	movea.l D0,A2
+	move.l (SP)+,D0
+	move.w D1,D2
+	and.w ($001e,A2),D2
+	bne .NextWithRelease ; if any bit is set, some forbidden condition is active
+	move.l D0,-(SP)
+	jsr (A0)
+	move.l (SP)+,D0
+	jsr Free_pointer
+	bra .Next
+.NextWithRelease:
+	jsr Free_pointer
+.Next:
+	addq #1,D7
+	cmpi.b #6,D7
+	blt .Loop
+.End_Adv:
+	movem.l (SP)+,D0/D1/D2/D7/A1/A2
+	rts
+FUN_PartyMemberConditionCharIndex:
+	moveq #0,D3 ; result
+	; D0 holds the char index + 6 or char index + #PCME_T_FirstChar - 1
+	; So char index = D0 - #PCME_T_FirstChar + 1
+	subq #PCME_T_FirstChar-1,D0 ; get 1-based char index
+	moveq #5,D7 ; 6 iterations
+	lea Member_nrs,A0
+	lea Party_handles,A1
+.Loop_Adv:
+	cmp.w (A0)+,D0
+	beq.b .Found
+	adda.l #1,A1 ; next pointer index
+	dbf D7,.Loop_Adv
+	; If we are here, we did not found the character.
+	sf Query_result
+	rts
+.Found:
+	move.b (A1),D4
+	lea .Check,A0
+	jsr FUN_RunFunctionForFilteredPartyMembers
+	; Now D3 is -1 if there was a match and the value was sufficient, otherwise 0
+	tst.l D3
+	sne Query_result
+	rts
+.Check:
+	; D0 now holds the currently checked pointer index
+	; In D4 we stored the pointer index we want to check
+	cmp.b D4,D0
+	bne.b .End_Adv3 ; not matching? just end
+	jsr (A3) ; get value from party member data in D0.w
+	cmp.w PCME_Value(A5),D0
+	sge D3 ; found right member, set D3 based on the value
+.End_Adv3:
+	rts
+FUN_PartyMemberConditionInv:
+	; A3 holds the function to get the value from the data as a word and puts it into D0
+	move.b Inventory_handle,D0
+	jsr Claim_pointer
+	movea.l D0,A2
+	move.w PMCE_ForbidConds(A5),D1 ; forbidden conditions
+	and.w ($001e,A2),D1
+	bne.b .Forbidden
+	jsr (A3)
+	move.w D0,-(SP)
+	move.b Inventory_handle,D0
+	jsr Free_pointer
+	move.w (SP)+,D0
+	cmp.w PCME_Value(A5),D0
+	sge Query_result
+	rts
+.Forbidden:
+	move.b Inventory_handle,D0
+	jsr Free_pointer
+	sf Query_result
+	rts
+FUN_PartyMemberConditionAct:
+	; A3 holds the function to get the value from the data as a word and puts it into D0
+	move.b Active_handle,D0
+	jsr Claim_pointer
+	movea.l D0,A2
+	move.w PMCE_ForbidConds(A5),D1 ; forbidden conditions
+	and.w ($001e,A2),D1
+	bne.b .Forbidden_Adv
+	jsr (A3)
+	move.w D0,-(SP)
+	move.b Active_handle,D0
+	jsr Free_pointer
+	move.w (SP)+,D0
+	cmp.w PCME_Value(A5),D0
+	sge Query_result
+	rts
+.Forbidden_Adv:
+	move.b Active_handle,D0
+	jsr Free_pointer
+	sf Query_result
+	rts
+FUN_PartyMemberConditionAll:
+	; A3 holds the function to get the value from the data as a word and puts it into D0
+	moveq #-1,D3
+	lea .Check_Adv,A0
+	jsr FUN_RunFunctionForFilteredPartyMembers
+	; Now D3 is -1 if all fulfill the condition, otherwise 0
+	tst.l D3
+	sne Query_result
+	rts
+.Check_Adv:
+	jsr (A3) ; get value from party member data in D0.w
+	cmp.w PCME_Value(A5),D0
+	bge .End_Adv4 ; next if the current party member's value is high enough
+	moveq #0,D3
+	moveq #5,D7 ; this will end the loop early inside FUN_RunFunctionForFilteredPartyMembers
+.End_Adv4:
+	rts
+FUN_PartyMemberConditionAny:
+	; A3 holds the function to get the value from the data as a word and puts it into D0
+	moveq #-1,D3
+	lea .Check_Adv3,A0
+	jsr FUN_RunFunctionForFilteredPartyMembers
+	; Now D3 should contain the index for the party member who fulfilled the condition, or -1 if none was found
+	cmpi.l #-1,D3
+	beq .End_Adv5 ; if none was found, end (event result is still false)
+	st Query_result
+	rts
+.Check_Adv3:
+	jsr (A3) ; get value from party member data in D0.w
+	cmp.w PCME_Value(A5),D0
+	blt .End_Adv5 ; next if the current party member's value is too low
+	move.l D7,D3
+	moveq #5,D7 ; this will end the loop early inside FUN_RunFunctionForFilteredPartyMembers
+.End_Adv5:
+	rts
+FUN_PartyMemberConditionMin:
+	; A3 holds the function to get the value from the data as a word and puts it into D0
+	moveq #-1,D3
+	move.w #$7fff,D4
+	lea .Min,A0
+	jsr FUN_RunFunctionForFilteredPartyMembers
+	; Now D3 should contain the index for the minimum value, or -1 if none was found
+	cmpi.l #-1,D3
+	beq .End_Adv6 ; if none was found, end (event result is still false)
+	cmp.w PCME_Value(A5),D4
+	sge Query_result
+	rts
+.Min:
+	jsr (A3) ; get value from party member data in D0.w
+	cmp.w D4,D0
+	bge .End_Adv6 ; if value is >= current, end
+	; if not this is the new minimum
+	move.w D0,D4
+	move.l D7,D3
+.End_Adv6:
+	rts
+FUN_PartyMemberConditionMax:
+	; A3 holds the function to get the value from the data as a word and puts it into D0
+	moveq #-1,D3
+	move.w #-1,D4
+	lea .Max,A0
+	jsr FUN_RunFunctionForFilteredPartyMembers
+	; Now D3 should contain the index for the maximum value, or -1 if none was found
+	cmpi.l #-1,D3
+	beq .End_Adv7 ; if none was found, end (event result is still false)
+	cmp.w PCME_Value(A5),D4
+	sge Query_result
+	rts
+.Max:
+	jsr (A3) ; get value from party member data in D0.w
+	cmp.w D4,D0
+	ble .End_Adv7 ; if value is <= current, end
+	; if not this is the new maximum
+	move.w D0,D4
+	move.l D7,D3
+.End_Adv7:
+	rts
+FUN_PartyMemberConditionAvg:
+	; A3 holds the function to get the value from the data as a word and puts it into D0
+	moveq #0,D3
+	moveq #0,D4
+	lea .Avg,A0
+	jsr FUN_RunFunctionForFilteredPartyMembers
+	; Now D3 should contain the number of valid party members or 0 if none was found
+	tst.l D3
+	beq .End_Adv8 ; if none was found, end (event result is still false)
+	divs.w D3,D4 ; divide the total value by the number of values to get the average
+	cmp.w PCME_Value(A5),D4
+	sge Query_result
+	rts
+.Avg:
+	jsr (A3) ; get value from party member data in D0.w
+	add.w D0,D4
+	addq #1,D3
+.End_Adv8:
+	rts
+FUN_PartyMemberConditionRnd:
+	; A3 holds the function to get the value from the data as a word and puts it into D0
+	; A5 = event data
+	movem.l A4/A2/A1/D7/D6/D2/D1/D0,-(SP)
+	lea Party_handles,A1
+	lea DAT_Random_party_members,A4
+	move.w PMCE_ForbidConds(A5),D1 ; forbidden conditions
+	moveq #0,D0
+	moveq #0,D6
+	moveq #0,D7 ; every party member slot
+.Loop_Adv3:
+	move.b (A1)+,D0
+	beq .Next_Adv
+	move.l D0,-(SP)
+	jsr Claim_pointer
+	movea.l D0,A2
+	move.l (SP)+,D0
+	move.w D1,D2
+	and.w ($001e,A2),D2
+	bne .NextWithRelease_Adv ; if any bit is set, some forbidden condition is active
+	move.b D0,(A4)+
+	addq #1,D6
+	jsr Free_pointer
+	bra .Next_Adv
+.NextWithRelease_Adv:
+	jsr Free_pointer
+.Next_Adv:
+	addq #1,D7
+	cmpi.b #6,D7
+	blt .Loop_Adv3
+	; D6 = amount of valid party members
+	; A4 = array of valid party member handles
+	tst.w D6
+	beq .End_Adv9
+	jsr Random
+	mulu.w D6,D0
+	swap D0
+	move.b (0,A4,D0.w),D0
+	move.l D0,-(SP)
+	jsr Claim_pointer
+	movea.l D0,A2
+	jsr (A3) ; get value from party member data in D0.w
+	cmp.w PCME_Value(A5),D0
+	sge Query_result
+	move.l (SP)+,D0
+	jsr Free_pointer
+.End_Adv9:
+	movem.l (SP)+,D0/D1/D2/D6/D7/A1/A2/A4
+	rts
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+; TODO: NOT USED YET AND NOT COMPLETELY IMPLEMENTED
+FUN_EventUpgradeSavegame:
+	; This upgrades an AA episode I savegame to a episode II savegame.
+	; This won't check if this is the right savegame. This should be done
+	; in the event chain by checking some event or character bits.
+	; At index 1, there is a byte which gives the episode number to upgrade to.
+	; Should be 2 here.
+	movem.l A0/D1/D0,-(SP)
+	lea Current_event_data,A5
+	moveq #$00000000,D0
+	move.b ($0001,A5),D0
+	cmpi.b #2,D0
+	bne.b LAB_SavegameUpgradeEnd ; we only handle upgrade to episode II for now, so skip if not 2
+	nop
+	nop
+	; TODO
+	; - [ ] Add Kasimir party member (file)
+	; - [ ] Add new items to merchants (pet shop)
+	; - [ ] Adjust character values
+	; - [ ] Adjust global vars
+	; - [ ] Add exploration files
+	; - [ ] Adjust char bits
+	; - [ ] Adjust event bits
+	; - [ ] Add new merchants (files)
+	; - [ ] Add new chests (files)
+	; - [ ] Remove Kasimir NPC and spawn party member if food was already given
+	; - [ ] Add charges to all pet food (inventory, chest, merchant)
+
+	; To identify needed glob vars, char or event bits, diff the initial savegames of original and AA.
+
+	; Write a file copy function. Basically loads and then saves. Both functions should exist. This will then copy chests, merchants, automaps and the party char from new initial save to the current save slot.
+
+	; Add the new merchant items and save the merchant file as well. Also add charges to the pet food there.
+
+	; Scan the inventory of all characters and add charges to all pet food. Don't bother with other merchants and chests. Those pet food is then rotten. You can still buy new one.
+
+	; Set all new event and character bits. Don't forget to remove the NPC and add the party member to the map by doing so.
+
+	; Write the glob vars last as some have now changed meanings and they are involved in Kasimir NPC interactions.
+LAB_SavegameUpgradeEnd:
+	movem.l (SP)+,D0/D1/A0
+	rts
+FUN_CopyInitialSavegameFile:
+	; A0: Filename (like Party_char.amb)
+	; D0: Slot index
+	; TODO
+	
+	jsr Claim_pointer
+	movea.l D0,A0 ; chest data
+	move.l (SP)+,D0
+	move.w D5,D0 ; chest index (1-based)
+	; D1 should be set to 16 here but is 8 above (would write the chest to XIcon_gfx.amb instead)
+	moveq.l #16,D1 ; was missing
+	jsr Save_subfile ; save chest data
+	rts
 Lockpick_breaks:
 	movem.l	d0-d4/d6/d7/a0/a1,-(sp)
 	move.w	d0,Lock_X			; Save input
@@ -3679,7 +4835,16 @@ Move_key_HDOB:
 	dcb.w 6,0
 Dissolve_HDOB:
 	dc.w 0,0
-	dc.w 1,16,3,0
+	dc.w $0001
+	; height in px
+	dc.w $0010
+	; bits per pixel
+	dc.w $0003
+; Unknown data at address 002696ce.
+	dc.b $00
+; Unknown data at address 002696cf.
+	dc.b $00
+; Unknown data at address 002696d0.
 	dc.l 0
 	dc.b 0,0
 	dcb.w 6,0
@@ -3689,6 +4854,10 @@ Event_ptrs:
 	dc.l Encounter,Places,Query,Modify,Chance
 	dc.l Dumdum,Dia_text,Dia_give,Requester,Sound
 	dc.l Dumdum,Create_transport,Dia_execute,Remove_member
+	dc.l FUN_EventDelay
+	dc.l FUN_PartyMemberCondition
+	dc.l FUN_EventShake
+	dc.l FUN_EventUpgradeSavegame ; TODO: NOT USED YET AND NOT COMPLETELY IMPLEMENTED
 Event_messages:
 	dc.b 0,0,0,0,58
 	dc.b 59,0,0,0,0

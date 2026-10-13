@@ -15,6 +15,59 @@
 ;   IN : a0 - Pointer to monster's participant data (.l)
 ; All registers are restored
 ;*****************************************************************************
+; Element tooltip
+DAT_ElementTextBuffer:
+	ds.b 32 ; should be enough
+Create_tactic_element:
+	movem.l A5/A0/D7/D6/D3/D2/D1/D0,-(SP)
+	movea.l A0,A5 ; save participant data
+	cmpi.b #$00000001,(A5) ; Party or monster?
+	beq .End ; if party, abort
+	tst.b Show_elements ; Show monster elements active?
+	bne.b .Show ; yes? proceed
+	cmpi.w #$00000006,Travel_mode ; cheat mode?
+	bne.w .End ; no? abort
+.Show: ; show the element display
+	move.l D0,-(SP)
+	move.b ($0005,A5),D0
+	jsr Claim_pointer
+	movea.l D0,A0
+	move.l (SP)+,D0
+	movem.l A3/A2/A1/A0,-(SP)
+	move.l A0,A1 ; pointer to monster data
+	; Get the element label
+	move.w #314,D0 ; message index 314 is element label like "Element:"
+	movea.l Prompts_ptr,A0
+	jsr FUN_GetTextMessageLength ; length of element label
+	jsr Find_large_text
+	lea DAT_ElementTextBuffer,A3
+	move.l A0,A2
+	; A2 -> A3, length in D7
+	subq #1,D7 ; do not count the terminating 0
+	jsr Copy_data ; copy element label to text buffer
+	add.l D7,A3 ; skip element label
+	move.b #$20,(A3)+ ; add a space
+	; now get the monster element as string
+	; In: A1 (monster data)
+	; Out: A0 (text pointer)
+	; Out: D7 (text length)
+	jsr FUN_GetElementName
+	move.l A0,A2
+	; A2 -> A3, length in D7
+	subq #1,D7 ; do not count the terminating 0
+	jsr Copy_data ; copy element name to text buffer
+	add.l D7,A3 ; skip element name
+	move.b #0,(A3)+ ; ensure terminating null
+	movem.l (SP)+,A0/A1/A2/A3
+	move.w D0,-(SP)
+	move.b ($0005,A5),D0
+	jsr Free_pointer
+	move.w (SP)+,D0
+	lea DAT_ElementTextBuffer,A0
+	jsr Create_2nd_ghost
+.End:
+	movem.l (SP)+,D0/D1/D2/D3/D6/D7/A0/A5
+	rts
 Determine_monster_action:
 	movem.l	d0-d2/a1,-(sp)
 	Get	Part_handle(a0),a1
@@ -948,6 +1001,7 @@ Process_damage:
 ;	51...100 - Party advantage
 ;*****************************************************************************
 Calculate_global_danger:
+FUN_Calculate_global_danger:
 	movem.l	d0-d2/d7/a0/a1,-(sp)
 	lea.l	Combat_matrix,a0		; Search matrix
 	moveq.l	#0,d0

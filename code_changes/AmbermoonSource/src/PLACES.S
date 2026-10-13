@@ -312,6 +312,7 @@ Healer_CIL_evaluate:
 	bra.s	.Ok3
 ; ---------- Heal LP ? ----------------------------
 .Ok1:	move.w	Life_points(a1),d0		; Already at maximum ?
+	move.w ($00ca,A1),D0
 	move.w	Life_points+Maximum(a1),d1
 	add.w	Life_points+Magic(a1),d1
 	cmp.w	d1,d0
@@ -732,6 +733,25 @@ Sage_DisInit:
 ; ********** Sage - Examine body item *************
 Examine_body_item:
 ; ---------- Enough money ? -----------------------
+FUN_UpdatePlaceCost:
+	; D0 is the byte offset
+	; cost is written to DAT_PlaceCost
+	movem.l A0/D1/D0,-(SP)
+	move.w D0,D1
+	move.b Place_data_handle,D0
+	jsr Claim_pointer
+	movea.l D0,A0
+	move.w Current_place_nr,D0
+	subq.w #$00000001,D0
+	mulu.w #$0020,D0
+	add.w D1,D0
+	move.w ($00,A0,D0.l),Total_price
+	move.b Place_data_handle,D0
+	jsr Free_pointer
+	movem.l (SP)+,D0/D1/A0
+	rts
+	moveq #2,D0
+	jsr FUN_UpdatePlaceCost
 	move.w	Current_gold,d0
 	cmp.w	Total_price,d0
 	bcc.s	.Ok			; FIX: Was bpl (gold is unsigned)
@@ -769,6 +789,22 @@ Examine_body_item:
 ; ********** Sage - Examine backpack item *********
 Examine_backpack_item:
 ; ---------- Enough money ? -----------------------
+FUN_SageShowSLP:
+	move.l A2,-(SP)
+	moveq #4,D0
+	jsr FUN_UpdatePlaceCost
+	lea FUN_ShowScrollSP,A2
+	jsr FUN_SageIdentifyInventoryItemOrScroll
+	move.l (SP)+,A2
+	rts
+	move.l A2,-(SP)
+	moveq #2,D0
+	jsr FUN_UpdatePlaceCost
+	lea Do_examine,A2
+	jsr FUN_SageIdentifyInventoryItemOrScroll
+	move.l (SP)+,A2
+	rts
+FUN_SageIdentifyInventoryItemOrScroll:
 	move.w	Current_gold,d0
 	cmp.w	Total_price,d0
 	bcc.s	.Ok			; FIX: Was bpl (gold is unsigned)
@@ -789,7 +825,7 @@ Examine_backpack_item:
 	move.w	Selected_item,d0		; Anything selected ?
 	bmi	.Exit
 	addi.w	#9,d0			; Yes -> Do
-	jsr	Do_examine
+	jsr (A2)
 	st	Success			; Success !
 .Exit:	jsr	Hide_Lay3_objects		; Hide slots
 	jsr	Update_screen
@@ -800,6 +836,83 @@ Examine_backpack_item:
 ;   IN : d0 - Slot index {0...32} (.w)
 ; No registers are restored
 ;*****************************************************************************
+DAT_ScrollSLPTextBuffer:
+	dc.b 0
+	dc.b 0
+	dc.b 0
+	dc.b 0
+FUN_ShowScrollSP:
+	move.l D0,-(SP)
+	move.b Active_handle,D0
+	jsr Claim_pointer
+	movea.l D0,A2
+	move.l (SP)+,D0
+	lea ($0122,A2),A2
+	mulu.w #$0006,D0
+	adda.l D0,A2
+	move.w ($0004,A2),D0 ; item index
+	subq.w #$00000001,D0
+	mulu.w #$003c,D0
+	movea.l Object_data_ptr,A1
+	adda.l D0,A1 ; item data
+	move.b Active_handle,D0
+	jsr Free_pointer
+	cmpi.b #9,($01,A1) ; is spell scroll?
+	beq.b LAB_ShowSLPIsScroll
+	move.w #$0014,D0 ; "This is not a spell scroll"
+	jsr Do_prompt
+	bra.w LAB_ShowScrollSPEnd
+LAB_ShowSLPIsScroll:
+	move.w #$00ab,D0
+	move.w Total_price,D1
+	jsr BuySell_req
+	tst.b D0
+	beq.w LAB_ShowScrollSPEnd
+	sub.w D1,Current_gold
+	; Play star animation
+	move.w Selected_item,D0
+	jsr Sparkle_object2
+	; Get SLP value from spell scroll
+	move.l A3,-(SP)
+	lea Spell_data,A3
+	moveq #0,D0
+	move.b ($17,A1),D0
+	mulu.w #30,D0
+	add.b ($18,A1),D0
+	subq.w #1,D0
+	mulu.w #5,D0
+	add.l D0,A3 ; should point to the spell info
+	moveq #0,D0
+	move.b ($02,A3),D0 ; SLP
+	move.l (SP)+,A3
+	; The following code draws the SLP message
+	movem.l A2/A1/A0/D7/D6/D0,-(SP)
+	lea DAT_ScrollSLPTextBuffer,A0
+	lea Text_list,A1
+	move.l A0,($04,A1) ; insert SLP as second part
+	moveq #$20,D6 ; fill char is whitespace
+	moveq #3,D7 ; max length
+	jsr DecR_convert ; fill buffer with SLP string
+	movea.l Prompts_ptr,A0
+	move.w #$013b,D0
+	jsr Find_large_text
+	move.l A0,(A1) ; first part is the first message part
+	movea.l Prompts_ptr,A0
+	move.w #$013c,D0
+	jsr Find_large_text
+	move.l A0,($08,A1) ; third part is the second message part
+	clr.l ($0c,A1) ; end marker
+	movem.l A1/A0/D0,-(SP)
+	movea.l A1,A0
+	moveq #$00000000,D0
+	jsr Display_text_and_wait	
+	movem.l (SP)+,D0/A0/A1
+	jsr Erase_PA
+	jsr Update_screen
+	movem.l (SP)+,D0/D6/D7/A0/A1/A2
+	; End of SLP message drawing
+LAB_ShowScrollSPEnd:
+	rts
 Do_examine:
 	Get	Active_handle,a2		; Get object packet address
 	lea.l	Char_inventory(a2),a2
@@ -968,6 +1081,10 @@ Inn_ModInit:
 	move.w	Inn_price+2(a0,d0.l),d1
 	Free	Place_data_handle
 	jsr	Count_members		; Calculate total price
+	tst.w D0
+	bne.b LAB_AtLeastOneRestingPlayer
+	moveq.l #1,D0 ; at least pay for 1 player (even if the animal is the only one)
+LAB_AtLeastOneRestingPlayer:
 	mulu.w	d1,d0
 	move.w	d0,Total_price		; Store
 	jmp	Places_ModInit
@@ -1426,7 +1543,7 @@ MerchFOOD_Transfer_food:
 	Get	(a1),a0
 	move.l	InputNr_number,d0
 	add.w	d0,Food_rations(a0)
-	mulu.w	#Food_weight,d0
+	mulu.w #$0019,D0 ; food weight, ADVANCED changed to 25
 	add.l	d0,Weight_normal(a0)
 	Free	(a1)
 .Exit:	rts
@@ -1469,6 +1586,10 @@ MerchTRANS_ModInit:
 	btst	d5,d0
 	beq.s	.One
 	jsr	Count_members		; But how many ?
+	tst.w D0
+	bne.b .LAB_AtLeastOnePayingPlayer
+	moveq.l #1,D0 ; at least pay for 1 player (even if the animal is the only one)
+.LAB_AtLeastOnePayingPlayer:
 	mulu.w	d0,d1			; Calculate total price
 .One:	move.w	d1,Total_price		; Store
 	move.w	d2,d0			; Already a transport ?
@@ -1889,10 +2010,17 @@ Healer_CIL:
 Sage_CIL:
 	dc.w Body_items_cicon,0,Exit_cicon
 	dc.w Backpack_cicon,0,0
-	dc.w 0,0,0
+	dc.b $00 ; ActionButton.Flags
+	dc.b $47 ; ActionButton.ButtonImageIndex
+	dc.b $00 ; ActionButton.Flags
+	dc.b $00 ; ActionButton.ButtonImageIndex
+	dc.b $00 ; ActionButton.Flags
+	dc.b $00 ; ActionButton.ButtonImageIndex ; ActionButtonInfo.ActionButtonImageIndices
 	dc.l Examine_body_item,0,Exit_PLACES
 	dc.l Examine_backpack_item,0,0
-	dc.l 0,0,0
+	dc.l FUN_SageShowSLP
+	dc.l $00000000 ; null pointer address
+	dc.l $00000000 ; null pointer address ; ActionButtonInfo.ActionButtonFunctions
 	dc.l 0
 Enchanter_CIL:
 	dc.w 0,0,Exit_cicon

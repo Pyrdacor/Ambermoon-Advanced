@@ -44,7 +44,7 @@ Push_Module:
 	move.l	Module_Sp,a1
 	move.l	a1,a2
 	lea.l	Module_data_size(a1),a1
-	cmpa.l	#ModStack_end,a1		; Possible ?
+	cmpa.l #Tree_Sp-4,A1 ; Window already open? Skip.
 	beq	.Exit
 
 ; Then the module information is copied to the stack. The first byte is the
@@ -183,6 +183,7 @@ Pop_Module:
 ; All registers are restored
 ;*****************************************************************************
 Reset_module_stack:    
+FUN_CloseAllWindows:
 	movem.l	d7/a0-a2,-(sp)
 	clr.b	Pop_counter		; Pop all local modules
 	lea.l	ModStack_start,a1		; Reset stack

@@ -18,9 +18,26 @@
 ;*****************************************************************************
 Init_program:
 ; ---------- Clear game data ----------------------
+	; ADVANCED CHANGES - START
+	; Previously a fixed size was cleared ($1b77 words).
+	; Those are handles and other temporary values which
+	; should be reset for new games.
+	; When adding new values, this amount would change
+	; frequently and nobody wants to keep track of this.
+	; That's why the size is now calculated. The data
+	; section begins with DAT_PartyMemberDataPointerIndices
+	; and ends just before the savegame data DAT_CurrentSavegameData.
+	move.l A1,-(SP)
 	lea.l	Game_data,a0
+	lea Party_data,A1
+	move.l A1,D7
+	sub.l A0,D7
+	lsr.l #1,D7
 	moveq.l	#0,d0
-	move.l	#(Game_data_size-2)/2-1,d7
+	;move.l #$00001b77,D7 ; <- this was the old fixed number of words
+	movea.l (SP)+,A1
+	; This is for the new mystic imitation spell. On game load, ensure to clear the backup data.
+	jsr FUN_ClearMysticImitationBackupData
 					; NOTE: In 1.21 the size was not adapted when
 					;  Charge_price was added, so the last word of the
 					;  game data (Casting_participant+2) is not cleared.
@@ -314,7 +331,7 @@ Do_change_icon:
 ;*****************************************************************************
 Set_new_travel_mode:
 	movem.l	d0/a0,-(sp)
-	cmp.w	#Max_travelmodes,d0		; Legal ?
+	cmp.w #$000c,D0
 	bpl.s	.Exit
 	move.w	d0,Travel_mode		; Yes -> Store
 	cmp.b	#Map_3D,Current_map_type	; 2D map ?
@@ -359,6 +376,7 @@ Activate_member:
 	moveq.l	#-1,d6			; Default is impossible
 	lea.l	Party_handles-1,a0		; Get data handle
 	move.b	0(a0,d7.w),d5
+	move.b D5,Subject_handle
 	beq	.Exit2			; Anyone there ?
 	Get	d5,a1
 	moveq.l	#Dialogue_ID,d0		; Yes -> In dialogue ?
@@ -549,7 +567,7 @@ Select_new_active_member:
 	dbra	d7,.Loop
 	jmp	Game_over			; Game over!
 .Select:	move.w	#222,MemberSel_prompt	; Who is the new leader ?
-	move.l	#Active_check,MemberSel_ptr
+	move.l #Active_check,MemberSel_ptr
 	Push	Module,ActiveSel_Mod
 	move.w	Selected_member,d7		; Set new
 	jsr	Activate_member
@@ -713,6 +731,7 @@ Inventory_check:
 	Get	d7,a0
 	move.w	Body_conditions(a0),d1
 	move.b	Secret_inventory(a0),d2
+	move.b ($0003,A0),D5 ; class
 	Free	d7
 	tst.b	d2			; Secret inventory ?
 	beq.s	.No
@@ -1009,6 +1028,8 @@ Show_death:
 	lea.l	Party_handles,a0		; Duplicate first five
 	move.b	-1(a0,d7.w),d1		;  letters of member's name
 	Get	d1,a0
+	cmpi.b #13,($0002,A0)
+	seq.b D5
 	lea.l	Char_name(a0),a0
 	lea.l	Temp_name,a1
 	moveq.l	#5-1,d0
@@ -1045,13 +1066,22 @@ Show_death:
 	moveq.l	#25,d4
 	jsr	Draw_box
 	move.w	FaceY(a5),d1		; Display portrait
+	move.l D5,-(SP)
 	moveq.l	#5,d5
 	move.l	a1,a0
 	jsr	Put_unmasked_block
 	move.w	SkullY(a5),d1		; Display skull
 	moveq.l	#24,d4
-	moveq.l	#3,d5
+	move.l (SP)+,D5
+	tst.b D5
+	beq.b .LAB_HumanSkull
+	lea GFX_CatSkull,A0
+	bra.b .LAB_DrawSkull
+.LAB_HumanSkull:
 	lea.l	Death_mask,a0
+.LAB_DrawSkull:
+	move.l D5,-(SP)
+	moveq #$00000003,D5
 	jsr	Put_unmasked_block
 	addq.w	#2,d0			; Display	character	name
 	moveq.l	#31,d1
@@ -1062,6 +1092,7 @@ Show_death:
 	jsr	Switch_screens		; Show
 	addq.w	#2,FaceY(a5)		; Move down
 	addq.w	#1,SkullY(a5)
+	move.l (SP)+,D5
 	cmp.w	#1+1,SkullY(a5)		; Done ?
 	blt.s	.Again
 	Pop	CA
@@ -1356,7 +1387,7 @@ Clear_new_words_array:
 ;*****************************************************************************
 Access_bit_array:
 	movem.l	d0/d1/a0,-(sp)
-	cmp.w	#Max_bit_array,d1		; Legal array type ?
+	cmp.w #$0009,D1
 	bpl	.Exit
 	lea.l	.Bit_array_table(pc),a0	; Get bit array info
 	lsl.w	#3,d1
@@ -1390,7 +1421,8 @@ Access_bit_array:
 .Bit_array_table:
 	dc.l Max_quest,Quest
 	dc.l Max_chests,Chest_open
-	dc.l Max_doors,Door_open
+	dc.l $0000007f ; Number of variables in savegame
+	dc.l Door_open ; Start address of variables
 	dc.l Max_CD,CD
 	dc.l Max_event,Event
 	dc.l Max_words,WD
@@ -1402,6 +1434,8 @@ Access_bit_array:
 ;  OUT : d0 - Pooled gold coins (.w)
 ; Changed registers : d0
 ;*****************************************************************************
+	dc.l $0000007f ; Number of variables in savegame
+	dc.l DAT_ExtendedChestLockStates ; Start address of variables
 Pool_gold:    
 	movem.l	d1/d2/d6/d7/a0/a1,-(sp)
 	lea.l	Party_handles,a0		; Calculate gold demand
@@ -1460,6 +1494,7 @@ Divide_gold:
 	moveq.l	#0,d6
 	moveq.l	#6-1,d7
 .Loop1:	moveq.l	#0,d0			; Default is no gold
+	moveq #$00000000,D1
 	tst.b	(a0)			; Any character there ?
 	beq	.Next1
 	Get	(a0),a2			; Get character data
@@ -1542,16 +1577,17 @@ Divide_food:
 	moveq.l	#0,d6
 	moveq.l	#6-1,d7
 .Loop1:	moveq.l	#0,d0			; Zero food
+	moveq #$00000000,D1
 	tst.b	(a0)			; Any character there ?
 	beq	.Next1
 	Get	(a0),a2			; Get character data
 ; ---------- Check if character is normal ---------
-	move.b	Char_race(a2),d0		; Special or monster ?
-	btst	d0,d2
+	move.b ($0002,A2),D1
+	btst.l D1,D2
 	bne.s	.Done1
 ; ---------- Check if member is alive -------------
-	move.w	#Alive_mask,d0
-	and.w	Body_conditions(a2),d0
+	move.w #-$1b80,D1
+	and.w ($001e,A2),D1
 	bne.s	.Done1
 ; ---------- Check if member is secretive ---------
 	tst.b	Secret_inventory(a2)
@@ -1563,7 +1599,7 @@ Divide_food:
 	mulu.w	#1000,d0
 	subq.l	#1,d0
 	sub.l	Weight_normal(a2),d0
-	divu.w	#Food_weight,d0
+	divu.w #$0019,D0 ; food weight, ADVANCED changed to 25
 ; ---------- Check if too much --------------------
 	move.w	Food_rations(a2),d1		; Not too much ?
 	add.w	d0,d1
@@ -1581,7 +1617,7 @@ Divide_food:
 	tst.w	d6			; Anyone interested ?
 	beq	.Exit
 	opt	o4-				; (not optimized by the original assembler)
-	move.l	#Food_weight,d2		; Yes
+	move.l #$00000019,D2 ; food weight, ADVANCED changed to 25
 	opt	o4+
 .Again:	subq.w	#6,a0			; Try to divide
 	lea.l	-12(a1),a1
@@ -1691,10 +1727,21 @@ Check_slots_full:
 ; Changed registers : d0
 ;*****************************************************************************
 Count_members:
-	movem.l	d1/d2/d7/a0/a1,-(sp)
+	move.l D2,-(SP)
+	move.w #-$0200,D2 ; $1ff (bits of races that can receive exp etc)
+	jsr FUN_CountAlivePartyMembersWithRaceMask
+	move.l (SP)+,D2
+	rts
+FUN_CountAlivePartyMembers:
+	move.l D2,-(SP)
+	move.w #$ffff,D2
+	jsr FUN_CountAlivePartyMembersWithRaceMask
+	move.l (SP)+,D2
+	rts
+FUN_CountAlivePartyMembersWithRaceMask:
+	movem.l A1/A0/D7/D1,-(SP)
 	lea.l	Party_handles,a0
 	moveq.l	#0,d0
-	move.w	#Special_race_mask,d2
 	moveq.l	#6-1,d7
 .Loop:	tst.b	(a0)			; Anyone there ?
 	beq.s	.Next
@@ -1709,7 +1756,7 @@ Count_members:
 .Done:	Free	(a0)
 .Next:	addq.l	#1,a0			; Next member
 	dbra	d7,.Loop
-	movem.l	(sp)+,d1/d2/d7/a0/a1
+	movem.l (SP)+,D1/D7/A0/A1
 	rts
 
 ;***************************************************************************** 
@@ -1731,11 +1778,13 @@ Check_member_levels:
 	move.w	Body_conditions(a3),d0	; Alive ?
 	andi.w	#Alive_mask,d0
 	bne	.Done
+	moveq #$00000000,D0
+	move.b ($0003,A3),D0 ; Class
+	cmpi.b #9,D0 ; Check if animal and monsters
+	bpl.b .Done ; Skip then
 	moveq.l	#0,d2			; Get current level
 	move.b	Level_nr(a3),d2
 	move.l	Experience_points(a3),d3	; Get current EP
-	moveq.l	#0,d0			; Get start EP
-	move.b	Char_class(a3),d0
 	add.w	d0,d0
 	move.w	0(a1,d0.w),d1
 .Again:	cmpi.w	#Max_level,d2		; Maximum level ?
@@ -1788,17 +1837,26 @@ Make_levels:
 	bra	.Entry2
 ; ---------- Increase character values ------------
 .Loop2:	addq.b	#1,Level_nr(a1)		; Next level
+	cmpi.b #13,($0002,A1)
+	beq.b .LAB_SkipAPRCalculation ; skip APR calculation for animal party members
 	moveq.l	#0,d0			; Calculate new APR
 	move.b	Level_nr(a1),d0
 	move.w	Special_1(a1),d1		; Factor zero ?
 	beq.s	.One
 .Not_zero:	divu.w	d1,d0			; No -> Calculate
-	tst.w	d0
-	bne.s	.Ok1			; At least 1
+	addq #1,D0
+	bra.b .Ok1
 .One:	moveq.l	#1,d0
 .Ok1:	move.b	d0,Attacks_per_round(a1)	; Store
+.LAB_SkipAPRCalculation:
 	move.w	Special_2(a1),d0		; Calculate extra LP & LP max
 	jsr	Get_random_50_100
+	; ADVANCED: now STA/25 is added to hp on level up
+	moveq #$00000000,D1
+	move.w ($004a,A1),D1 ; current STA
+	add.w ($004e,A1),D1 ; add bonus STA
+	divu.w #$0014,D1 ; divide by 25
+	add.w D1,D0
 	add.w	d0,Life_points(a1)		; Add
 	add.w	d0,Life_points+Maximum(a1)
 	tst.b	Spell_class_counter(a1)	; Any spell classes	?
@@ -1807,10 +1865,15 @@ Make_levels:
 	jsr	Get_random_50_100
 	moveq.l	#0,d1			; Intelligence bonus
 	move.w	AIntelligence(a1),d1
+	add.w ($0036,A1),D1 ; add bonus INT
 	divu.w	#20,d1
 	add.w	d1,d0
 	add.w	d0,Power_points(a1)		; Add
 	add.w	d0,Power_points+Maximum(a1)
+	; check if the current level is lower than or equal to the max reached level
+	move.b ($05,A1),D0 ; current level (it was already increased)
+	cmp.b ($0f,A1),D0 ; compare to max reached level
+	bls.b .Entry2 ; skip SLP and TP if so
 	move.w	Special_4(a1),d0		; Calculate extra SLP
 	jsr	Get_random_50_100
 	moveq.l	#0,d1			; Intelligence bonus
@@ -1822,6 +1885,7 @@ Make_levels:
 	move.w	Special_5(a1),d0		; Calculate extra TP
 	jsr	Get_random_50_100
 	add.w	d0,Nr_training_points(a1)	; Add
+	move.b ($05,A1),($0f,A1) ; update max reached level
 .Entry2:	dbra	d6,.Loop2
 ; ---------- Display ------------------------------
 	move.w	d7,-(sp)
@@ -1929,6 +1993,8 @@ Make_levels:
 	lea.l	Number,a0
 	jsr	Put_text_line
 ; ---------- Print EP for next level --------------
+	cmpi.b #13,($0002,A1) ; animal?
+	beq.w .Go_on ; skip the whole next level stuff
 	cmpi.b	#Max_level,Level_nr(a1)	; Maximum level ?
 	bmi	.No
 	move.l	Prompts_ptr,a0		; "Max !"
@@ -2205,27 +2271,50 @@ Layout_ptr:
 
 ; *** STATUS BLOCK : 2nd layer ***
 Statusblock_L2C1:
-	dc.w 16,47+16,1,35			; Member 1 portrait
+	dc.w $0010 ; 16
+	dc.w $003f ; 63
+	dc.w $0001 ; 1
+	dc.w $0023 ; 35
 	dc.b 1
 	even
 	dc.l .C2,0
-.C2:	dc.w 64,95+16,1,35			; Member 2 portrait
+.C2:
+	dc.w $0040 ; min x
+	dc.w $006f ; max x
+	dc.w $0001 ; min y
+	dc.w $0023 ; max y
 	dc.b 2
 	even
 	dc.l .C3,0
-.C3:	dc.w 112,143+16,1,35		; Member 3 portrait
+.C3:
+	dc.w $0070 ; min x
+	dc.w $009f ; max x
+	dc.w $0001 ; min y
+	dc.w $0023 ; max y
 	dc.b 3
 	even
 	dc.l .C4,0
-.C4:	dc.w 160,191+16,1,35		; Member 4 portrait
+.C4:
+	dc.w $00a0 ; min x
+	dc.w $00cf ; max x
+	dc.w $0001 ; min y
+	dc.w $0023 ; max y
 	dc.b 4
 	even
 	dc.l .C5,0
-.C5:	dc.w 208,239+16,1,35		; Member 5 portrait
+.C5:
+	dc.w $00d0 ; min x
+	dc.w $00ff ; max x
+	dc.w $0001 ; min y
+	dc.w $0023 ; max y
 	dc.b 5
 	even
 	dc.l .C6,0
-.C6:	dc.w 256,287+16,1,35		; Member 6 portrait
+.C6:
+	dc.w $0100 ; min x
+	dc.w $012f ; max x
+	dc.w $0001 ; min y
+	dc.w $0023 ; max y
 	dc.b 6
 	even
 	dc.l 0,0
@@ -2287,13 +2376,20 @@ LQReq_L1:	dc.w 128,169
 	dc.l 0,0
 
 Ghost1_HDOB:
-	dc.w 0,0
+Tooltip1_X:
+	dc.w $0000
+Tooltip1_Y:
+	; undefined2
+	dc.w $0000
 	dc.w 0,Char_height+1,5,0
 	dc.l 0
 	dc.b 0,0
 	dcb.w 6,0
 Ghost2_HDOB:
-	dc.w 0,0
+Tooltip2_X:
+	dc.w $0000
+Tooltip2_Y:
+	dc.w $0000
 	dc.w 0,Char_height+1,5,0
 	dc.l 0
 	dc.b 0,0
@@ -2397,6 +2493,10 @@ Chest_filled:	ds.b 1
 Chest_flag:	ds.b 1
 Music_flag:	ds.b 1
 Dialogue_items:	ds.b 1
+; ADVANCED BUGFIX - START
+Bool_ClosingConversationWindow:
+	dx.b 1
+	dx.b 1 ; align byte
 First_chest:	ds.b 1
 No_word_selected:	ds.b 1
 RM_anim_flag:	ds.b 1
@@ -2444,6 +2544,14 @@ Saved_map_byte:	ds.b 1
 Mouse_moving:	ds.b 1
 Combat_req:	ds.b 1
 Show_trans:	ds.b 1
+; ADVANCED CHANGES - START
+Bool_NotUseWorldMapMusic:
+	dx.b 1
+Bool_NoMarkOfReturn:
+	dx.b 1
+Bool_NoEagleOrBroom:
+	dx.b 1
+	dx.b 1 ; FILL
 Moved:	ds.b 1
 Bumped:	ds.b 1
 New_move:	ds.b 1
@@ -2633,10 +2741,26 @@ VNPC_data:	ds.b Max_chars*VNPC_data_size
 	even
 
 Quad_map:					; Quad maps
-Quadmap_0:	ds.b Quad_mapsize
-Quadmap_1:	ds.b Quad_mapsize
-Quadmap_2:	ds.b Quad_mapsize
-Quadmap_3:	ds.b Quad_mapsize
+Quadmap_0:
+	; struct WorldMapPieceInfo
+	dx.b 1 ; Resource id for map data
+	dx.b 1 ; Resource id for map text
+	dx.w 1 ; Map index (1..1023)
+Quadmap_1:
+	; struct WorldMapPieceInfo
+	dx.b 1 ; Resource id for map data
+	dx.b 1 ; Resource id for map text
+	dx.w 1 ; Map index (1..1023)
+Quadmap_2:
+	; struct WorldMapPieceInfo
+	dx.b 1 ; Resource id for map data
+	dx.b 1 ; Resource id for map text
+	dx.w 1 ; Map index (1..1023)
+Quadmap_3:
+	; struct WorldMapPieceInfo
+	dx.b 1 ; Resource id for map data
+	dx.b 1 ; Resource id for map text
+	dx.w 1 ; Map index (1..1023)
 	even
 
 Quad_index:	ds.w 1			; World map variables
@@ -2695,7 +2819,20 @@ Current_event_entry_nr:	ds.w 1
 Current_event_block:	ds.w 1
 Current_event_data:	ds.b Event_data_size
 	even
-Divide_workspace:	ds.w 6
+Divide_workspace:
+	dx.w 1
+; Unknown data at address 0027b642.
+	dx.w 1
+; Unknown data at address 0027b644.
+	dx.w 1
+; Unknown data at address 0027b646.
+	dx.w 1
+; Unknown data at address 0027b648.
+	dx.w 1
+; Unknown data at address 0027b64a.
+	dx.w 1
+	; Is changed when levitating,
+	; falling, climbing, etc.
 
 ; ---------- 3D map data --------------------------
 FX_camera_height:	ds.w 1
@@ -2783,24 +2920,42 @@ Map_Xcoord:	ds.w 1
 Map_Ycoord:	ds.w 1
 View_direction:	ds.w 1
 
+DAT_ActiveSpellInfos:
 Spell_1_duration:	ds.w 1			; Light
 Spell_1_data:	ds.w 1
 Spell_2_duration:	ds.w 1			; Parade
 Spell_2_data:	ds.w 1
 Spell_3_duration:	ds.w 1			; Attack
 Spell_3_data:	ds.w 1
-Spell_4_duration:	ds.w 1			; Anti-magic
-Spell_4_data:	ds.w 1
-Spell_5_duration:	ds.w 1			; Clairvoyance
-Spell_5_data:	ds.w 1
-Spell_6_duration:	ds.w 1			; Automap view
-Spell_6_data:	ds.w 1
+Spell_4_duration:
+DAT_AntiMagicBuffDuration:
+	dx.w 1
+Spell_4_data:
+	dx.w 1
+Spell_5_duration:
+	dx.w 1
+DAT_ClairvoyanceBuffValue:
+Spell_5_data:
+	dx.w 1
+Spell_6_duration:
+	dx.w 1
+DAT_MysticMapBuffValue:
+Spell_6_data:
+	dx.w 1
 
 Nr_members:	ds.w 1			; Is set by the program !
 Active_member:	ds.w 1
-Member_nrs:	ds.w 6
-
-Time_data_year:	ds.w 1			; Relative year
+Member_nrs:
+	dx.w 1 ; party member 1
+DAT_SecondPartyMemberIndex:
+	dx.w 1 ; party member 2
+DAT_ThirdPartyMemberIndex:
+	dx.w 1 ; party member 3
+	dx.w 1 ; party member 4
+	dx.w 1 ; party member 5
+	dx.w 1 ; party member 6
+Time_data_year:
+	dx.w 1
 Travel_mode:	ds.w 1
 Special_item_flags:	ds.w 1
 Internal_flags:	ds.w 1
@@ -2814,7 +2969,12 @@ CD:	ds.b 4096		; Character removed boolean array
 WD:	ds.b 128			;       Known words boolean array
 Goto_points:	ds.b 32		; Known Goto-points boolean array
 Chest_open:	ds.b 32		;     Opened chests boolean array
-Door_open:	ds.b 32			;      Opened doors boolean array
+Door_open:
+	; db[16]
+	dx.b 16
+DAT_ExtendedChestLockStates:
+	; db[16]
+	dx.b 16
 
 Order:	ds.b 6			; Combat positions for each member
 

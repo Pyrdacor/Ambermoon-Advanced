@@ -118,7 +118,7 @@ Do_cast_spell:
 ;	move.b	#Enemy_targmode,Part_target+6(a0)
 ;	not.b	Party_or_monster
 
-	tst.b	Party_or_monster		; Monster ?
+	tst.b Party_or_monster
 	beq.s	.Party1
 	Set_anim	Magic_anim,a0		; Yes -> Animate
 .Party1:	move.l	a0,Casting_participant	; Set caster's variables
@@ -134,7 +134,7 @@ Do_cast_spell:
 	jsr	Set_magic_target_mask
 	jsr	Print_magic_action		; Tell 'em
 	clr.b	Part_action(a0)		; Reset action
-	tst.b	Party_or_monster		; Party or monster ?
+	tst.b Party_or_monster
 	bne.s	.Monster
 	lea.l	Party_comma_class_ptrs,a1	; Party
 	bra.s	.Go_on
@@ -150,7 +150,8 @@ Do_cast_spell:
 	beq	.Exit
 	move.l	d0,a1
 	jsr	(a1)			; Execute
-.Exit:	tst.b	Party_or_monster		; Monster ?
+.Exit:
+	tst.b Party_or_monster
 	beq.s	.Party2
 	jsr	Wait_4_animation		; Yes -> Wait
 .Party2:	rts
@@ -239,7 +240,7 @@ Do_use_magic_object:
 	jsr	Print_magic_obj_action	; Tell 'em
 	st	Magic_object_flag		; From object !
 	clr.b	Part_action(a0)		; Reset action
-	tst.b	Party_or_monster		; Party or monster ?
+	tst.b Party_or_monster
 	bne.s	.Monster
 	lea.l	Party_comma_class_ptrs,a1	; Party
 	bra.s	.Go_on
@@ -379,6 +380,10 @@ Handle_magical_defense:
 	Get	Part_handle(a0),a1
 	move.w	AAnti_magic(a1),d0		; Get anti-magic attribute
 	add.w	AAnti_magic+Magic(a1),d0
+	jsr FUN_IsPartyMemberProtected
+	beq .Proceed
+	move.w #100,D0 ; 100% anti magic if protected
+.Proceed:
 	move.b	Spell_class_immunity(a1),d1	; Get immunities
 	move.b	Spell_type_immunity(a1),d2
 	Free	Part_handle(a0)
@@ -548,9 +553,14 @@ CGhost_weapon:
 .Do:
 	move.l	a0,a3
 ; ---------- Create fire pillars ------------------
+	; ADVANCED CHANGES - START
+	movea.l A1,A4
 	Get	Part_handle(a1),a2		; Get caster's damage
 	move.w	Damage(a2),d5
 	add.w	Damage_magic(a2),d5
+	move.w ($0072,A2),D2 ; base spell dmg bonus
+	move.w ($0074,A2),D3 ; max spell dmg bonus
+	move.w ($0078,A2),D4 ; percentage damage
 	Free	Part_handle(a1)
 	tst.w	d5			; Too low ?
 	bne.s	.Ok1
@@ -584,6 +594,32 @@ CGhost_weapon:
 	jsr	Move_COMOBs_to_target
 	move.w	(sp)+,d0			; Restore
 	move.l	a3,a0			; Defend ?
+	; ADVANCED CHANGES - START
+	movea.l A1,A3
+	movea.l A4,A1
+	move.l D4,-(SP)
+	move.w D0,D4 ; backup damage
+	jsr Random	
+	mulu.w D3,D0 ; random max bonus
+	swap D0
+	add.w D2,D0 ; total random bonus
+	add.w D4,D0 ; add initial damage
+	move.l (SP)+,D4
+	tst.w D4
+	beq.b .LAB_CalcSpellDamageGhostWeapon
+	cmpi.w #-99,D4
+	bpl.b .LAB_CalcPercDamageGhostWeapon
+	moveq #1,D0 ; limit to 1 damage if perc value is -100% or lower
+	bra.b .LAB_CalcSpellDamageGhostWeapon
+.LAB_CalcPercDamageGhostWeapon:
+	add.w #100,D4
+	mulu.w D4,D0
+	divu.w #100,D0
+	bgt.b .LAB_CalcSpellDamageGhostWeapon
+	moveq #1,D0 ; deal at least 1 damage
+.LAB_CalcSpellDamageGhostWeapon:
+	jsr FUN_CalculateSpellDamage
+	movea.l A3,A1
 	jsr	Handle_magical_defense
 	bne.s	.Exit2
 	cmp.b	#1,Part_type(a0)		; No -> Party or monster ?
@@ -898,8 +934,262 @@ CPP_stealer:
 	add.w	d0,COMOB_3D_X(a0)		; Store coordinates
 	add.w	d1,COMOB_3D_Y(a0)
 	add.w	d2,COMOB_3D_Z(a0)
-	add.w	d4,COMOB_Display_width(a0)	; Grow bigger (FIX: d5 -> d4)
-	add.w	d4,COMOB_Display_height(a0)
+	add.w D4,($0012,A0)
+	add.w D4,($0014,A0)
+	rts
+FUN_SpellMysticImitation:
+	jsr Handle_spell
+	bne.w .End
+	lea FUN_CastImitation,A2
+	jsr Do_all_combat_targets
+.End:
+	rts
+FUN_CastImitation:
+	jsr Handle_magical_defense
+	bne.w .End_Adv
+	movem.l A1/A0,-(SP)
+	jsr FUN_MysticSpellAnimation
+	movem.l (SP)+,A0/A1
+	; After the animation was played, transform the caster.
+	jsr FUN_TransformCaster
+.End_Adv:
+	rts
+; There are at max 3 characters who can use this spell: Valdyn (12), Targor (13) and Chris (5)
+; So we have some backups here for all 3.
+; We store for each:
+; - APR (1 byte)
+; - Element (1 byte)
+; - Current and MaxLP (2 words)
+; - Current and MaxSP (2 words)
+; - MBW (1 word)
+; - MBR (1 word)
+; - Current and Max value for all 8 attributes (16 words)
+; - Current and Max value for ATT, PAR, CRI, M-B (8 words)
+; - Learned spell bits (2 words)
+; Total: 33 words = 66 bytes
+	rsreset
+Backup_APR: rs.b 1
+Backup_Element: rs.b 1
+Backup_LP: rs.w 2
+Backup_SP: rs.w 2
+Backup_MBW: rs.w 1
+Backup_MBR: rs.w 1
+Backup_STR: rs.w 2
+Backup_INT: rs.w 2
+Backup_DEX: rs.w 2
+Backup_SPD: rs.w 2
+Backup_STA: rs.w 2
+Backup_CHA: rs.w 2
+Backup_LUK: rs.w 2
+Backup_A_M: rs.w 2
+Backup_ATT: rs.w 2
+Backup_PAR: rs.w 2
+Backup_CRI: rs.w 2
+Backup_U_M: rs.w 2
+Backup_Spells: rs.l 1
+Backup_data_size: rs.b 0
+; NOTE: We keep the caster level and class.
+; We do not need to store some values like SpellClass, Base Def, etc as we know their reset values. For example Base Def is always 0.
+; We make the inventory inaccessible for the rest of the fight.
+Mapping_CharIndex2MysticBackupDataIndex:
+	; Use CharIndex - 1 for access.
+	dc.b -1,-1,-1,-1,0,-1,-1,-1,-1,-1,-1,1,2,-1
+	even
+; Expects A1 to be the casting party member's participation data
+; Will return the backup area as A3
+FUN_GetMysticBackupData:
+	move.l D0,-(SP)
+	moveq #0,D0
+	move.b (1,A1),D0 ; Party member index (1-based)
+	lea Member_nrs,A3
+	lsl.w #1,D0
+	move.w (-2,A3,D0.w),D0 ; Character index
+	lea Mapping_CharIndex2MysticBackupDataIndex,A3
+	move.b (-1,A3,D0.w),D0 ; Backup index
+	mulu.w #Backup_data_size,D0
+	lea MysticBackupData,A3
+	adda.l D0,A3 ; Now points to the correct backup data
+	move.l (SP)+,D0
+	rts
+FUN_ClearMysticImitationBackupData:
+	movem.l A0/D0,-(SP)
+	moveq #0,D0
+	move.w #Backup_data_size,D0
+	lsr.w #1,D0
+	mulu.w #3,D0 ; 3 possible chars
+	subq #1,D0 ; -1 for dbf
+	lea MysticBackupData,A0
+.Next:
+	clr.w (A0)+
+	dbf D0,.Next	
+	movem.l (SP)+,D0/A0
+	rts
+; In D0: Backup data index (0-2)
+; In D7: Index in party (0-5)
+FUN_RestoreMysticChar:
+	movem.l A1/A0/D7/D0,-(SP)
+	mulu.w #Backup_data_size,D0 ; 62 bytes per backup data
+	lea MysticBackupData,A1
+	adda.l D0,A1 ; now points to the right backup data
+	tst.b (A1) ; The first byte is the APR value. If 0, there is no valid backup data. It is always >0 otherwise.
+	beq.w .End_Adv3
+	lea Party_handles,A0
+	move.b (0,A0,D7.w),D7
+	move.b D7,D0
+	jsr Claim_pointer
+	movea.l D0,A0 ; A0 is now the mystic data
+	; ---------------------------
+	; Restore relevant data from backup area
+	move.b Backup_APR(A1),$11(A0)
+	move.b Backup_Element(A1),$13(A0)
+	move.w Backup_MBW(A1),$de(A0)
+	move.w Backup_MBR(A1),$e0(A0)
+	move.l Backup_STR(A1),$2a(A0) ; current and max value in one go
+	move.l Backup_INT(A1),$32(A0)
+	move.l Backup_DEX(A1),$3a(A0)
+	move.l Backup_SPD(A1),$42(A0)
+	move.l Backup_STA(A1),$4a(A0)
+	move.l Backup_CHA(A1),$52(A0)
+	move.l Backup_LUK(A1),$5a(A0)
+	move.l Backup_A_M(A1),$62(A0)
+	move.l Backup_ATT(A1),$7a(A0)
+	move.l Backup_PAR(A1),$82(A0)
+	move.l Backup_CRI(A1),$92(A0)
+	move.l Backup_U_M(A1),$c2(A0)
+	move.l Backup_Spells(A1),$fa(A0)
+	; ---------------------------
+	; Adjust some other values
+	clr.l $f2(A0) ; Clear learned healing spells
+	clr.l $f6(A0) ; Clear learned alchemistic spells
+	clr.l $fe(A0) ; Clear learned destruction spells
+	move.l #$84,D0 ; usable spell school (for now mystic)
+	cmp.b #7,3(A0) ; Mystic class?
+	beq.b .Skip_Adv
+	moveq #$04,D0 ; If no mystic, it is a ranger
+.Skip_Adv:
+	move.b D0,$04(A0) ; Reset usable spell types
+	clr.w $d6(A0) ; Reset base defense
+	clr.w $da(A0) ; Reset base damage
+	clr.b $09(A0) ; Make caster inventory accessible again
+	; Limit current LP/SP if necessary
+	tst.w $ca(A0)
+	beq.b .SkipLP ; No LP left? Skip adjusting it
+	move.w Backup_LP(A1),D0 ; backed up current LP
+	cmp.w $ca(A0),D0 ; compare with now current LP
+	bhs.b .SkipLP ; if backed up LP >= current LP, keep the current LP
+	move.w D0,$ca(A0) ; otherwise use the backed up LP
+.SkipLP:
+	move.w Backup_SP(A1),D0 ; backed up current SP
+	tst.w $d2(A0) ; Check current max SP
+	beq.b .RestoreSP ; If it is 0, restore the previously backed up SP	
+	cmp.w $d0(A0),D0 ; compare with now current SP
+	bhs.b .SkipSP ; if backed up SP >= current SP, keep the current SP
+.RestoreSP:
+	move.w D0,$d0(A0) ; set SP to backed up value
+.SkipSP:
+	move.w Backup_LP+2(A1),$cc(A0) ; update max LP
+	move.w Backup_SP+2(A1),$d2(A0) ; update max SP
+	; ---------------------------
+	; Release data
+	move.b D7,D0
+	jsr Free_pointer
+.End_Adv3:
+	movem.l (SP)+,D0/D7/A0/A1
+	rts
+FUN_RestoreMystics:
+	; This is called when the battle ended.
+	movem.l A1/A0/D7/D0,-(SP)
+	; Check if there is a mystic or ranger in the party
+	lea Mapping_CharIndex2MysticBackupDataIndex,A1
+	lea Member_nrs,A0
+	adda.l #12,A0 ; 6 words
+	moveq #5,D7 ; 0 to 5
+.CheckMember:
+	move.w -(A0),D0
+	beq .NextMember
+	cmp.w #14,D0
+	bge .NextMember ; above 13 we have no mystics/rangers
+	move.b (-1,A1,D0.w),D0
+	tst.b D0
+	bmi .NextMember ; we have no backup data so it is no mystic/ranger
+	andi.l #$00ff,D0 ; For safety ensure the word has no garbage, as we use it as an index in FUN_RestoreMysticChar
+	jsr FUN_RestoreMysticChar
+.NextMember:
+	dbf D7,.CheckMember
+	movem.l (SP)+,D0/D7/A0/A1
+	jmp FUN_ClearMysticImitationBackupData
+FUN_TransformCaster:
+	cmp.b #1,(A1) ; Is party member
+	bne .Abort ; If casted by monster, abort immediately
+	movem.l A3/A2/D7/D1/D0,-(SP)
+	move.b ($0005,A1),D0 ; Get caster index
+	jsr Claim_pointer
+	movea.l D0,A2 ; Caster data
+	; ---------------------------
+	; Copy relevant data to backup area
+	jsr FUN_GetMysticBackupData ; = A3
+	move.b $11(A2),Backup_APR(A3)
+	move.b $13(A2),Backup_Element(A3)
+	move.l $ca(A2),Backup_LP(A3) ; current and max value in one go
+	move.l $d0(A2),Backup_SP(A3)
+	move.w $de(A2),Backup_MBW(A3)
+	move.w $e0(A2),Backup_MBR(A3)
+	move.l $2a(A2),Backup_STR(A3) ; current and max value in one go
+	move.l $32(A2),Backup_INT(A3)
+	move.l $3a(A2),Backup_DEX(A3)
+	move.l $42(A2),Backup_SPD(A3)
+	move.l $4a(A2),Backup_STA(A3)
+	move.l $52(A2),Backup_CHA(A3)
+	move.l $5a(A2),Backup_LUK(A3)
+	move.l $62(A2),Backup_A_M(A3)
+	move.l $7a(A2),Backup_ATT(A3)
+	move.l $82(A2),Backup_PAR(A3)
+	move.l $92(A2),Backup_CRI(A3)
+	move.l $c2(A2),Backup_U_M(A3)
+	move.l $fa(A2),Backup_Spells(A3)
+	; ---------------------------
+	; Transfer monster values to the caster	
+	move.b ($0005,A0),D0 ; Get target index
+	jsr Claim_pointer
+	movea.l D0,A3 ; Target data
+	move.b $11(A3),$11(A2) ; Transfer APR
+	move.b $13(A3),$13(A2) ; Transfer element
+	move.l $ca(A3),$ca(A2) ; Transfer current and max hit points
+	move.l $d0(A3),$d0(A2) ; Transfer current and max spell points
+	move.l $de(A3),$de(A2) ; Transfer MBW and MBR
+	move.l $2a(A3),$2a(A2) ; Transfer current and max STR
+	move.l $32(A3),$32(A2) ; Transfer current and max INT
+	move.l $3a(A3),$3a(A2) ; Transfer current and max DEX
+	move.l $42(A3),$42(A2) ; Transfer current and max SPD
+	move.l $4a(A3),$4a(A2) ; Transfer current and max STA
+	move.l $52(A3),$52(A2) ; Transfer current and max CHA
+	move.l $5a(A3),$5a(A2) ; Transfer current and max LUK
+	move.l $62(A3),$62(A2) ; Transfer current and max A-M
+	move.l $7a(A3),$7a(A2) ; Transfer current and max ATT
+	move.l $82(A3),$82(A2) ; Transfer current and max PAR
+	move.l $92(A3),$92(A2) ; Transfer current and max CRI
+	move.l $c2(A3),$c2(A2) ; Transfer current and max U-M
+	move.l $f2(A3),$f2(A2) ; Transfer learned healing spells
+	move.l $f6(A3),$f6(A2) ; Transfer learned alchemistic spells
+	move.l $fa(A3),$fa(A2) ; Transfer learned mystic spells
+	move.l $fe(A3),$fe(A2) ; Transfer learned destruction spells
+	move.b $04(A3),$04(A2) ; Transfer usable spell types
+	move.w $d6(A3),$d6(A2) ; Transfer base defense
+	move.w $da(A3),$da(A2) ; Transfer base damage
+	move.b #$ff,$09(A2) ; Make caster inventory inaccessible
+	move.b $03(A0),$03(A1) ; Replace battle icon
+	
+	; TODO: portrait?
+	
+	; ---------------------------
+	; Release the previously claimed pointers
+	move.b ($0005,A0),D0 ; Get target index
+	jsr Free_pointer
+	move.b ($0005,A1),D0 ; Get caster index
+	jsr Free_pointer
+;.End:
+	movem.l (SP)+,D0/D1/D7/A2/A3
+.Abort:
 	rts
 
 ; ********** Class 2 spells ***********************
@@ -917,7 +1207,13 @@ CMonster_knowledge:
 ; No registers are restored
 .Do:
 	jsr	Handle_magical_defense	; Defend ?
-	bne	.Exit2
+	bne	CMonster_knowledge_Exit2
+	jsr FUN_MysticSpellAnimation
+	; After the animation was played, show the monster info.
+	lea MonKnow_Mod,A0
+	jsr Push_Module
+	rts
+FUN_MysticSpellAnimation:
 	move.l	a0,-(sp)
 ; ---------- Create stars -------------------------
 	move.l	a0,a1
@@ -981,8 +1277,40 @@ CMonster_knowledge:
 	jsr	Switch_screens
 ; ---------- Show monster knowledge ---------------
 	move.l	(sp)+,MonKnow_ptr
-	Push	Module,MonKnow_Mod
-.Exit2:	rts
+	rts
+FUN_GetElementName:
+	; in A1: monster data
+	; out A0: text pointer
+	; out D7: text length
+	movem.l D2/D1/D0,-(SP)
+	move.w #304,D0 ; messaged index 304 is element name "None"
+	moveq.l #0,D1
+	move.b ($0013,A1),D1 ; monster element
+	beq.b .LAB_GetElementName ; 0? just keep the "None" text id
+	; check if multiple bits (elements) are set
+	move.l D1,D2
+	subq.l #1,D2
+	and.l D1,D2
+	bne.b .LAB_MultipleElements ; not 0? multiple bits (elements) are set
+	moveq.l #7,D2 ; check all 8 bits
+.LAB_CheckNextElementBit:
+	btst.l D2,D1 ; is the bit (element) set?
+	bne.b .LAB_ElementFound ; yes? calculate the message index
+	dbf D2,.LAB_CheckNextElementBit
+	bra.b .LAB_GetElementName
+.LAB_ElementFound:
+	; D2 now has the bit index (0 to 7)
+	add.w D2,D0
+	addq.w #1,D0 ; add 1 more to get the right one
+	bra.b .LAB_GetElementName
+.LAB_MultipleElements:
+	move.w #313,D0 ; message index 313 is element name "Multiple"
+.LAB_GetElementName:
+	movea.l Prompts_ptr,A0
+	jsr FUN_GetTextMessageLength
+	jsr Find_large_text
+	movem.l (SP)+,D0/D1/D2
+CMonster_knowledge_Exit2:	rts
 
 MonKnow_ModInit:
 	jsr	Set_layout_colours		; %%%1
@@ -1019,7 +1347,7 @@ MonKnow_ModInit:
 	jsr	Strlen			; Get length
 	move.w	d0,d2
 	move.w	#MonKnowW_X+20,d0		; Print name
-	move.w	#MonKnowW_Y+116,d1
+	move.w #$00a7,D1 ; Y: 167 (was 170)
 	jsr	Put_text_line
 ; ---------- Print monster level ------------------
 	move.b	Level_nr(a1),d0		; Convert	level
@@ -1033,6 +1361,21 @@ MonKnow_ModInit:
 	lea.l	Number,a0
 	jsr	Put_text_line
 ; ---------- Print monster's life points ----------
+	; ADVANCED CHANGES - START
+	; draw the element
+	movea.l Prompts_ptr,A0
+	move.w #$013a,D0 ; "Element:"
+	jsr Find_large_text
+	jsr Strlen
+	move.w D0,D2 ; text length of "Element:"
+	addq.w #$00000001,D2 ; add space
+	mulu.w #$0006,D2 ; multiply with text char width
+	move.w #$0064,D0 ; X: 100
+	add.w #8,D1 ; Y: name Y + 8
+	jsr Put_text_line ; draw the header "Element:"
+	add.w D2,D0 ; add x offset for the element name
+	jsr FUN_GetElementName
+	jsr Put_text_line ; draw the element name
 	move.w	#29,Ink_colour
 	move.l	MonKnow_line_ptr,a0		; Print separation line
 	move.w	#MonKnowW_X,d0
@@ -1103,6 +1446,7 @@ MonKnow_ModInit:
 	move.l	ProtDam_txt_ptr,a2
 	move.w	Protection(a1),d0		; Convert protection
 	add.w	Protection_magic(a1),d0
+	jsr FUN_AddDefenseAttributeBonus
 	moveq.l	#"0",d6
 	moveq.l	#3,d7
 	lea.l	1(a2),a0
@@ -1113,6 +1457,7 @@ MonKnow_ModInit:
 	jsr	Put_text_line
 	move.w	Damage(a1),d0		; Convert	damage
 	add.w	Damage_magic(a1),d0
+	jsr FUN_AddDamageAttributeBonus
 	lea.l	1(a2),a0
 	jsr	SDecR_convert
 	move.w	#MonKnowW_X+10,d0		; Print damage
@@ -1223,9 +1568,8 @@ MonKnow_ModExit:				; %%%1
 	jmp	Restore_combat_colours	; %%%1
 
 ; *** Show monster LP ***
-CShow_monster_LP:
-	jsr	Handle_spell		; Handle spell
-	bne	.Exit
+; Show the green stars flying over the battlefield
+FUN_ShowMysticStarsAnimation:
 ; ---------- Create stars -------------------------
 	lea.l	FXGFX_workspace,a2
 	moveq.l	#16-1,d7
@@ -1278,6 +1622,258 @@ CShow_monster_LP:
 .Loop4:	move.l	(a1)+,a0
 	jsr	Delete_COMOB
 	dbra	d7,.Loop4
+	rts
+FUN_SpellMysticDecay:
+	jsr Handle_spell
+	bne.w .End
+	lea FUN_MysticDecay,A2
+	jsr Do_all_combat_targets
+.End:
+	rts
+FUN_DealDecayDamage:
+	movem.l A3/D2/D1/D0,-(SP)
+	; Get caster data
+	move.b ($0005,A1),D0 ; Get caster index
+	jsr Claim_pointer
+	movea.l D0,A2 ; A2 = Caster char data
+	; Get caster level (D1)
+	moveq #0,D1
+	move.b (5,A2),D1 ; caster level
+	; Base damage = caster level * 3 / 2
+	mulu.w #3,D1
+	lsr.w #1,D1 ; now holds the base damage value
+	; Get target data
+	move.b ($0005,A0),D0 ; Get target index
+	jsr Claim_pointer
+	movea.l D0,A3 ; A3 = Target char data
+	; Dmg Increase % = (1 + (MaxTargetHP - CurrTargetHP) * 10 / MaxTargetHP) ^ 2
+	move.w ($cc,A3),D2 ; max target LP
+	move.w D2,D0 ; backup max LP in D0
+	sub.w ($ca,A3),D2 ; minus current target LP
+	mulu.w #10,D2 ; * 10
+	divu.w D0,D2 ; / max LP
+	addq #1,D2 ; + 1
+	mulu.w D2,D2 ; ^ 2
+	; Now calc the total damage value
+	add.w #100,D2 ; 100% + bonus in %
+	mulu.w D1,D2 ; base damage * total percentage
+	divu.w #100,D2 ; / 100 to get the value
+	cmpi.w #5,D2 ; >= 5?
+	bpl.b .Ok ; Ok
+	moveq #5,D2 ; Otherwise deal at least 5 damage
+.Ok:
+	; Now a random value between half and full the damage but still at least 5!
+	jsr Random
+	move.l D2,D1 ; D2 = full dmg
+	lsr.w #1,D1 ; D1 = half dmg
+	btst #0,D2 ; odd max dmg?
+	beq.b .Ok2 ; no? skip
+	addq #1,D1 ; otherwise add 1 to half dmg so we can reach full dmg
+.Ok2:
+	lsr.w #1,D2 ; half dmg without adjustment
+	mulu.w D1,D0
+	swap D0 ; now holds random value of 0 to half dmg - 1
+	addq #1,D0 ; now 1 to half dmg
+	add.w D2,D0 ; random value from half damage to full damage
+	cmpi.w #5,D0 ; >= 5?
+	bpl.b .Ok3 ; Ok
+	moveq #5,D0 ; Always deal at least 5 damage
+.Ok3:
+	move.l D0,-(SP)
+	; Release data pointers
+	move.b ($0005,A0),D0
+	jsr Free_pointer
+	move.b ($0005,A1),D0
+	jsr Free_pointer
+	move.l (SP)+,D0
+	; Calculate damage bonus from level, INT, etc
+	jsr FUN_CalculateSpellDamage
+	; Deal damage
+	jsr Do_damage_to_monster
+	movem.l (SP)+,D0/D1/D2/A3
+	rts
+FUN_MysticDecay:
+	; Base Damage = Caster Level
+	; Dmg Increase % = (1 + (MaxTargetHP - CurrTargetHP) * 10 / MaxTargetHP) ^ 2
+	; MinDmg = 5
+	; The max damage at level 50 would be 100 against a target with 10% LP or below.
+	; But Level and INT bonus is applied as well which can also increase the damage
+	; by 50% or more.
+	;
+	; The damage is random between half the value and full the value while the min
+	; value can still not be below 5.
+	;
+	; Caster Level 25
+	; Target has 10%, 25%, 50%, 75%, 100% LP
+	; 10% -> 200% * 25 = 50
+	; 25% -> 164% * 25 = 41
+	; 50% -> 136% * 25 = 34
+	; 75% -> 109% * 25 = 27
+	; 100% -> 101% * 25 = 25
+	;
+	; A0: Target battle data
+	; A1: Caster battle data
+	;
+	; Only A3/A2/A1/D7/D6/D2/D0 are restored!
+	; ------------------------------------------------------------------------------
+	jsr Handle_magical_defense
+	bne.w .Exit2
+	; Is caster a monster?
+	cmpi.b #$00000002,(A0)
+	bne.w .Exit2 ; End, this is a spell against monsters only
+	movem.l A1/A0,-(SP)
+	; Create green globes
+	moveq #5,D4 ; initial globe size
+	moveq #$0000001e,D0 ; movement speed = 30
+	exg A0,A1 ; let the beam fly from caster to target
+	;   IN : d0 - Movement speed (.w)
+	;        a0 - Pointer to source participant data (.l)
+	;        a1 - Pointer to target participant data (.l)
+	jsr Prepare_COMOB_movement
+	move.l A0,FXGFX_workspace
+	move.w D4,($0012,A0)
+	move.w D4,($0014,A0)
+	move.w #$0010,($0008,A0)
+	move.w #$0010,($000a,A0)
+	move.b FXGFX_handle,($0011,A0)
+	move.l #$0000a6cc,($001e,A0)
+	moveq #$00000004,D0
+	lea .Modify,A0
+	jsr Make_COMOB_chain
+	cmp.w #$0004,D7
+	bmi.b .Ok4
+	subq.w #$00000003,D7
+.Ok4:
+	moveq #$00000000,D0
+	moveq #$00000004,D1
+	jsr Move_COMOBs_to_target
+	movem.l (SP)+,A0/A1
+	jsr FUN_DealDecayDamage
+.Exit2:
+	rts
+.Modify:
+	move.w D4,D1
+	lsr.w #$00000001,D1
+	neg.w D1
+	move.w ($002c,A1),D0
+	add.w ($002e,A1),D1
+	move.w ($0030,A1),D2
+	add.w D0,($0026,A0)
+	add.w D1,($0028,A0)
+	add.w D2,($002a,A0)
+	add.w D4,($0012,A0)
+	add.w D4,($0014,A0)
+	rts
+FUN_SpellWeakenMonster:
+	cmpi.b #$00000001,(A0)
+	beq .End_Adv ; if target is player, abort
+	moveq #0,D0
+	move.b ($0005,A0),D0 ; target handle
+	moveq #17,D7 ; check up to 18 slots for weakened monsters
+	lea Weakened_monsters,A1
+.Next:
+	tst.b (A1)
+	beq .Add ; free slot reached? add the monster handle and end
+	cmp.b (A1)+,D0 ; check if the handle is already tracked
+	beq .End_Adv ; already there, abort
+	dbf D7,.Next
+.Add:
+	move.b D0,(A1)
+.End_Adv:
+	rts
+FUN_SpellProtectionSphere:
+	jsr Handle_spell
+	bne .End_Adv3
+	moveq #0,D0
+	move.w Casting_member,D0
+	moveq #0,D1
+	move.b Protected_party_members,D1
+	bset.l D0,D1
+	move.b D1,Protected_party_members
+.End_Adv3:
+	rts
+FUN_SpellForeseeMagic:
+	jsr Handle_spell
+	bne .End_Adv4
+	; create stars
+	jsr FUN_ShowMysticStarsAnimation
+	st Foresee_magic
+.End_Adv4:
+	rts
+FUN_SpellForeseeAttack:
+	jsr Handle_spell
+	bne .End_Adv5
+	; create stars
+	jsr FUN_ShowMysticStarsAnimation
+	st Foresee_attack
+.End_Adv5:
+	rts
+FUN_SpellElementToEarth:
+	moveq #0,D0
+	moveq #2,D7 ; num fade steps
+	jmp FUN_ChangeElement
+FUN_SpellElementToWind:
+	moveq #1,D0
+	moveq #2,D7 ; num fade steps
+	jmp FUN_ChangeElement
+FUN_SpellElementToFire:
+	moveq #2,D0
+	moveq #3,D7 ; num fade steps
+	jmp FUN_ChangeElement
+FUN_SpellElementToWater:
+	moveq #3,D0
+	moveq #2,D7 ; num fade steps
+	jmp FUN_ChangeElement
+Element_colors:
+	dc.w $0861,$0bbc,$0b20,$0019
+FUN_ChangeElement:
+	jsr Handle_spell
+	bne .End_Adv6
+	moveq #$10,D1
+	lsl.w D0,D1 ; element ($10 to $80)
+	lea Element_colors,A2
+	add.w D0,D0 ; 2 * D0
+	move.w (0,A2,D0.w),D0 ; fade color
+	jsr Fade_combat_palette
+	lea .Do,A2
+	jsr Do_all_combat_targets
+	jsr Restore_combat_palette
+.Do:
+	tst.b ($0001,A0) ; party or monster?
+	beq.b .End_Adv6 ; if party, skip
+	move.l D0,-(SP)
+	move.b ($0005,A0),D0
+	jsr Claim_pointer
+	movea.l D0,A1
+	move.b ($0012,A1),D2 ; get battle flags
+	move.l (SP)+,D0
+	btst.l #$00000002,D2 ; is boss?
+	bne.b .Boss
+	move.b D1,($0013,A1) ; set element
+	move.b ($0005,A0),D0
+	jsr Free_pointer
+	jsr FUN_MysticSpellAnimation
+	bra .End_Adv6
+.Boss:
+	move.b ($0005,A0),D0
+	jsr Free_pointer
+	move.w #$0107,D0 ; immune to spell
+	jsr Do_part_prompt
+.End_Adv6:
+	rts
+FUN_SpellShowElements:
+	jsr Handle_spell
+	bne .End_Adv7
+	; create stars
+	jsr FUN_ShowMysticStarsAnimation
+	st Show_elements
+.End_Adv7:
+	rts
+CShow_monster_LP:
+	jsr Handle_spell
+	bne .Exit
+	; create stars
+	jsr FUN_ShowMysticStarsAnimation
 	st	Show_monsters		; Show monster LP
 .Exit:	rts
 
@@ -1350,11 +1946,38 @@ CMagical_projectiles:
 	Get	Part_handle(a1),a2		; Get caster's level
 	moveq.l	#0,d0
 	move.b	Level_nr(a2),d0
+	move.w ($0072,A2),D2 ; base spell dmg bonus
+	move.w ($0074,A2),D3 ; max spell dmg bonus
+	move.w ($0078,A2),D4 ; percentage damage
 	Free	Part_handle(a1)
 	lsr.w	#1,d0			; Half
 	bne.s	.Notzero
 	moveq.l	#1,d0			; At least one
-.Notzero:	jsr	Do_damage_to_monster	; Do damage !
+.Notzero:
+	; ADVANCED CHANGES - START
+	move.l D4,-(SP)
+	move.w D0,D4 ; backup damage
+	jsr Random
+	mulu.w D3,D0 ; random max bonus
+	swap D0
+	add.w D2,D0 ; total random bonus
+	add.w D4,D0 ; add initial damage
+	move.l (SP)+,D4
+	tst.w D4
+	beq.b .LAB_CalcSpellDamageMagicProjectile
+	cmpi.w #-99,D4
+	bpl.b .LAB_CalcPercDamageMagicProjectile
+	moveq #1,D0 ; limit to 1 damage if perc value is -100% or lower
+	bra.b .LAB_CalcSpellDamageMagicProjectile
+.LAB_CalcPercDamageMagicProjectile:
+	add.w #100,D4
+	mulu.w D4,D0
+	divu.w #100,D0
+	bgt.b .LAB_CalcSpellDamageMagicProjectile
+	moveq #1,D0 ; deal at least 1 damage
+.LAB_CalcSpellDamageMagicProjectile:
+	jsr FUN_CalculateSpellDamage
+	jsr	Do_damage_to_monster; Do damage !
 	move.l	a1,a0			; Process
 	jsr	Process_damage
 .Exit2:	rts
@@ -2973,20 +3596,72 @@ Wait_4_animation:
 ;   - The minimum and maximum damage percentages are retrieved from a table.
 ;*****************************************************************************
 Do_destruction_damage:
-	movem.l	d0/d1/a0/a2,-(sp)
+	movem.l A2/A0/D4/D3/D2/D1/D0,-(SP)
 	jsr	Handle_magical_defense	; Defend ?
 	bne	.Exit
 	lea.l	Destruction_table,a2	; No -> Get destruction data
 	move.w	Selected_spell,d0
 	subi.w	#15,d0
+	; ADVANCED CHANGES - START
+	; spell dmg increase flags
+	movem.l A0/D0,-(SP)
+	move.b Casting_handle,D0
+	move.b D0,D1
+	jsr Claim_pointer
+	movea.l D0,A0 ; Now A0 is the character data
+	move.b D1,D0
+	move.b ($0012,A0),D1 ; battle flags
+	move.w ($0072,A0),D2 ; possible min additional damage
+	move.w ($0074,A0),D3 ; possible max additional damage
+	move.w ($0078,A0),D4 ; percentage damage bonus
+	jsr Free_pointer
+	movem.l (SP)+,D0/A0
+	cmpi.w #4,D0 ; earth spells indices are 0..3
+	bpl.b .LAB_NO_EARTH_SPELL_DMG_BOOST
+	btst.l #4,D1 ; increase earth spell dmg flag
+	beq.b .LAB_SPELL_DMG_BOOST_END
+	add.w #12,D0 ; spell index +12 (earth spell index -> ice spell index)
+	bra.b .LAB_SPELL_DMG_BOOST_END
+.LAB_NO_EARTH_SPELL_DMG_BOOST:
+	cmpi.w #8,D0 ; wind spells indices are 4..7
+	bpl.b .LAB_NO_WIN_SPELL_DMG_BOOST
+	btst.l #5,D1 ; increase wind spell dmg flag
+	beq.b .LAB_SPELL_DMG_BOOST_END
+	addq.w #8,D0 ; spell index +8 (wind spell index -> ice spell index)
+	bra.b .LAB_SPELL_DMG_BOOST_END
+.LAB_NO_WIN_SPELL_DMG_BOOST:
+	cmpi.w #12,D0 ; fire spells indices are 8..11
+	bpl.b .LAB_SPELL_DMG_BOOST_END
+	btst.l #6,D1 ; increase fire spell dmg flag
+	beq.b .LAB_SPELL_DMG_BOOST_END
+	addq.w #4,D0 ; spell index +4 (fire spell index -> ice spell index)
+.LAB_SPELL_DMG_BOOST_END:
 	lsl.w	#2,d0
 	add.w	d0,a2
 	move.w	2(a2),d1			; Calculate difference
-	sub.w	(a2),d1
+	add.w D2,D1 ; add min damage bonus to max value as well
+	add.w D3,D1 ; add max damage bonus
+	move.w (A2),D3 ; min damage
+	add.w D2,D3 ; add min damage bonus
+	sub.w D3,D1 ; min damage (sub to get value range)
 	jsr	Random			; Get random damage
 	mulu.w	d1,d0
 	swap	d0
-	add.w	(a2),d0
+	add.w D3,D0 ; add random (max - min) to min damage
+	tst.w D4
+	beq.b .LAB_CalcSpellDamage
+	cmpi.w #-99,D4
+	bpl.b .LAB_CalcPercDamage
+	moveq #1,D0 ; limit to 1 damage if perc value is -100% or lower
+	bra.b .LAB_CalcSpellDamage
+.LAB_CalcPercDamage:
+	add.w #100,D4
+	mulu.w D4,D0
+	divu.w #100,D0
+	bgt.b .LAB_CalcSpellDamage
+	moveq #1,D0 ; deal at least 1 damage
+.LAB_CalcSpellDamage:
+	jsr FUN_CalculateSpellDamage
 	cmp.b	#1,Part_type(a0)		; Party or monster ?
 	bne.s	.Monster
 	jsr	Do_combat_damage		; Party
@@ -2994,7 +3669,8 @@ Do_destruction_damage:
 .Monster:	jsr	Do_damage_to_monster	; Monster
 .Done:	move.l	a1,a0			; Process damage
 	jsr	Process_damage
-.Exit:	movem.l	(sp)+,d0/d1/a0/a2
+.Exit:
+	movem.l (SP)+,D0/D1/D2/D3/D4/A0/A2
 	rts
 
 ;*****************************************************************************
@@ -3319,16 +3995,27 @@ Party_comma_class_ptrs:
 	dc.l MAttack,MAttack,MAttack,0
 	dc.l MAnti_magic,MAnti_magic,0,CHurry
 	dc.l CHurry,0,0,CLP_stealer
-	dc.l CPP_stealer,0
+	dc.l CPP_stealer
+	dc.l CGhost_weapon ; ADVANCED: Ghost Inferno / Geisterstunde
 .Class_2_ptrs:
 	dc.l CMonster_knowledge,0,0,0
 	dc.l 0,0,0,0
 	dc.l 0,0,0,0
 	dc.l 0,0,0,0
-	dc.l CShow_monster_LP,0,0,0
-	dc.l 0,0,0,0
-	dc.l 0,0,0,0
-	dc.l 0,0
+	dc.l CShow_monster_LP
+	dc.l FUN_SpellShowElements
+	dc.l FUN_SpellWeakenMonster
+	dc.l FUN_SpellWeakenMonster
+	dc.l FUN_SpellWeakenMonster
+	dc.l FUN_SpellForeseeMagic
+	dc.l FUN_SpellForeseeAttack
+	dc.l FUN_SpellMysticDecay
+	dc.l FUN_SpellProtectionSphere
+	dc.l FUN_SpellElementToEarth
+	dc.l FUN_SpellElementToWind
+	dc.l FUN_SpellElementToFire
+	dc.l FUN_SpellElementToWater
+	dc.l FUN_SpellMysticImitation
 .Class_3_ptrs:
 	dc.l CMagical_projectiles,CMagical_projectiles,CCondition,CCondition
 	dc.l CCondition,CCondition,CCondition,CCondition
@@ -3344,7 +4031,11 @@ Party_comma_class_ptrs:
 	dc.l MSpell_points,Heal_all,0,MAttribute
 	dc.l MAttribute,MAttribute,MAttribute,MAttribute
 	dc.l MAttribute,MAttribute,MAttribute,0
-	dc.l Drug,0,0,0
+	dc.l Drug
+	; ADVANCED CHANGES
+	dc.l FUN_SpellSelfHealing ; 22
+	dc.l FUN_SpellSelfRevive ; 23
+	dc.l FUN_SpellExchangeExp ; 24
 	dc.l 0,0,0,0
 	dc.l 0,0
 

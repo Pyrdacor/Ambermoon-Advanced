@@ -199,6 +199,22 @@ Wait_4_user:
 ;   IN : d0 - Number of VBL's	to delay (.w)
 ; All registers are	restored
 ;*****************************************************************************
+; D0w: Duration in vertical blanks
+Wait_4_sequence:
+	move.w D0,WindowData_WaitForSequence_DurationInVbls
+	move.l A0,-(SP)
+	jsr Wait_4_unclick
+	lea WindowData_WaitForSequence,A0
+	jsr Push_Module
+	jsr Wait_4_unclick
+	movea.l (SP)+,A0
+	rts
+FUN_WaitForSequenceVbl:
+	sub.w #1,WindowData_WaitForSequence_DurationInVbls
+	bgt.b .End
+	jsr Pop_Module
+.End:
+	rts
 Delay:    
 	move.l	d0,-(sp)
 	bra.s	.Entry
@@ -241,7 +257,7 @@ Wait_4_rightclick:
 .Wait:	move.b	Button_state,d0
 	btst	#Right_pressed,d0
 	beq.s	.Wait
-	jsr	Wait_4_rightunclick
+	jsr FUN_WaitForRightMouseRelease
 	move.l	(sp)+,d0
 	rts
 
@@ -250,6 +266,7 @@ Wait_4_rightclick:
 ; All registers are restored
 ;***************************************************************************
 Wait_4_rightunclick:
+FUN_WaitForRightMouseRelease:
 	move.l	d0,-(sp)
 .Wait:	move.b	Button_state,d0		; Wait
 	btst	#Right_pressed,d0

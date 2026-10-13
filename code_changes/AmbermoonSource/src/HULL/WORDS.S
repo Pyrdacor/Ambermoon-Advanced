@@ -451,7 +451,7 @@ Push_PA:
 Pop_PA:      
 	move.l	a0,-(sp)
 	movea.l	PA_Sp,a0
-	cmpa.l	#PAStack_start,a0		; Possible ?
+	cmpa.l #PAStack_start,A0
 	beq.s	.Exit
 	subq.l	#4,a0			; Pop
 	move.l	a0,PA_Sp
@@ -920,9 +920,13 @@ HLC_handler:
 	SECTION	Fast_DATA,data
 Scroll_MA:	dc.w 0,319,0,0
 Default_PA:
-	dc.w 0,(Screen_width*16)-1
-	dc.w 0,Screen_height-1
-	dc.w 31,0,27
+	dc.w $0000 ; 0
+	dc.w $013f ; 319
+	dc.w $0000 ; 0
+	dc.w $00c7 ; 199
+	dc.w $001f ; Text color (brightest gray)
+	dc.w $0000 ; Text shadow color (black)
+	dc.w $001b ; Background color (darker gray)
 
 Input_mask_table:
 	dc.b " !""#",-1,"%&'"

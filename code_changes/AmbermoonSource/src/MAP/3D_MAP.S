@@ -2602,6 +2602,13 @@ make_3dzoom0:
 	moveq.l	#0,d3			; Default frame
 	moveq.l	#0,d5			; Get number of frames
 	move.b	Object_nr_frames(a0),d5
+	; ADVANCED ONLY - START
+	btst.l #$0000001A,D6 ; Stop animation bit set? (in 2D this is player invisible)
+	beq.b .Normal_Adv
+	lsr.b #1,D5 ; middle frame index
+	move.b D5,D3 ; set frame and continue
+	bra.b .No_anim
+.Normal_Adv:
 	cmp.w	#1,d5			; Any animation ?
 	beq.s	.No_anim
 	cmp.w	#256,d4			; Is NPC ?

@@ -165,7 +165,7 @@ Push_Mptr:
 Pop_Mptr:
 	move.l	a0,-(sp)
 	move.l	Mptr_Sp,a0
-	cmp.l	#Mptr_Sp+4,a0
+	cmpa.l #Mptr_Sp+4,A0
 	beq.s	.Exit
 	subq.l	#4,a0
 	move.l	a0,Mptr_Sp
@@ -480,7 +480,10 @@ Sprite0_ptr:
 Sprite1_ptr:
 	dc.l	Empty_sprite
 Default_MA:
-	dc.b	0,0,1,$3f,0,0,0,$c7
+	dc.w $0000 ; 0
+	dc.w $013f ; 319
+	dc.w $0000 ; 0
+	dc.w $00c7 ; 199
 
 	SECTION	Fast_BSS,bss
 	ds.b	1
@@ -495,9 +498,11 @@ Mouse_hotspot_X:
 Mouse_hotspot_Y:
 	ds.b	2
 Mptr_Sp:
-	ds.b	52
+	; struct Stack
+	dx.l 13 ; Points to one of the 12 slots
 MA_Sp:
-	ds.b	52
+	; struct Stack
+	dx.l 13 ; Points to one of the 12 slots
 Last_mouse_x:
 	ds.w	1
 Last_mouse_y:

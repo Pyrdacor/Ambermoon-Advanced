@@ -592,6 +592,10 @@ Check_automap_chest:
 	Get	Active_handle,a0		; Probe {Searching}
 	move.w	SSearch(a0),d0
 	add.w	SSearch+Magic(a0),d0
+	tst.w Spell_5_duration ; Clairvoyance buff active?
+	beq.b .AfterSearchBonus
+	add.w DAT_ClairvoyanceBuffValue,D0 ; Add bonus
+.AfterSearchBonus:
 	Free	Active_handle
 	jsr	Probe_100
 	bpl.s	.Not
@@ -600,7 +604,13 @@ Check_automap_chest:
 ; ---------- Is the chest already open ? ----------
 .Not:	moveq.l	#0,d0			; Well ?
 	move.b	Event_b4(a1),d0
+	btst.b #2,($0005,A1) ; extended chest?
+	beq.b .LAB_NormalChest
+	moveq #$00000008,D1 ; extended chest
+	bra.b .LAB_ProcessChest
+.LAB_NormalChest:
 	moveq.l	#Chest_bit_array,d1
+.LAB_ProcessChest:
 	moveq.l	#3,d2
 	jsr	Access_bit_array
 	bne.s	.Open

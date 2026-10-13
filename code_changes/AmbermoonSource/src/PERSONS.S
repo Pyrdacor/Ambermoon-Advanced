@@ -34,10 +34,22 @@ Init_persons_2D:
 	beq.s	.No_path
 	btst	#2,d0			; Path or random ?
 	bne.s	.No_path
+	; ADVANCED CHANGES - START
+	btst.l #$00000007,D0 ; stationary flag
+	bne.b .No_path
+	move.l D1,-(SP)
+	move.l D0,D1
 	move.l	a2,d0			; Store offset
 	sub.l	a3,d0
 	move.l	d0,VPath_ptr(a1)
+	btst.l #$00000006,D1 ; hour movement?
+	beq.b .AllPos
+	lea ($0018,A2),A2 ; adjust pointer for next char (+12 positions = +24 bytes)
+	bra.b .Done
+.AllPos:
 	lea.l	Max_steps*2(a2),a2		; Skip
+.Done:
+	move.l (SP)+,D1
 	bra.s	.Next1
 .No_path:	moveq.l	#0,d0			; Copy start position
 	move.b	(a2)+,d0
@@ -89,10 +101,27 @@ Init_persons_3D:
 	beq.s	.No_path
 	btst	#2,d0			; Path or random ?
 	bne.s	.No_path
+	; ADVANCED CHANGES - START
+	btst.l #$00000007,D0 ; Stationary bit set?
+	bne.b .No_path
+	; ADVANCED CHANGES - END
+	move.l D1,-(SP)
+	move.l D0,D1
 	move.l	a2,d0			; Store offset
 	sub.l	a3,d0
 	move.l	d0,VPath_ptr(a1)
+	btst.l #$00000006,D1 ; Hour movement?
+	beq.b .AllPos
+	lea ($0018,A2),A2 ; A2 now points past the 12
+			; positions (24 bytes). So to
+			; the positions of the next char.
+	bra.b .Done_Adv
+.AllPos:
 	lea.l	Max_steps*2(a2),a2		; Skip
+			; positions (576 bytes). So to
+			; the positions of the next char.
+.Done_Adv:
+	move.l (SP)+,D1
 	move.w	#1,VMap_X(a1)		; Clear position
 	move.w	#1,VMap_Y(a1)
 	bra.s	.Next2
@@ -178,7 +207,11 @@ NPC_manager_2D:
 	beq.s	.Path
 	jsr	Random_person_2D		; Handle random person
 	bra.s	.Next1
-.Path:	jsr	Path_person_2D		; Handle person on a path
+.Path:
+	; ADVANCED CHANGES - START
+	btst.l #$00000007,D0 ; Stationary
+	bne.b .Next1
+	jsr	Path_person_2D; Handle person on a path
 .Next1:	lea.l	VNPC_data_size(a1),a1	; Next NPC
 	addq.w	#1,d7
 	cmpi.w	#Max_chars,d7
@@ -248,20 +281,43 @@ NPC_manager_3D:
 	bne.s	.Person
 	btst	#2,d0			; Yes -> Hunt or stay ?
 	bne.s	.Hunt
+.LAB_NoMonster3DMove:
 	jsr	Battle_check		; Handle staying monster
 	bra.s	.Next1
-.Hunt:	jsr	Hunting_monster_3D		; Handle hunting monster
+.Hunt:
+	btst.l #$00000007,D0 ; only move when see player?
+	beq.b .LAB_Move3DMonsterRandomly
+	jsr Check_line_of_sight
+	seq.b Big_brother_flag
+	bne.b .LAB_NoMonster3DMove
+.LAB_Move3DMonsterRandomly:
+	jsr	Hunting_monster_3D; Handle hunting monster
 	jsr	Battle_check
 	bra.s	.Next1
 .Person:	btst	#2,d0			; Path or random ?
 	beq.s	.Path
 	jsr	Random_person_3D		; Handle random person
-	bra.s	.Next1
-.Path:	jsr	Path_person_3D		; Handle person on a path
+	bra.b .LAB_CheckNPCInteraction
+.Path:
+	btst.l #$00000007,D0 ; stationary?
+	bne.b .LAB_CheckNPCInteraction
+	jsr	Path_person_3D; Handle person on a path
+.LAB_CheckNPCInteraction:
+	moveq #$31,D1
+	and.b D0,D1
+	cmp.b #$21,D1 ; NPC conversation on contact?
+	bne.b .Next1 ; no? skip
+	move.w ($000a,A1),D0 ; NPC X
+	move.w ($000c,A1),D1 ; NPC Y
+	cmp.w Map_Xcoord,D0
+	bne.b .Next1
+	cmp.w Map_Ycoord,D1
+	bne.b .Next1
+	jsr Talk ; this should trigger the conversation
 .Next1:	lea.l	VNPC_data_size(a1),a1	; Next NPC
 	addq.w	#1,d7
 	cmpi.w	#Max_chars,d7
-	bmi.s	.Loop1
+	bmi.w	.Loop1
 ; ---------- Move NPC's ---------------------------
 	lea.l	VNPC_data,a1
 	move.l	CD_value,d6
@@ -598,9 +654,18 @@ Get_CD_value:
 ;*****************************************************************************
 Path_person_2D:
 	movem.l	d0/d1/a0,-(sp)
-	Get	Mapdata_handle,a0		; Get pointer to path
+	move.l D0,D1
+	move.b Mapdata_handle,D0
+	jsr Claim_pointer
+	movea.l D0,A0
 	adda.l	VPath_ptr(a1),a0
+	moveq #0,D0
 	move.w	Current_step,d0		; Get position
+	btst.l #$00000006,D1 ; Hour movement?
+	beq.b .GetPos
+	divu #12,D0
+	swap D0 ; time slot modulo 12
+.GetPos:
 	add.w	d0,d0
 	add.w	d0,a0
 	moveq.l	#0,d0
@@ -620,9 +685,18 @@ Path_person_2D:
 ;*****************************************************************************
 Path_person_3D:
 	movem.l	d0-d2/a0,-(sp)
-	Get	Mapdata_handle,a0		; Get pointer to path
+	move.l D0,D1
+	move.b Mapdata_handle,D0
+	jsr Claim_pointer
+	movea.l D0,A0
 	adda.l	VPath_ptr(a1),a0
+	moveq #0,D0
 	move.w	Current_step,d0		; Get position
+	btst.l #$00000006,D1 ; hour movement?
+	beq.b .GetPos
+	divu.w #12,D0
+	swap D0 ; time slot modulo 12
+.GetPos:
 	add.w	d0,d0
 	add.w	d0,a0
 	moveq.l	#0,d0
@@ -756,6 +830,24 @@ Choose_random_path_2D:
 ;   IN : a1 - Pointer to NPC data (.l)
 ; All registers are restored
 ;*****************************************************************************
+; In D0: Offset relative to the map char position data in bytes
+; Out A0: Pointer to the data
+; Don't forget to release the map data when you are done
+FUN_GetMovementDataAtOffset:
+	move.l D0,-(SP)
+	move.b Mapdata_handle,D0
+	jsr Claim_pointer
+	movea.l D0,A0
+	move.l (SP)+,D0
+	adda.l NPC_path_base_offset,A0
+	adda.l D0,A0	
+	rts
+FUN_FreeMapData:
+	move.l D0,-(SP)
+	move.b Mapdata_handle,D0
+	jsr Free_pointer
+	move.l (SP)+,D0
+	rts
 Random_person_3D:
 	movem.l	d0-d3/d7,-(sp)
 	btst	#Movement_ended,VFlags(a1)	; Movement ended ?
@@ -890,6 +982,8 @@ Hunting_monster_2D:
 	beq	.Exit
 	btst	#0,VFlags(a1)		; Moving at random ?
 	bne.s	.Not_random
+	btst.b #$00000007,($0002,A1) ; Only move when see player?
+	bne.w .Exit
 	jsr	Random_person_2D
 	bra	.Exit
 .Not_random:

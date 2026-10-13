@@ -24,6 +24,7 @@ Dialogue_ModInit:
 					; items and popped the new dialogue module and
 					; a wrong scroll bar -> graphics mess / crash.
 					; (Github issue #74)
+	sf Bool_ClosingConversationWindow
 	jsr	Clear_new_words_array
 	jsr	Clear_sold_slots
 	tst.b	NPC_or_member		; Dialogue with party member ?
@@ -96,7 +97,11 @@ Dialogue_DisUpd:
 	jsr	Update_gold		; Display gold & food
 	jsr	Update_food
 ; ---------- Check if items should be shown -------
-.Ok1:	move.b	Sold_slots_handle,d0	; Slots empty ?
+.Ok1:
+	; ADVANCED BUGFIX - START
+	tst.b Bool_ClosingConversationWindow
+	bne.b .Done
+	move.b	Sold_slots_handle,d0; Slots empty ?
 	jsr	Check_slots_empty
 	beq.s	.Empty
 	tst.b	Dialogue_items		; No -> Scroll bar shown ?
@@ -161,9 +166,11 @@ DIA_Exit:
 	jsr	Prompt_req
 	tst.b	d0
 	beq.s	.Exit2
+	st Bool_ClosingConversationWindow ; this will avoid re-creating the item grid by the update function
+	sf Dialogue_items
 	Pop	Module			; Yes
-	jsr	Destroy_ghosts
-	Pop	Scroll_bar
+	jsr Hide_dialogue_items
+	jsr Update_screen
 .Skip:	tst.b	Left			; Insulted ?
 	bne.s	.Exit
 	moveq.l	#Exit_DIAC,d0		; The end
@@ -556,7 +563,34 @@ Add_party_member:
 ; All registers are	restored
 ;*****************************************************************************
 Show_arrival:
-	movem.l	d0-d7/a0/a1/a5,-(sp)
+	movem.l A3/A2,-(SP)
+	lea Empty_portrait,A2 ; use empty char slot
+	lea DAT_EmptyCharSlotGraphicInfo,A3
+	jsr FUN_PlayPartyMemberPortraitAnimation
+	movem.l (SP)+,A2/A3
+	rts
+FUN_PlayPartyMemberPortraitChangeAnimation:
+	; D0 should hold the portrait file handle for the portrait to remove!
+	; D7 should hold the 1-based character slot index (1-6)
+	; You should also switch the portrait handles beforehand in DAT_PortraitGraphicPointerIndices
+	move.l D0,-(SP)
+	jsr Claim_pointer
+	movea.l D0,A2
+	lea DAT_PortraitGraphicInfo,A3
+	jsr FUN_PlayPartyMemberPortraitAnimation
+	jsr Force_status_update
+	jsr Update_status_block
+	jsr Update_screen
+	move.l (SP)+,D0
+	jmp Free_pointer
+DAT_EmptyCharSlotGraphicInfo:
+	dc.b $03 ; 3 bpp
+	dc.b $18 ; 24 palette offset
+DAT_PortraitGraphicInfo:
+	dc.b $05 ; 5 pp
+	dc.b $00 ; 0 palette offset
+FUN_PlayPartyMemberPortraitAnimation:
+	movem.l A5/A3/A2/A1/A0/D7/D6/D5/D4/D3/D2/D1/D0,-(SP)
 	subq.w	#Death_LDS,sp		; Create local variables
 	move.l	sp,a5
 ; ---------- Prepare ------------------------------
@@ -605,9 +639,11 @@ Show_arrival:
 	jsr	Print_centered_string
 	subq.w	#2,d0			; Display empty portrait
 	move.w	SkullY(a5),d1
-	moveq.l	#24,d4
-	moveq.l	#3,d5
-	lea.l	Empty_portrait,a0
+	moveq #$00000000,D5
+	move.b (A3),D5 ; bpp
+	moveq #$00000000,D4
+	move.b ($01,A3),D4 ; palette offset
+	movea.l A2,A0 ; portrait data to remove
 	jsr	Put_unmasked_block
 	jsr	Switch_screens		; Show
 	addq.w	#1,SkullY(a5)		; Move down
@@ -620,7 +656,7 @@ Show_arrival:
 	Pop	PA
 	Pop	CA
 	addq.w	#Death_LDS,sp		; Destroy local variables
-	movem.l	(sp)+,d0-d7/a0/a1/a5
+	movem.l (SP)+,D0/D1/D2/D3/D4/D5/D6/D7/A0/A1/A2/A3/A5
 	rts
 
 ;*****************************************************************************

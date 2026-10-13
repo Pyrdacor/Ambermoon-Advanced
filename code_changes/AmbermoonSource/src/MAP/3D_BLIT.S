@@ -2,6 +2,10 @@
 ; Reconstructed from the disassembly of AM2_CPU (Ambermoon 1.21).
 ; This part is missing in the original source code.
 
+	SECTION	Chip_BSS2,bss_c
+DAT_Random_party_members:
+	ds.b	6
+
 	SECTION	Blitter,code
 
 ;*****************************************************************************

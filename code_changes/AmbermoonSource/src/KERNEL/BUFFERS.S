@@ -9,7 +9,8 @@ Control_icons:
 
 	SECTION	Buffer2_BSS,bss
 Item_data:
-	ds.b	30000
+	; db[36000] - place for 600 items (600 * 60 bytes).
+	dx.b 36000
 
 	SECTION	Chip_BSS2,bss_c
 Text_data:

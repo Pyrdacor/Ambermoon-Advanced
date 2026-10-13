@@ -23,6 +23,8 @@ Init_map:
 	cmp.b	#2,d1			; 2D or 3D map ?
 	beq.s	.2D
 	sf	Show_trans		; 3D
+	sf Bool_NotUseWorldMapMusic
+	sf Bool_NoEagleOrBroom
 	btst	#City_bit,d0		; 3D city or dungeon ?
 	bne.s	.3DCity
 	moveq.l	#Dungeon_3D,d0
@@ -31,6 +33,11 @@ Init_map:
 	bra.s	.Cont
 .2D:	btst	#Show_trans_bit,d0		; 2D -> Show transports ?
 	sne	Show_trans
+; ADVANCED CHANGES - START
+	btst.l #$0000000c,D0
+	sne Bool_NotUseWorldMapMusic
+	btst.l #$0000000e,D0
+	sne Bool_NoEagleOrBroom
 	btst	#World_map_bit,d0		; 2D city or world map ?
 	bne.s	.2DWild
 	moveq.l	#City_2D,d0
@@ -160,6 +167,14 @@ Calculate_map_data_offsets:
 	beq.s	.No_path
 	btst	#2,d2			; Path ?
 	bne.s	.No_path
+	; ADVANCED CHANGES - START
+	btst.l #$00000007,D2 ; Check stationary flag
+	bne.b .No_path ; Branch if set
+	btst.l #$00000006,D2 ; hour movement? only 12 positions
+	beq.b .SkipAllPos
+	add.l #24,D0 ; skip 12 * 2 bytes
+	bra.b .Next
+.SkipAllPos:
 	add.l	d1,d0			; Path !
 	bra.s	.Next
 .No_path:	addq.l	#2,d0			; No path !
@@ -1156,7 +1171,10 @@ Set_map_music:
 	lea.l	Travel_music,a0		; Set music according to
 	move.w	Travel_mode,d0		;  travel-mode
 	move.b	0(a0,d0.w),d0
-	bne.s	.Do
+; ADVANCED CHANGES - START
+	beq.b .No_trans
+	tst.b Bool_NotUseWorldMapMusic
+	beq.b .Do
 .No_trans:	move.w	Current_map_music,d0	; Use current map music
 	bne.s	.Do			; If any
 	Get	Mapdata_handle,a0		; Get music from map

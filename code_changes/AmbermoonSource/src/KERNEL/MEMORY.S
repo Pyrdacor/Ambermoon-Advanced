@@ -2146,7 +2146,31 @@ Free_descriptor_ptr:
 File_memory_pointers:
 	ds.b	800
 Stored_object_pointers_up_to24:
-	ds.b	96
+	dx.l 1
+DAT_00284cdc:
+	dx.l 1
+	dx.l 1
+	dx.l 1
+	dx.l 1
+	dx.l 1
+	dx.l 1
+	dx.l 1
+	dx.l 1
+	dx.l 1
+	dx.l 1
+	dx.l 1
+	dx.l 1
+	dx.l 1
+	dx.l 1
+	dx.l 1
+	dx.l 1
+	dx.l 1
+	dx.l 1
+	dx.l 1
+	dx.l 1
+	dx.l 1
+	dx.l 1
+	dx.l 1
 	ds.l	1
 File_info_pointers:
 	ds.b	180

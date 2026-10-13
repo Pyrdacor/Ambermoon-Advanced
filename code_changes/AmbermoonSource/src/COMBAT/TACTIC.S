@@ -627,25 +627,34 @@ Tactic_touched:
 	move.w	d1,Current_ghost_index	; Store
 	move.l	(a0),a0			; Make new one
 	jsr	Create_tactic_name
+	jsr Create_tactic_element
 	jsr	Create_tactic_strength
-.Clip:	tst.b	Second_ghost		; One or two ?
-	bne.s	.Two
-	lea.l	Ghost1_HDOB,a0		; One -> Clip name
+.Clip:
+	move.l #$0086,D1 ; tactic screen Y
+	tst.b Third_ghost
+	beq.b .ClipSecond
+	lea Ghost3_HDOB,A0
 	move.w	HDOB_drawY(a0),d0
-	cmp.w	#Tactic_Y,d0
-	bpl.s	.Exit
-	move.w	#Tactic_Y,HDOB_drawY(a0)
-	bra.s	.Exit
+	cmp.w D1,D0
+	bpl.b .EndThird
+	move.w D1,($0002,A0)
+.EndThird:
+	addq #7,D1
+.ClipSecond:
+	tst.b Second_ghost
+	beq.b .Two
+	lea Ghost2_HDOB,A0
+	move.w ($0002,A0),D0 ; Display Y
+	cmp.w D1,D0
+	bpl.b .EndSecond
+	move.w D1,($0002,A0)
+.EndSecond:
+	addq #7,D1
 .Two:	lea.l	Ghost1_HDOB,a0		; Two -> Clip name
 	move.w	HDOB_drawY(a0),d0
-	cmp.w	#Tactic_Y+Char_height+2,d0
-	bpl.s	.Ok
-	move.w	#Tactic_Y+Char_height+2,HDOB_drawY(a0)
-.Ok:	lea.l	Ghost2_HDOB,a0		; Clip strength
-	move.w	HDOB_drawY(a0),d0
-	cmp.w	#Tactic_Y,d0
+	cmp.w D1,D0
 	bpl.s	.Exit
-	move.w	#Tactic_Y,HDOB_drawY(a0)
+	move.w D1,($0002,A0)
 .Exit:	rts
 
 ;***************************************************************************
@@ -735,6 +744,11 @@ Create_tactic_strength:
 	move.w	d3,d0			; Convert	maximum LP
 	jsr	DecL_convert
 	lea.l	Number,a0			; Create ghost string
+	tst.b Second_ghost
+	bne .Third
 	jsr	Create_2nd_ghost
+	bra .Exit
+.Third:
+	jsr Create_3rd_ghost
 .Exit:	movem.l	(sp)+,d0-d3/d6/d7/a0/a5
 	rts

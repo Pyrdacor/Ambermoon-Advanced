@@ -415,602 +415,679 @@ Spell_data:
 	dc.b	3		; SpellInfo.SP
 	dc.b	1		; SpellInfo.SLP
 	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	4		; = Unk3 ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	5		; SpellInfo.SP
 	dc.b	2		; SpellInfo.SLP
+	; Remove Fear
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $05 ; SpellInfo.SP
+	dc.b $05 ; SpellInfo.SLP
 	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	1		; = Unk1 ; SpellInfo.Element
+	dc.b $00 ; = Mental ; SpellInfo.Element
 	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$f		; SpellInfo.SP
-	dc.b	5		; SpellInfo.SLP
+	dc.b $0f ; SpellInfo.SLP
 	dc.b	4		; = AllAllies ; SpellInfo.Target
-	dc.b	1		; = Unk1 ; SpellInfo.Element
+	dc.b $00 ; = Mental ; SpellInfo.Element
 	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	8		; SpellInfo.SP
+	dc.b $0a ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
+	dc.b $02 ; = Physical ; SpellInfo.Element
+	; Remove Blindness
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $14 ; SpellInfo.SP
+	dc.b $0f ; SpellInfo.SLP
+	dc.b $04 ; = AllAllies ; SpellInfo.Target
+	dc.b $02 ; = Physical ; SpellInfo.Element
+	; Remove Pain
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $0f ; SpellInfo.SP
+	dc.b $14 ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
+	dc.b $02 ; = Physical ; SpellInfo.Element
+	; Remove Disease
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $14 ; SpellInfo.SP
+	dc.b $19 ; SpellInfo.SLP
+	dc.b $04 ; = AllAllies ; SpellInfo.Target
+	dc.b $02 ; = Physical ; SpellInfo.Element
+	; Small Healing
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $0f ; SpellInfo.SP
+	dc.b $0a ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
+	dc.b $02 ; = Physical ; SpellInfo.Element
+	; Remove Poison
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $0f ; SpellInfo.SP
+	dc.b $0a ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
 	dc.b	3		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	4		; = Unk3 ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$14		; SpellInfo.SP
-	dc.b	8		; SpellInfo.SLP
-	dc.b	4		; = AllAllies ; SpellInfo.Target
-	dc.b	4		; = Unk3 ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$f		; SpellInfo.SP
-	dc.b	5		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	4		; = Unk3 ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$14		; SpellInfo.SP
-	dc.b	$a		; SpellInfo.SLP
-	dc.b	4		; = AllAllies ; SpellInfo.Target
-	dc.b	4		; = Unk3 ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$f		; SpellInfo.SP
-	dc.b	5		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	4		; = Unk3 ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$f		; SpellInfo.SP
-	dc.b	$a		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	8		; = Unk4 ; SpellInfo.Element
 	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$19		; SpellInfo.SP
-	dc.b	$c		; SpellInfo.SLP
+	dc.b $0f ; SpellInfo.SLP
 	dc.b	4		; = AllAllies ; SpellInfo.Target
-	dc.b	8		; = Unk4 ; SpellInfo.Element
+	dc.b $03 ; = Undead ; SpellInfo.Element
 	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$32		; SpellInfo.SP
-	dc.b	$f		; SpellInfo.SLP
+	dc.b $19 ; SpellInfo.SLP
 	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	4		; = Unk3 ; SpellInfo.Element
+	dc.b $02 ; = Physical ; SpellInfo.Element
 	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$f		; SpellInfo.SP
 	dc.b	$a		; SpellInfo.SLP
 	dc.b	8		; = SingleEnemy ; SpellInfo.Target
-	dc.b	8		; = Unk4 ; SpellInfo.Element
+	dc.b $01 ; = Spirit ; SpellInfo.Element
 	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$32		; SpellInfo.SP
-	dc.b	$f		; SpellInfo.SLP
+	dc.b $14 ; SpellInfo.SLP
 	dc.b	$10		; = EnemyRow ; SpellInfo.Target
-	dc.b	8		; = Unk4 ; SpellInfo.Element
+	dc.b $01 ; = Spirit ; SpellInfo.Element
 	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$64		; SpellInfo.SP
-	dc.b	$14		; SpellInfo.SLP
+	dc.b $1e ; SpellInfo.SLP
 	dc.b	$20		; = AllEnemies ; SpellInfo.Target
-	dc.b	8		; = Unk4 ; SpellInfo.Element
+	dc.b $01 ; = Spirit ; SpellInfo.Element
 	dc.b	$e8		; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$64		; SpellInfo.SP
-	dc.b	$f		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	8		; = Unk4 ; SpellInfo.Element
-	dc.b	$e8		; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$96		; SpellInfo.SP
-	dc.b	$14		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	8		; = Unk4 ; SpellInfo.Element
-	dc.b	$e8		; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$fa		; SpellInfo.SP
 	dc.b	$19		; SpellInfo.SLP
 	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	8		; = Unk4 ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$64		; SpellInfo.SP
-	dc.b	$1e		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	4		; = Unk3 ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$96		; SpellInfo.SP
-	dc.b	$14		; SpellInfo.SLP
-	dc.b	4		; = AllAllies ; SpellInfo.Target
-	dc.b	4		; = Unk3 ; SpellInfo.Element
-	dc.b	$e8		; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$fa		; SpellInfo.SP
-	dc.b	$1e		; SpellInfo.SLP
-	dc.b	4		; = AllAllies ; SpellInfo.Target
-	dc.b	8		; = Unk4 ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$f		; SpellInfo.SP
-	dc.b	5		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	4		; = Unk3 ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$1e		; SpellInfo.SP
-	dc.b	$a		; SpellInfo.SLP
-	dc.b	4		; = AllAllies ; SpellInfo.Target
-	dc.b	4		; = Unk3 ; SpellInfo.Element
-	dc.b	$e8		; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$32		; SpellInfo.SP
-	dc.b	$c		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	4		; = Unk3 ; SpellInfo.Element
-	dc.b	$e8		; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$64		; SpellInfo.SP
-	dc.b	$f		; SpellInfo.SLP
-	dc.b	4		; = AllAllies ; SpellInfo.Target
-	dc.b	4		; = Unk3 ; SpellInfo.Element
-	dc.b	$e8		; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$fa		; SpellInfo.SP
-	dc.b	$14		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	8		; = Unk4 ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$a		; SpellInfo.SP
-	dc.b	5		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	4		; = Unk3 ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$a		; SpellInfo.SP
-	dc.b	5		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	1		; = Unk1 ; SpellInfo.Element
-	dc.b	$e8		; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$19		; SpellInfo.SP
-	dc.b	$a		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	4		; = Unk3 ; SpellInfo.Element
-	dc.b	$e8		; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$64		; SpellInfo.SP
-	dc.b	$f		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	4		; = Unk3 ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$32		; SpellInfo.SP
-	dc.b	$f		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	4		; = Unk3 ; SpellInfo.Element
-	dc.b	$e8		; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$fa		; SpellInfo.SP
-	dc.b	$14		; SpellInfo.SLP
-	dc.b	$40		; = Item ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$ef		; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	5		; SpellInfo.SP
-	dc.b	2		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$ef		; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$a		; SpellInfo.SP
-	dc.b	5		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$ef		; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$19		; SpellInfo.SP
-	dc.b	$a		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$ef		; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$32		; SpellInfo.SP
-	dc.b	$f		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$a		; SpellInfo.SP
-	dc.b	5		; SpellInfo.SLP
-	dc.b	8		; = SingleEnemy ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$ef		; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$19		; SpellInfo.SP
-	dc.b	$a		; SpellInfo.SLP
-	dc.b	4		; = AllAllies ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$e8		; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$64		; SpellInfo.SP
-	dc.b	$14		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$14		; SpellInfo.SP
-	dc.b	5		; SpellInfo.SLP
-	dc.b	$80		; = Blink ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$e4		; = Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$32		; SpellInfo.SP
-	dc.b	$a		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$e4		; = Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$64		; SpellInfo.SP
-	dc.b	$f		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$27		; = WorldMap | Map2D | Map3D | Lyramion ; SpellInfo.UseConditions
-	dc.b	$96		; SpellInfo.SP
-	dc.b	$14		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$27		; = WorldMap | Map2D | Map3D | Lyramion ; SpellInfo.UseConditions
-	dc.b	$fa		; SpellInfo.SP
-	dc.b	$14		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$f		; SpellInfo.SP
-	dc.b	$a		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$1e		; SpellInfo.SP
-	dc.b	$f		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$32		; SpellInfo.SP
-	dc.b	$14		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$f		; SpellInfo.SP
-	dc.b	$a		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$1e		; SpellInfo.SP
-	dc.b	$f		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$32		; SpellInfo.SP
-	dc.b	$14		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$e4		; = Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$19		; SpellInfo.SP
-	dc.b	$a		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$19		; SpellInfo.SP
-	dc.b	5		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$32		; SpellInfo.SP
-	dc.b	$f		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$e8		; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$fa		; SpellInfo.SP
-	dc.b	$19		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$19		; SpellInfo.SP
-	dc.b	5		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$32		; SpellInfo.SP
-	dc.b	$a		; SpellInfo.SLP
-	dc.b	4		; = AllAllies ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$e8		; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$64		; SpellInfo.SP
-	dc.b	$f		; SpellInfo.SLP
-	dc.b	$40		; = Item ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$e8		; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$fa		; SpellInfo.SP
-	dc.b	$19		; SpellInfo.SLP
-	dc.b	$40		; = Item ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$19		; SpellInfo.SP
-	dc.b	5		; SpellInfo.SLP
-	dc.b	8		; = SingleEnemy ; SpellInfo.Target
-	dc.b	4		; = Unk3 ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$19		; SpellInfo.SP
-	dc.b	5		; SpellInfo.SLP
-	dc.b	8		; = SingleEnemy ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	5		; SpellInfo.SP
 	dc.b	3		; SpellInfo.SLP
-	dc.b	8		; = SingleEnemy ; SpellInfo.Target
+	; Change Ashes
+	dc.b $e8 ; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $96 ; SpellInfo.SP
+	dc.b $14 ; SpellInfo.SLP
 	dc.b	1		; = Unk1 ; SpellInfo.Element
+	dc.b $03 ; = Undead ; SpellInfo.Element
+	; Change Dust
+	dc.b $e8 ; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $fa ; SpellInfo.SP
+	dc.b $14 ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
+	dc.b $03 ; = Undead ; SpellInfo.Element
+	; Great Healing
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $64 ; SpellInfo.SP
+	dc.b $28 ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
+	dc.b $02 ; = Physical ; SpellInfo.Element
+	; Mass Healing
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $96 ; SpellInfo.SP
+	dc.b $23 ; SpellInfo.SLP
+	dc.b $04 ; = AllAllies ; SpellInfo.Target
+	dc.b $02 ; = Physical ; SpellInfo.Element
+	; Resurrection
+	dc.b $e8 ; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $fa ; SpellInfo.SP
+	dc.b $32 ; SpellInfo.SLP
+	dc.b $04 ; = AllAllies ; SpellInfo.Target
+	dc.b $03 ; = Undead ; SpellInfo.Element
+	; Remove Rigidness
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $0f ; SpellInfo.SP
+	dc.b $05 ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
+	dc.b $02 ; = Physical ; SpellInfo.Element
+	; Remove Lamedness
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $1e ; SpellInfo.SP
+	dc.b $0a ; SpellInfo.SLP
+	dc.b $04 ; = AllAllies ; SpellInfo.Target
+	dc.b $02 ; = Physical ; SpellInfo.Element
 	dc.b	$e8		; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$32		; SpellInfo.SP
 	dc.b	$f		; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
+	dc.b $02 ; = Physical ; SpellInfo.Element
+	; Stop Aging
+	dc.b $e8 ; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $64 ; SpellInfo.SP
+	dc.b $14 ; SpellInfo.SLP
+	dc.b $04 ; = AllAllies ; SpellInfo.Target
+	dc.b $02 ; = Physical ; SpellInfo.Element
+	; Stone To Flesh
+	dc.b $e8 ; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $fa ; SpellInfo.SP
+	dc.b $28 ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
+	dc.b $03 ; = Undead ; SpellInfo.Element
+	; Wake Up
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $0a ; SpellInfo.SP
+	dc.b $05 ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
+	dc.b $02 ; = Physical ; SpellInfo.Element
+	; Remove Irritation
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $0a ; SpellInfo.SP
+	dc.b $0a ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
+	dc.b $00 ; = Mental ; SpellInfo.Element
+	; Remove Drugs
+	dc.b $e8 ; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $19 ; SpellInfo.SP
+	dc.b $0f ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
+	dc.b $02 ; = Physical ; SpellInfo.Element
+	; Remove Madness
+	dc.b $e8 ; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $64 ; SpellInfo.SP
+	dc.b $14 ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
+	dc.b $02 ; = Physical ; SpellInfo.Element
+	; Restore Stamina
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $32 ; SpellInfo.SP
+	dc.b $05 ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
+	dc.b $02 ; = Physical ; SpellInfo.Element
+	; Charge Item
+	dc.b $e8 ; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $fa ; SpellInfo.SP
+	dc.b $23 ; SpellInfo.SLP
 	dc.b	$40		; = Item ; SpellInfo.Target
 	dc.b	1		; = Unk1 ; SpellInfo.Element
 	dc.b	$ef		; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$f		; SpellInfo.SP
+	dc.b $05 ; SpellInfo.SP
+	dc.b $05 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Magical Torch
+	dc.b $ef ; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $0a ; SpellInfo.SP
 	dc.b	$a		; SpellInfo.SLP
 	dc.b	0		; = None ; SpellInfo.Target
 	dc.b	1		; = Unk1 ; SpellInfo.Element
 	dc.b	$ef		; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$1e		; SpellInfo.SP
+	dc.b $19 ; SpellInfo.SP
+	dc.b $0f ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Magical Sun
+	dc.b $ef ; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $32 ; SpellInfo.SP
 	dc.b	$14		; SpellInfo.SLP
 	dc.b	0		; = None ; SpellInfo.Target
 	dc.b	1		; = Unk1 ; SpellInfo.Element
+	; Ghost Weapon
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $0a ; SpellInfo.SP
+	dc.b $0a ; SpellInfo.SLP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Create Food
+	dc.b $ef ; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $19 ; SpellInfo.SP
+	dc.b $0f ; SpellInfo.SLP
+	dc.b $04 ; = AllAllies ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Remove Curses
+	dc.b $e8 ; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $64 ; SpellInfo.SP
+	dc.b $0f ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Blink
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $14 ; SpellInfo.SP
+	dc.b $0a ; SpellInfo.SLP
+	dc.b $80 ; = Blink ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Jump
+	dc.b $e4 ; = Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $32 ; SpellInfo.SP
+	dc.b $14 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Escape
+	dc.b $e4 ; = Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $64 ; SpellInfo.SP
+	dc.b $0f ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Word Of Marking
+	dc.b $27 ; = WorldMap | Map2D | Map3D | Lyramion ; SpellInfo.UseConditions
+	dc.b $96 ; SpellInfo.SP
+	dc.b $23 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Word Of Returning
+	dc.b $27 ; = WorldMap | Map2D | Map3D | Lyramion ; SpellInfo.UseConditions
+	dc.b $fa ; SpellInfo.SP
+	dc.b $23 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Magical Shield
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $0f ; SpellInfo.SP
+	dc.b $0a ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Magical Wall
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $1e ; SpellInfo.SP
+	dc.b $0f ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Magical Barrier
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $32 ; SpellInfo.SP
+	dc.b $14 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Magical Weapon
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $0f ; SpellInfo.SP
+	dc.b $0a ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Magical Assault
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $1e ; SpellInfo.SP
+	dc.b $0f ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Magical Attack
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $32 ; SpellInfo.SP
+	dc.b $14 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Levitation
+	dc.b $e4 ; = Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $19 ; SpellInfo.SP
+	dc.b $1e ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Anti-Magic Wall
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $19 ; SpellInfo.SP
+	dc.b $0f ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Anti-Magic Sphere
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $32 ; SpellInfo.SP
+	dc.b $14 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Alchemistic Globe
+	dc.b $e8 ; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $c8 ; SpellInfo.SP
+	dc.b $50 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Hurry
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $19 ; SpellInfo.SP
+	dc.b $19 ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Mass Hurry
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $32 ; SpellInfo.SP
+	dc.b $23 ; SpellInfo.SLP
+	dc.b $04 ; = AllAllies ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Repair Item
+	dc.b $e8 ; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $64 ; SpellInfo.SP
+	dc.b $23 ; SpellInfo.SLP
+	dc.b $40 ; = Item ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Duplicate Item
+	dc.b $e8 ; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $fa ; SpellInfo.SP
+	dc.b $23 ; SpellInfo.SLP
+	dc.b $40 ; = Item ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; LP Stealer
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $19 ; SpellInfo.SP
+	dc.b $08 ; SpellInfo.SLP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
+	dc.b $03 ; = Undead ; SpellInfo.Element
+	; SP Stealer
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $19 ; SpellInfo.SP
+	dc.b $08 ; SpellInfo.SLP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Ghost Inferno (ADVANCED)
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $23 ; SpellInfo.SP
+	dc.b $37 ; SpellInfo.SLP
+	dc.b $20 ; = AllEnemies ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Monster Knowledge
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $05 ; SpellInfo.SP
+	dc.b $05 ; SpellInfo.SLP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
+	dc.b $00 ; = Mental ; SpellInfo.Element
+	; Identification
+	dc.b $e8 ; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $32 ; SpellInfo.SP
+	dc.b $0f ; SpellInfo.SLP
+	dc.b $40 ; = Item ; SpellInfo.Target
+	dc.b $00 ; = Mental ; SpellInfo.Element
+	; Knowledge
+	dc.b $ef ; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $0f ; SpellInfo.SP
+	dc.b $05 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = Mental ; SpellInfo.Element
+	; Clairvoyance
+	dc.b $ef ; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $1e ; SpellInfo.SP
+	dc.b $0f ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = Mental ; SpellInfo.Element
 	dc.b	$ef		; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$3c		; SpellInfo.SP
-	dc.b	$1e		; SpellInfo.SLP
+	dc.b $19 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	1		; = Unk1 ; SpellInfo.Element
 	dc.b	$ef		; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$32		; SpellInfo.SP
-	dc.b	$f		; SpellInfo.SLP
+	dc.b $0a ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	1		; = Unk1 ; SpellInfo.Element
 	dc.b	$e7		; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	5		; SpellInfo.SP
 	dc.b	2		; SpellInfo.SLP
 	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	1		; = Unk1 ; SpellInfo.Element
+	dc.b $00 ; = Mental ; SpellInfo.Element
 	dc.b	$e7		; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$19		; SpellInfo.SP
 	dc.b	$a		; SpellInfo.SLP
 	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	1		; = Unk1 ; SpellInfo.Element
+	dc.b $00 ; = Mental ; SpellInfo.Element
 	dc.b	$e7		; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$19		; SpellInfo.SP
 	dc.b	$a		; SpellInfo.SLP
 	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	1		; = Unk1 ; SpellInfo.Element
+	dc.b $00 ; = Mental ; SpellInfo.Element
 	dc.b	$e7		; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$19		; SpellInfo.SP
 	dc.b	$a		; SpellInfo.SLP
 	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	1		; = Unk1 ; SpellInfo.Element
+	dc.b $00 ; = Mental ; SpellInfo.Element
 	dc.b	$e7		; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$19		; SpellInfo.SP
 	dc.b	$a		; SpellInfo.SLP
 	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	1		; = Unk1 ; SpellInfo.Element
+	dc.b $00 ; = Mental ; SpellInfo.Element
 	dc.b	$e7		; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$64		; SpellInfo.SP
-	dc.b	$19		; SpellInfo.SLP
+	dc.b $14 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	1		; = Unk1 ; SpellInfo.Element
 	dc.b	$e7		; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$19		; SpellInfo.SP
-	dc.b	$a		; SpellInfo.SLP
+	dc.b $19 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	1		; = Unk1 ; SpellInfo.Element
 	dc.b	$e7		; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$23		; SpellInfo.SP
-	dc.b	$f		; SpellInfo.SLP
+	dc.b $1e ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	1		; = Unk1 ; SpellInfo.Element
 	dc.b	$e7		; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$2d		; SpellInfo.SP
-	dc.b	$14		; SpellInfo.SLP
+	dc.b $23 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	1		; = Unk1 ; SpellInfo.Element
 	dc.b	$ef		; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$fa		; SpellInfo.SP
-	dc.b	$19		; SpellInfo.SLP
+	dc.b $64 ; SpellInfo.SP
+	dc.b $32 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	4		; = Unk3 ; SpellInfo.Element
 	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$f		; SpellInfo.SP
-	dc.b	5		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
 	dc.b	8		; = Unk4 ; SpellInfo.Element
 	dc.b	0		; = None ; SpellInfo.UseConditions
 	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	5		; SpellInfo.SP
-	dc.b	5		; SpellInfo.SLP
-	dc.b	8		; = SingleEnemy ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$f		; SpellInfo.SP
-	dc.b	$a		; SpellInfo.SLP
-	dc.b	$10		; = EnemyRow ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
 	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$a		; SpellInfo.SP
 	dc.b	5		; SpellInfo.SLP
-	dc.b	8		; = SingleEnemy ; SpellInfo.Target
-	dc.b	4		; = Unk3 ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = Mental ; SpellInfo.Element
 	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$f		; SpellInfo.SP
-	dc.b	5		; SpellInfo.SLP
-	dc.b	8		; = SingleEnemy ; SpellInfo.Target
-	dc.b	4		; = Unk3 ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$3c		; SpellInfo.SP
-	dc.b	5		; SpellInfo.SLP
-	dc.b	8		; = SingleEnemy ; SpellInfo.Target
-	dc.b	8		; = Unk4 ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$f		; SpellInfo.SP
-	dc.b	5		; SpellInfo.SLP
-	dc.b	8		; = SingleEnemy ; SpellInfo.Target
-	dc.b	4		; = Unk3 ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$f		; SpellInfo.SP
-	dc.b	5		; SpellInfo.SLP
-	dc.b	8		; = SingleEnemy ; SpellInfo.Target
-	dc.b	8		; = Unk4 ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$a		; SpellInfo.SP
-	dc.b	5		; SpellInfo.SLP
 	dc.b	8		; = SingleEnemy ; SpellInfo.Target
 	dc.b	1		; = Unk1 ; SpellInfo.Element
 	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$1e		; SpellInfo.SP
-	dc.b	$a		; SpellInfo.SLP
-	dc.b	8		; = SingleEnemy ; SpellInfo.Target
+	dc.b $14 ; SpellInfo.SLP
+	dc.b $10 ; = EnemyRow ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Knowledge Of The Weakness
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $2d ; SpellInfo.SP
+	dc.b $19 ; SpellInfo.SLP
+	dc.b $20 ; = AllEnemies ; SpellInfo.Target
 	dc.b	1		; = Unk1 ; SpellInfo.Element
 	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$f		; SpellInfo.SP
-	dc.b	$a		; SpellInfo.SLP
+	dc.b $0f ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = Mental ; SpellInfo.Element
+	; Foresee Attack
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $0f ; SpellInfo.SP
+	dc.b $0f ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = Mental ; SpellInfo.Element
+	; Mystic Decay
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $32 ; SpellInfo.SP
+	dc.b $19 ; SpellInfo.SLP
 	dc.b	8		; = SingleEnemy ; SpellInfo.Target
 	dc.b	1		; = Unk1 ; SpellInfo.Element
 	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$32		; SpellInfo.SP
+	dc.b $0f ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Element to earth
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $4b ; SpellInfo.SP
 	dc.b	$a		; SpellInfo.SLP
 	dc.b	8		; = SingleEnemy ; SpellInfo.Target
+	dc.b $10 ; = Earth ; SpellInfo.Element
+	; Element to wind
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $4b ; SpellInfo.SP
+	dc.b $0a ; SpellInfo.SLP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
+	dc.b $20 ; = Wind ; SpellInfo.Element
+	; Element to fire
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $4b ; SpellInfo.SP
+	dc.b $0a ; SpellInfo.SLP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
+	dc.b $40 ; = Fire ; SpellInfo.Element
+	; Element to water
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $4b ; SpellInfo.SP
+	dc.b $0a ; SpellInfo.SLP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
+	dc.b $80 ; = Water ; SpellInfo.Element
+	; Mystic Imitation
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $64 ; SpellInfo.SP
+	dc.b $64 ; SpellInfo.SLP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Magical Projectile
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $05 ; SpellInfo.SP
+	dc.b $05 ; SpellInfo.SLP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
 	dc.b	1		; = Unk1 ; SpellInfo.Element
 	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$f		; SpellInfo.SP
 	dc.b	$a		; SpellInfo.SLP
-	dc.b	8		; = SingleEnemy ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$32		; SpellInfo.SP
-	dc.b	$a		; SpellInfo.SLP
-	dc.b	8		; = SingleEnemy ; SpellInfo.Target
-	dc.b	4		; = Unk3 ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$fa		; SpellInfo.SP
-	dc.b	$19		; SpellInfo.SLP
-	dc.b	8		; = SingleEnemy ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$b0		; = Battle | Lyramion | Morag ; SpellInfo.UseConditions
-	dc.b	$a		; SpellInfo.SP
+	dc.b $10 ; = EnemyRow ; SpellInfo.Target
 	dc.b	1		; SpellInfo.SLP
-	dc.b	8		; = SingleEnemy ; SpellInfo.Target
-	dc.b	$10		; = Earth ; SpellInfo.Element
-	dc.b	$b0		; = Battle | Lyramion | Morag ; SpellInfo.UseConditions
-	dc.b	$f		; SpellInfo.SP
-	dc.b	5		; SpellInfo.SLP
-	dc.b	8		; = SingleEnemy ; SpellInfo.Target
-	dc.b	$10		; = Earth ; SpellInfo.Element
-	dc.b	$b0		; = Battle | Lyramion | Morag ; SpellInfo.UseConditions
-	dc.b	$14		; SpellInfo.SP
-	dc.b	$a		; SpellInfo.SLP
-	dc.b	$10		; = EnemyRow ; SpellInfo.Target
-	dc.b	$10		; = Earth ; SpellInfo.Element
-	dc.b	$b0		; = Battle | Lyramion | Morag ; SpellInfo.UseConditions
-	dc.b	$19		; SpellInfo.SP
-	dc.b	$f		; SpellInfo.SLP
-	dc.b	$20		; = AllEnemies ; SpellInfo.Target
-	dc.b	$10		; = Earth ; SpellInfo.Element
 	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$14		; SpellInfo.SP
+	dc.b $0a ; SpellInfo.SP
 	dc.b	5		; SpellInfo.SLP
 	dc.b	8		; = SingleEnemy ; SpellInfo.Target
-	dc.b	$20		; = Wind ; SpellInfo.Element
+	dc.b $02 ; = Physical ; SpellInfo.Element
+	; Poison
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $0f ; SpellInfo.SP
+	dc.b $05 ; SpellInfo.SLP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
+	dc.b $02 ; = Physical ; SpellInfo.Element
+	; Petrify
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $3c ; SpellInfo.SP
+	dc.b $05 ; SpellInfo.SLP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
+	dc.b $03 ; = Undead ; SpellInfo.Element
+	; Cause Disease
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $0f ; SpellInfo.SP
+	dc.b $05 ; SpellInfo.SLP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
+	dc.b $02 ; = Physical ; SpellInfo.Element
+	; Cause Aging
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $0f ; SpellInfo.SP
+	dc.b $05 ; SpellInfo.SLP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
+	dc.b $03 ; = Undead ; SpellInfo.Element
+	; Irritate
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $0a ; SpellInfo.SP
+	dc.b $05 ; SpellInfo.SLP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
+	dc.b $00 ; = Mental ; SpellInfo.Element
 	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$1e		; SpellInfo.SP
 	dc.b	$a		; SpellInfo.SLP
 	dc.b	8		; = SingleEnemy ; SpellInfo.Target
+	dc.b $00 ; = Mental ; SpellInfo.Element
+	; Sleep
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $0f ; SpellInfo.SP
+	dc.b $0a ; SpellInfo.SLP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
+	dc.b $00 ; = Mental ; SpellInfo.Element
+	; Fear
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $32 ; SpellInfo.SP
+	dc.b $0a ; SpellInfo.SLP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
+	dc.b $00 ; = Mental ; SpellInfo.Element
+	; Blind
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $0f ; SpellInfo.SP
+	dc.b $0a ; SpellInfo.SLP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Drug
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $0f ; SpellInfo.SP
+	dc.b $0a ; SpellInfo.SLP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
+	dc.b $02 ; = Physical ; SpellInfo.Element
+	; Dissolve Victim
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $fa ; SpellInfo.SP
+	dc.b $19 ; SpellInfo.SLP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Mudsling
+	dc.b $b0 ; = Battle | Lyramion | Morag ; SpellInfo.UseConditions
+	dc.b $0a ; SpellInfo.SP
+	dc.b $01 ; SpellInfo.SLP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
+	dc.b $04 ; = Earth ; SpellInfo.Element
+	; Rockfall
+	dc.b $b0 ; = Battle | Lyramion | Morag ; SpellInfo.UseConditions
+	dc.b $0f ; SpellInfo.SP
+	dc.b $05 ; SpellInfo.SLP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
+	dc.b $04 ; = Earth ; SpellInfo.Element
+	; Earthslide
+	dc.b $b0 ; = Battle | Lyramion | Morag ; SpellInfo.UseConditions
+	dc.b $14 ; SpellInfo.SP
+	dc.b $0a ; SpellInfo.SLP
+	dc.b $10 ; = EnemyRow ; SpellInfo.Target
+	dc.b $04 ; = Earth ; SpellInfo.Element
+	; Earthquake
+	dc.b $b0 ; = Battle | Lyramion | Morag ; SpellInfo.UseConditions
+	dc.b $19 ; SpellInfo.SP
+	dc.b $0f ; SpellInfo.SLP
 	dc.b	$20		; = Wind ; SpellInfo.Element
+	dc.b $04 ; = Earth ; SpellInfo.Element
+	; Winddevil
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $14 ; SpellInfo.SP
+	dc.b $05 ; SpellInfo.SLP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
+	dc.b $05 ; = Wind ; SpellInfo.Element
+	; Windhowler
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $1e ; SpellInfo.SP
+	dc.b $0a ; SpellInfo.SLP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
+	dc.b $05 ; = Wind ; SpellInfo.Element
 	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$28		; SpellInfo.SP
 	dc.b	$f		; SpellInfo.SLP
 	dc.b	$10		; = EnemyRow ; SpellInfo.Target
-	dc.b	$20		; = Wind ; SpellInfo.Element
+	dc.b $05 ; = Wind ; SpellInfo.Element
 	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$32		; SpellInfo.SP
 	dc.b	$14		; SpellInfo.SLP
 	dc.b	$20		; = AllEnemies ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
+	dc.b $05 ; = Wind ; SpellInfo.Element
 	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$28		; SpellInfo.SP
 	dc.b	$a		; SpellInfo.SLP
 	dc.b	8		; = SingleEnemy ; SpellInfo.Target
-	dc.b	$40		; = Fire ; SpellInfo.Element
+	dc.b $06 ; = Fire ; SpellInfo.Element
 	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$3c		; SpellInfo.SP
 	dc.b	$f		; SpellInfo.SLP
 	dc.b	8		; = SingleEnemy ; SpellInfo.Target
-	dc.b	$40		; = Fire ; SpellInfo.Element
+	dc.b $06 ; = Fire ; SpellInfo.Element
 	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$50		; SpellInfo.SP
 	dc.b	$14		; SpellInfo.SLP
 	dc.b	$10		; = EnemyRow ; SpellInfo.Target
-	dc.b	$40		; = Fire ; SpellInfo.Element
+	dc.b $06 ; = Fire ; SpellInfo.Element
 	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	$64		; SpellInfo.SP
 	dc.b	$19		; SpellInfo.SLP
 	dc.b	$20		; = AllEnemies ; SpellInfo.Target
-	dc.b	$40		; = Fire ; SpellInfo.Element
+	dc.b $06 ; = Fire ; SpellInfo.Element
 	dc.b	$70		; = Battle | Lyramion | ForestMoon ; SpellInfo.UseConditions
 	dc.b	$50		; SpellInfo.SP
 	dc.b	$f		; SpellInfo.SLP
 	dc.b	8		; = SingleEnemy ; SpellInfo.Target
-	dc.b	$80		; = Water ; SpellInfo.Element
+	dc.b $07 ; = Water ; SpellInfo.Element
 	dc.b	$70		; = Battle | Lyramion | ForestMoon ; SpellInfo.UseConditions
 	dc.b	$78		; SpellInfo.SP
 	dc.b	$14		; SpellInfo.SLP
 	dc.b	8		; = SingleEnemy ; SpellInfo.Target
-	dc.b	$80		; = Water ; SpellInfo.Element
+	dc.b $07 ; = Water ; SpellInfo.Element
 	dc.b	$70		; = Battle | Lyramion | ForestMoon ; SpellInfo.UseConditions
 	dc.b	$a0		; SpellInfo.SP
 	dc.b	$19		; SpellInfo.SLP
 	dc.b	$10		; = EnemyRow ; SpellInfo.Target
-	dc.b	$80		; = Water ; SpellInfo.Element
+	dc.b $07 ; = Water ; SpellInfo.Element
 	dc.b	$70		; = Battle | Lyramion | ForestMoon ; SpellInfo.UseConditions
 	dc.b	$c8		; SpellInfo.SP
 	dc.b	$1e		; SpellInfo.SLP
 	dc.b	$20		; = AllEnemies ; SpellInfo.Target
-	dc.b	$80		; = Water ; SpellInfo.Element
+	dc.b $07 ; = Water ; SpellInfo.Element
 	dc.b	0		; = None ; SpellInfo.UseConditions
 	dc.b	0		; SpellInfo.SP
 	dc.b	0		; SpellInfo.SLP
@@ -1315,88 +1392,14 @@ Spell_data:
 	dc.b	1		; SpellInfo.SP
 	dc.b	1		; SpellInfo.SLP
 	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	1		; = Unk1 ; SpellInfo.Element
-	dc.b	$21		; = WorldMap | Lyramion ; SpellInfo.UseConditions
-	dc.b	1		; SpellInfo.SP
-	dc.b	1		; SpellInfo.SLP
 	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$ef		; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	1		; SpellInfo.SP
-	dc.b	1		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	4		; = Unk3 ; SpellInfo.Element
-	dc.b	$ef		; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	1		; SpellInfo.SP
-	dc.b	1		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	1		; SpellInfo.SP
-	dc.b	1		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	1		; SpellInfo.SP
-	dc.b	1		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	1		; SpellInfo.SP
-	dc.b	1		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	1		; SpellInfo.SP
-	dc.b	1		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	1		; SpellInfo.SP
-	dc.b	1		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	1		; SpellInfo.SP
-	dc.b	1		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
 	dc.b	$21		; = WorldMap | Lyramion ; SpellInfo.UseConditions
 	dc.b	1		; SpellInfo.SP
 	dc.b	1		; SpellInfo.SLP
 	dc.b	0		; = None ; SpellInfo.Target
 	dc.b	1		; = Unk1 ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	1		; SpellInfo.SP
-	dc.b	1		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	1		; SpellInfo.SP
-	dc.b	1		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	1		; SpellInfo.SP
-	dc.b	1		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	1		; SpellInfo.SP
-	dc.b	1		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	1		; SpellInfo.SP
-	dc.b	1		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	1		; SpellInfo.SP
-	dc.b	1		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	; Decrease Age (Youth Potion)
+	dc.b $ef ; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	1		; SpellInfo.SP
 	dc.b	1		; SpellInfo.SLP
 	dc.b	1		; = SingleAlly ; SpellInfo.Target
@@ -1404,38 +1407,133 @@ Spell_data:
 	dc.b	$ef		; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	1		; SpellInfo.SP
 	dc.b	1		; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Spell Points I
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $01 ; SpellInfo.SP
+	dc.b $01 ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Spell Points II
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $01 ; SpellInfo.SP
+	dc.b $01 ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Spell Points III
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $01 ; SpellInfo.SP
+	dc.b $01 ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Spell Points IV
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $01 ; SpellInfo.SP
+	dc.b $01 ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Spell Points V
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $01 ; SpellInfo.SP
+	dc.b $01 ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; All Healing
+	dc.b $f8 ; = Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $01 ; SpellInfo.SP
+	dc.b $01 ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Magical Map
+	dc.b $21 ; = WorldMap | Lyramion ; SpellInfo.UseConditions
+	dc.b $01 ; SpellInfo.SP
+	dc.b $01 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = Mental ; SpellInfo.Element
+	; Add Strength
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $01 ; SpellInfo.SP
+	dc.b $01 ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Add Intelligence
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $01 ; SpellInfo.SP
+	dc.b $01 ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Add Dexterity
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $01 ; SpellInfo.SP
+	dc.b $01 ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Add Speed
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $01 ; SpellInfo.SP
+	dc.b $01 ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Add Stamina
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $01 ; SpellInfo.SP
+	dc.b $01 ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Add Charisma
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $01 ; SpellInfo.SP
+	dc.b $01 ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Add Luck
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $01 ; SpellInfo.SP
+	dc.b $01 ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Add Anti-Magic
+	dc.b $ef ; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $01 ; SpellInfo.SP
+	dc.b $01 ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
 	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
 	dc.b	$e4		; = Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	1		; SpellInfo.SP
 	dc.b	1		; SpellInfo.SLP
 	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
+	dc.b $01 ; = Spirit ; SpellInfo.Element
 	dc.b	$ef		; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b	1		; SpellInfo.SP
 	dc.b	1		; SpellInfo.SLP
 	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	4		; = Unk3 ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
+	dc.b $02 ; = Physical ; SpellInfo.Element
+	; ADVANCED CHANGES
+	; Self-healing (ID: 22)
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $01 ; SpellInfo.SP
+	dc.b $01 ; SpellInfo.SLP
 	dc.b	0		; SpellInfo.SLP
+	dc.b $02 ; = Physical ; SpellInfo.Element
+	; Self-revive (ID: 23)
+	dc.b $e8 ; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $01 ; SpellInfo.SP
+	dc.b $01 ; SpellInfo.SLP
 	dc.b	0		; = None ; SpellInfo.Target
+	dc.b $03 ; = Undead ; SpellInfo.Element
+	; Exp exchange (ID: 24)
+	dc.b $28 ; = Camp | Lyramion ; SpellInfo.UseConditions
+	dc.b $01 ; SpellInfo.SP
+	dc.b $01 ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Mount wasp
+	dc.b $41 ; World Map | Forest Moon
+	dc.b $01 ; SpellInfo.SP
+	dc.b $01 ; SpellInfo.SLP
 	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
+	dc.b $20 ; = None ; SpellInfo.Element
 	dc.b	0		; = None ; SpellInfo.UseConditions
 	dc.b	0		; SpellInfo.SP
 	dc.b	0		; SpellInfo.SLP
@@ -1721,16 +1819,38 @@ ATN_table:
 	dc.w	$1fd,$1fe,$1fe,$1fe,$1ff,$1ff,$1ff,$200
 	dc.w	$200
 Level_start_EPs:
-	dc.w	$4b		; 96
-	dc.w	$96		; 150
-	dc.w	$b4,$64,$7d,$5a,$5a,$5a,$5f,$7fff
+	dc.w $0055 ; 85 (adventurer)
+	dc.w $006e ; 110 (warrior)
+	dc.w $0073 ; 115 (paladin)
+	dc.w $0064 ; 100 (thief)
+	dc.w $0069 ; 105 (ranger)
+	dc.w $005a ; 90 (healer)
+	dc.w $005a ; 90 (alchemist)
+	dc.w $005a ; 90 (mystic)
+	dc.w $005f ; 95 (mage)
+	dc.w $7fff ; 32767 (animal)
 	dc.w	0
 World_move_delay:
 	dc.b	2,1,2,1,2,0,0,2,0,2,1
+	dc.b $00 ; Wasp
 Travel_speed:
 	dc.b	1,2,1,3,1,5,$ff,1,3,2,3
+	dc.b $05 ; Wasp
 Travel_music:
-	dc.b	$e,8,$10,6,$f,7,$19,$e,$14,2,$16,0
+	dc.b $0e ; Walk
+	dc.b $08 ; Horse
+	dc.b $10 ; Raft
+	dc.b $06 ; Ship
+	dc.b $0f ; Magical Disc
+	dc.b $07 ; Eagle
+	dc.b $19 ; Fly
+	dc.b $0e ; Swim
+	dc.b $14 ; Witch's Broom
+	dc.b $02 ; Sand Lizard
+	dc.b $16 ; Sand Ship
+	dc.b $07 ; Wasp
+	dc.b $00
+	even
 World_data:
 	dc.w	$10		; Num adjacent maps in x direction
 	dc.w	$10		; Num adjacent maps in y direction
@@ -1839,10 +1959,15 @@ Combat_bg_3D_table:
 	dc.b	$1a		; CombatBackgroundInfo.PaletteIdDay
 	dc.b	$1a		; CombatBackgroundInfo.PaletteIdTwilight
 	dc.b	$1a		; CombatBackgroundInfo.PaletteIdNight
-	dc.b	$b		; CombatBackgroundInfo.ImageIndex
-	dc.b	$1a		; CombatBackgroundInfo.PaletteIdDay
-	dc.b	$1a		; CombatBackgroundInfo.PaletteIdTwilight
-	dc.b	$1a		; CombatBackgroundInfo.PaletteIdNight
+	;dc.b $0b ; CombatBackgroundInfo.ImageIndex
+	;dc.b $1a ; CombatBackgroundInfo.PaletteIdDay
+	;dc.b $1a ; CombatBackgroundInfo.PaletteIdTwilight
+	;dc.b $1a ; CombatBackgroundInfo.PaletteIdNight
+	; ADVANCED CHANGE - Background 5
+	dc.b $11 ; CombatBackgroundInfo.ImageIndex
+	dc.b $27 ; CombatBackgroundInfo.PaletteIdDay
+	dc.b $30 ; CombatBackgroundInfo.PaletteIdTwilight
+	dc.b $31 ; CombatBackgroundInfo.PaletteIdNight
 	dc.b	4		; CombatBackgroundInfo.ImageIndex
 	dc.b	$13		; CombatBackgroundInfo.PaletteIdDay
 	dc.b	$13		; CombatBackgroundInfo.PaletteIdTwilight
@@ -1859,10 +1984,15 @@ Combat_bg_3D_table:
 	dc.b	$17		; CombatBackgroundInfo.PaletteIdDay
 	dc.b	$1e		; CombatBackgroundInfo.PaletteIdTwilight
 	dc.b	$1f		; CombatBackgroundInfo.PaletteIdNight
-	dc.b	8		; CombatBackgroundInfo.ImageIndex
-	dc.b	$17		; CombatBackgroundInfo.PaletteIdDay
-	dc.b	$1e		; CombatBackgroundInfo.PaletteIdTwilight
-	dc.b	$1f		; CombatBackgroundInfo.PaletteIdNight
+	;dc.b $08 ; CombatBackgroundInfo.ImageIndex
+	;dc.b $17 ; CombatBackgroundInfo.PaletteIdDay
+	;dc.b $1e ; CombatBackgroundInfo.PaletteIdTwilight
+	;dc.b $1f ; CombatBackgroundInfo.PaletteIdNight
+	; ADVANCED CHANGE - Background 10
+	dc.b $12 ; CombatBackgroundInfo.ImageIndex
+	dc.b $29 ; CombatBackgroundInfo.PaletteIdDay
+	dc.b $2c ; CombatBackgroundInfo.PaletteIdTwilight
+	dc.b $2d ; CombatBackgroundInfo.PaletteIdNight
 	dc.b	2		; CombatBackgroundInfo.ImageIndex
 	dc.b	$11		; CombatBackgroundInfo.PaletteIdDay
 	dc.b	$1c		; CombatBackgroundInfo.PaletteIdTwilight
@@ -1893,17 +2023,54 @@ Race_heights:
 	dc.w	$be		; Feline: 190
 	dc.w	$af		; Moranian: 175
 	dc.w	$b4		; Thalionic: 180
+	dc.w $00b4 ; Unused
+	dc.w $00b4 ; Unused
+	dc.w $00b4 ; Unused
+	dc.w $00b4 ; Unused
+	dc.w $0064 ; Animal: 100
+	dc.w $00b4 ; Monster: 180
 Chared_portraits:
 	dc.w	2,$19,7,$17,$1f,$26,$2c,$33
 Destruction_table:
-	dc.w	4
+	dc.w $0005 ; Mudsling min damage
 Destruction_spell_max_damage_values:
-	dc.w	8,$a,$19,8,$10,8,$16,8
-	dc.w	$10,$10,$30,$14,$20,$14,$23,$14
-	dc.w	$1e,$28,$55,$23,$41,$28,$46,$20
-	dc.w	$3c,$5a,$b4,$40,$80,$80,$100
+	dc.w $000a ; Mudsling max damage
+	dc.w $000f ; Rockfall min damage
+	dc.w $0019 ; Rockfall max damage
+	dc.w $000a ; Earthslide min damage
+	dc.w $0016 ; Earthslide max damage
+	dc.w $0008 ; Earthquake min damage
+	dc.w $0014 ; Earthquake max damage
+	dc.w $0014 ; Winddevil min damage
+	dc.w $0023 ; Winddevil max damage
+	dc.w $001e ; Windhowler min damage
+	dc.w $0032 ; Windhowler max damage
+	dc.w $0019 ; Thunderbolt min damage
+	dc.w $002d ; Thunderbolt max damage
+	dc.w $0014 ; Whirlwind min damage
+	dc.w $0028 ; Whirlwind max damage
+	dc.w $0023 ; Firebeam min damage
+	dc.w $0037 ; Firebeam max damage
+	dc.w $0046 ; Fireball min damage
+	dc.w $0069 ; Fireball max damage
+	dc.w $0041 ; Firestorm min damage
+	dc.w $005f ; Firestorm max damage
+	dc.w $0037 ; Firepillar min damage
+	dc.w $0055 ; Firepillar max damage
+	dc.w $003c ; Waterfall min damage
+	dc.w $004b ; Waterfall max damage
+	dc.w $006e ; Iceball min damage
+	dc.w $0096 ; Iceball max damage
+	dc.w $0064 ; Icestorm min damage
+	dc.w $0087 ; Icestorm max damage
+	dc.w $005a ; Iceshower min damage
+	dc.w $0078 ; Iceshower max damage
 Event_pix_palette_table:
 	dc.b	$1b,$20,$21,$21,$21,$21,$21,$21
+	dc.b $21 ; 38 (Game over)
+	dc.b $33 ; 51 (Feline portal 1, Ambermoon Advanced only)
+	dc.b $34 ; 52 (Feline portal 2, Ambermoon Advanced only)
+	dc.b $00 ; padding byte
 Stationary_dimensions:
 	dc.w	$20,$16
 	dc.b	0,$20,0,$b,0,$30,0,$22,0,$30,0,$15,0,$30,0,$27
@@ -2212,7 +2379,7 @@ Disk_number_party_gfx_amb:
 	dc.b	7
 	dc.b	"Party_gfx.amb",0
 Disk_number_objects_amb:
-	dc.b	1
+	dc.b $07
 	dc.b	"Objects.amb",0
 Disk_number_monster_char_data_amb:
 	dc.b	8		; Disk number for Monster_char.amb

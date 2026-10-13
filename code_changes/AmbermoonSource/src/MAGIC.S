@@ -15,10 +15,52 @@
 ; Note :
 ;  - This module will exit if no spells are known in this class.
 ;*****************************************************************************
+; ADVANCED CHANGES - START
+FUN_GetSPCost:
+	; A1 points to the current spell info (5 bytes)
+	; D0: battle flags of caster
+	; D2: 1-based spell index inside the school
+	; DAT_SpellType should contain the current school (0-based)
+	; returns SP cost in D0.b
+	move.l A1,-(SP)
+	cmpi.w #3,Selected_class
+	bne.b LAB_SetSPCost
+	btst.l #4,D0
+	beq.b LAB_CheckWindSPCost
+	cmpi.w #15,D2 ; 15..18 are earth spells
+	bmi.b LAB_CheckWindSPCost
+	cmpi.w #19,D2
+	bpl.b LAB_CheckWindSPCost
+	adda.l #60,A1 ; 12 * 5, now points to related ice spell
+	bra.b LAB_SetSPCost
+LAB_CheckWindSPCost:
+	btst.l #5,D0
+	beq.b LAB_CheckFireSPCost
+	cmpi.w #19,D2 ; 19..23 are earth spells
+	bmi.b LAB_CheckFireSPCost
+	cmpi.w #23,D2
+	bpl.b LAB_CheckFireSPCost
+	adda.l #40,A1 ; 8 * 5, now points to related ice spell
+	bra.b LAB_SetSPCost
+LAB_CheckFireSPCost:
+	btst.l #6,D0
+	beq.b LAB_SetSPCost
+	cmpi.w #24,D2 ; 24..27 are earth spells
+	bmi.b LAB_SetSPCost
+	cmpi.w #27,D2
+	bpl.b LAB_SetSPCost
+	adda.l #20,A1 ; 4 * 5, now points to related ice spell
+LAB_SetSPCost:
+	move.b ($0001,A1),D0
+	move.l (SP)+,A1
+	rts
 SpSelW_ModInit:
 	clr.w	Selected_spell		; Clear
 ; ---------- Make list of spells & status ---------
 	Get	Active_handle,a0
+	moveq #0,D6
+	move.b ($0012,A0),D6
+	swap D6
 	move.w	Power_points(a0),d6		; Get magic points
 	lea.l	Spells_class_0(a0),a0	; Get known spells bit-list
 	move.w	Selected_class,d0
@@ -61,8 +103,11 @@ SpSelW_ModInit:
 	bne.s	.World_OK
 	moveq.l	#Spell_wrong_world,d0	; No -> Wrong world
 	bra.s	.Do
-.World_OK:	moveq.l	#0,d0			; Enough spell points ?
-	move.b	Spell_point_cost(a1),d0
+.World_OK:
+	move.l D6,D0
+	swap D0
+	and.l #$ff,D0
+	jsr FUN_GetSPCost
 	beq.s	.Error
 	cmp.w	d0,d6
 	bpl.s	.Enough
@@ -299,7 +344,7 @@ Do_magic:
 .Target:	btst	#Item_target_bit,d0		; Item target ?
 	beq	.Not_item
 	move.w	#237,MemberSel_prompt	; Whose item ?
-	move.l	#Inventory_check,MemberSel_ptr
+	move.l #Inventory_check,MemberSel_ptr
 	Push	Module,MemberSel_Mod
 	move.w	Selected_member,d1		; Anyone ?
 	beq	.Exit2
@@ -331,7 +376,8 @@ Do_magic:
 	move.w	#284,MemberSel_prompt	; Yes
 	bra.s	.Go_on2
 .No:	move.w	#235,MemberSel_prompt	; No
-.Go_on2:	move.l	#Present_check,MemberSel_ptr	; Who ?
+.Go_on2:
+	move.l #Present_check,MemberSel_ptr
 	Push	Module,MemberSel_Mod
 	move.w	Selected_member,d0		; No-one ?
 	beq	.Exit
@@ -368,7 +414,7 @@ Do_magic:
 ; All registers are restored
 ;*****************************************************************************
 Handle_spell:          
-	movem.l	d0/d1/a0,-(sp)
+	movem.l A1/A0/D2/D1/D0,-(SP)
 	tst.b	Magic_object_flag		; From object ?
 	beq.s	.Real
 	tst.b	Battling			; Yes -> In combat ?
@@ -381,23 +427,29 @@ Handle_spell:
 .Do:	jsr	Remove_used_magic_item	; Remove item
 	sf	Spell_failed		; Success !
 	bra	.Exit
-.Real:	lea.l	Spell_data,a0		; Get pointer to spell data
+.Real:
+	lea Spell_data,A1
 	move.w	Selected_class,d0
 	mulu.w	#Max_spells,d0
 	add.w	Selected_spell,d0
 	subq.w	#1,d0
 	mulu.w	#Spell_data_size,d0
-	adda.w	d0,a0
-	moveq.l	#0,d0			; Get SP cost
-	move.b	Spell_point_cost(a0),d0
-	Get	Casting_handle,a0		; Remove SP
+	adda.w D0,A1
+	move.b Casting_handle,D0
+	jsr Claim_pointer
+	movea.l D0,A0 ; Now A0 is the character data
+	moveq #0,D0
+	move.b ($0012,A0),D0
 	move.w	Power_points(a0),d1
+	move.w Selected_spell,D2
+	jsr FUN_GetSPCost
 	sub.w	d0,d1
 	bpl.s	.Ok
 	moveq.l	#0,d1			; (should never happen)
 .Ok:	move.w	d1,Power_points(a0)
 	move.w	SUse_magic(a0),d0		; Get magic using skill
 	add.w	SUse_magic+Magic(a0),d0
+	jsr FUN_ApplyBattleMagicEffects
 	Free	Casting_handle
 	jsr	Probe_100			; Probe
 	smi	Spell_failed		; Set flag
@@ -410,7 +462,8 @@ Handle_spell:
 	bra.s	.Exit
 .No2:	move.w	#248,d0			; No -> "Spell failed!"
 	jsr	Do_prompt_window
-.Exit:	movem.l	(sp)+,d0/d1/a0
+.Exit:
+	movem.l (SP)+,D0/D1/D2/A0/A1
 	tst.b	Spell_failed		; Success ?
 	rts
 
@@ -465,6 +518,15 @@ Remove_used_magic_item:
 	cmpi.b	#255,Charges(a0)		; No -> Infinite charges ?
 	beq.s	.Sparkle
 	subq.b	#1,Charges(a0)		; No -> One charge less
+	; AMBERMOON ADVANCED - START
+	; If charges are 0 now and no recharge is possible
+	; and the "destroy flag" is set, consume the item
+	bne.b .Sparkle
+	btst.b #$00000004,($0020,A1) ; destroy after usage?
+	beq.b .Sparkle
+	move.b ($001b,A1),D0
+	cmp.b ($0002,A0),D0 ; current recharge times, max recharges
+	bls.b .Remove ; jump to consume if max recharges <= current recharge times
 .Sparkle:	Free	Casting_handle
 	jsr	Get_module_ID		; In Inventory ?
 	cmp.b	#Inv2_ID,d0
@@ -590,9 +652,11 @@ Remove_cond:
 Wake_the_dead:
 	jsr	Handle_spell		; Handle spell
 	bne.s	.Fail
-	lea.l	.Do1,a0			; Do all targets
+; ADVANCED CHANGES - START
+	move.w #$0039,DAT_ReviveMessageId
+	lea.l	Wake_the_dead_Do1,a0			; Do all targets
 	bra.s	.Go
-.Fail:	lea.l	.Do2,a0
+.Fail:	lea.l	Wake_the_dead_Do2,a0
 .Go:	jsr	Do_all_targets
 	jsr	Wait_4_sparkles		; Wait
 .Exit:	rts
@@ -601,7 +665,11 @@ Wake_the_dead:
 ;   IN : d7 - Member number [1...6] (.w)
 ;        a0 - Pointer to character data (.l)
 ; No registers are restored
-.Do1:
+; ADVANCED CHANGES - START
+DAT_ReviveMessageId:
+	dc.w $0039
+Wake_the_dead_Do1:
+LAB_00229d92:
 	move.w	Body_conditions(a0),d0	; Get conditions
 	btst	#Dust,d0			; Ashes or dust ?
 	bne.s	.Yes
@@ -619,7 +687,8 @@ Wake_the_dead:
 	move.w	d0,Body_conditions(a0)
 	move.w	#1,Life_points(a0)
 	jsr	Force_status_update		; Show
-	move.w	#57,d0			; "Yay!"
+	; ADVANCED CHANGES - START (was #$0039 hardcoded)
+	move.w DAT_ReviveMessageId,D0
 	jsr	Do_prompt_window
 	move.w	d7,d0			; Sparkle!
 	jsr	Do_sparkle
@@ -629,7 +698,7 @@ Wake_the_dead:
 ;   IN : d7 - Member number [1...6] (.w)
 ;        a0 - Pointer to character data (.l)
 ; No registers are restored
-.Do2:
+Wake_the_dead_Do2:
 	move.w	Body_conditions(a0),d0	; Get conditions
 	btst	#Dead,d0			; Dead ?
 	beq.s	.Exit3
@@ -814,7 +883,17 @@ Charge_item:
 	move.w	#264,d0			; "Not magical!"
 	jsr	Do_prompt_window
 	bra	.Exit
-.Ok1:	moveq.l	#0,d0			; How many charges possible ?
+.Ok1:
+	; AMBERMOON ADVANCED - START
+	move.b ($0002,A0),D0 ; current recharge times
+	cmp.b ($001d,A1),D0 ; max recharge times of item
+	bmi.b .LAB_ChargeTheItem
+	move.w #$00a5,D0 ; "Max times of recharging reached"
+	jsr Do_prompt_window
+	bra.b .Exit
+	;  AMBERMOON ADVANCED - START
+.LAB_ChargeTheItem:
+	moveq.l	#0,d0; How many charges possible ?
 	move.b	Enchantment_charge_max(a1),d0
 	sub.b	Charges(a0),d0
 	bgt.s	.Ok2			; Fully charged ?
@@ -876,7 +955,7 @@ Create_food:
 	cmp.w	#32767,Food_rations(a0)	; Got maximum food ?
 	beq.s	.Exit2
 	addq.w	#1,Food_rations(a0)		; No -> Give food
-	add.l	#Food_weight,Weight_normal(a0)
+	addi.l #$00000019,($010e,A0) ; food weight, ADVANCED changed to 25
 	move.w	d7,d0			; Sparkle!
 	jsr	Do_sparkle
 .Exit2:	rts
@@ -1064,6 +1143,43 @@ Do_condition_events:
 
 ; *** Word of marking ***
 Word_of_marking:
+; Executes all condition events until some other
+; event is reached, the end of chain is reached
+; or the condition was not fulfilled and had no
+; false-branch or the given condition type bits
+; are active.
+; D1 gives the mask
+FUN_ExecuteConditionEventsExcept:
+	sf Success
+	st Handling_event
+.NextEvent:
+	sf Break_event
+	moveq #0,D0
+	move.b (A5),D0
+	cmpi.b #$0000000d,D0 ; condition event?
+	bne.b .End ; no? end
+	move.b ($0001,A5),D0
+	btst.l D0,D1
+	bne.b .End ; matches mask bit? end
+	move.l D1,-(SP)
+	jsr Handle_event
+	move.l (SP)+,D1
+	tst.b Break_event
+	bne.b .End
+	jsr Chain_to_next_event
+	bpl .NextEvent
+	st Break_event
+.End:
+	sf Success
+	sf Handling_event
+	rts
+; ADVANCED CHANGES - START
+	tst.b Bool_NoMarkOfReturn
+	beq.b .LAB_CanMarkPosition
+	move.w #$003f,D0
+	jsr Do_prompt_window
+	bra.b .Exit
+.LAB_CanMarkPosition:
 	jsr	Handle_spell		; Handle spell
 	bne.s	.Exit
 	Get	Casting_handle,a0		; Mark position
@@ -1078,6 +1194,13 @@ Word_of_marking:
 
 ; *** Word of returning ***
 Word_of_returning:
+; ADVANCED CHANGES - START
+	tst.b Bool_NoMarkOfReturn
+	beq.b LAB_CanReturnToPosition
+	move.w #$003f,D0
+	jsr Do_prompt_window
+	rts
+LAB_CanReturnToPosition:
 	jsr	Handle_spell		; Handle spell
 	bne.s	.Exit
 	Get	Casting_handle,a0		; Get marked position
@@ -1336,7 +1459,8 @@ MClairvoyance:
 	move.w	Selected_spell,d0		; Get duration
 	subq.w	#3,d0
 	move.b	.Table(pc,d0.w),d1
-	moveq.l	#0,d0			; No data
+	addq #$00000001,D0
+	mulu.w #20,D0 ; ADVANCED: Increase in search skill (20, 40, 60)
 	moveq.l	#5,d7			; Set
 	jsr	Set_permanent_spell
 .Exit:	rts
@@ -1455,14 +1579,39 @@ Mystical_globe:
 	bne.s	.Exit
 	moveq.l	#0,d0			; Set clairvoyance
 	move.w	#180,d1
+	moveq #60,D0 ; ADVANCED: Search bonus 60
 	moveq.l	#5,d7
 	jsr	Set_permanent_spell
+	moveq #$00000000,D0
 	moveq.l	#6,d7			; Set mystical map
 	jsr	Set_permanent_spell
 .Exit:	rts
 
 ; ********** Class 6 spells ***********************
 ; *** Call giant eagle ***
+FUN_SpellMountWasp:
+	tst.w Travel_mode
+	beq .OnFoot
+	; Without cheats this can only happen when swimming.
+	; With cheats only when flying. There are no other
+	; possible transports on the forest moon.
+	move.w #$00f4,D0 ; "wrong place to use" message id
+	jsr Do_prompt_window
+	bra .End
+.OnFoot:
+	jsr Handle_spell
+	bne .End
+	move.w #317,D0 ; "Mounting the wasp" message id
+	jsr Do_prompt_window
+	jsr Get_under_module_ID
+	cmp.b #$02,D0 ; In inventory?
+	bne.b .NotInInventory
+	jsr Exit_Inv2
+.NotInInventory:
+	moveq #$0000000b,D0 ; Wasp
+	jsr Set_new_travel_mode
+.End:
+	rts
 Call_eagle:
 	tst.w	Travel_mode		; On foot ?
 	beq.s	.Ok1
@@ -1474,7 +1623,14 @@ Call_eagle:
 	move.w	#244,d0			; No
 	jsr	Do_prompt_window
 	bra.s	.Exit
-.Ok2:	jsr	Handle_spell		; Handle spell
+.Ok2:
+	tst.b Bool_NoEagleOrBroom
+	beq.b .LAB_CastEagleSpell
+	move.w #$00f4,D0 ; "wrong place to use" message id
+	jsr Do_prompt_window
+	bra.b .Exit
+.LAB_CastEagleSpell:
+	jsr	Handle_spell; Handle spell
 	bne.s	.Exit
 	move.w	#46,d0			; "Yay!"
 	jsr	Do_prompt_window
@@ -1824,6 +1980,195 @@ Drug:
 ; [ Show giant eagle flying in ]
 ; All registers are restored
 ;*****************************************************************************
+; ADVANCED CHANGES - START
+FUN_SpellSelfHealing:
+	jsr Handle_spell
+	bne.b LAB_SelfHealCastFailed
+	movem.l A0/D0,-(SP)
+	move.b Casting_handle,D0
+	move.b D0,Subject_handle
+	jsr Claim_pointer
+	movea.l D0,A0 ; Now A0 is the character data
+	jsr FUN_SelfHeal
+	move.b Casting_handle,D0
+	jsr Free_pointer
+	movem.l (SP)+,D0/A0
+LAB_SelfHealCastFailed:
+	rts
+FUN_SelfHeal:
+	moveq #0,D0
+	move.w ($001e,A0),D0
+	andi.w #-$1b80,D0 ; Check for petrify, death or unknown ailment and skip following code if true
+	bne.b LAB_NoHeal
+	move.l D1,-(SP)
+	moveq #25,D1 ; 25% healing
+	move.w ($00cc,A0),D0 ; Get max hit points
+	mulu.w D1,D0
+	divu.w #$0064,D0 ; Calc percentage heal amount value
+	addq.w #5,D0 ; 5 HP + 25% of max HP
+	move.w Casting_member,D7
+	jsr Increase_LP
+	move.w D7,D0
+	jsr Do_sparkle
+	jsr Wait_4_sparkles ; TODO: not sure if this is necessary
+	move.l (SP)+,D1
+LAB_NoHeal:
+	rts
+FUN_SpellSelfRevive:
+	jsr Handle_spell
+	bne.b LAB_SelfReviveCastFailed
+	movem.l A2/A1/A0/D7/D0,-(SP)
+	moveq #0,D7
+	move.b Casting_handle,D0
+	move.b D0,Subject_handle
+	jsr Claim_pointer
+	movea.l D0,A0 ; Now A0 is the character data
+	move.w #$012c,DAT_ReviveMessageId ; new message id for "revive cat"
+	move.w Casting_member,D7
+	jsr LAB_00229d92
+	move.b Casting_handle,D0
+	jsr Free_pointer
+	movem.l (SP)+,D0/D7/A0/A1/A2
+LAB_SelfReviveCastFailed:
+	rts
+FUN_SpellExchangeExp:
+	jsr Handle_spell
+	bne.b LAB_ExchangeExpFailed
+	movem.l A2/D1,-(SP)
+	move.b Casting_handle,D0
+	move.l D0,-(SP)
+	jsr Claim_pointer
+	movea.l D0,A3 ; Now A3 is the caster data
+	lea FUN_ExchangeExp,A0
+	jsr Do_all_targets
+	jsr Wait_4_sparkles
+	move.l (SP)+,D1
+	move.l D0,-(SP)
+	move.b D1,D0
+	jsr Free_pointer
+	move.l (SP)+,D0
+	movem.l (SP)+,D1/A2
+LAB_ExchangeExpFailed:
+	rts
+; D0 (in): 1-based party member index (1 to 6)
+; D0 (out): index to the associated character sub-file
+FUN_GetCharacterIndex:
+	move.l A0,-(SP)
+	lea Member_nrs,A0
+	add.w D0,D0
+	move.w (-$02,A0,D0.w),D0
+	movea.l (SP)+,A0
+	rts
+FUN_ExchangeExp:
+	movem.l A3/A2/A1/A0/D7/D3/D2/D1/D0,-(SP)
+	; A0 is the target data
+	; A3 is the caster data
+	; D7 is the 1-based party member index of the target
+	move.b ($03,A0),D0 ; class of target
+	cmpi.b #9,D0 ; check for animal of greater
+	bge.b LAB_ExchangeExpIsAnimal
+	move.b ($03,A3),D0 ; class of caster
+	cmpi.b #9,D0 ; check for animal of greater
+	blt.b LAB_ExchangeExpNoAnimal
+LAB_ExchangeExpIsAnimal:
+	move.w #$012d,D0 ; new message id for "can't exchange exp with animal"
+LAB_ExchangeExpDisplayError:
+	jsr Do_prompt_window
+LAB_ExchangeExpAbort:
+	movem.l (SP)+,D0/D1/D2/D3/D7/A0/A1/A2/A3
+	rts
+LAB_ExchangeExpNoAnimal:
+	move.w #$e000,D0 ; death mask
+	move.w D0,D1
+	and.w ($1e,A0),D1
+	bne.b LAB_ExchangeExpIsDead
+	and.w ($1e,A3),D0
+	beq.b LAB_ExchangeExpNotDead
+LAB_ExchangeExpIsDead:
+	move.w #$012e,D0 ; new message id for "can't exchange exp with dead"
+	bra.b LAB_ExchangeExpDisplayError
+LAB_ExchangeExpNotDead:
+	movea.l A0,A2 ; now A2 is the caster data
+	exg A2,A3 ; now A2 is the target data and A3 is the caster data
+	moveq #0,D0
+	move.w D7,D0
+	jsr FUN_GetCharacterIndex; D0 now has the target's subfile index
+	move.w D0,D2 ; memorize char index of target
+	jsr FUN_GetInitialCharData
+	move.l D0,D1 ; handle to target data
+	movea.l A0,A1 ; initial target data
+	moveq.l #0,D0
+	move.w Casting_member,D0
+	jsr FUN_GetCharacterIndex ; D0 now has the caster's subfile index
+	; check if casting on self
+	cmp.w D0,D2
+	beq.b LAB_ExchangeExpAbort ; If exchanging exp with self, just abort and show no message (it is ok to do this but will have no effect)
+	jsr FUN_GetInitialCharData
+	; Now we have the following values
+	; A0: initial caster data
+	; A1: initial target data
+	; A2: current caster data
+	; A3: current target data
+	; D0: handle to caster data
+	; D1: handle to target data
+	move.l ($ee,A2),D2 ; caster exp
+	move.l ($ee,A3),D3 ; target exp
+	jsr FUN_InitCharacterForExchange ; reset caster to level 1
+	exg A0,A1
+	exg A2,A3
+	jsr FUN_InitCharacterForExchange ; reset target to level 1
+	; Now the data pointers are switched from caster to target!
+	; A2: current target data
+	; A3: current caster data
+	move.l D2,($ee,A2) ; use caster exp for target
+	move.l D3,($ee,A3) ; use target exp for caster
+	jsr Free_pointer ; release caster data
+	move.l D1,D0
+	jsr Free_pointer ; release target data
+	movem.l (SP)+,D0/D1/D2/D3/D7/A0/A1/A2/A3
+	jmp Check_member_levels ; check and process level ups
+FUN_InitCharacterForExchange: ; A0: initial data, A2: current data
+	movem.l D2/D1/D0,-(SP)
+	move.w ($ca,A0),($ca,A2) ; Current HP
+	move.w ($cc,A0),($cc,A2) ; Max HP
+	move.w ($d0,A0),($d0,A2) ; Current SP
+	move.w ($d2,A0),($d2,A2) ; Max SP
+	move.b #1,($11,A2) ; APR
+	clr.l ($ee,A2) ; Exp
+	move.b ($05,A0),D0 ; Initial level
+	move.b ($0f,A2),D1 ; Max reached level
+	tst.b D1
+	bne.b LAB_SkipMaxReachedLevelUpdate
+	move.b ($05,A2),($0f,A2) ; If max reached level is 0, update it with the current level
+LAB_SkipMaxReachedLevelUpdate:
+	move.b #1,($05,A2) ; Set level to 1
+	move.w ($e4,A0),D1 ; HP per level
+	move.w ($e6,A0),D2 ; SP per level
+LAB_CheckLevelLoop:
+	cmpi.b #1,D0 ; Loop until level is 1, and decrease HP and SP every loop
+	beq.b LAB_InitCharEnd
+	sub.w D1,($ca,A2) ; Current HP
+	sub.w D1,($cc,A2) ; Max HP
+	sub.w D2,($d0,A2) ; Current SP
+	sub.w D2,($d2,A2) ; Max SP
+	subq.b #1,D0
+	bra.b LAB_CheckLevelLoop
+LAB_InitCharEnd:
+	movem.l (SP)+,D0/D1/D2
+	rts
+; D0 (in): char index (1-based)
+; D0 (out): handle
+; A0 (out): resulting data
+FUN_GetInitialCharData:
+	move.l D1,-(SP)
+	moveq #$00000029,D1 ; Save.00/Party_char.amb
+	jsr Load_subfile
+	move.l D0,-(SP)
+	jsr Claim_pointer
+	move.l D0,A0
+	move.l (SP)+,D0
+	move.l (SP)+,D1
+	rts
 Show_eagle_flying_in:
 	movem.l	d0/d1/d7/a0,-(sp)
 	tst.b	Stygian			; Darkness ?
@@ -1852,8 +2197,8 @@ Show_eagle_flying_in:
 	addq.w	#4,d0			; Fly away
 	addq.w	#1,d1
 	dbra	d7,.Loop
-	jsr	Remove_HDOB		; Exit
 	move.b	HDOB_gfx_handle(a0),d0
+	jsr Remove_HDOB
 	jsr	Destroy_fake_handle
 	Pop	CA
 .Exit:	movem.l	(sp)+,d0/d1/d7/a0
@@ -1920,9 +2265,13 @@ Set_permanent_spell:
 	add.w	d7,a0
 	cmp.w	(a0),d1			; New duration shorter ?
 	bmi.s	.Exit
-	move.w	d0,2(a0)			; No -> Set new spell data
 	move.w	d1,(a0)
-.Exit:	movem.l	(sp)+,d7/a0
+.Exit:
+	cmp.w ($0002,A0),D0
+	bmi.b .End ; value already greater? skip
+	move.w D0,($0002,A0)
+.End:
+	movem.l	(sp)+,d7/a0
 	rts
 
 ******************************************************************************
@@ -2140,6 +2489,13 @@ Magic_class_ptrs:
 	dc.l MSpell_points,Heal_all,Magic_map,MAttribute
 	dc.l MAttribute,MAttribute,MAttribute,MAttribute
 	dc.l MAttribute,MAttribute,MAttribute,Levitation2
-	dc.l Drug,0,0,0
-	dc.l 0,0,0,0
+	dc.l Drug
+	; ADVANCED CHANGES
+	dc.l FUN_SpellSelfHealing ; 22
+	dc.l FUN_SpellSelfRevive ; 23
+	dc.l FUN_SpellExchangeExp ; 24
+	dc.l FUN_SpellMountWasp ; 25
+	dc.l $00000000 ; null pointer address
+	dc.l $00000000 ; null pointer address
+	dc.l $00000000 ; null pointer address
 	dc.l 0,0

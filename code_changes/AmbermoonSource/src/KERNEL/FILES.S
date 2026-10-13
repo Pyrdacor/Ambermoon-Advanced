@@ -23,7 +23,7 @@ Load_subfile_sizes:
 	jsr	_LVOOpen(a6)		; Open
 	move.l	(sp)+,a6
 	tst.l	d0
-	beq.w	.Skip2		; Error
+	beq.w	Load_subfile_sizes_Skip2		; Error
 	move.l	d0,6(a5)		; Success, store new file handle
 	move.l	d0,Current_open_file_handle
 	move.l	6(a5),d1
@@ -35,14 +35,15 @@ Load_subfile_sizes:
 	jsr	_LVORead(a6)
 	move.l	(sp)+,a6
 	cmp.l	#-1,d0
-	beq.w	.Skip2		; Error
+	beq.w	Load_subfile_sizes_Skip2		; Error
 	cmp.l	d0,d3		; Compare num read bytes
 					; to requested bytes.
-	beq.s	.Skip
-.Loop:
+	beq.s	Load_subfile_sizes_Skip
+Load_subfile_sizes_Loop:
+LAB_00244078:
 	move.w	#500,Dos_IO_error_code		; error 500
-	bra.w	.Skip3
-.Skip:
+	bra.w	Load_subfile_sizes_Skip3
+Load_subfile_sizes_Skip:
 	move.l	6(a5),d1
 	move.l	#Sub_file_sizes,d2		; Buffer to subfile sizes
 	moveq.l	#0,d3
@@ -50,6 +51,20 @@ Load_subfile_sizes:
 					; (we read 6 bytes before
 					; which is 4 bytes header
 					; plus the num files word).
+			; (we read 6 bytes before
+			; which is 4 bytes header
+			; plus the num files word).
+	; ADVANCED CHANGES - START, there are only 530 entries allowed at max so the value at offset 4 can be $0212 at max.
+	; We use this to allow better encoding. If the msb is set like $8XXX, the sub file list is stored as words instead of dwords.
+	; Also if the second msb is set like $4XXX, there are sections of subfiles. First a word is stored which gives the total number
+	; of sections. Then for each section there is a header of 2 words. First word is the start index (1-based) and second word is
+	; the number of subfiles in the section. All subfiles in-between are added automatically as 0-size subfiles. For example
+	; 2Map_data.amb stores maps 256..299, 400..4XX and 513..528. The gaps use immense amount in the original (~1400 bytes).
+	cmpi.w #$4000,D3
+	bcs.b .LAB_NormalSubFileList ; bcs = lower than / less
+	jsr FUN_LoadSubFileSizesSpecial
+	bra.b .LAB_EndSubFileSizesLoading
+.LAB_NormalSubFileList:
 	lsl.l	#2,d3		; * 4 as each file's size
 					; is given as a long.
 	move.l	a6,-(sp)
@@ -57,14 +72,16 @@ Load_subfile_sizes:
 	jsr	_LVORead(a6)		; Read the sub file sizes.
 	move.l	(sp)+,a6
 	cmp.l	#-1,d0
-	beq.w	.Skip2		; Error
+	beq.w	Load_subfile_sizes_Skip2		; Error
 	cmp.l	d0,d3		; Read enough bytes?
-	bne.s	.Loop
+	bne.s	Load_subfile_sizes_Loop
+.LAB_EndSubFileSizesLoading:
 	movem.l	(sp)+,d0-d3/a0/a1
 	rts
-.Skip2:
+Load_subfile_sizes_Skip2:
+LAB_002440b8:
 	jsr	Get_dos_IO_error
-.Skip3:
+Load_subfile_sizes_Skip3:
 	movem.l	(sp)+,d0-d3/a0/a1
 	jsr	Close_file
 	jsr	Handle_disk_error
@@ -85,6 +102,174 @@ Close_file:
 ;   D1 = File index
 ;   D0 = Sub file index (texture index)
 ;*****************************************************************************
+; ADVANCED CHANGES - START
+FUN_SeekToSubFileOffset:
+	move.l A0,-(SP)
+	lea DAT_SubfileOffsetsPerContainer,A0
+	moveq #$00000000,D2
+	move.w ($000a,A5),D2 ; file index
+	lsl.w #1,D2 ; to words
+	move.w ($0,A0,D2.w),D2 ; get offset
+	bne.b LAB_StoredSeekOffset
+	; if not stored, calc it as usual
+	move.w ($0004,A5),D2 ; subfile count
+	lsl.w #$00000002,D2 ; to byte index (* 4)
+LAB_StoredSeekOffset:
+	addq.l #$00000006,D2 ; add 6 byte offset (skip header)
+	move.l ($0006,A5),D1 ; file handle
+	moveq #-$00000001,D3 ; OFFSET_BEGINNING
+	move.l A6,-(SP)
+	movea.l Library_dos,A6
+	jsr (-$0042,A6) ; DOS Seek
+	movea.l (SP)+,A6
+	movea.l (SP)+,A0
+	rts
+FUN_LoadSubFileSizesSpecial:
+	movem.l D4/D2,-(SP)
+	move.l D3,D0
+	move.l D3,D4
+	moveq #$0f,D2
+	andi.l #$03ff,D0 ; real subfile count
+	lsr.l D2,D4 ; 0 (dword size) or 1 (word size)
+	eori.b #$01,D4 ; 1 (dword size) or 0 (word size)
+	addq.l #1,D4 ; 2 (dword size) or 1 (word size) - can be used for shifting left
+	btst.l #$0e,D3
+	beq.w LAB_AllSubFileSizesStored
+	; here only sections are stored
+	move.w D0,DAT_TempSubFileCount
+	move.w D4,DAT_TempSubfileEntrySize
+	move.l #DAT_TempSubfileSectionCount,D2 ; read section count
+	moveq.l #2,D3 ; read a word
+	jsr FUN_ReadCurrentFileBytes
+	movem.l (SP)+,D2/D4
+	cmp.l #-$00000001,D0
+	beq.w LAB_002440b8 ; Error
+	cmp.l D0,D3 ; Read enough bytes?
+	bne.w LAB_00244078
+	movem.l A2/A1/A0/D7/D6/D5/D4/D2/D1,-(SP)
+	move.w DAT_TempSubfileSectionCount,D7
+	subq.l #1,D7
+	moveq.l #0,D4
+	moveq.l #0,D5
+	move.w DAT_TempSubfileEntrySize,D4
+	lea Sub_file_sizes,A0 ; target array
+	moveq.l #0,D0
+	move.w DAT_TempSubFileCount,D0
+	movem.l D1/D0,-(SP)
+	lsl.l #2,D0
+	moveq.l #0,D1
+	jsr Fill_memory ; clear the array
+	movem.l (SP)+,D0/D1
+	lea LAB_CopySubfileSectionValueFunctions,A2 ; copy function pointers
+	moveq.l #2,D6
+	lsl.w D4,D6
+	subq.l #4,D6
+	movea.l ($0,A2,D6.w),A2 ; D6 now holds the correct copy function
+	move.l #DAT_TempSubfileSectionHeader,D2 ; read section header
+	moveq.l #4,D3 ; read section start and size
+LAB_CopySubfileSizeSection:
+	jsr FUN_ReadCurrentFileBytesWithErrorCode
+	tst.l D0
+	bmi.b LAB_CopySubfileSizeSectionEnd ; some read error
+	move.w DAT_TempSubfileSectionHeader,D6 ; section start
+	subq.w #1,D6 ; 1-based to 0-based
+	lsl.w #2,D6
+	lea ($0,A0,D6.w),A1 ; target pointer
+	move.w DAT_TempSubfileSectionHeader+2,D6 ; section size
+	jsr (A2) ; returns return code in D0 and already tested it
+	bmi.b LAB_CopySubfileSizeSectionEnd
+	dbf D7,LAB_CopySubfileSizeSection
+	moveq.l #0,D0 ; no error
+LAB_CopySubfileSizeSectionEnd:
+	movem.l (SP)+,D1/D2/D4/D5/D6/D7/A0/A1/A2
+	cmp.l #-$00000001,D0 ; Read error
+	beq.w LAB_002440b8
+	cmp.l #-$00000002,D0 ; Not read enough bytes?
+	beq.w LAB_00244078
+	rts
+LAB_AllSubFileSizesStored:
+	; here we read all sizes and the size per entry must be word, otherwise it would be the normal handling!
+	move.w D0,DAT_TempSubFileCount
+	lsl.w #1,D0 ; D0 now holds the size of entries multiplied by the entry size (here word)
+	move.l #DAT_SubFileSizesWord,D2 ; read it into this temp location
+	move.l D0,D3 ; setup the read size
+	jsr FUN_ReadCurrentFileBytes
+	movem.l (SP)+,D4/D2
+	cmp.l #-$00000001,D0
+	beq.w LAB_002440b8 ; Error
+	cmp.l D0,D3 ; Read enough bytes?
+	bne.w LAB_00244078
+	movem.l A1/A0/D7,-(SP)
+	moveq #0,D0
+	lea DAT_SubfileOffsetsPerContainer,A0	
+	move.w DAT_TempSubFileCount,D7
+	move.w ($000a,A5),D0 ; file index
+	lsl.w #1,D0 ; to words
+	lsl.w #1,D7
+	move.w D7,($0,A0,D0.w) ; store offset
+	move.w DAT_TempSubFileCount,D7
+	subq.w #1,D7
+	lea DAT_SubFileSizesWord,A0
+	lea Sub_file_sizes,A1
+LAB_CopyWordSubfileSizes:
+	move.w (A0)+,D0
+	move.l D0,(A1)+
+	dbf D7,LAB_CopyWordSubfileSizes
+	movem.l (SP)+,D7/A0/A1
+	rts
+LAB_CopySubfileSectionValueFunctions:
+	dc.l FUN_CopySubfileSectionValuesWord
+	dc.l FUN_CopySubfileSectionValuesLong
+; D1: file handle
+; A1: target pointer
+; D6: num entries (here longs)
+FUN_CopySubfileSectionValuesLong:
+	movem.l D3/D2,-(SP)
+	move.l A1,D2 ; target to read to
+	move.l D6,D3 ; size in longs
+	lsl.l #2,D3 ; size in bytes
+	jsr FUN_ReadCurrentFileBytesWithErrorCode
+	movem.l (SP)+,D2/D3
+	tst.l D0
+	rts
+; D1: file handle
+; A1: target pointer
+; D6: num entries (here words)
+FUN_CopySubfileSectionValuesWord:
+	movem.l A1/A0/D6/D3/D2,-(SP)
+	move.l #DAT_SubFileSizesWord,D2 ; target to read to (temp array)
+	move.l D6,D3 ; size in words
+	lsl.l #1,D3 ; size in bytes
+	jsr FUN_ReadCurrentFileBytesWithErrorCode
+	tst.l D0
+	bmi.b LAB_TransferSubfileSizesEnd
+	subq #1,D6
+	moveq #0,D2
+	lea DAT_SubFileSizesWord,A0
+LAB_TransferSubfileSizes:
+	move.w D2,(A1)+
+	move.w (A0)+,(A1)+
+	dbf D6,LAB_TransferSubfileSizes
+LAB_TransferSubfileSizesEnd:	
+	movem.l (SP)+,D2/D3/D6/A0/A1
+	tst.l D0
+	rts
+FUN_ReadCurrentFileBytes: ; D3 is the size in bytes
+	movem.l A6/A1/A0/D1,-(SP)
+	move.l ($0006,A5),D1 ; file handle
+	movea.l Library_dos,A6
+	jsr (-$002a,A6) ; Read bytes
+	movem.l (SP)+,D1/A0/A1/A6
+	rts
+FUN_ReadCurrentFileBytesWithErrorCode: ; D3 is the size in bytes
+	jsr FUN_ReadCurrentFileBytes
+	cmp.l #-$00000001,D0
+	beq.b LAB_ReadCurrentFileBytesWithErrorCode_End
+	cmp.l D0,D3 ; Read enough bytes?
+	beq.b LAB_ReadCurrentFileBytesWithErrorCode_End
+	moveq #-2,D0
+LAB_ReadCurrentFileBytesWithErrorCode_End:
+	rts
 Load_subfile:
 	movem.l	d1-d7/a0-a6,-(sp)
 	lea.l	-28(sp),sp
@@ -100,7 +285,9 @@ Load_subfile:
 	jsr	Push_Mptr
 	jsr	Load_subfile_sizes
 	move.w	12(a5),d1
-	cmp.w	4(a5),d1
+	move.w ($0004,A5),D2 ; max files
+	andi.w #$03ff,D2 ; only take 10 bits
+	cmp.w D2,D1 ; max files
 	ble.s	.Skip
 	jsr	Close_file
 	bra.w	.Skip3
@@ -152,7 +339,9 @@ Load_unique_subfile:
 	jsr	Push_Mptr
 	jsr	Load_subfile_sizes
 	move.w	12(a5),d1
-	cmp.w	4(a5),d1
+	move.w ($0004,A5),D2 ; max files
+	andi.w #$03ff,D2 ; only take 10 bits
+	cmp.w D2,D1 ; max files
 	ble.s	.Skip
 	jsr	Close_file
 	bra.w	.Skip5
@@ -273,7 +462,10 @@ Load_batch_of_subfiles:
 	clr.b	22(a5)
 	tst.w	d0
 	ble.w	.Skip7
-	cmp.w	4(a5),d0
+	; ADVANCED CHANGES - START
+	move.w ($0004,A5),D1
+	andi.w #$03ff,D1
+	cmp.w D1,D0
 	bgt.w	.Skip7
 	lea.l	Sub_file_sizes,a2
 	moveq.l	#0,d0
@@ -574,16 +766,17 @@ Load_AMBR:
 	jsr	Free_memory
 .Skip6:
 	jsr	Handle_disk_error
-	move.l	6(a5),d1
-	moveq.l	#0,d2
-	move.w	4(a5),d2
-	lsl.w	#2,d2
-	addq.l	#6,d2
-	moveq.l	#-1,d3
-	move.l	a6,-(sp)
-	move.l	Library_dos,a6
-	jsr	_LVOSeek(a6)
-	move.l	(sp)+,a6
+	;move.l ($0006,A5),D1
+	;moveq #$00000000,D2
+	;move.w ($0004,A5),D2
+	;lsl.w #$00000002,D2
+	;addq.l #$00000006,D2
+	;moveq #-$00000001,D3
+	;move.l A6,-(SP)
+	;movea.l Library_Dos,A6
+	;jsr (-$0042,A6) ; DOS Seek
+	;movea.l (SP)+,A6
+	jsr FUN_SeekToSubFileOffset ; ADVANCED
 	movem.l	(sp)+,d0-d3/d7/a0/a1/a4
 	bra.w	Load_AMBR
 
@@ -713,16 +906,17 @@ Load_AMPC:
 	jsr	Free_memory
 .Skip8:
 	jsr	Handle_disk_error
-	move.l	6(a5),d1
-	moveq.l	#0,d2
-	move.w	4(a5),d2
-	lsl.w	#2,d2
-	addq.l	#6,d2
-	moveq.l	#-1,d3
-	move.l	a6,-(sp)
-	move.l	Library_dos,a6
-	jsr	_LVOSeek(a6)
-	move.l	(sp)+,a6
+	;move.l ($0006,A5),D1 ; file handle
+	;moveq #$00000000,D2
+	;move.w ($0004,A5),D2 ; subfile index
+	;lsl.w #$00000002,D2 ; to byte index (* 4)
+	;addq.l #$00000006,D2 ; add 6 byte offset (skip header)
+	;moveq #-$00000001,D3 ; OFFSET_BEGINNING
+	;move.l A6,-(SP)
+	;movea.l Library_Dos,A6
+	;jsr (-$0042,A6) ; DOS Seek
+	;movea.l (SP)+,A6
+	jsr FUN_SeekToSubFileOffset ; ADVANCED
 	movem.l	(sp)+,d0-d3/d7/a0/a1/a4
 	bra.w	Load_AMPC
 
@@ -879,16 +1073,17 @@ Load_AMNP:
 	jsr	Free_memory
 .Skip8:
 	jsr	Handle_disk_error
-	move.l	6(a5),d1
-	moveq.l	#0,d2
-	move.w	4(a5),d2
-	lsl.w	#2,d2
-	addq.l	#6,d2
-	moveq.l	#-1,d3
-	move.l	a6,-(sp)
-	move.l	Library_dos,a6
-	jsr	_LVOSeek(a6)
-	move.l	(sp)+,a6
+	;move.l ($0006,A5),D1
+	;moveq #$00000000,D2
+	;move.w ($0004,A5),D2
+	;lsl.w #$00000002,D2
+	;addq.l #$00000006,D2
+	;moveq #-$00000001,D3
+	;move.l A6,-(SP)
+	;movea.l Library_Dos,A6
+	;jsr (-$0042,A6)
+	;movea.l (SP)+,A6
+	jsr FUN_SeekToSubFileOffset ; ADVANCED
 	movem.l	(sp)+,d0-d3/d7/a0/a1/a4
 	bra.w	Load_AMNP
 
@@ -1311,16 +1506,17 @@ Write_file_data:
 .Skip:
 	jsr	Get_dos_IO_error
 	jsr	Handle_disk_error
-	move.l	6(a5),d1
-	moveq.l	#0,d2
-	move.w	4(a5),d2
-	lsl.w	#2,d2
-	addq.l	#6,d2
-	moveq.l	#-1,d3
-	move.l	a6,-(sp)
-	move.l	Library_dos,a6
-	jsr	_LVOSeek(a6)
-	move.l	(sp)+,a6
+	;move.l ($0006,A5),D1
+	;moveq #$00000000,D2
+	;move.w ($0004,A5),D2
+	;lsl.w #$00000002,D2
+	;addq.l #$00000006,D2
+	;moveq #-$00000001,D3
+	;move.l A6,-(SP)
+	;movea.l Library_Dos,A6
+	;jsr (-$0042,A6)
+	;movea.l (SP)+,A6
+	jsr FUN_SeekToSubFileOffset ; ADVANCED
 	movem.l	(sp)+,d0-d3/a0/a1
 	bra.w	Write_file_data
 
@@ -1514,8 +1710,16 @@ Decompress_offset:
 	dc.l	$6400
 
 Decompress_extra_table:
-	dc.b	0,0,0,0,8,0,$3c,0,$3c,0,0,0,0,0,3,0
-	dc.b	0,0,0,0
+	dc.w $0000 ; Lob Type 0
+	dc.w $0000 ; Lob Type 1
+	dc.w $0800 ; Lob Type 2
+	dc.w $3c00 ; Lob Type 3
+	dc.w $3c00 ; Lob Type 4
+	dc.w $0000 ; Lob Type 5
+	dc.w $0000 ; Lob Type 6
+	dc.w $0300 ; Lob Type 7
+	dc.w $0000 ; Lob Type 8
+	dc.w $0000 ; Lob Type 9
 
 ;*****************************************************************************
 ; [ Decompressor main loop ]
@@ -1527,9 +1731,11 @@ Do_decompress:
 .Loop:
 	beq.s	.Exit
 	moveq.l	#0,d0
-	move.b	(a1),d0
-	add.w	d0,d0
-	move.w	Decompress_extra_table(pc,d0.w),d0
+	; ADVANCED CHANGES - START
+	;move.b (A1),D0 ; read the lob type. 
+	;add.w D0,D0 ; * 2 as the buffer size array uses words
+	;move.w (DAT_LobAdditionalBufferSizes,PC,D0.w),D0 ; get the additional buffer size (we use 0 for all)
+	moveq.l #0,D0 ; always use 0
 	bsr.s	Decompress_chunk
 	move.l	Decompress_target(pc),a1
 	lea.l	Decompress_chunk_count(pc),a0
@@ -1604,6 +1810,270 @@ Decompress_chunk:
 	blt.s	.Loop2
 	rts
 .Exit:
+	; ADVANCED CHANGES - START
+	cmpi.b #$00000011,(A0) ; 0x11 is Pyrdacor's extended lob algorithm
+	bne.w LAB_CheckLZRS ; skip if mode is not 0x11
+	move.l (A0)+,D0 ; again store the decoded size header (upper byte is the lob mode, then 24 bit is size)
+	andi.l #$00ffffff,D0 ; just mask out the size
+	add.l A1,D0 ; store the end of the decode buffer in D0
+	addq.l #$00000004,A0 ; skip the size header in encoded data
+	; each header byte has some meaning:
+	; * 0: zero rle, following byte gives an amount of zeros, interpreted as 35 to 290
+	; * 1 to 127: this amount of literals follow
+	; * for negative values:
+	; ** check bits 6 and 5:
+	; *** 00: small match, next 4 bits give the match length (3 to 18), lsb and next byte gives the offset (0 to 511)
+	; *** 01: large match, next 7 bits give the match length (3 to 130), next 10 bits gives the offset (0 to 1023),
+	;         - if odd the last 4 bits are read from another byte from the input stream and the lower 4 bits are stored
+	;           as a buffer for the next large match
+	;         - if even the last 4 bits are taken from the previously stored buffer byte
+	; *** 10: byte rle, the next 5 bits give the number of repeats (3 to 34), next byte is the byte to repeat
+	; *** 11: single small literal encoded in the lower 5 bits (0 to 31)
+	; D4: Match reserve available
+	; D5: Match reserve
+	moveq.l #0,D5 ; init match reserve state
+	move.l A0,D6
+LAB_PyrLobLoop:
+	moveq.l #0,D1
+	move.b (A0)+,D1 ; it is time for a new header byte, store it in D1
+	bne.b DAT_PyrLobNoZeroRle
+	; Zero RLE
+	move.b (A0)+,D1
+	add.w #34,D1 ; +35 when considering dbf
+	moveq.l #0,D2
+DAT_PyrLobRleLoop:
+	move.b D2,(A1)+
+	dbf D1,DAT_PyrLobRleLoop
+	bra.b DAT_PyrLobCheckEnd
+DAT_PyrLobNoZeroRle:
+	bmi.b LAB_PyrSpecial
+	; literals
+	subq.b #1,D1
+DAT_PyrLobLiteralLoop:
+	move.b (A0)+,(A1)+
+	dbf D1,DAT_PyrLobLiteralLoop
+	bra.b DAT_PyrLobCheckEnd
+LAB_PyrSpecial:
+	moveq.l #0,D2
+	move.b D1,D2
+	lsr.b #5,D2
+	andi.b #3,D2 ; special encoding type (0 to 3)
+	andi.l #$1f,D1 ; rest of the header
+	cmpi.b #2,D2 ; check for byte RLE
+	bne.b LAB_NoByteRle
+	; Literal rle
+	move.b (A0)+,D2 ; read literal
+	addq.b #2,D1 ; 0 to 31 -> 2 to 33 (with dbf it's 3 to 34)
+	bra.b DAT_PyrLobRleLoop ; re-use the zero RLE loop with different literal
+LAB_NoByteRle:
+	cmpi.b #3,D2 ; check for small literal
+	bne.b LAB_PyrLobMatch
+	; single small literal
+	move.b D1,(A1)+
+DAT_PyrLobCheckEnd:
+	cmpa.l D0,A1 ; are we at the end?
+	blt.b LAB_PyrLobLoop ; no? keep going
+	move.l A0,D5
+	sub.l D6,D5
+	btst.l #0,D5
+	beq.b LAB_PyrLobReturn
+	adda.l #1,A0
+LAB_PyrLobReturn:
+	rts ; yes? return
+LAB_PyrLobMatch:
+	tst.b D2
+	bne.b LAB_PyrLobLargeMatch
+	; small match
+	move.b D1,D2
+	lsl.w #8,D2
+	andi.w #$100,D2
+	move.b (A0)+,D2 ; D2 now holds the match offset
+	lsr.b #1,D1 ; D1 now holds the base match length
+	bra.b LAB_PyrLobProcessMatch
+LAB_PyrLobLargeMatch:
+	; large match
+	moveq.l #0,D2
+	lsl.w #2,D1
+	move.b (A0)+,D2 ; second byte
+	move.b D2,D3
+	lsr.b #6,D3
+	or.b D3,D1 ; D1 now holds the base match length
+	andi.b #$3f,D2 ; limit to 6 bits in second byte
+	lsl.w #4,D2
+	tst.b D5
+	bne.b LAB_PyrLobUseMatchReserve
+	; read 1 more byte
+	move.b (A0)+,D3
+	move.b D3,D4 ; store the byte as the new reserve
+	moveq.l #-1,D5 ; toggle the match reserve usage flag
+	lsr.b #4,D3 ; we only use the upper 4 bits
+	or.b D3,D2 ; D2 now holds the full offset
+	bra.b LAB_PyrLobProcessMatch
+LAB_PyrLobUseMatchReserve:
+	; no more read, consume match reserve instead
+	move.b D4,D3
+	andi.b #$f,D3 ; ensure only the 4 lower bits are used
+	or.b D3,D2 ; D2 now holds the full offset
+	moveq.l #0,D5 ; toggle the match reserve usage flag
+LAB_PyrLobProcessMatch:
+	movea.l A1,A2 ; store copy start point in A2
+	addq.l #1,D2 ; increase offset by 1
+	suba.l D2,A2 ; go to the match start by reducing current pos by match offset
+	move.b (A2)+,(A1)+ ; always copy at least
+	move.b (A2)+,(A1)+ ; 3 bytes as the min match
+DAT_PyrLobCopyMatchByte:
+	move.b (A2)+,(A1)+ ; length is 3.
+	dbf D1,DAT_PyrLobCopyMatchByte ; keep going until we copied the whole match
+	bra.b DAT_PyrLobCheckEnd
+; ---- ;
+; LZRS ;
+; ---- ;
+LAB_CheckLZRS:
+	cmpi.b #$00000010,(A0) ; 0x10 is Pyrdacor's LZRS algorithm
+	bne.w LAB_CheckTextLob ; if not check for text lob
+	move.l (A0)+,D0 ; again store the decoded size header (upper byte is the lob mode, then 24 bit is size)
+	andi.l #$00ffffff,D0 ; just mask out the size
+	add.l A1,D0 ; store the end of the decode buffer in D0
+	addq.l #$00000004,A0 ; skip the size header in encoded data
+    moveq.l #0,D1
+    moveq.l #1,D2
+    move.b (A0)+,D1 ; initial literals
+	tst.b D1 ; 0 means 256 + more bytes
+    bne.b LAB_LZRSCopyLiteralsEnd
+	move.w #256,D1
+	moveq.l #0,D2 ; additional byte marker
+	bra.b LAB_LZRSCopyLiteralsEnd
+LAB_LZRSLoop:
+	moveq.l #0,D1
+    move.b (A0)+,D1
+	cmpi.b #$e0,D1
+	bcs.b LAB_LZRSMatch
+    ; Here it is just literals
+	andi.b #$1f,D1 ; mask out header bits
+    move.l D1,D2
+	eori.b #$1f,D2 ; additional byte marker will be 0 if amount value was $1f
+LAB_LZRSCopyLiterals:
+    move.b (A0)+,(A1)+
+LAB_LZRSCopyLiteralsEnd:
+    dbf D1,LAB_LZRSCopyLiterals
+    tst.b D2
+    bne.b LAB_LZRSCheckEnd
+    moveq.l #0,D1
+    move.b (A0)+,D1
+    move.w D1,D2
+    addq.b #1,D2 ; additional byte marker will be 0 if amount value was $ff
+    bra.b LAB_LZRSCopyLiteralsEnd
+LAB_LZRSCheckEnd:
+	cmpa.l D0,A1 ; are we at the end?
+	blt.b LAB_LZRSLoop ; no? keep going
+	rts ; yes? return
+LAB_LZRSMatch:
+    move.l D1,D2
+	lsr.b #2,D1
+	move.b D1,D5
+	lsr.b #2,D1 ; D1 now contains the match length value
+    andi.w #$0003,D5 ; number of following literals (0 to 3)
+	lsl.w #8,D2
+	move.b (A0)+,D2
+    andi.w #$03ff,D2
+	addq.w #1,D2 ; offset
+    movea.l A1,A2
+    suba.w D2,A2
+	move.w D1,D2
+    eori.b #$0d,D2 ; additional byte marker will be 0 if length value was at maximum
+	move.b (A2)+,(A1)+ ; always copy at least 3 bytes, 2 before the loop
+	move.b (A2)+,(A1)+
+LAB_LZRSCopyMatch:
+    move.b (A2)+,(A1)+
+LAB_LZRSCopyMatchEnd:
+    dbf D1,LAB_LZRSCopyMatch
+    tst.b D2
+    beq.b LAB_LZRSMoreMatchLength
+    move.w D5,D1 ; copy additional literals encoded in the match
+    bra.b LAB_LZRSCopyLiteralsEnd
+LAB_LZRSMoreMatchLength:
+    move.b (A0)+,D2 ; read another byte
+    move.w D2,D1
+    add.b #1,D2 ; additional byte marker will be 0 if read length is max (255)
+    bra.b LAB_LZRSCopyMatchEnd
+LAB_CheckTextLob:
+	cmpi.b #$00000012,(A0) ; 0x12 is Pyrdacor's text lob algorithm
+	bne.w LAB_InvalidLob ; skip if mode is not 0x12
+	move.l (A0)+,D0 ; again store the decoded size header (upper byte is the lob mode, then 24 bit is size)
+	andi.l #$00ffffff,D0 ; just mask out the size
+	add.l A1,D0 ; store the end of the decode buffer in D0
+	addq.l #$00000004,A0 ; skip the size header in encoded data
+	moveq.l #0,D1
+	; D4: Match reserve available
+	; D5: Match reserve
+	moveq.l #0,D5 ; init match reserve state
+	move.b (A0)+,D1 ; number of bytes to skip
+	bra.b LAB_PyrTextLobSkipLoopEnd
+LAB_PyrTextLobSkipLoop:
+	move.b (A0)+,(A1)+ ; just copy the skipped bytes
+LAB_PyrTextLobSkipLoopEnd:
+	dbf D1,LAB_PyrTextLobSkipLoop
+LAB_PyrTextLobLoop:
+	moveq.l #0,D1
+	; now read the byte
+	move.b (A0)+,D1
+	cmpi.b #$1f,D1 ; this is the encoding for zero
+	bne.b LAB_PyrTextLobNotZero
+	move.b #0,(A1)+ ; write zero
+	bra.b LAB_PyrTextLobCheckEnd
+LAB_PyrTextLobNotZero:
+	cmpi.b #$20,D1
+	bcs.b LAB_PyrTextLobMatch ; values < 32 are encoded matches
+	move.b D1,(A1)+ ; otherwise just copy the byte
+	bra.b LAB_PyrTextLobCheckEnd
+LAB_PyrTextLobMatch:
+	btst.l #4,D1 ; if this bit is unset, it is a 2-byte match
+	bne.b LAB_PyrTextLobLongerMatch
+	moveq #0,D2
+	tst.b D5 ; is there a match reserve value?
+	bne.b LAB_PyrTextLobWithReserve
+	; no? read next byte
+	move.b (A0)+,D2
+	move.b D2,D4 ; store match reserve
+	lsr.b #4,D2
+	lsl.b #4,D1
+	or.b D1,D2
+	moveq #1,D1 ; with dbf later equals 2 loops
+	moveq.l #-1,D5 ; toggle match reserve state
+	bra.b LAB_PyrTextLobCopyMatch
+LAB_PyrTextLobWithReserve:
+	; yes? use the reserve
+	move.b D4,D2 ; use match reserve
+	andi.b #$f,D2
+	lsl.b #4,D1
+	or.b D1,D2
+	moveq #1,D1 ; with dbf later equals 2 loops
+	moveq.l #0,D5 ; toggle match reserve state
+	bra.b LAB_PyrTextLobCopyMatch
+LAB_PyrTextLobLongerMatch:
+	; longer matches can be of length 3 to 10
+	moveq #0,D2
+	move.b (A0)+,D2
+	move.b D2,D3
+	exg D1,D3 ; D3 no holds the header (1st byte), D1 the second byte
+	andi.w #$7,D1 ; mask out the lower 3 bits only
+	addq.b #2,D1 ; 2 to 9 (with dbf later equals 3 to 10 loops)
+	lsr.b #3,D2
+	lsl.w #5,D3
+	or.w D3,D2
+	andi.w #$1ff,D2
+LAB_PyrTextLobCopyMatch: ; D2: offset, D1: length
+	addq.w #3,D2 ; the offset is always 3 to low here, so increase it
+	movea.l A1,A2 ; store copy start point in A2
+	suba.l D2,A2 ; go to the match offset by reducing current pos by match offset
+LAB_PyrTextLobCopyMatchByte:
+	move.b (A2)+,(A1)+
+	dbf D1,LAB_PyrTextLobCopyMatchByte ; keep going until we copied the whole match
+LAB_PyrTextLobCheckEnd:
+	cmpa.l D0,A1 ; are we at the end?
+	blt.b LAB_PyrTextLobLoop ; no? keep going
+	rts ; yes? return
+LAB_InvalidLob:
 	rts
 
 ;*****************************************************************************
@@ -1645,6 +2115,21 @@ Current_file_compression_space:
 	ds.l	1
 Sub_file_sizes:
 	ds.b	2120
+DAT_SubFileSizesWord: ; ADVANCED
+	; dw[530]
+	dx.b 1060
+DAT_TempSubFileCount: ; ADVANCED
+	dx.w 1
+DAT_TempSubfileSectionCount: ; ADVANCED
+	dx.w 1
+DAT_TempSubfileSectionHeader: ; ADVANCED
+	dx.w 1
+	dx.w 1
+DAT_TempSubfileEntrySize: ; ADVANCED
+	dx.w 1
+DAT_SubfileOffsetsPerContainer: ; ADVANCED
+	; dw[50]
+	dx.w 50 
 Temp_index_buffer:
 	ds.b	128
 Dos_IO_error_code:

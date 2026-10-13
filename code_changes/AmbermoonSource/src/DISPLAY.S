@@ -310,13 +310,19 @@ Display_portrait:
 	move.w	Body_conditions(a1),d0	; Dead or alive ?
 	andi.w	#Dead_mask,d0
 	beq.s	.Alive
+	cmpi.b #13,($0002,A1)
+	bne.b .LAB_DrawHumanSkull
+	lea GFX_CatSkull,A0
+	bra.b .LAB_DrawTheSkull
+.LAB_DrawHumanSkull:
+	lea Death_mask,A0 ; If dead, draw skull
+.LAB_DrawTheSkull:
 	move.w	Displayed_X(a5),d0		; Display death mask
 	moveq.l	#1,d1
 	moveq.l	#24,d4
 	moveq.l	#3,d5
 	moveq.l	#2,d6
 	moveq.l	#34,d7
-	lea.l	Death_mask,a0
 	jsr	Put_unmasked_block
 	bra	.Print
 .Alive:	lea.l	Portrait_handles,a0		; Get portrait address
@@ -1615,6 +1621,7 @@ Create_1st_ghost:
 	jsr	Set_string_position
 	jsr	Add_HDOB			; Activate HDOB
 	sf	Second_ghost		; Clear !
+	sf Third_ghost
 	movem.l	(sp)+,d0/d1/d6/d7/a0
 	rts
 
@@ -1637,6 +1644,28 @@ Create_2nd_ghost:
 	jsr	Set_string_position
 	jsr	Add_HDOB			; Activate HDOB
 	st	Second_ghost		; Set !
+	sf Third_ghost
+	movem.l (SP)+,D0/D1/D6/D7/A0
+	rts
+; ADVANCED: add 3rd ghost/tooltip
+Third_ghost:
+	dc.b 0 ; boolean
+Ghost3_gfx_handle:
+	dc.b 0
+Ghost3_string_length:
+	dc.w 0
+Create_3rd_ghost:
+	movem.l A0/D7/D6/D1/D0,-(SP)
+	jsr Create_string_graphics
+	move.b D0,Ghost3_gfx_handle
+	move.w D7,Ghost3_string_length
+	lea Ghost3_HDOB,A0
+	move.b D0,($0010,A0) ; set gfx handle
+	move.w D6,($0004,A0) ; set width
+	move.w Ghost2_HDOB+2,D1
+	jsr Set_string_position
+	jsr Add_HDOB
+	st Third_ghost
 	movem.l	(sp)+,d0/d1/d6/d7/a0
 	rts
 
@@ -1658,6 +1687,12 @@ Destroy_ghosts:
 	jsr	Remove_HDOB
 	move.b	Ghost2_gfx_handle,d0
 	jsr	Free_memory
+	tst.b Third_ghost
+	beq.b .Done
+	lea Ghost3_HDOB,A0
+	jsr Remove_HDOB
+	move.b Ghost3_gfx_handle,D0
+	jsr Free_memory
 .Done:	jsr	Update_screen
 	move.w	#-1,Current_ghost_index	; Indicate
 .Exit:	movem.l	(sp)+,d0/a0
@@ -1679,6 +1714,12 @@ Set_ghost_positions:
 	move.w	Ghost2_string_length,d7
 	lea.l	Ghost2_HDOB,a0
 	jsr	Set_string_position
+	tst.b Third_ghost
+	beq.b .Exit
+	move.w ($0002,A0),D1 ; Y of ghost 2
+	move.w Ghost3_string_length,D7
+	lea Ghost3_HDOB,A0
+	jsr Set_string_position
 .Exit:	movem.l	(sp)+,d1/d7/a0
 	rts
 
@@ -1824,6 +1865,12 @@ Do_sparkle_object:
 ; The DATA & BSS segments	
 ;***************************************************************************
 	SECTION	Fast_DATA,data
+Ghost3_HDOB:
+	dc.w 0,0
+	dc.w 0,6,5,0
+	dc.l 0
+	dc.b 0,0
+	dcb.w 6,0
 Blink_colours:
 	dc.b 19,20,21,17,16,2,2,2,16,17,21,20,19
 	dc.b -1

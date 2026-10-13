@@ -82,7 +82,7 @@ Second_CIL_evaluate:
 Eye_action:
 	cmpi.b	#Map_3D,Current_map_type	; 2D or 3D map ?
 	bpl	.3D_map
-	move.l	#Look,EHM_ptr		; 2D -> Select
+	move.l #Look,EHM_ptr
 	Push	Module,Eye_Mod
 	bra.s	.Exit
 .3D_map:	move.w	Map_Xcoord,d0		; 3D
@@ -97,7 +97,7 @@ Eye_action:
 Hand_action:
 	cmpi.b	#Map_3D,Current_map_type	; 2D or 3D map ?
 	bpl	.3D_map
-	move.l	#Touch,EHM_ptr		; 2D -> Select
+	move.l #Touch,EHM_ptr
 	Push	Module,Hand_Mod
 	bra.s	.Exit
 .3D_map:	move.w	Map_Xcoord,d0		; 3D
@@ -112,7 +112,7 @@ Hand_action:
 Mouth_action:
 	cmpi.b	#Map_3D,Current_map_type	; 2D or 3D map ?
 	bpl	.3D_map
-	move.l	#Talk_2D,EHM_ptr		; 2D -> Select
+	move.l #Talk_2D,EHM_ptr
 	Push	Module,Mouth_Mod
 	bra.s	.Exit
 .3D_map:	move.w	Map_Xcoord,d0		; 3D
@@ -132,6 +132,8 @@ Change_travel_mode:
 	beq	.Up
 	cmp.w	#Swimming,d0		; Or swimming ?
 	beq	.Up
+	cmp.w #$000b,D0 ; wasp riding
+	beq.w .No
 	btst	d0,#Stationary_mask&$ff	; Leave transport ?
 					; BUILD: "&$ff" added. BTST with an immediate operand
 					;  only tests bits 0-7 (bit number modulo 8); the
@@ -266,9 +268,9 @@ Show_eagle_flying_away:
 	addq.w	#4,d0			; Fly away
 	subq.w	#1,d1
 	dbra	d7,.Loop
+	move.b ($0010,A0),D0 ; FIX: this and the next line was exchange in original, causing memory issues
 	jsr	Remove_HDOB		; Exit
 	jsr	Update_screen
-	move.b	HDOB_gfx_handle(a0),d0
 	jsr	Destroy_fake_handle
 	Pop	CA
 .Exit:	movem.l	(sp)+,d0/d1/d7/a0
@@ -539,7 +541,7 @@ Look:
 ; All registers are restored
 ;*****************************************************************************
 Handle_visible_events:
-	movem.l	d0/d1/d7,-(sp)
+	movem.l D7/D2/D1/D0,-(SP)
 	moveq.l	#0,d7			; Default is no luck
 	jsr	Find_event		; Find event
 	bmi.s	.Exit			; Any there ?
@@ -550,8 +552,19 @@ Handle_visible_events:
 	move.b	(a5),d0
 	cmp.b	#Query_type,d0		; Query ?
 	bne.s	.No1
-	cmp.b	#Seen_QM_type,Event_b1(a5)	; For eye ?
-	beq.s	.Yes
+	; ADVANCED CHANGES - START
+	move.l #$00900000,D1 ; eye cursor, multi cursor
+	move.b ($0001,A5),D2
+	btst.l D2,D1
+	bne.b .Yes
+	; Otherwise check for false branch in use item event
+	move.l D2,D0
+	move.l D7,-(SP)
+	jsr FUN_CheckUseItemFalseBranch
+	move.l (SP)+,D7
+	tst.w D2
+	bne.b .Yes
+	bra.b .No2
 .No1:	move.l	#Visible_event_mask,d1	; No -> Visible ?
 	btst	d0,d1
 	beq.s	.No2
@@ -564,7 +577,7 @@ Handle_visible_events:
 .No2:	jsr	Print_visible_event		; Print event
 	sne	d7
 .Exit:	tst.w	d7			; Test
-	movem.l	(sp)+,d0/d1/d7
+	movem.l (SP)+,D0/D1/D2/D7
 	rts
 
 ;*****************************************************************************
@@ -595,6 +608,51 @@ Print_visible_event:
 ;        ne - I felt something
 ; All registers are restored
 ;*****************************************************************************
+; Check for eye, hand, mouth or multicursor events
+; in false branch of use item event.
+; Of after skipping some other conditions.
+; D0 = condition type
+; D1 = expected condition type mask (eye, hand, mouth or multicursor)
+FUN_CheckUseItemFalseBranch:
+	; First skip other conditions
+	movem.l D4/D3/D1/D0,-(SP)
+	move.b Success,D3
+	move.b Handling_event,D4
+	or.l #$00000080,D1 ; Add use item condition to exclusion
+	jsr FUN_ExecuteConditionEventsExcept
+	tst.b Break_event
+	bne.b .AfterStateReset
+	move.b D3,Success
+	move.b D4,Handling_event
+.AfterStateReset:
+	movem.l (SP)+,D0/D1/D3/D4
+.Start:
+	moveq #0,D2 ; result
+	tst.b Break_event
+	bne.b .Abort ; Initial conditions failed
+	move.b (A5),D0
+	cmpi.b #$0000000d,D0 ; condition event?
+	bne.b .Abort
+	move.b ($0001,A5),D0 ; condition type
+	btst.l D0,D1
+	bne.b .Success
+	cmpi.b #7,D0 ; Use item condition?
+	bne.b .Abort
+	cmpi.w #-1,($0008,A5) ; Has false branch?
+	beq.b .Abort
+	move.w ($0008,A5),($000a,A5) ; Setup next event index (false branch)
+	jsr Chain_to_next_event ; Fill in next event data (false branch)
+	cmpi.b #13,(A5) ; condition event?
+	bne.b .Abort
+	moveq #0,D0
+	move.b ($0001,A5),D0
+	btst.l D0,D1 ; matches expected condition type?
+	beq.b .Start ; No? Re-check for use item event false branch :)
+.Success:
+	; Success
+	moveq #-1,D2
+.Abort:
+	rts
 Touch:
 	movem.l	d0-d2/a5,-(sp)
 	moveq.l	#0,d2			; Default is no luck
@@ -610,8 +668,15 @@ Touch:
 	bne.s	.Do
 	cmp.b	#Query_type,d0		; Query ?
 	bne.s	.Exit
-	cmp.b	#Touched_QM_type,Event_b1(a5)	; For touch ?
-	bne.s	.Exit
+	; ADVANCED CHANGES - START
+	move.l #$00804000,D1 ; hand cursor, multi cursor
+	move.b ($0001,A5),D0
+	btst.l D0,D1
+	bne.b .Do ; success
+	; Otherwise check for false branch in use item event
+	jsr FUN_CheckUseItemFalseBranch
+	tst.w D2
+	beq.b .Exit
 .Do:	st	Hand_flag			; Handle event
 	jsr	Handle_event_chain
 	sf	Hand_flag
@@ -757,7 +822,7 @@ Talk_to_yourself:
 .Do:	jsr	Update_status_block		; Show
 	jsr	Update_screen
 	move.w	#103,MemberSel_prompt	; Talk to whom ?
-	move.l	#Talk_check,MemberSel_ptr
+	move.l #Talk_check,MemberSel_ptr
 	Push	Module,MemberSel_Mod
 	move.w	Selected_member,d0		; No-one ?
 	beq	.Exit
@@ -792,22 +857,42 @@ Talk_to_yourself:
 ; All registers are restored
 ;*****************************************************************************
 Handle_talkable_events:
-	movem.l	d0/d1/d7/a0/a5,-(sp)
+	movem.l A5/A0/D7/D2/D1/D0,-(SP)
 	moveq.l	#0,d7			; Default is no success
 	jsr	Find_event		; Find event
-	bmi.s	.Exit
+	bmi.w	.Exit
 	jsr	Check_event_save_status	; Already saved ?
-	bne.s	.Exit
+	bne.w	.Exit
 	lea.l	Current_event_data,a5	; No -> Examine event
 	moveq.l	#0,d0			; Get event type
 	move.b	(a5),d0
-	move.l	#Talkable_event_mask,d1	; Talkable ?
-	btst	d0,d1
-	bne.s	.Do
+	cmpi.b #8,D0 ; event type == 8 (riddlemouth)
+	beq .Do
 	cmp.b	#Query_type,d0		; Query ?
-	bne.s	.Exit
-	cmp.b	#Word_spoken_QM_type,Event_b1(a5)	; For spoken word ?
-	bne.s	.Exit
+	bne.w	.Exit
+	; ADVANCED CHANGES - START
+	move.b ($0001,A5),D2
+	move.l #$00a00000,D1 ; mouth cursor, multi cursor
+	btst.l D2,D1
+	bne .Do
+	; ADVANCED CHANGES - END
+	cmpi.b #$0f,D2 ; enter keyword
+	beq.b .EnterKeyWord
+	; Otherwise check for false branch in use item event
+	move.l D2,D0
+	movem.l D7/D0,-(SP)
+	jsr FUN_CheckUseItemFalseBranch
+	movem.l (SP)+,D0/D7
+	tst.w D2
+	bne.b .Do
+	; Also check for enter keyword
+	move.l D7,-(SP)
+	move.l #$00008000,D1 ; enter keyword
+	jsr FUN_CheckUseItemFalseBranch
+	move.l (SP)+,D7
+	tst.w D2
+	beq.b .Exit
+.EnterKeyWord:
 	moveq.l	#Dictionary_file,d0		; Yes -> Load dictionary
 	jsr	Load_file
 	move.b	d0,Dictionary_handle
@@ -822,7 +907,7 @@ Handle_talkable_events:
 	sf	Mouth_flag
 .Skip:	moveq.l	#-1,d7			; Success !
 .Exit:	tst.w	d7			; Test success
-	movem.l	(sp)+,d0/d1/d7/a0/a5
+	movem.l (SP)+,D0/D1/D2/D7/A0/A5
 	rts
 
 ;*****************************************************************************
@@ -1187,13 +1272,15 @@ Rest:
 	bne	.Done
 	tst.b	Inn_flag			; Inn- or out-side ?
 	bne.s	.Do
+	cmpi.b #13,($02,A1)
+	bpl.b .Do ; animals and above don't need food to heal
 	tst.w	Food_rations(a1)		; Outside -> Any food left ?
 	bne.s	.Enough
 	lea.l	No_recup_text,a0		; Print "no food..."
 	jsr	Print_member_text
 	bra.s	.Done
 .Enough:	subq.w	#1,Food_rations(a1)		; Remove 1 food
-	subi.l	#Food_weight,Weight_normal(a1)
+	subi.l #$00000019,($010e,A1) ; reduce food weight, ADVANCED changed to 25
 .Do:	jsr	Add_LP_and_PP		; Do it (50%)
 .Done:	Free	-1(a2)
 .Next1:	addq.w	#1,d7			; Next member
@@ -1494,9 +1581,9 @@ Options_ModInit:
 	movem.w	d0-d2,-(sp)		; Display surrounding box
 	lsr.w	#1,d2
 	add.w	d2,d0
-	subi.w	#64,d0
+	subi.w #$00000048,D0 ; sub 72 from x (was 64 before ADVANCED)
 	subq.w	#3,d1
-	move.w	#128,d2
+	move.w #$0090,D2 ; size is 144 (was 128 before ADVANCED)
 	moveq.l	#19,d3
 	jsr	Draw_standard_box2
 	movem.w	(sp)+,d0-d2
