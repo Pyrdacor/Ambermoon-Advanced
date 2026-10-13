@@ -3,7 +3,9 @@
 > **Ambermoon Advanced:** This is a copy of `AmbermoonSource` from the Ambermoon repository
 > (commit `59352ca2`). The Advanced changes of `code_changes/AM2_CPU.s` were ported onto it.
 > `porting/PORTING.md` describes how, which decisions were taken by hand, and how the result was
-> verified. The text below describes the original source.
+> verified. `code_changes/compile.sh` builds `code_changes/AM2_CPU` from this source. The old
+> disassembly `code_changes/AM2_CPU.s` was removed; it is still in the git history.
+> The text below describes the original source.
 
 This folder contains the source code of the Ambermoon main program `AM2_CPU` in the
 version 1.21. It was created by merging

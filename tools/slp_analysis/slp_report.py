@@ -4,7 +4,7 @@ Usage: python slp_report.py <output.md> [--work <dir>] [--original-zip <extracte
 
 Builds the Advanced test data (tools/ambtools/make_testdata.py), extracts the original,
 dumps party members / spells / scrolls with SlpAnalysis (C#, uses Ambermoon.net next to
-this repo) and takes the Advanced spell costs from code_changes/AM2_CPU.s.
+this repo) and takes the Advanced spell costs from code_changes/AmbermoonSource/src/KERNEL/DATA.S.
 """
 import argparse
 import csv
@@ -36,8 +36,8 @@ subprocess.run(['dotnet', 'run', '-c', 'Release', '--project', os.path.join(S, '
                 O, os.path.join(original_dir, 'Amberfiles'), os.path.join(advanced_dir, 'Amberfiles')], check=True)
 
 # Advanced spell table from the Amiga source (5 bytes per spell: conditions, SP, SLP, target, element)
-lines = open(os.path.join(REPO, 'code_changes', 'AM2_CPU.s'), encoding='latin1').read().split('\n')
-start = next(k for k, l in enumerate(lines) if l.startswith('DAT_SpellInfos:')) + 2
+lines = open(os.path.join(REPO, 'code_changes', 'AmbermoonSource', 'src', 'KERNEL', 'DATA.S'), encoding='latin1').read().split('\n')
+start = next(k for k, l in enumerate(lines) if l.startswith('Spell_data:')) + 2
 amiga_rows, values, name = [], [], None
 for l in lines[start:]:
     t = l.strip()
@@ -128,7 +128,7 @@ w('')
 w('Stand 06.10.2026. Datenquellen:')
 w('')
 w('- **Original:** deutsche Version 1.20 (`Ambermoon/Disks/German`), Partymitglieder aus `Initial/Party_char.amb`, Zauberkosten aus der Remake-Tabelle `SpellInfos` (Originalwerte).')
-w('- **Advanced Ep4:** `german/Amberfiles/Save.00/Party_char.amb` (Branch episode4), Zauberkosten aus der Amiga-Tabelle `DAT_SpellInfos` in `code_changes/AM2_CPU.s`.')
+w('- **Advanced Ep4:** `german/Amberfiles/Save.00/Party_char.amb` (Branch episode4), Zauberkosten aus der Amiga-Tabelle `Spell_data` in `code_changes/AmbermoonSource/src/KERNEL/DATA.S`.')
 w('- Schriftrollen aus den Item-Daten beider Versionen.')
 w('')
 diffs = [i for i in sorted(amiga) if i in remake_a and remake_a[i] != amiga[i][1]]

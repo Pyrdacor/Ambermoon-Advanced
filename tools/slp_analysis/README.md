@@ -13,6 +13,6 @@ Options: `--work <dir>` (temp dir for extracted data, default `%TEMP%\slp_analys
 
 - `SlpAnalysis` (C#) dumps party members, spells and scrolls via Ambermoon.Data.Legacy.
   Ambermoon.net must be checked out next to this repo.
-- Advanced SP/SLP costs come from `DAT_SpellInfos` in `code_changes/AM2_CPU.s`
+- Advanced SP/SLP costs come from `Spell_data` in `code_changes/AmbermoonSource/src/KERNEL/DATA.S`
   (the remake values are listed too, so mismatches show up).
 - `section7.md` is the hand-written assessment appended as the last section.

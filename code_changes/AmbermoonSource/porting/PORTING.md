@@ -6,6 +6,9 @@ Ambermoon repository, in the state of commit `62823505`. The disassembly was lat
 the reconstructed source `AmbermoonSource`. It was last available in commit `382eaeda` and deleted in
 `4b050b68`.
 
+In this repo, `code_changes/AM2_CPU.s` was removed after the port. Its last version is in commit
+`f1ed75c5`.
+
 `code_changes/AmbermoonSource` started as a copy of `AmbermoonSource` from Ambermoon `59352ca2`
 (commit `6c2a4997` in this repo). The Advanced changes were then ported onto it, mostly
 automatically, with the scripts in `tools/`.
@@ -118,5 +121,21 @@ The old Advanced build (`code_changes/AM2_CPU.s`) was compared with the build of
   source. Each of these hunks was checked by hand, which found the Datachange, `Remove_member` and
   `Copy_data` cases above.
 
-The ported source has not been tested in the game yet. Test it in the remake and on the Amiga before
-it replaces `code_changes/AM2_CPU`.
+After the port, `Spell_data` (`KERNEL/DATA.S`) was rewritten with the text of Advanced's spell
+table. The port had mixed the formats of both tables, but the values were already the same.
+
+## Fixes after the port
+
+Two Advanced bugs were fixed after the port (`COMBAT/COMBAT.S`):
+
+- **Foresee Attack:** It lowered the hit chance of all attackers, including the party. Now it only
+  lowers the hit chance of monsters.
+- **Aging penalty in combat:**
+  - When reading the aging step, the participant type was compared with `cmp.w`, so the party
+    offset 18 was always added. Monsters read beyond `DAT_BattleAgingInfo`.
+  - When writing, monsters used the indices 1–18, so the last one collided with the first party
+    member.
+  - Both sides now use 0–17 for monsters and 18–23 for party members.
+
+`code_changes/AM2_CPU` is built from this source with `code_changes/compile.sh`. It hasn't been
+tested in the game yet.

@@ -611,6 +611,7 @@ FUN_CheckBattleConditionsAtRoundStart:
 	moveq #0,D0
 	move.w Nr_monsters,D0
 	sub.w D7,D0
+	subq.w #1,D0 ; FIX: 0-based index (was 1 to 18, colliding with the first party member)
 	jsr FUN_ApplyBattleRoundConditions
 .Skip_Adv:
 	lea ($0028,A0),A0
@@ -1067,13 +1068,14 @@ Do_parade:
 ;  a2 - Pointer to attacker's character data
 ;  a3 - Pointer to defender's character data
 FUN_GetAttackerAgingValue:
-    move.l A1,-(SP)
+	move.l A1,-(SP)
 	moveq #0,D0
-	cmp #2,(A0)
+	move.b Part_nr(A0),D0 ; nr of monster/party member (1-based)
+	subq.w #1,D0
+	cmp.b #2,Part_type(A0) ; FIX: Was cmp.w, so the party offset was always added
 	beq .SkipPartyMemberOffset
-	moveq #18,D0 ; Party members start at index 18
+	add.w #18,D0 ; Party members start at index 18
 .SkipPartyMemberOffset:
-	add.b ($01,A0),D0 ; Add nr of monster/party member
 	lea DAT_BattleAgingInfo,A1
 	move.b 0(A1,D0.w),D0
 	mulu.w #10,D0
@@ -1081,13 +1083,14 @@ FUN_GetAttackerAgingValue:
 	rts
 ; -----------------------------------------------
 FUN_GetDefenderAgingValue:
-    move.l A1,-(SP)
+	move.l A1,-(SP)
 	moveq #0,D0
-	cmp #2,(A1)
+	move.b Part_nr(A1),D0 ; nr of monster/party member (1-based)
+	subq.w #1,D0
+	cmp.b #2,Part_type(A1) ; FIX: Was cmp.w, so the party offset was always added
 	beq .SkipPartyMemberOffset_Adv
-	moveq #18,D0 ; Party members start at index 18
+	add.w #18,D0 ; Party members start at index 18
 .SkipPartyMemberOffset_Adv:
-	add.b ($01,A1),D0 ; Add nr of monster/party member
 	lea DAT_BattleAgingInfo,A1
 	move.b 0(A1,D0.w),D0
 	mulu.w #10,D0
@@ -1123,6 +1126,8 @@ FUN_TestAttackerHit:
 .Test:
 	tst.b Foresee_attack
 	beq .NotForeseen
+	cmp.b #2,Part_type(A0) ; FIX: Only monster attacks were foreseen
+	bne .NotForeseen
 	add.w #25,D2
 .NotForeseen:
 	sub.w D2,D0

@@ -411,24 +411,28 @@ C3_palettes:
 	dc.w	$c60		; 0RGB ; 0RGB
 	dc.b	0,0
 Spell_data:
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	3		; SpellInfo.SP
-	dc.b	1		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	2		; SpellInfo.SLP
+	; SpellInfo[210]
+	; Healing Hand
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $03 ; SpellInfo.SP
+	dc.b $01 ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
+	dc.b $02 ; = Physical ; SpellInfo.Element
 	; Remove Fear
 	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $05 ; SpellInfo.SP
 	dc.b $05 ; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$f		; SpellInfo.SP
+	; Remove Panic
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $0f ; SpellInfo.SP
 	dc.b $0f ; SpellInfo.SLP
-	dc.b	4		; = AllAllies ; SpellInfo.Target
+	dc.b $04 ; = AllAllies ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	8		; SpellInfo.SP
+	; Remove Shadows
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $08 ; SpellInfo.SP
 	dc.b $0a ; SpellInfo.SLP
 	dc.b $01 ; = SingleAlly ; SpellInfo.Target
 	dc.b $02 ; = Physical ; SpellInfo.Element
@@ -461,42 +465,48 @@ Spell_data:
 	dc.b $0f ; SpellInfo.SP
 	dc.b $0a ; SpellInfo.SLP
 	dc.b $01 ; = SingleAlly ; SpellInfo.Target
-	dc.b	3		; SpellInfo.SLP
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$19		; SpellInfo.SP
-	dc.b $0f ; SpellInfo.SLP
-	dc.b	4		; = AllAllies ; SpellInfo.Target
 	dc.b $03 ; = Undead ; SpellInfo.Element
-	dc.b	$ff		; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$32		; SpellInfo.SP
+	; Neutralize Poison
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $19 ; SpellInfo.SP
+	dc.b $0f ; SpellInfo.SLP
+	dc.b $04 ; = AllAllies ; SpellInfo.Target
+	dc.b $03 ; = Undead ; SpellInfo.Element
+	; Medium Healing
+	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $32 ; SpellInfo.SP
 	dc.b $19 ; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
 	dc.b $02 ; = Physical ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$f		; SpellInfo.SP
-	dc.b	$a		; SpellInfo.SLP
-	dc.b	8		; = SingleEnemy ; SpellInfo.Target
+	; Dispell Undead
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $0f ; SpellInfo.SP
+	dc.b $0a ; SpellInfo.SLP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$32		; SpellInfo.SP
+	; Destroy Undead
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $32 ; SpellInfo.SP
 	dc.b $14 ; SpellInfo.SLP
-	dc.b	$10		; = EnemyRow ; SpellInfo.Target
+	dc.b $10 ; = EnemyRow ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$64		; SpellInfo.SP
+	; Holy Word
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $64 ; SpellInfo.SP
 	dc.b $1e ; SpellInfo.SLP
-	dc.b	$20		; = AllEnemies ; SpellInfo.Target
+	dc.b $20 ; = AllEnemies ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
-	dc.b	$e8		; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$64		; SpellInfo.SP
-	dc.b	$19		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	3		; SpellInfo.SLP
+	; Wake The Dead
+	dc.b $e8 ; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $64 ; SpellInfo.SP
+	dc.b $19 ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
+	dc.b $03 ; = Undead ; SpellInfo.Element
 	; Change Ashes
 	dc.b $e8 ; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $96 ; SpellInfo.SP
 	dc.b $14 ; SpellInfo.SLP
-	dc.b	1		; = Unk1 ; SpellInfo.Element
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
 	dc.b $03 ; = Undead ; SpellInfo.Element
 	; Change Dust
 	dc.b $e8 ; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
@@ -534,9 +544,10 @@ Spell_data:
 	dc.b $0a ; SpellInfo.SLP
 	dc.b $04 ; = AllAllies ; SpellInfo.Target
 	dc.b $02 ; = Physical ; SpellInfo.Element
-	dc.b	$e8		; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$32		; SpellInfo.SP
-	dc.b	$f		; SpellInfo.SLP
+	; Heal Aging
+	dc.b $e8 ; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $32 ; SpellInfo.SP
+	dc.b $0f ; SpellInfo.SLP
 	dc.b $01 ; = SingleAlly ; SpellInfo.Target
 	dc.b $02 ; = Physical ; SpellInfo.Element
 	; Stop Aging
@@ -585,9 +596,10 @@ Spell_data:
 	dc.b $e8 ; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $fa ; SpellInfo.SP
 	dc.b $23 ; SpellInfo.SLP
-	dc.b	$40		; = Item ; SpellInfo.Target
-	dc.b	1		; = Unk1 ; SpellInfo.Element
-	dc.b	$ef		; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $40 ; = Item ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Light
+	dc.b $ef ; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $05 ; SpellInfo.SP
 	dc.b $05 ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
@@ -595,10 +607,11 @@ Spell_data:
 	; Magical Torch
 	dc.b $ef ; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $0a ; SpellInfo.SP
-	dc.b	$a		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	1		; = Unk1 ; SpellInfo.Element
-	dc.b	$ef		; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $0a ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Magical Lantern
+	dc.b $ef ; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $19 ; SpellInfo.SP
 	dc.b $0f ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
@@ -606,9 +619,9 @@ Spell_data:
 	; Magical Sun
 	dc.b $ef ; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $32 ; SpellInfo.SP
-	dc.b	$14		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	1		; = Unk1 ; SpellInfo.Element
+	dc.b $14 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; Ghost Weapon
 	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $0a ; SpellInfo.SP
@@ -783,83 +796,99 @@ Spell_data:
 	dc.b $0f ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
-	dc.b	$ef		; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$3c		; SpellInfo.SP
+	; See The Truth
+	dc.b $ef ; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $3c ; SpellInfo.SP
 	dc.b $19 ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	$ef		; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$32		; SpellInfo.SP
+	dc.b $00 ; = Mental ; SpellInfo.Element
+	; Map View
+	dc.b $ef ; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $32 ; SpellInfo.SP
 	dc.b $0a ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	$e7		; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	5		; SpellInfo.SP
-	dc.b	2		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
-	dc.b	$e7		; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$19		; SpellInfo.SP
-	dc.b	$a		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
+	; Magical Compass
+	dc.b $e7 ; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $05 ; SpellInfo.SP
+	dc.b $02 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
-	dc.b	$e7		; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$19		; SpellInfo.SP
-	dc.b	$a		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
+	; Find Traps
+	dc.b $e7 ; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $19 ; SpellInfo.SP
+	dc.b $0a ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
-	dc.b	$e7		; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$19		; SpellInfo.SP
-	dc.b	$a		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
+	; Find Monsters
+	dc.b $e7 ; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $19 ; SpellInfo.SP
+	dc.b $0a ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
-	dc.b	$e7		; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$19		; SpellInfo.SP
-	dc.b	$a		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
+	; Find Persons
+	dc.b $e7 ; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $19 ; SpellInfo.SP
+	dc.b $0a ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
-	dc.b	$e7		; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$64		; SpellInfo.SP
+	; Find Secret Doors
+	dc.b $e7 ; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $19 ; SpellInfo.SP
+	dc.b $0a ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = Mental ; SpellInfo.Element
+	; Mystical Mapping
+	dc.b $e7 ; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $64 ; SpellInfo.SP
 	dc.b $14 ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	$e7		; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$19		; SpellInfo.SP
+	dc.b $00 ; = Mental ; SpellInfo.Element
+	; Mystical Map I
+	dc.b $e7 ; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $19 ; SpellInfo.SP
 	dc.b $19 ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	$e7		; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$23		; SpellInfo.SP
+	dc.b $00 ; = Mental ; SpellInfo.Element
+	; Mystical Map II
+	dc.b $e7 ; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $23 ; SpellInfo.SP
 	dc.b $1e ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	$e7		; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$2d		; SpellInfo.SP
+	dc.b $00 ; = Mental ; SpellInfo.Element
+	; Mystical Map III
+	dc.b $e7 ; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $2d ; SpellInfo.SP
 	dc.b $23 ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	$ef		; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $00 ; = Mental ; SpellInfo.Element
+	; Mystical Globe
+	dc.b $ef ; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $64 ; SpellInfo.SP
 	dc.b $32 ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$f		; SpellInfo.SP
-	dc.b	8		; = Unk4 ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$a		; SpellInfo.SP
-	dc.b	5		; SpellInfo.SLP
+	dc.b $00 ; = Mental ; SpellInfo.Element
+	; Show Monster LP
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $0f ; SpellInfo.SP
+	dc.b $08 ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$f		; SpellInfo.SP
-	dc.b	$f		; SpellInfo.SP
-	dc.b	8		; = SingleEnemy ; SpellInfo.Target
-	dc.b	1		; = Unk1 ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$1e		; SpellInfo.SP
+	; Show Elements
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $0a ; SpellInfo.SP
+	dc.b $05 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = Mental ; SpellInfo.Element
+	; Recognize Weak Point
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $0f ; SpellInfo.SP
+	dc.b $0f ; SpellInfo.SLP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; See Weaknesses
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $1e ; SpellInfo.SP
 	dc.b $14 ; SpellInfo.SLP
 	dc.b $10 ; = EnemyRow ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
@@ -868,9 +897,10 @@ Spell_data:
 	dc.b $2d ; SpellInfo.SP
 	dc.b $19 ; SpellInfo.SLP
 	dc.b $20 ; = AllEnemies ; SpellInfo.Target
-	dc.b	1		; = Unk1 ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$f		; SpellInfo.SP
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Foresee Magic
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $0f ; SpellInfo.SP
 	dc.b $0f ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
@@ -884,18 +914,19 @@ Spell_data:
 	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $32 ; SpellInfo.SP
 	dc.b $19 ; SpellInfo.SLP
-	dc.b	8		; = SingleEnemy ; SpellInfo.Target
-	dc.b	1		; = Unk1 ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$32		; SpellInfo.SP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Protection Sphere
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $32 ; SpellInfo.SP
 	dc.b $0f ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; Element to earth
 	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $4b ; SpellInfo.SP
-	dc.b	$a		; SpellInfo.SLP
-	dc.b	8		; = SingleEnemy ; SpellInfo.Target
+	dc.b $0a ; SpellInfo.SLP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
 	dc.b $10 ; = Earth ; SpellInfo.Element
 	; Element to wind
 	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
@@ -926,16 +957,18 @@ Spell_data:
 	dc.b $05 ; SpellInfo.SP
 	dc.b $05 ; SpellInfo.SLP
 	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
-	dc.b	1		; = Unk1 ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$f		; SpellInfo.SP
-	dc.b	$a		; SpellInfo.SLP
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Magical Arrows
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $0f ; SpellInfo.SP
+	dc.b $0a ; SpellInfo.SLP
 	dc.b $10 ; = EnemyRow ; SpellInfo.Target
-	dc.b	1		; SpellInfo.SLP
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Lame
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $0a ; SpellInfo.SP
-	dc.b	5		; SpellInfo.SLP
-	dc.b	8		; = SingleEnemy ; SpellInfo.Target
+	dc.b $05 ; SpellInfo.SLP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
 	dc.b $02 ; = Physical ; SpellInfo.Element
 	; Poison
 	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
@@ -967,10 +1000,11 @@ Spell_data:
 	dc.b $05 ; SpellInfo.SLP
 	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$1e		; SpellInfo.SP
-	dc.b	$a		; SpellInfo.SLP
-	dc.b	8		; = SingleEnemy ; SpellInfo.Target
+	; Cause Madness
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $1e ; SpellInfo.SP
+	dc.b $0a ; SpellInfo.SLP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
 	dc.b $00 ; = Mental ; SpellInfo.Element
 	; Sleep
 	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
@@ -1024,7 +1058,7 @@ Spell_data:
 	dc.b $b0 ; = Battle | Lyramion | Morag ; SpellInfo.UseConditions
 	dc.b $19 ; SpellInfo.SP
 	dc.b $0f ; SpellInfo.SLP
-	dc.b	$20		; = Wind ; SpellInfo.Element
+	dc.b $20 ; = AllEnemies ; SpellInfo.Target
 	dc.b $04 ; = Earth ; SpellInfo.Element
 	; Winddevil
 	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
@@ -1038,375 +1072,390 @@ Spell_data:
 	dc.b $0a ; SpellInfo.SLP
 	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
 	dc.b $05 ; = Wind ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$28		; SpellInfo.SP
-	dc.b	$f		; SpellInfo.SLP
-	dc.b	$10		; = EnemyRow ; SpellInfo.Target
+	; Thunderbolt
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $28 ; SpellInfo.SP
+	dc.b $0f ; SpellInfo.SLP
+	dc.b $10 ; = EnemyRow ; SpellInfo.Target
 	dc.b $05 ; = Wind ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$32		; SpellInfo.SP
-	dc.b	$14		; SpellInfo.SLP
-	dc.b	$20		; = AllEnemies ; SpellInfo.Target
+	; Whirlwind
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $32 ; SpellInfo.SP
+	dc.b $14 ; SpellInfo.SLP
+	dc.b $20 ; = AllEnemies ; SpellInfo.Target
 	dc.b $05 ; = Wind ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$28		; SpellInfo.SP
-	dc.b	$a		; SpellInfo.SLP
-	dc.b	8		; = SingleEnemy ; SpellInfo.Target
+	; Firebeam
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $28 ; SpellInfo.SP
+	dc.b $0a ; SpellInfo.SLP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
 	dc.b $06 ; = Fire ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$3c		; SpellInfo.SP
-	dc.b	$f		; SpellInfo.SLP
-	dc.b	8		; = SingleEnemy ; SpellInfo.Target
+	; Fireball
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $3c ; SpellInfo.SP
+	dc.b $0f ; SpellInfo.SLP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
 	dc.b $06 ; = Fire ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$50		; SpellInfo.SP
-	dc.b	$14		; SpellInfo.SLP
-	dc.b	$10		; = EnemyRow ; SpellInfo.Target
+	; Firestorm
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $50 ; SpellInfo.SP
+	dc.b $14 ; SpellInfo.SLP
+	dc.b $10 ; = EnemyRow ; SpellInfo.Target
 	dc.b $06 ; = Fire ; SpellInfo.Element
-	dc.b	$f0		; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	$64		; SpellInfo.SP
-	dc.b	$19		; SpellInfo.SLP
-	dc.b	$20		; = AllEnemies ; SpellInfo.Target
+	; Firepillar
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $64 ; SpellInfo.SP
+	dc.b $19 ; SpellInfo.SLP
+	dc.b $20 ; = AllEnemies ; SpellInfo.Target
 	dc.b $06 ; = Fire ; SpellInfo.Element
-	dc.b	$70		; = Battle | Lyramion | ForestMoon ; SpellInfo.UseConditions
-	dc.b	$50		; SpellInfo.SP
-	dc.b	$f		; SpellInfo.SLP
-	dc.b	8		; = SingleEnemy ; SpellInfo.Target
+	; Waterfall
+	dc.b $70 ; = Battle | Lyramion | ForestMoon ; SpellInfo.UseConditions
+	dc.b $50 ; SpellInfo.SP
+	dc.b $0f ; SpellInfo.SLP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
 	dc.b $07 ; = Water ; SpellInfo.Element
-	dc.b	$70		; = Battle | Lyramion | ForestMoon ; SpellInfo.UseConditions
-	dc.b	$78		; SpellInfo.SP
-	dc.b	$14		; SpellInfo.SLP
-	dc.b	8		; = SingleEnemy ; SpellInfo.Target
+	; Iceball
+	dc.b $70 ; = Battle | Lyramion | ForestMoon ; SpellInfo.UseConditions
+	dc.b $78 ; SpellInfo.SP
+	dc.b $14 ; SpellInfo.SLP
+	dc.b $08 ; = SingleEnemy ; SpellInfo.Target
 	dc.b $07 ; = Water ; SpellInfo.Element
-	dc.b	$70		; = Battle | Lyramion | ForestMoon ; SpellInfo.UseConditions
-	dc.b	$a0		; SpellInfo.SP
-	dc.b	$19		; SpellInfo.SLP
-	dc.b	$10		; = EnemyRow ; SpellInfo.Target
+	; Icestorm
+	dc.b $70 ; = Battle | Lyramion | ForestMoon ; SpellInfo.UseConditions
+	dc.b $a0 ; SpellInfo.SP
+	dc.b $19 ; SpellInfo.SLP
+	dc.b $10 ; = EnemyRow ; SpellInfo.Target
 	dc.b $07 ; = Water ; SpellInfo.Element
-	dc.b	$70		; = Battle | Lyramion | ForestMoon ; SpellInfo.UseConditions
-	dc.b	$c8		; SpellInfo.SP
-	dc.b	$1e		; SpellInfo.SLP
-	dc.b	$20		; = AllEnemies ; SpellInfo.Target
+	; Iceshower
+	dc.b $70 ; = Battle | Lyramion | ForestMoon ; SpellInfo.UseConditions
+	dc.b $c8 ; SpellInfo.SP
+	dc.b $1e ; SpellInfo.SLP
+	dc.b $20 ; = AllEnemies ; SpellInfo.Target
 	dc.b $07 ; = Water ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	$e7		; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	1		; SpellInfo.SP
-	dc.b	1		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	$21		; = WorldMap | Lyramion ; SpellInfo.UseConditions
-	dc.b	1		; SpellInfo.SP
-	dc.b	1		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	1		; = Unk1 ; SpellInfo.Element
+	; 60 unused spells follow (spell class 5 and 6)
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	; Function spells (spell class 7)
+	; Lockpicking
+	dc.b $e7 ; = WorldMap | Map2D | Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $01 ; SpellInfo.SP
+	dc.b $01 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = Mental ; SpellInfo.Element
+	; Call Eagle
+	dc.b $21 ; = WorldMap | Lyramion ; SpellInfo.UseConditions
+	dc.b $01 ; SpellInfo.SP
+	dc.b $01 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; Decrease Age (Youth Potion)
 	dc.b $ef ; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	1		; SpellInfo.SP
-	dc.b	1		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	2		; = Unk2 ; SpellInfo.Element
-	dc.b	$ef		; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	1		; SpellInfo.SP
-	dc.b	1		; SpellInfo.SLP
+	dc.b $01 ; SpellInfo.SP
+	dc.b $01 ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
+	dc.b $02 ; = Physical ; SpellInfo.Element
+	; Play Elf Harp
+	dc.b $ef ; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $01 ; SpellInfo.SP
+	dc.b $01 ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
 	; Spell Points I
@@ -1498,29 +1547,31 @@ Spell_data:
 	dc.b $01 ; SpellInfo.SP
 	dc.b $01 ; SpellInfo.SLP
 	dc.b $01 ; = SingleAlly ; SpellInfo.Target
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
-	dc.b	$e4		; = Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	1		; SpellInfo.SP
-	dc.b	1		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
 	dc.b $01 ; = Spirit ; SpellInfo.Element
-	dc.b	$ef		; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
-	dc.b	1		; SpellInfo.SP
-	dc.b	1		; SpellInfo.SLP
-	dc.b	1		; = SingleAlly ; SpellInfo.Target
+	; Rope
+	dc.b $e4 ; = Map3D | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $01 ; SpellInfo.SP
+	dc.b $01 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $01 ; = Spirit ; SpellInfo.Element
+	; Drugs
+	dc.b $ef ; = WorldMap | Map2D | Map3D | Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
+	dc.b $01 ; SpellInfo.SP
+	dc.b $01 ; SpellInfo.SLP
+	dc.b $01 ; = SingleAlly ; SpellInfo.Target
 	dc.b $02 ; = Physical ; SpellInfo.Element
 	; ADVANCED CHANGES
 	; Self-healing (ID: 22)
 	dc.b $ff ; = WorldMap | Map2D | Map3D | Camp | Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $01 ; SpellInfo.SP
 	dc.b $01 ; SpellInfo.SLP
-	dc.b	0		; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $02 ; = Physical ; SpellInfo.Element
 	; Self-revive (ID: 23)
 	dc.b $e8 ; = Camp | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $01 ; SpellInfo.SP
 	dc.b $01 ; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $03 ; = Undead ; SpellInfo.Element
 	; Exp exchange (ID: 24)
 	dc.b $28 ; = Camp | Lyramion ; SpellInfo.UseConditions
@@ -1532,33 +1583,34 @@ Spell_data:
 	dc.b $41 ; World Map | Forest Moon
 	dc.b $01 ; SpellInfo.SP
 	dc.b $01 ; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $20 ; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
-	dc.b	0		; = None ; SpellInfo.UseConditions
-	dc.b	0		; SpellInfo.SP
-	dc.b	0		; SpellInfo.SLP
-	dc.b	0		; = None ; SpellInfo.Target
-	dc.b	0		; = None ; SpellInfo.Element
+	; Rest is unused
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $00 ; = None ; SpellInfo.UseConditions
+	dc.b $00 ; SpellInfo.SP
+	dc.b $00 ; SpellInfo.SLP
+	dc.b $00 ; = None ; SpellInfo.Target
+	dc.b $00 ; = None ; SpellInfo.Element
 Sinus_table:
 	dc.w	0,$65,$c9,$12e,$192,$1f7,$25b,$2c0
 	dc.w	$324,$388,$3ed,$451,$4b5,$51a,$57e,$5e2
