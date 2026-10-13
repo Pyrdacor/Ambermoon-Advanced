@@ -2,6 +2,8 @@
 
 State: 2026-10-13, branch `episode4`.
 
+This file is the only todo list. The *Todo* sheet of `AmbermoonAdvanced.xlsx` and the former `todo.txt` were merged into it.
+
 Sources:
 - the sheets *Todo*, *Summary*, *Changelog* and *SavegamePatching* of `AmbermoonAdvanced.xlsx`;
 - `todo.txt`;
@@ -212,7 +214,7 @@ Order and details: `000 Plan Episode 4.md`, milestones M1–M4.
 
 ---
 
-## 5. Balancing and ideas (from `todo.txt` and older lists)
+## 5. Balancing and ideas (from the former `todo.txt` and older lists)
 
 - [ ] **Thief skill rework:**
   - Open Locks is the chance that the lockpick survives.
@@ -223,7 +225,7 @@ Order and details: `000 Plan Episode 4.md`, milestones M1–M4.
   - Hero/Valdyn/Gryban lower SLP, SP and max M-B.
   - Valdyn very low SLP.
   - Raise the SLP of the "cool" spells.
-- [ ] Targor replacement equipment: Mystic Set (orb, robe, hat, boots, see `todo.txt`) on the forest moon. Leonaria: alchemist staff (LP stealer), hat (SP stealer).
+- [ ] Targor replacement equipment: Mystic Set: orb (35 Atk, 15 STA, 3 Crit, 3 M-B-W, Mystic Globe 10 charges, 100 g), robe (17 Def, 10 SPD, 25 M-B, 3 M-B-R, LP stealer 5 charges), hat (Madness 10 charges, 5 Def, 15 INT, 25 R-M, 2 M-B-R), boots (15 SPD, 8 Def, Blink 10 charges) on the forest moon. Leonaria: alchemist staff (LP stealer), hat (SP stealer).
 - [ ] Remove scrolls:
   - Blind, Drug, Age, Disease.
   - Single-target heal-ailment spells that have an "all" version.
@@ -236,7 +238,7 @@ Order and details: `000 Plan Episode 4.md`, milestones M1–M4.
 - [ ] Option to leave party members at your house when it is renovated.
 - [ ] Hide more stones of knowledge.
 - [ ] Remove unused map graphics (tiles, walls, objects, overlays) and adjust the references.
-- [ ] Export overviews and stats (`todo.txt`): chests, monsters, monster groups, party members, NPC items, rewards, potions, spell list.
+- [ ] Export overviews and stats: chests, monsters, monster groups, party members, NPC items, rewards, potions, spell list.
 - [ ] Allow automap types for 3D map events.
 - [ ] Wasp nest: glowing pillars could stop when the elevator stops.
 - [ ] Improve the old item gfx in the thief quest and the white plants.
@@ -248,4 +250,4 @@ Order and details: `000 Plan Episode 4.md`, milestones M1–M4.
   - Ambermoon: `master`, `release/v1.21`, tags `game-v1.21`/`tools-v1.18`.
   - Ambermoon-Advanced: `episode4`, `main`.
 - [ ] The repo lists (`maps.txt`, `new_items.txt`, `global_vars.txt`, …) were not updated for Episode 4. The xlsx is the source of truth; update or delete them.
-- [ ] Merge the remaining items of the xlsx sheet *Todo* into this file and keep only one list.
+
