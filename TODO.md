@@ -20,7 +20,11 @@ The detailed design of each Episode 4 item is in the docs folder, see the file i
 `AM2_CPU` is now built from source (`code_changes/compile.sh`). `AM2_CPU.s` is gone.
 
 ### Port follow-ups
-- [ ] **Test the source-built `AM2_CPU` in the game.** It was never started; only the binary comparisons were done. Test it in the remake and in FS-UAE (A500 and A1200). Cover at least combat, events, Sage and dialogues, because the port bugs were there.
+- [ ] **Test the source-built `AM2_CPU` in FS-UAE.** It was never started; only the binary comparisons were done. The remake doesn't run `AM2_CPU`, so it can't test the port.
+  - Ready to start (2026-10-13): the configs `AmbermoonADV` (A1200), `AmbermoonADV_Cheat` (A1200, diagnostic keys) and `AmbermoonADV_A500` (68000).
+  - The drives were built with `tools/ambtools/make_amiga_hd.py` and contain `AM2_CPU_OLD` for comparisons.
+  - Cover at least combat, events, Sage and dialogues, because the port bugs were there.
+- [ ] 68000 (A500) support: since the 1.21 base, `AM2_CPU` chooses the blitter renderer on a 68000. The only 68020 instruction in the Advanced code was `tst.l A2`, which is now replaced. Test on the A500 config; the debug build (`compile_debug.sh` in the Ambermoon repo) shows the location of address errors.
 - [ ] Test the two fixes from 2026-10-13 in a fight:
   - Foresee Attack now only affects monsters.
   - The aging index is now 0–17 for monsters and 18–23 for party members.
