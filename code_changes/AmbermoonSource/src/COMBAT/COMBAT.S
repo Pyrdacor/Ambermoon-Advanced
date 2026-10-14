@@ -660,9 +660,19 @@ FUN_ApplyBattleRoundConditions:
 	divu.w #20,D0 ; 5% of max HP
 	tst.w D0
 	beq.b .ZeroDamage ; handle a value of zero
-	cmp.w #35,D0 ; at most 35 damage per round
+	; The maximum (5% of max HP) is limited to 35 for normal monsters
+	; and to 20 for bosses and party members.
+	moveq #35,D2
+	tst.b (A1) ; party member?
+	beq.b .PoisonSmallMax
+	btst #2,($12,A1) ; boss?
+	beq.b .PoisonMaxSet
+.PoisonSmallMax:
+	moveq #20,D2
+.PoisonMaxSet:
+	cmp.w D2,D0
 	bls.b .PoisonMaxOk
-	moveq #35,D0
+	move.w D2,D0
 .PoisonMaxOk:
 	move.l D0,D2
 	jsr Random
