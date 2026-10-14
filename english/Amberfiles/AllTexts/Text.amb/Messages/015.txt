@@ -1,1 +1,1 @@
-﻿File is protected from writing.
+﻿File is protected from reading.
