@@ -1,6 +1,6 @@
 # Ambermoon Advanced – Todo
 
-State: 2026-10-13, branch `episode4`.
+State: 2026-10-14, branch `episode4`.
 
 This file is the only todo list. The *Todo* sheet of `AmbermoonAdvanced.xlsx` and the former `todo.txt` were merged into it.
 
@@ -55,6 +55,10 @@ The detailed design of each Episode 4 item is in the docs folder, see the file i
   - Bow damage bonus (STR/50 + DEX/25).
   - DEX/50 bonus for other weapons.
 - [ ] Bow and staff boss spells, item minimum level (see 2.1).
+- [ ] Combat conditions like on the Amiga (2026-10-14):
+  - Poison: per round 1 to 5% of max LP. The maximum is limited to 20 for party members and bosses and to 35 for other monsters. The remake uses a fixed 1–5.
+  - Hit and parry penalties: drugs −25 (attack only), blind −50, aging −10 per step. The steps rise every round up to 5 and are reset each battle. Blind replaces aging. Bosses get half the penalty.
+  - Damage and defense: disease −50% (bosses −25%), aging −10% per step up to −50% (bosses half).
 - [ ] Crash when removing many items twice.
 - [ ] Casting Self Heal in battle and clicking fast afterwards blocks the player selection (the keyboard still works).
 - [ ] Short wrong wall colours after teleporting (Cavetown, Spannenberg goto point), probably time-of-day dependent.
@@ -74,9 +78,9 @@ Order and details: `000 Plan Episode 4.md`, milestones M1–M4.
 - [ ] **Boss 1 (S-1, sword)** in map 484: boss room events (vars 461/464), blue plate drop, energy sword item 556 (test the spell-from-item path).
 - [ ] **Boss 2 (B-1, bow):** spell (all enemies, heal 2% MaxHP per target, DEX/20), monster, gfx, ancient bow ([Neue Zauber.md]).
 - [ ] **Boss 3 (F-1, staff):** spell (fireball per target, SP refill, INT/20, 5 SP, 50 charges, rechargeable), monster, gfx, ancient staff.
-- [ ] Decide the open points in [Neue Zauber.md] first:
-  - Does the damage scale with APR?
-  - What does a normal attack with a "magic weapon" do?
+- Decided (2026-10-14) for the ancient weapon spells ([Neue Zauber.md]):
+  - Each target is hit once, and the damage is multiplied by a factor that depends on the attacks per round (APR). The factor is still to be defined.
+  - A normal attack with an ancient weapon is a plain weapon attack. The spell is only cast via "use item".
 - [ ] Bosses use the new spells and may need different battle actions (moving closer).
 - [ ] Boss rooms 2/3 of map 484 use the placeholder groups 170/171. Only adjust these groups when building the real bosses.
 - [ ] Map 484: remaining events, debris for the boss rooms, other robots.
@@ -94,7 +98,7 @@ Order and details: `000 Plan Episode 4.md`, milestones M1–M4.
 - [ ] New monsters: Morag golem, giant lizard and its escort ([Neue Monster.md]).
 
 ### 2.2 Portals and Lyramion vault (M2)
-- [ ] Decide the green/red teleporter stones: reuse item 488 or add new items.
+- [ ] Two new teleporter stone items in colours that don't exist yet (e.g. violet and white) instead of green/red, so they can't be confused with item 488 (decided 2026-10-14).
 - [ ] New 3D map(s) for the vault in the Thuna desert, using a free index 487–512. Never append: the Amiga archive limit is 530 entries.
   - Riddles, lever, rumble.
   - The temple rises on the Lyramion world map.
@@ -113,7 +117,7 @@ Order and details: `000 Plan Episode 4.md`, milestones M1–M4.
   - Enforce it in the remake and on the Amiga.
   - Ancient weapons need 51/53/55, the Rebellenklinge 52.
 - [ ] **Elemental weapons in the data:**
-  - Feuerbrand: decide on an element (fire is useless in Luminor's tower).
+  - Feuerbrand gets the element fire (decided 2026-10-14). Place another weapon in Luminor's tower, so you can't get stuck there.
   - Flamberge, Eisschwert, Waldbogen, Nekromantendolch, Geisterstab.
   - New Sandschwert (earth).
   - Check the undead entry of the element table.
@@ -131,19 +135,24 @@ Order and details: `000 Plan Episode 4.md`, milestones M1–M4.
 - [ ] Rebel side quests ([Levelgrenze.md]):
   - Poisoning quest in the tavern.
   - Eavesdropping in the hangar → digging site → chest and fight. Reward: Rebellenklinge or gold.
-- [ ] Council temple rework, one temple at a time ([Tempelanalyse.md], [Tempel 1 - Labyrinth.md]).
+- [ ] Council temple rework of **all 7 temples** in Episode 4 (decided 2026-10-14), one temple at a time ([Tempelanalyse.md], [Tempel 1 - Labyrinth.md]).
   - Suggested order: S'Riel, S'Orel, S'Arin, S'Endar, S'Trog, S'Kat, S'Lorwin.
-  - Decide the scope for Episode 4.
+- [ ] **Bore the dwarf as a party member** (decided 2026-10-14, Episode 4, no race byte in items for now):
+  - The NPC Bore (NPC 24, Gemstone) gets a higher level. He can join after the forest moon is done; his level and values roughly match that point of the game.
+  - New quest: after escaping from the forest moon, the NPC is replaced by a new party member (index 18) with the same values. Talking to him automatically tells him about the forest moon, so the texts and events of the NPC and the party member can be completely different. He wants to go to the green jewel.
+  - Entering Dor Kiredon with Bore uses the "Remove party member" event (first use in the game). A text event says he wants to work in the mine, then he leaves the party.
+  - A new NPC Bore appears in the mine, and 2 chests near him: one for his equipment, one for his items. The Remove party member event puts his things into them. Chests and their map events must be inactive before (deactivated in the savegame, no map object).
+  - Talking to Bore in the mine gives EXP for bringing him back. He thanks the party and ends with something like "Bore muss arbeiten." and "Tschüss".
 - [ ] Easter eggs ([Eastereggs.md]):
   - S'Ebi at the Fountain of Life → "Horus" → 10 all-heal vials in Burnville.
   - Baron Karsten's diary → reward and teleporters.
 - [ ] Prison: furniture in the cells (torture room), more stones at the broken wall (needs gfx).
 - [ ] Wise man house: Sage and alchemy scrolls ([Hauptstadt.md]). Map 482 only has the exit event.
 - [ ] Can Kasimir (or others) be revived in the mystic boss room? Is a camp possible?
-- [ ] Optional / maybe Episode 5:
-  - Pirate encounters on the sea ([4 Todo.md]).
+- [ ] Episode 5:
+  - Pirate encounters on the sea ([4 Todo.md]) (decided 2026-10-14).
   - Underground town S'Ekur ([4 Ideas.md]).
-  - Bore the dwarf as a party member ([Neues Partymitglieder.md]).
+  - Race byte in items (dwarf weapons for Bore, Moranian/male thief items for S'Ebi).
 
 ---
 
