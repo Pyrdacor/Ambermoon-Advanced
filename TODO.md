@@ -79,7 +79,7 @@ Order and details: `000 Plan Episode 4.md`, milestones M1–M4.
 - [ ] **Boss 2 (B-1, bow):** spell (all enemies, heal 2% MaxHP per target, DEX/20), monster, gfx, ancient bow ([Neue Zauber.md]).
 - [ ] **Boss 3 (F-1, staff):** spell (fireball per target, SP refill, INT/20, 5 SP, 50 charges, rechargeable), monster, gfx, ancient staff.
 - Decided (2026-10-14) for the ancient weapon spells ([Neue Zauber.md]):
-  - Each target is hit once, and the damage is multiplied by a factor that depends on the attacks per round (APR). The factor is still to be defined.
+  - Each target is hit once, and the damage is multiplied by 1 + (APR - 1) * 0.5 (1 APR: x1, 3 APR: x2, 5 APR: x3).
   - A normal attack with an ancient weapon is a plain weapon attack. The spell is only cast via "use item".
 - [ ] Bosses use the new spells and may need different battle actions (moving closer).
 - [ ] Boss rooms 2/3 of map 484 use the placeholder groups 170/171. Only adjust these groups when building the real bosses.
