@@ -137,12 +137,16 @@ Order and details: `000 Plan Episode 4.md`, milestones M1–M4.
   - Eavesdropping in the hangar → digging site → chest and fight. Reward: Rebellenklinge or gold.
 - [ ] Council temple rework of **all 7 temples** in Episode 4 (decided 2026-10-14), one temple at a time ([Tempelanalyse.md], [Tempel 1 - Labyrinth.md]).
   - Suggested order: S'Riel, S'Orel, S'Arin, S'Endar, S'Trog, S'Kat, S'Lorwin.
-- [ ] **Bore the dwarf as a party member** (decided 2026-10-14, Episode 4, no race byte in items for now):
-  - The NPC Bore (NPC 24, Gemstone) gets a higher level. He can join after the forest moon is done; his level and values roughly match that point of the game.
-  - New quest: after escaping from the forest moon, the NPC is replaced by a new party member (index 18) with the same values. Talking to him automatically tells him about the forest moon, so the texts and events of the NPC and the party member can be completely different. He wants to go to the green jewel.
-  - Entering Dor Kiredon with Bore uses the "Remove party member" event (first use in the game). A text event says he wants to work in the mine, then he leaves the party.
-  - A new NPC Bore appears in the mine, and 2 chests near him: one for his equipment, one for his items. The Remove party member event puts his things into them. Chests and their map events must be inactive before (deactivated in the savegame, no map object).
-  - Talking to Bore in the mine gives EXP for bringing him back. He thanks the party and ends with something like "Bore muss arbeiten." and "Tschüss".
+- [x] **Bore the dwarf as a party member** (built 2026-10-14, german data + english AllTexts, see the xlsx):
+  - NPC 24 (Gemstone) is level 30. Leaving the forest moon (airship 436, var 320) hides him and shows party member 18 (dwarf warrior level 30) at his place.
+  - Party member 18 tells about the forest moon on the first talk (gives the first navstone, var 399), trades amber chunks for navstones and can join.
+  - Dor Kiredon (343), chain 20 at (16,21)/(16,23): with Bore in the party, text 21, the remove party member event puts his things into the extended chests 307/308, he is hidden in Gemstone, NPC 80 and the chests appear in the mine (345), var 471.
+  - NPC 80 in the mine: first talk gives 5000 EXP (var 472), then he trades navstones.
+- [ ] Bore quest follow-ups:
+  - Test it on the Amiga (cheat build) and in the remake.
+  - Remake: implement the remove party member event, including the extended chest flags (byte 4, bit 0/1).
+  - Savegame patcher: add the chests 307/308 (the remove party member event crashes on the Amiga if the chest file is missing), hide party member 18 in Gemstone (char bit 12961) and NPC 80 in the mine (char bit 11009). For saves after the forest moon (var 320) hide NPC 24 (char bit 12960) and show party member 18 instead.
+  - English release: party member 18 must be in the english Save.00/Party_char.amb (currently only the german one has the episode 4 party members).
 - [ ] Easter eggs ([Eastereggs.md]):
   - S'Ebi at the Fountain of Life → "Horus" → 10 all-heal vials in Burnville.
   - Baron Karsten's diary → reward and teleporters.
