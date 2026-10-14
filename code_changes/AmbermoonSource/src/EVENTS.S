@@ -3902,6 +3902,10 @@ Remove_member:
 	moveq.l	#0,d0			; Get body chest number
 	move.b	Event_b2(a5),d0
 	addq.w	#1,d0			; !!!
+	btst.b #0,Event_b4(a5) ; ADVANCED: extended chest (index + 256)?
+	beq.s .Body_chest_ok
+	add.w #256,d0
+.Body_chest_ok:
 	move.w	d0,d5
 	moveq.l	#Chest_data_file,d1		; Load chest data
 	jsr	Load_subfile
@@ -3933,6 +3937,10 @@ Remove_member:
 	moveq.l	#0,d0			; Get backpack chest number
 	move.b	Event_b3(a5),d0
 	addq.w	#1,d0			; !!!
+	btst.b #1,Event_b4(a5) ; ADVANCED: extended chest (index + 256)?
+	beq.s .Backpack_chest_ok
+	add.w #256,d0
+.Backpack_chest_ok:
 	move.w	d0,d5
 	moveq.l	#Chest_data_file,d1		; Load chest data
 	jsr	Load_subfile
