@@ -655,6 +655,10 @@ FUN_ApplyBattleRoundConditions:
 	divu.w #20,D0 ; 5% of max HP
 	tst.w D0
 	beq.b .ZeroDamage ; handle a value of zero
+	cmp.w #35,D0 ; at most 35 damage per round
+	bls.b .PoisonMaxOk
+	moveq #35,D0
+.PoisonMaxOk:
 	move.l D0,D2
 	jsr Random
 	mulu.w D2,D0
