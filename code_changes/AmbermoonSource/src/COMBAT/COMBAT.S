@@ -64,6 +64,11 @@ Combat_ModInit:
 	move.w #Combat_data_size/2-1,D7
 .Loop:	move.w	d0,(a0)+
 	dbra	d7,.Loop
+	lea DAT_BattleAgingInfo,A0 ; FIX: Reset the aging steps of the last battle
+	moveq #24-1,D7
+.ClearAging:
+	clr.b (A0)+
+	dbra D7,.ClearAging
 	jsr	Init_COMOBs		; Initialize
 	LOCAL
 ; ---------- Load combat data ---------------------
@@ -1388,7 +1393,7 @@ FUN_ApplyBattleMagicEffects:
 	; no, then don't foresee
 	moveq #0,D1
 .Yes:	
-	btst.b #5,($1f,A2) ; drugged? (use offset $1f here as btst uses only one byte)
+	btst.b #5,($1f,A0) ; drugged? (use offset $1f here as btst uses only one byte, FIX: Was A2, which isn't set here)
 	beq .NotDrugged
 	tst.b D1 ; foreseen?
 	beq .NotForeseenOrNotDrugged
@@ -1421,12 +1426,11 @@ FUN_ApplyBattleDamageEffects:
 	bne .FullEffect ; yes. apply full effect
 	btst #12,D0 ; aging?
 	beq .End ; no? end
-	jsr FUN_GetAttackerAgingValue
+	jsr FUN_GetAttackerAgingValue ; 10% per aging stack (0 to 50)
 	beq .End ; Not aged yet? just end
-	cmp #5,D0
+	cmp #50,D0 ; FIX: Was cmp #5 and the value was multiplied by 10 again
 	beq .FullEffect ; already at full stacks? apply full effect
-	mulu.w #10,D0 ; 10% per aging stack
-	btst #4,($12,A2) ; is boss?
+	btst #2,($12,A2) ; is boss? (FIX: Was bit 4, the earth spell damage bonus)
 	beq .NoBossAging
 	lsr #1,D0
 .NoBossAging:
@@ -1438,7 +1442,7 @@ FUN_ApplyBattleDamageEffects:
 	divs.w #100,D1
 	bra .End
 .FullEffect:
-	btst #4,($12,A2) ; is boss?
+	btst #2,($12,A2) ; is boss? (FIX: Was bit 4)
 	beq.b .NoBoss
 	move.w D1,D0
 	asr.w #2,D0 ; get a quarter of the damage
@@ -1460,12 +1464,11 @@ FUN_ApplyBattleDefenseEffects:
 	bne .FullEffect_Adv ; yes. apply full effect
 	btst #12,D0 ; aging?
 	beq .End_Adv ; no? end
-	jsr FUN_GetDefenderAgingValue
+	jsr FUN_GetDefenderAgingValue ; 10% per aging stack (0 to 50)
 	beq .End_Adv ; Not aged yet? just end
-	cmp #5,D0
+	cmp #50,D0 ; FIX: Was cmp #5 and the value was multiplied by 10 again
 	beq .FullEffect_Adv ; already at full stacks? apply full effect
-	mulu.w #10,D0 ; 10% per aging stack
-	btst #4,($12,A2) ; is boss?
+	btst #2,($12,A3) ; is boss? (FIX: Was bit 4 of the attacker)
 	beq .NoBossAging_Adv
 	lsr #1,D0
 .NoBossAging_Adv:
@@ -1477,7 +1480,7 @@ FUN_ApplyBattleDefenseEffects:
 	divs.w #100,D2
 	bra .End_Adv
 .FullEffect_Adv:
-	btst #4,($12,A3) ; is boss?
+	btst #2,($12,A3) ; is boss? (FIX: Was bit 4)
 	beq.b .NoBoss_Adv
 	move.w D2,D0
 	asr.w #2,D0 ; get a quarter of the damage
