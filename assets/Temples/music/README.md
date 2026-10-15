@@ -5,7 +5,8 @@ Basis ist Song 22 „Psychedelic Dune Groove“ (Sandschiff). Er passt zur Drama
 | Datei | Inhalt |
 |---|---|
 | `SONIC.PsychedelicDuneGroove_-3`, `_-5` | Export-Format wie in `Music.amb` (ohne Replayer), 3 bzw. 5 Halbtöne tiefer |
-| `SONIC.PsychedelicDuneGroove_ab34` | Original-Tonhöhe, Start und Wiederholung ab Position 34 (1:05, Beginn eines neuen Teils). Gespielt werden die Positionen 34–69, also 69 s pro Durchlauf. In FS-UAE heißt die Datei `DuneGroove34.sa` |
+| `SONIC.PsychedelicDuneGroove_ab34` | Original-Tonhöhe, Start und Wiederholung ab Position 34 (1:05, Beginn eines neuen Teils). Gespielt werden die Positionen 34–69, also 69 s pro Durchlauf. In FS-UAE heißt die Datei `DuneGroove34.sa`. Bleibt als Backup |
+| `SONIC.PsychedelicDuneGroove_ab34_cut` | Wie `_ab34`, aber ohne die Positionen 52–53 (0:34,6–0:38,4). Danach folgt direkt der A-B-A-B-Block 54–57. Ein Durchlauf dauert 65 s. In FS-UAE: `DuneGroove34c.sa` |
 | `*.sa` | Dieselben Varianten als Sonic-Arranger-Modul. Liegen auch in FS-UAE unter `Workbench:SonicArranger/Temples/` |
 | `*.wav` | Original und Varianten zum Anhören, je 134 s (nicht im Git) |
 
@@ -17,5 +18,5 @@ Basis ist Song 22 „Psychedelic Dune Groove“ (Sandschiff). Er passt zur Drama
   - Stimme 4: Glocken und PowerSynth.
   - Deshalb werden alle Stimmen verschoben.
 - **Tonhöhe** per Nulldurchgängen geprüft: −3 ergibt Faktor 1,17 (theoretisch 1,19), −5 ergibt 1,28 (theoretisch 1,33).
-- **Werkzeug:** `tools/transpose_music.py`. Mit `--skip-voices` lassen sich Schlagzeugstimmen auslassen, mit `--start`/`--repeat` Start- und Wiederholposition setzen. Eine Position dauert bei diesem Song 1,92 s (Speed 6 × 16 Zeilen / 50 Hz).
+- **Werkzeug:** `tools/transpose_music.py`. Mit `--skip-voices` lassen sich Schlagzeugstimmen auslassen, mit `--start`/`--repeat` Start- und Wiederholposition setzen, mit `--remove ERSTE LETZTE` Positionen entfernen (Pointer, Stop- und Wiederholposition werden angepasst). Eine Position dauert bei diesem Song 1,92 s (Speed 6 × 16 Zeilen / 50 Hz).
 - **Ins Spiel** kommt eine Variante erst, wenn wir sie ausgewählt haben: als neuer Eintrag 33 in `Music.amb`. Dafür muss geprüft werden, ob Code und Remake mehr als 32 Songs zulassen.

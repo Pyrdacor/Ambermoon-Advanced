@@ -1,10 +1,10 @@
 """Transpose a Sonic Arranger song by changing the note transpose of every voice in the overtable,
-optionally also set the start and repeat position of the first song.
+optionally also set the start and repeat position of the first song or remove positions.
 
 Works on the export format (Music.amb entries, starts with the song table pointer $28) and on the
 editable module format (.sa, "SOARV1.0" with OVTB chunk). Voices can be excluded (e.g. drums).
 
-Usage: python transpose_music.py <in> <out> <semitones> [--skip-voices 3 4] [--start N] [--repeat N]
+Usage: python transpose_music.py <in> <out> <semitones> [--skip-voices 3 4] [--start N] [--repeat N] [--remove FIRST LAST]
        python transpose_music.py --amb <Music.amb> <song id> <out> <semitones> [--skip-voices ...]
 """
 import argparse
@@ -51,6 +51,40 @@ def set_positions(d, start=None, repeat=None):
     return bytes(d)
 
 
+def remove_positions(d, first, last):
+    """Remove the positions first..last (inclusive) from the overtable, adjust song table and pointers."""
+    d = bytearray(d)
+    off, n = overtable(d)
+    count = last - first + 1
+    if not 0 <= first <= last < n:
+        raise ValueError(f'positions {first}-{last} outside 0-{n - 1}')
+    del d[off + first * 16:off + (last + 1) * 16]
+    removed = count * 16
+    if d[:8] == b'SOARV1.0':
+        p = d.index(b'OVTB')
+        d[p + 4:p + 8] = struct.pack('>I', n - count)
+    else:
+        base = None
+        for b in range(0, len(d) - 0x24, 2):
+            if struct.unpack('>I', d[b:b + 4])[0] == 0x28:
+                base = b
+                break
+        ov_ptr = struct.unpack('>I', d[base + 4:base + 8])[0]
+        for k in range(8):
+            v = struct.unpack('>I', d[base + k * 4:base + k * 4 + 4])[0]
+            if v > ov_ptr:
+                d[base + k * 4:base + k * 4 + 4] = struct.pack('>I', v - removed)
+    o = songtable(d)
+    vals = list(struct.unpack('>6H', d[o:o + 12]))
+    for i in (2, 3, 4):        # start, stop, repeat
+        if vals[i] > last:
+            vals[i] -= count
+        elif vals[i] >= first:
+            vals[i] = first if i != 3 else first - 1
+    d[o:o + 12] = struct.pack('>6H', *vals)
+    return bytes(d)
+
+
 def transpose(d, semitones, skip=()):
     d = bytearray(d)
     off, n = overtable(d)
@@ -73,6 +107,7 @@ def main():
     ap.add_argument('--skip-voices', type=int, nargs='*', default=[])
     ap.add_argument('--start', type=int)
     ap.add_argument('--repeat', type=int)
+    ap.add_argument('--remove', type=int, nargs=2, metavar=('FIRST', 'LAST'))
     a = ap.parse_args()
     if a.amb:
         import ambcontainer as amb
@@ -82,6 +117,8 @@ def main():
         src, out, semis = a.args[0], a.args[1], int(a.args[2])
         data = open(src, 'rb').read()
     data = set_positions(transpose(data, semis, a.skip_voices), a.start, a.repeat)
+    if a.remove:
+        data = remove_positions(data, *a.remove)
     open(out, 'wb').write(data)
     print('written', out)
 
