@@ -7,6 +7,7 @@ Basis ist Song 22 „Psychedelic Dune Groove“ (Sandschiff). Er passt zur Drama
 | `SONIC.PsychedelicDuneGroove_-3`, `_-5` | Export-Format wie in `Music.amb` (ohne Replayer), 3 bzw. 5 Halbtöne tiefer |
 | `SONIC.PsychedelicDuneGroove_ab34` | Original-Tonhöhe, Start und Wiederholung ab Position 34 (1:05, Beginn eines neuen Teils). Gespielt werden die Positionen 34–69, also 69 s pro Durchlauf. In FS-UAE heißt die Datei `DuneGroove34.sa`. Bleibt als Backup |
 | `SONIC.PsychedelicDuneGroove_ab34_cut` | Wie `_ab34`, aber ohne die Positionen 52–53 (0:34,6–0:38,4). Danach folgt direkt der A-B-A-B-Block 54–57. Ein Durchlauf dauert 65 s. In FS-UAE: `DuneGroove34c.sa` |
+| `SONIC.PsychedelicDuneGroove_ab34_cut2` | Wie `_cut`, aber ohne die letzten 3 Positionen (5,8 s Groove ohne Melodie). Endet mit dem Übergangstakt und springt zurück zu Position 34. Ein Durchlauf dauert 59,5 s. In FS-UAE: `DuneGroove34d.sa` |
 | `*.sa` | Dieselben Varianten als Sonic-Arranger-Modul. Liegen auch in FS-UAE unter `Workbench:SonicArranger/Temples/` |
 | `*.wav` | Original und Varianten zum Anhören, je 134 s (nicht im Git) |
 
