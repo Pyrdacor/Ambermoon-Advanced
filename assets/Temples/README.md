@@ -9,6 +9,7 @@ Hier sammeln wir Ideen und Assets für die Neugestaltung der sieben Ratspaläste
 | `analysis/` | Übersichtsbilder aller 3D-Texturen mit Nummern, gerendert mit der Tempel-Palette 6 (`tools/ambtools/render3d.py`) |
 | `mockups/` | 3D-Ansichten je Tempel (`temples.png`) und die Gala-Halle in allen Kandidaten-Paletten (`palettes.png`), Legende in `legend.txt` (`tools/mockups.py`, Raycaster `tools/scene3d.py`) |
 | `analysis/labdata/` | Wände und Objekte der Labdatas, die schon detaillierte Tempelwände nutzen (2:5 Gala, 2:32 Sansri, 2:34, 2:31, 2:36) |
+| `prototypes/` | Spielbare Testmaps (Pilot: S'Riel, Map 487), Grundriss und Ansichten, Anleitung zum Testen (`prototypes/README.md`, gebaut mit `tools/build_prototype.py`) |
 | `music/` | Musikversuche: „Psychedelic Dune Groove“ transponiert (`music/README.md`) |
 | `tools/` | Skripte für die Vorschauen und die Musik |
 | `palettes/`, `textures/` | Für neue Paletten und Texturen (noch leer) |

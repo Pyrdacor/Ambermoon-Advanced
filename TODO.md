@@ -139,6 +139,9 @@ Order and details: `000 Plan Episode 4.md`, milestones M1–M4.
   - Suggested order: S'Riel, S'Orel, S'Arin, S'Endar, S'Trog, S'Kat, S'Lorwin.
   - Song 33 (Psychedelic Dune Groove, temple version) is in `Music.amb` and playable on the Amiga (`Max_music` = 33). Still open: which temple uses it (map header music), and **remake support** for song 33 in Ambermoon.net.
   - Optics: mockups in `assets/Temples/mockups/` (Gala/Sansri textures, one palette per temple).
+  - **Prototype S'Riel (map 487)** built 2026-10-15 (`assets/Temples/prototypes/`, labdata 46, palette 59). Test on the Amiga with a new game and the cheat map jump. Next: feedback, then S'Orel.
+  - Savegame patcher: add the automaps 485, 486 and 487 (missing in old saves → fatal error on the Amiga when entering these maps).
+  - Remake: the current Ambermoon.net build only knows maps up to 455, so the prototypes can't be tested there yet.
 - [x] **Bore the dwarf as a party member** (built 2026-10-14, german data + english AllTexts, see the xlsx):
   - NPC 24 (Gemstone) is level 30. Leaving the forest moon (airship 436, var 320) hides him and shows party member 18 (dwarf warrior level 30) at his place.
   - Party member 18 tells about the forest moon on the first talk (gives the first navstone, var 399), trades amber chunks for navstones and can join.
