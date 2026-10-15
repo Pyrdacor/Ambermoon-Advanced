@@ -1,0 +1,17 @@
+Palettes (rows, top to bottom):
+  0: P6 original: 000 bba 997 876 654 432 311 a74 853 632 c82 ea4 672 452 900 c40
+  1: Sandstein + Gold: 000 eda cb8 a96 875 653 431 a74 853 632 c82 ea4 fc5 c93 900 c40
+  2: Marmor + Tuerkis: 000 eef ccd aab 889 667 445 a74 853 632 c82 ea4 4bb 288 900 c40
+  3: Obsidian + Glut: 000 889 667 556 434 323 212 a74 853 632 c82 ea4 f60 c30 900 c40
+  4: Jade + Gold: 000 9db 7b9 597 476 354 232 a74 853 632 c82 ea4 fd7 ba4 900 c40
+  5: Rotstein + Blau: 000 dba b87 966 744 533 311 a74 853 632 c82 ea4 6ad 359 900 c40
+
+Composed walls (columns):
+  1: wall 171 + overlays []
+  2: wall 171 + overlays [96, 97]
+  3: wall 171 + overlays [96, 97, 71]
+  4: wall 148 + overlays [74]
+  5: wall 144 + overlays [15, 16]
+  6: wall 171 + overlays [72]
+  7: wall 99 + overlays [40]
+  8: wall 148 + overlays [86]
