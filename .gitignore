@@ -2,3 +2,4 @@
 *.backup
 german/Amberfiles/*.exe
 code_changes/AM2_CPU_CHEAT
+__pycache__/

@@ -1,17 +1,20 @@
-Palettes (rows, top to bottom):
-  0: P6 original: 000 bba 997 876 654 432 311 a74 853 632 c82 ea4 672 452 900 c40
-  1: Sandstein + Gold: 000 eda cb8 a96 875 653 431 a74 853 632 c82 ea4 fc5 c93 900 c40
-  2: Marmor + Tuerkis: 000 eef ccd aab 889 667 445 a74 853 632 c82 ea4 4bb 288 900 c40
-  3: Obsidian + Glut: 000 889 667 556 434 323 212 a74 853 632 c82 ea4 f60 c30 900 c40
-  4: Jade + Gold: 000 9db 7b9 597 476 354 232 a74 853 632 c82 ea4 fd7 ba4 900 c40
-  5: Rotstein + Blau: 000 dba b87 966 744 533 311 a74 853 632 c82 ea4 6ad 359 900 c40
+Palettes (3D colours 0-15):
+  original: 000 bba 997 876 654 432 311 a74 853 632 c82 ea4 672 452 900 c40
+  sandstein: 000 fed dca ba8 986 764 542 a74 853 632 c82 ea4 cb7 a95 900 c40
+  rotstein: 000 edc cb9 a97 865 644 422 a74 853 632 c82 ea4 c86 a64 900 c40
+  lapis: 000 cde abc 89a 789 567 345 a74 853 632 c82 ea4 79b 579 900 c40
+  amethyst: 000 dcd bac 98a 879 657 435 a74 853 632 c82 ea4 97a 768 900 c40
+  basalt: 000 bbb 999 777 666 444 333 a74 853 632 c82 ea4 887 665 900 c40
+  moder: 000 aa9 887 665 554 433 211 a74 853 632 c82 ea4 774 552 900 c40
+  jade: 000 cec aca 8a8 687 465 243 a74 853 632 c82 ea4 9c9 7a8 900 c40
 
-Composed walls (columns):
-  1: wall 171 + overlays []
-  2: wall 171 + overlays [96, 97]
-  3: wall 171 + overlays [96, 97, 71]
-  4: wall 148 + overlays [74]
-  5: wall 144 + overlays [15, 16]
-  6: wall 171 + overlays [72]
-  7: wall 99 + overlays [40]
-  8: wall 148 + overlays [86]
+Temples (temples.png, rows top to bottom, two views each):
+  1: S'Riel (palette sandstein, floor 20, ceiling 8): Bibliothek: Bücherregale 167/168 zwischen Bogenwänden 98, Prunktür 96 mit Säulenrahmen 96/97, Bodenmosaik, Kerzenständer, Lesetisch
+  2: S'Orel (palette rotstein, floor 20, ceiling 8): Kaserne/Waffenkammer: Wappen 74/137 auf Quaderwand und Bogenwand, dunkles Tor 104, Rüstungen als Ehrenwache, Waffenständer
+  3: S'Arin (palette lapis, floor 20, ceiling -): Sternwarte: Rosettenfenster 71 zwischen Säulenrahmen 24/25 (neu), Spitzbogenfenster 72, Decke offen (Nachthimmel), schwebende Sterne, achteckiges Mosaik
+  4: S'Endar (palette amethyst, floor 20, ceiling 8): Illusionist: Steinköpfe 39 im Relieffries 103 (neu, Rätselmünder), Gemälde 67-69, Statuen in Roben, Funkelfeld als Illusion
+  5: S'Trog (palette basalt, floor 14, ceiling 8): Teleportation: Reliefwände 100/103/104, Teleporter-Ring mit Funkeln im Zentrum, Säulen
+  6: S'Kat (palette moder, floor 14, ceiling 8): Labor/Folter: Schlangenreliefs mit Glut 105-109 (Sansri), Käfige, Kohlebecken, Labortisch
+  7: S'Lorwin (palette jade, floor 20, ceiling 8): Wasser/Garten/Macht: Teich mit Brunnen, Schlangentotems 28 vor dem Thronportal, Säulen, Kobra-Reliefs 102 und Fensterbögen
+
+palettes.png: the Gala hall (labdata 2:5) in all palettes, 1 = original, 2 = sandstein, 3 = rotstein, 4 = lapis, 5 = amethyst, 6 = basalt, 7 = moder, 8 = jade

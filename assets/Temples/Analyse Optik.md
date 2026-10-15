@@ -24,27 +24,22 @@ Stand 15.10.2026. Alle Nummern beziehen sich auf die Übersichtsbilder in `analy
 
 ## 2. Geeignete Wände
 
-### Palast- und Tempelwände (erste Wahl)
-| Nr. | Beschreibung | Eignung |
-|---|---|---|
-| 144, 148, 171, 172 | Saubere Quadermauer, verschiedene Fugen | Grundwand für alle Tempel, lässt sich per Palette perfekt umfärben |
-| 145–147 | Quadermauer mit Fackeln (teils dunkel) | Gänge, Orientierung („echte Türen haben 2 Fackeln“) |
-| 149 | dunklere Quadermauer | Sanktum, Kontrast |
-| 153–155 | Quadermauer, beschädigt bzw. eingestürzt | Einsturz-Mechanik, verfallene Bereiche |
-| 187–190, 192 | Spitzbogen: offen, Treppe, rotes Tor, Durchgang, Holztür | Türen, Durchgänge, sehr tempelartig |
-| 191 | Säulengang (transparent) | Kolonnaden im Außenring, Blick ins Sanktum |
-| 150–152 | Spitzbogen hell; grünes Doppeltor mit roten Augen | Boss- oder Sanktumstür |
-| 184 | Quadermauer mit Gitter | Zellen, Käfigräume |
-| 185, 186 | Mauer mit Loch | Durchbruch, Geheimgang |
+### Tempelwände (erste Wahl): Gala/Sansri-Familie
+Grundlage aller Mockups. Detaillierte Texturen, die bereits im Gala-Tempel (Labdata 2:5) und in Sansris Tempel (2:32) zusammengesetzt werden (`analysis/labdata/`).
 
-### Verzierte Tempelwände
-| Nr. | Beschreibung | Hinweis |
-|---|---|---|
-| 97–109 | Schlangen- und Säulenreliefs, Fenster, Nischen (Gral-Stil) | Sehr tempelartig. Farbe 12/13 ist aber feines Dither: Bei kräftigen Akzentfarben flimmert es (siehe `mockups/walls_palettes.png`). Dafür besser Textur-Varianten mit umgemappten Indizes (Abschnitt 7). |
-| 58–64 | Graue Säulenwand mit Türen und Fenstern | Palast-Innenräume |
-| 51–57 | Rote Vorhang- bzw. Säulenwand | Thronsaal, Gemach |
-| 46–49, 173 | Steinportal mit roten Ziegeln | Eingänge, Hof |
-| 96 | Prunkportal | Haupteingang |
+| Nr. | Beschreibung |
+|---|---|
+| 99 | Grundmauer (Quader mit Relief-Fugen). Trägt fast alle Overlays. |
+| 96 | Prunktür, mit Säulenrahmen-Overlays 96/97 als Hauptportal |
+| 98 | Doppelbogen mit Säulen. Darin Fenster 72, Wappen 137, Schilder 135/136 |
+| 100, 103, 104 | Reliefpfeiler mit Edelsteinen, Fries, dunkles Tor |
+| 97, 101, 102 | Schlangen- und Kobra-Reliefs (Sansri) |
+| 105–109 | Dieselben Reliefs mit Glut am Fuß (Sansri). Für S'Kat und S'Trog |
+| 167, 168 | Bücherregale (stehen auch in Gala) |
+| 58–64, 51–57 | Marmorsäulen und Vorhänge (S'Angrila, 2:34). Alternative für Thronsäle |
+| 46–50 | Graue Bruchsteinwand mit Portalen (2:31). Nutzt dieselben Overlays wie 99 |
+
+**Nicht verwenden:** Die Quaderwände 144–155, 171/172 und 184–192. Sie sind eine Hommage an Dragonflight und ältere, weniger detaillierte Texturen.
 
 ### Thematische Wände
 | Nr. | Beschreibung | Tempel |
@@ -58,11 +53,11 @@ Stand 15.10.2026. Alle Nummern beziehen sich auf die Übersichtsbilder in `analy
 
 ## 3. Overlays (Wände ohne neue Grafik zusammensetzen)
 
-Die Engine legt Overlays über Wände. So entstehen neue Wände aus vorhandenen Teilen (`mockups/composed_walls.png`):
+Die Engine legt Overlays über Wände. Die Mockups halten sich an die Positionen aus Gala/Sansri: Säulenrahmen 24/25 ganz links/rechts ohne Blending, Fenster 72 bei x=48 bzw. in den Bögen von 98 bei x=16/80, Rosette 71 mittig. Neue Kombinationen nur im selben Stil, z. B. 99 + 24/25 + 71 (Rosette zwischen Säulen) oder 103 + 39 (Steinkopf im Fries).
 
 | Overlay | Inhalt | Verwendung |
 |---|---|---|
-| 96, 97 | Säulen-Rahmen links/rechts | Quader 171 wird zur Palastwand |
+| 24, 25 / 96, 97 | Säulen-Rahmen links/rechts | Gliedern lange Wände, rahmen Türen |
 | 71 | Rosettenfenster | Prunkwand im Sanktum |
 | 72 | Spitzbogenfenster | Außenring („Fenster nach draußen“) |
 | 74, 137 | Wappen mit gekreuzten Waffen | **Siegel/Wappen der Räte**, Orientierung |
@@ -113,19 +108,20 @@ Die Engine legt Overlays über Wände. So entstehen neue Wände aus vorhandenen 
 
 - Es gibt 58 Paletten. In 3D zählen nur die Farben 0–15, Farbe 0 ist Schwarz bzw. transparent.
 - **Ansatz:** Neue Palette pro Tempel. Dabei nur die **Stein-Abstufung 1–6** und die **Akzente 12/13** ändern. Orange (7–11) und Rot (14/15) bleiben, damit Holz, Feuer, Truhen und Gold normal aussehen.
-- **Vorschläge** (`mockups/walls_palettes.png`, `mockups/objects_palettes.png`):
+- **Wichtig:** In der Gala/Sansri-Familie sind 12/13 Teil des Steins (rund 20 % der Pixel, sie machen den Olivton von Palette 6). Deshalb werden 1–6 und 12/13 **gemeinsam** getönt. Als knallige Akzentfarben flimmern sie (das war der Fehler der ersten Mockups).
+- **Vorschläge** (`mockups/palettes.png`, `mockups/temples.png`, Werte in `mockups/legend.txt`):
 
-| Palette | Wirkung | Passt zu |
+| Palette | Wirkung | Tempel |
 |---|---|---|
-| Sandstein + Gold | warm, prunkvoll, „Wüstenpalast“ | S'Riel, S'Orel |
-| Marmor + Türkis | edel, kühl, sehr hell | S'Arin (Sternwarte), S'Lorwin |
-| Obsidian + Glut | dunkel, bedrohlich, Akzente glühen | S'Kat, S'Trog |
-| Jade + Gold | exotisch | S'Lorwin (Wasser/Garten) |
-| Rotstein + Blau | rötlicher Sandstein | S'Endar |
+| Sandstein | warm, hell | S'Riel (Bibliothek) |
+| Rotstein | rötlich, wehrhaft | S'Orel (Kaserne) |
+| Lapis | kühl, blau, offene Decke | S'Arin (Sternwarte) |
+| Amethyst | violett, unwirklich | S'Endar (Illusionist) |
+| Basalt | neutral grau | S'Trog (Teleportation) |
+| Moder | dunkel, oliv | S'Kat (Labor) |
+| Jade | grün | S'Lorwin (Wasser/Garten) |
 
-- **Ergebnis der Vorschauen:**
-  - Saubere Wände (144–148, 171, 187, 191) und Objekte (Säulen, Statuen, Kristalle) sehen in **allen** Paletten gut aus. Das ist die wichtigste Erkenntnis.
-  - Verzierte Wände mit Dither (97–106) und die Bruchsteinwand 69 flimmern, sobald 12/13 kräftig umgefärbt werden.
+- **Pflanzen:** Pflanzen-Objekte nutzen 7–11 als Grün (in ihren Wald-Paletten). In den Tempelpaletten sind 7–11 Holz/Gold, deshalb werden Pflanzen rot-orange. Für S'Lorwins Garten entweder 7–11 umfärben (dann wird Holz grün) oder auf Wasser, Totems und Säulen setzen.
 - **Vorsicht:** Die Palette gilt für die ganze Map, also auch für Monster und NPCs in 3D. Graue Monster, z. B. Golems und magische Wachen, werden mit eingefärbt. Das ist eventuell sogar gewünscht (Wachen passend zum Tempel), muss aber geprüft werden. Ob der Kampfbildschirm die Map-Palette nutzt, müsste ich noch nachsehen.
 - **Technisch:** Neue Paletten werden an `Palettes.amb` angehängt (59, 60, …). Die Palette einer Map steht in Byte 9 des Map-Headers.
 
@@ -147,6 +143,6 @@ Für 3–5 fehlt noch ein **Encoder** (PNG/Indexbild → Texture4Bit) und das An
 
 ## 9. Vorschlag zum Einstieg
 
-1. **Einen Pilot-Tempel festlegen**, z. B. S'Riel (klein): eigene Labdata mit Quaderwänden 171/144 + Overlays (Säulen, Fackeln, Wappen), Bodenmosaike, Säulenobjekte, Palette „Sandstein + Gold“.
+1. **Einen Pilot-Tempel festlegen**, z. B. S'Riel (klein): eigene Labdata als Kopie von Gala 2:5 (Wände 96–104, 167/168, Overlays wie dort), Bodenmosaike, Säulen, Palette „Sandstein“, Boden 20, Decke 8.
 2. In FS-UAE und im Remake ansehen und die Palette feinjustieren.
 3. Danach dasselbe Schema mit anderem Thema und anderer Palette für die übrigen Tempel.

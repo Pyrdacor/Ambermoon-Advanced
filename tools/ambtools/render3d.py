@@ -1,6 +1,6 @@
 """Render the 3D textures (walls, objects, overlays, floors) and labdata as PNG contact sheets.
 
-Usage: python render3d.py <output dir> [--palette N] [--data <Amberfiles dir>] [--labdata 2:35 ...]
+Usage: python render3d.py <output dir> [--palette N] [--data <Amberfiles dir>] [--labdata 2:35[:palette] ...]
 
 - walls.png, objects.png, overlays.png, floors.png: all textures with their index, drawn with the
   given palette (default 12, used by the council temples).
@@ -230,7 +230,10 @@ def main():
 
     # labdata: composed walls (texture + overlays) and objects
     for spec in args.labdata:
-        n, k = map(int, spec.split(':'))
+        parts = list(map(int, spec.split(':')))
+        n, k = parts[0], parts[1]
+        if len(parts) > 2:
+            pal = pals[parts[2]]          # n:k:palette renders the labdata with its own palette
         lab = labs[(n, k)]
         items = []
         for wi, (header, ovs) in enumerate(lab.walls):
