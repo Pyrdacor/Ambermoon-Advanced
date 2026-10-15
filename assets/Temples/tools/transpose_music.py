@@ -1,9 +1,10 @@
-"""Transpose a Sonic Arranger song by changing the note transpose of every voice in the overtable.
+"""Transpose a Sonic Arranger song by changing the note transpose of every voice in the overtable,
+optionally also set the start and repeat position of the first song.
 
 Works on the export format (Music.amb entries, starts with the song table pointer $28) and on the
 editable module format (.sa, "SOARV1.0" with OVTB chunk). Voices can be excluded (e.g. drums).
 
-Usage: python transpose_music.py <in> <out> <semitones> [--skip-voices 3 4]
+Usage: python transpose_music.py <in> <out> <semitones> [--skip-voices 3 4] [--start N] [--repeat N]
        python transpose_music.py --amb <Music.amb> <song id> <out> <semitones> [--skip-voices ...]
 """
 import argparse
@@ -28,6 +29,28 @@ def overtable(d):
     raise ValueError('no Sonic Arranger data found')
 
 
+def songtable(d):
+    """Offset of the first song entry: speed, pattern length, start, stop, repeat, irqs (words)."""
+    if d[:8] == b'SOARV1.0':
+        return d.index(b'STBL') + 8
+    for base in range(0, len(d) - 0x24, 2):
+        if struct.unpack('>I', d[base:base + 4])[0] == 0x28:
+            return base + 0x28
+    raise ValueError('no Sonic Arranger data found')
+
+
+def set_positions(d, start=None, repeat=None):
+    d = bytearray(d)
+    o = songtable(d)
+    _, _, s, stop, r, _ = struct.unpack('>6H', d[o:o + 12])
+    for value, at in ((start, 4), (repeat, 8)):
+        if value is not None:
+            if not 0 <= value <= stop:
+                raise ValueError(f'position {value} outside 0-{stop}')
+            d[o + at:o + at + 2] = struct.pack('>H', value)
+    return bytes(d)
+
+
 def transpose(d, semitones, skip=()):
     d = bytearray(d)
     off, n = overtable(d)
@@ -48,6 +71,8 @@ def main():
     ap.add_argument('--amb')
     ap.add_argument('args', nargs='+')
     ap.add_argument('--skip-voices', type=int, nargs='*', default=[])
+    ap.add_argument('--start', type=int)
+    ap.add_argument('--repeat', type=int)
     a = ap.parse_args()
     if a.amb:
         import ambcontainer as amb
@@ -56,7 +81,8 @@ def main():
     else:
         src, out, semis = a.args[0], a.args[1], int(a.args[2])
         data = open(src, 'rb').read()
-    open(out, 'wb').write(transpose(data, semis, a.skip_voices))
+    data = set_positions(transpose(data, semis, a.skip_voices), a.start, a.repeat)
+    open(out, 'wb').write(data)
     print('written', out)
 
 

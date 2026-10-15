@@ -5,6 +5,7 @@ Basis ist Song 22 „Psychedelic Dune Groove“ (Sandschiff). Er passt zur Drama
 | Datei | Inhalt |
 |---|---|
 | `SONIC.PsychedelicDuneGroove_-3`, `_-5` | Export-Format wie in `Music.amb` (ohne Replayer), 3 bzw. 5 Halbtöne tiefer |
+| `SONIC.PsychedelicDuneGroove_ab34` | Original-Tonhöhe, Start und Wiederholung ab Position 34 (1:05, Beginn eines neuen Teils). Gespielt werden die Positionen 34–69, also 69 s pro Durchlauf. In FS-UAE heißt die Datei `DuneGroove34.sa` |
 | `*.sa` | Dieselben Varianten als Sonic-Arranger-Modul. Liegen auch in FS-UAE unter `Workbench:SonicArranger/Temples/` |
 | `*.wav` | Original und Varianten zum Anhören, je 134 s (nicht im Git) |
 
@@ -16,5 +17,5 @@ Basis ist Song 22 „Psychedelic Dune Groove“ (Sandschiff). Er passt zur Drama
   - Stimme 4: Glocken und PowerSynth.
   - Deshalb werden alle Stimmen verschoben.
 - **Tonhöhe** per Nulldurchgängen geprüft: −3 ergibt Faktor 1,17 (theoretisch 1,19), −5 ergibt 1,28 (theoretisch 1,33).
-- **Werkzeug:** `tools/transpose_music.py` (auch mit `--skip-voices` für Schlagzeugstimmen).
+- **Werkzeug:** `tools/transpose_music.py`. Mit `--skip-voices` lassen sich Schlagzeugstimmen auslassen, mit `--start`/`--repeat` Start- und Wiederholposition setzen. Eine Position dauert bei diesem Song 1,92 s (Speed 6 × 16 Zeilen / 50 Hz).
 - **Ins Spiel** kommt eine Variante erst, wenn wir sie ausgewählt haben: als neuer Eintrag 33 in `Music.amb`. Dafür muss geprüft werden, ob Code und Remake mehr als 32 Songs zulassen.
