@@ -1,10 +1,11 @@
 """Transpose a Sonic Arranger song by changing the note transpose of every voice in the overtable,
-optionally also set the start and repeat position of the first song or remove positions.
+optionally also set the start and repeat position of the first song, remove positions or change the speed
+(ticks per row; slide commands are scaled so they still reach the same pitch).
 
 Works on the export format (Music.amb entries, starts with the song table pointer $28) and on the
 editable module format (.sa, "SOARV1.0" with OVTB chunk). Voices can be excluded (e.g. drums).
 
-Usage: python transpose_music.py <in> <out> <semitones> [--skip-voices 3 4] [--start N] [--repeat N] [--remove FIRST LAST]
+Usage: python transpose_music.py <in> <out> <semitones> [--skip-voices 3 4] [--start N] [--repeat N] [--remove FIRST LAST] [--speed N]
        python transpose_music.py --amb <Music.amb> <song id> <out> <semitones> [--skip-voices ...]
 """
 import argparse
@@ -85,6 +86,39 @@ def remove_positions(d, first, last):
     return bytes(d)
 
 
+def notetable(d):
+    """(offset, number of rows) of the note table (4 bytes per row: note, instrument, command, value)."""
+    if d[:8] == b'SOARV1.0':
+        p = d.index(b'NTBL')
+        return p + 8, struct.unpack('>I', d[p + 4:p + 8])[0]
+    for base in range(0, len(d) - 0x24, 2):
+        if struct.unpack('>I', d[base:base + 4])[0] == 0x28:
+            ptrs = struct.unpack('>4I', d[base:base + 16])
+            return base + ptrs[2], (ptrs[3] - ptrs[2]) // 4
+    raise ValueError('no Sonic Arranger data found')
+
+
+SLIDE = 1
+SET_SPEED = 15
+
+
+def set_speed(d, speed):
+    d = bytearray(d)
+    o = songtable(d)
+    old = struct.unpack('>H', d[o:o + 2])[0]
+    d[o:o + 2] = struct.pack('>H', speed)
+    off, rows = notetable(d)
+    for r in range(rows):
+        i = off + r * 4
+        if d[i + 2] == SET_SPEED and d[i + 3]:
+            d[i + 3] = max(1, round(d[i + 3] * speed / old))
+        elif d[i + 2] == SLIDE:
+            v = struct.unpack('b', d[i + 3:i + 4])[0]
+            v = max(-128, min(127, round(v * old / speed)))
+            d[i + 3] = v & 0xff
+    return bytes(d)
+
+
 def transpose(d, semitones, skip=()):
     d = bytearray(d)
     off, n = overtable(d)
@@ -108,6 +142,7 @@ def main():
     ap.add_argument('--start', type=int)
     ap.add_argument('--repeat', type=int)
     ap.add_argument('--remove', type=int, nargs=2, metavar=('FIRST', 'LAST'))
+    ap.add_argument('--speed', type=int)
     a = ap.parse_args()
     if a.amb:
         import ambcontainer as amb
@@ -119,6 +154,8 @@ def main():
     data = set_positions(transpose(data, semis, a.skip_voices), a.start, a.repeat)
     if a.remove:
         data = remove_positions(data, *a.remove)
+    if a.speed:
+        data = set_speed(data, a.speed)
     open(out, 'wb').write(data)
     print('written', out)
 
