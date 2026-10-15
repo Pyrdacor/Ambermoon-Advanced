@@ -137,6 +137,8 @@ Order and details: `000 Plan Episode 4.md`, milestones M1–M4.
   - Eavesdropping in the hangar → digging site → chest and fight. Reward: Rebellenklinge or gold.
 - [ ] Council temple rework of **all 7 temples** in Episode 4 (decided 2026-10-14), one temple at a time ([Tempelanalyse.md], [Tempel 1 - Labyrinth.md]).
   - Suggested order: S'Riel, S'Orel, S'Arin, S'Endar, S'Trog, S'Kat, S'Lorwin.
+  - Song 33 (Psychedelic Dune Groove, temple version) is in `Music.amb` and playable on the Amiga (`Max_music` = 33). Still open: which temple uses it (map header music), and **remake support** for song 33 in Ambermoon.net.
+  - Optics: mockups in `assets/Temples/mockups/` (Gala/Sansri textures, one palette per temple).
 - [x] **Bore the dwarf as a party member** (built 2026-10-14, german data + english AllTexts, see the xlsx):
   - NPC 24 (Gemstone) is level 30. Leaving the forest moon (airship 436, var 320) hides him and shows party member 18 (dwarf warrior level 30) at his place.
   - Party member 18 tells about the forest moon on the first talk (gives the first navstone, var 399), trades amber chunks for navstones and can join.

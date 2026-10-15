@@ -122,6 +122,9 @@ Max_input_length	EQU	50
 Max_modules	EQU	8
 Max_scroll_bars	EQU	3
 Max_songs	EQU	32
+; ADVANCED CHANGES - START
+Max_music	EQU	33		; Songs in Music.amb (the harp only shows Max_songs)
+; ADVANCED CHANGES - END
 Max_trees	EQU	8
 Max_windows	EQU	4
 

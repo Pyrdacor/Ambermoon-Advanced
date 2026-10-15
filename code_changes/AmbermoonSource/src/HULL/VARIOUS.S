@@ -580,7 +580,9 @@ Set_music:
 	move.w	Current_music,d0		; Yes
 	bra	.Play
 ; ---------- New music ----------------------------
-.New:	cmpi.w	#Max_songs,d0		; Illegal	input ?
+; ADVANCED CHANGES - START
+.New:	cmpi.w	#Max_music,d0		; Illegal	input ?
+; ADVANCED CHANGES - END
 	bgt	.Exit
 	cmp.w	Loaded_music,d0		; Same as	before ?
 	bne.s	.Other
