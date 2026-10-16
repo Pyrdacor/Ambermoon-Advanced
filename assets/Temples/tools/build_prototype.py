@@ -6,7 +6,8 @@ The real temples 444-450 are not touched.
 Writes:
 - 2Map_data.amb: prototype map(s)
 - 2Lab_data.amb: labdata 46 (copy of the Gala labdata 5 with floor 20 and ceiling 8)
-- Palettes.amb: palette 59 ("Sandstein")
+- Palettes.amb: palette 59 ("Wüstentempel", stone colours matched to the sandstone texture)
+- 2Wall3D.amb: sandstone walls 193-195 (textures/generated, see make_sandstone_walls.py)
 - Save.00/Automap.amb: automap entries up to the new map (485 and 486 were missing too)
 - AllTexts (german + english) 2Map_texts.amb/<map>, imported into the german 2Map_texts.amb
 
@@ -36,7 +37,22 @@ GALA_LAB = 5
 NEW_LAB = 46
 NEW_PALETTE = 59
 FLOOR_TEX, CEILING_TEX = 20, 8
-SANDSTEIN = ['000', 'fed', 'dca', 'ba8', '986', '764', '542', 'a74', '853', '632', 'c82', 'ea4', 'cb7', 'a95', '900', 'c40']
+GENERATED = os.path.join(HERE, '..', 'textures', 'generated')
+SANDSTONE_TEXTURES = (193, 194, 195)    # frieze with columns, frieze, gateway
+
+# new walls of labdata 46 (appended to the 30 walls of labdata 5): (texture, flags, automap, colour, overlays)
+SOLID, PASSABLE = 0x40000082, 0x40000102
+S_COLUMNS, S_PLAIN, S_GATE, S_WINDOW, S_CREST, S_PAINT1, S_ROSETTE, S_PAINT2 = range(131, 139)
+NEW_WALLS = [
+    (193, SOLID, 1, 4, []),
+    (194, SOLID, 1, 4, []),
+    (195, PASSABLE, 10, 11, []),
+    (194, SOLID, 1, 4, [(1, 72, 48, 10, 32, 58)]),
+    (194, SOLID, 1, 4, [(1, 74, 32, 14, 64, 52)]),
+    (194, SOLID, 1, 4, [(1, 67, 48, 16, 32, 48)]),
+    (194, SOLID, 1, 4, [(1, 71, 32, 8, 64, 64)]),
+    (194, SOLID, 1, 4, [(1, 68, 48, 24, 32, 32)]),
+]
 
 # labdata 5 walls (tile values) and object groups
 W_PLAIN, W_DOOR_FRAMED = 103, 126
@@ -126,21 +142,22 @@ def sriel():
             if (x, y) in floor:
                 p.tiles[y][x] = 0
             elif any((x + dx, y + dy) in floor for dx in (-1, 0, 1) for dy in (-1, 0, 1)) or (x, y) == secret:
-                p.tiles[y][x] = W_PLAIN
+                p.tiles[y][x] = S_PLAIN
     walls = {
         # hall
-        (9, 6): W_ROSETTE, (8, 6): W_FRAME_R, (10, 6): W_FRAME_L, (6, 9): W_CREST, (12, 9): W_CREST,
-        (8, 12): W_FRAME_R, (10, 12): W_FRAME_L,
+        (9, 6): S_ROSETTE, (8, 6): S_COLUMNS, (10, 6): S_COLUMNS, (6, 9): S_CREST, (12, 9): S_CREST,
+        (8, 12): S_COLUMNS, (10, 12): S_COLUMNS, (7, 12): S_COLUMNS, (11, 12): S_COLUMNS,
         # bedchamber
-        (7, 2): W_WINDOW, (8, 2): W_PAINT2, (9, 2): W_WINDOW, (10, 2): W_PAINT3, (11, 2): W_WINDOW,
+        (7, 2): S_WINDOW, (8, 2): S_PAINT2, (9, 2): S_WINDOW, (10, 2): S_PAINT1, (11, 2): S_WINDOW,
         # foyer and exit
-        (9, 15): W_DOOR_FRAMED, (6, 15): W_WINDOW, (12, 15): W_WINDOW, (2, 14): W_PAINT1, (16, 14): W_PAINT1,
+        (9, 15): S_GATE, (6, 15): S_WINDOW, (12, 15): S_WINDOW, (2, 14): S_PAINT1, (16, 14): S_PAINT1,
+        (8, 15): S_COLUMNS, (10, 15): S_COLUMNS,
         # east wing
-        (16, 5): W_WINDOW, (16, 7): W_CREST, (16, 9): W_WINDOW, (16, 11): W_CREST, (13, 8): W_FRAME_L, (13, 10): W_FRAME_R,
+        (16, 5): S_WINDOW, (16, 7): S_CREST, (16, 9): S_WINDOW, (16, 11): S_CREST, (13, 8): S_COLUMNS, (13, 10): S_COLUMNS,
     }
     for y in range(4, 14):                      # library shelves on both sides
         p.tiles[y][2] = W_SHELF1 if y % 2 else W_SHELF2
-        if p.tiles[y][5] == W_PLAIN and y > 4:
+        if p.tiles[y][5] == S_PLAIN and y > 4:
             p.tiles[y][5] = W_SHELF2 if y % 2 else W_SHELF1
     for (x, y), t in walls.items():
         p.tiles[y][x] = t
@@ -250,14 +267,57 @@ def build_labdata(raw5):
     lab = ld.parse(raw5)
     lab.header[6] = CEILING_TEX
     lab.header[7] = FLOOR_TEX
+    assert len(lab.walls) == 30
+    for tex, flags, automap, colour, overlays in NEW_WALLS:
+        header = bytearray(struct.pack('>IBBBB', flags, tex, automap, colour, len(overlays)))
+        lab.walls.append((header, [bytearray(o) for o in overlays]))
     return ld.serialize(lab)
 
 
-def build_palette(base):
-    out = bytearray(base)
-    for i, hx in enumerate(SANDSTEIN):
-        out[i * 2:i * 2 + 2] = struct.pack('>H', int(hx, 16))
-    return bytes(out)
+def build_palette():
+    return open(os.path.join(GENERATED, 'wuestentempel.pal'), 'rb').read()
+
+
+def sandstone_textures():
+    return {n: open(os.path.join(GENERATED, f'sandstone_{n}.tex'), 'rb').read() for n in SANDSTONE_TEXTURES}
+
+
+def amnp_entries(d):
+    assert d[:4] == b'AMNP'
+    n = struct.unpack('>H', d[4:6])[0]
+    assert n >> 14 == 0
+    sizes = struct.unpack('>%dI' % n, d[6:6 + 4 * n])
+    off, out = 6 + 4 * n, []
+    for s in sizes:
+        out.append(d[off:off + s])
+        off += s
+    return out
+
+
+def amnp_set(rel, files):
+    """Add or replace entries of an AMNP container. All other entries stay byte-identical (packing the whole
+    container again with AmbermoonPack changes some original entries by 2 bytes)."""
+    path = os.path.join(DATA, rel)
+    entries = amnp_entries(open(path, 'rb').read())
+    tmp = os.path.join(WORK, 'amnp_' + os.path.basename(rel))
+    if os.path.exists(tmp):
+        shutil.rmtree(tmp)
+    run('AmbermoonPack', 'UNPACK', path, tmp)
+    for i, data in files.items():
+        open(sub(tmp, i), 'wb').write(data)
+    for i in range(1, max(files) + 1):          # gaps as empty entries
+        if not os.path.exists(sub(tmp, i)):
+            open(sub(tmp, i), 'wb').write(b'')
+    run('AmbermoonPack', 'AMNP', tmp, tmp + '.amb')
+    packed = amnp_entries(open(tmp + '.amb', 'rb').read())
+    entries += [b''] * (max(files) - len(entries))
+    for i in files:
+        entries[i - 1] = packed[i - 1]
+    out = b'AMNP' + struct.pack('>H', len(entries)) + b''.join(struct.pack('>I', len(e)) for e in entries) + b''.join(entries)
+    open(path, 'wb').write(out)
+    check = amb.read_container(path)
+    for i, data in files.items():
+        assert check[i] == data, i
 
 
 def write_texts(p):
@@ -280,6 +340,10 @@ def preview(p, lab_raw, pal_raw):
     os.makedirs(PREVIEW, exist_ok=True)
     a = s.Assets()
     a.labs[(2, NEW_LAB)] = ld.parse(lab_raw)
+    a.walls.update(sandstone_textures())
+    for header, ovs in a.labs[(2, NEW_LAB)].walls:
+        for ov in ovs:
+            a.ovl_size.setdefault(ov[1], (ov[4], ov[5]))
     pal = [(((c >> 8) & 15) * 17, ((c >> 4) & 15) * 17, (c & 15) * 17)
            for c in struct.unpack('>32H', pal_raw)]
     lab = a.labs[(2, NEW_LAB)]
@@ -291,7 +355,7 @@ def preview(p, lab_raw, pal_raw):
             t = p.tiles[y][x]
             if t == 255:
                 row += '#'
-                legend['#'] = a.lab_wall((2, NEW_LAB), W_PLAIN)
+                legend['#'] = a.lab_wall((2, NEW_LAB), S_PLAIN)
             elif t > 100:
                 c = chars.setdefault(t, chr(0x100 + t))
                 legend[c] = a.lab_wall((2, NEW_LAB), t)
@@ -343,11 +407,11 @@ def preview(p, lab_raw, pal_raw):
             c = colours.get(t, (110, 90, 70) if t > 100 else (200, 190, 160))
             if t in (W_SHELF1, W_SHELF2):
                 c = (150, 90, 40)
-            elif t in (W_WINDOW, W_ROSETTE):
+            elif t in (W_WINDOW, W_ROSETTE, S_WINDOW, S_ROSETTE):
                 c = (90, 140, 200)
-            elif t in (W_DOOR_FRAMED,):
+            elif t in (W_DOOR_FRAMED, S_GATE):
                 c = (220, 160, 40)
-            elif t == W_CREST:
+            elif t in (W_CREST, S_CREST):
                 c = (180, 60, 60)
             for yy in range(cell - 1):
                 for xx in range(cell - 1):
@@ -373,7 +437,7 @@ def main():
     os.makedirs(WORK, exist_ok=True)
     p = sriel()
     lab_raw = build_labdata(amb.read_container(os.path.join(DATA, '2Lab_data.amb'))[GALA_LAB])
-    pal_raw = build_palette(amb.read_container(os.path.join(DATA, 'Palettes.amb'))[6])
+    pal_raw = build_palette()
     names = preview(p, lab_raw, pal_raw)
     print('preview:', ', '.join(names))
     if args.preview_only:
@@ -384,6 +448,8 @@ def main():
     assert not old or old[6] == NEW_LAB, 'map slot not free'      # empty or an earlier prototype build
     open(sub(maps, p.index), 'wb').write(build_map(p))
     pack('2Map_data.amb', 'AMPC', maps)
+
+    amnp_set('2Wall3D.amb', sandstone_textures())
 
     labs = unpack('2Lab_data.amb', 'AMPC')
     n = len(os.listdir(labs))

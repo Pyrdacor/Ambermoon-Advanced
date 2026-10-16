@@ -39,7 +39,10 @@ Grundlage aller Mockups. Detaillierte Texturen, die bereits im Gala-Tempel (Labd
 | 58–64, 51–57 | Marmorsäulen und Vorhänge (S'Angrila, 2:34). Alternative für Thronsäle |
 | 46–50 | Graue Bruchsteinwand mit Portalen (2:31). Nutzt dieselben Overlays wie 99 |
 
-**Nicht verwenden:** Die Quaderwände 144–155, 171/172 und 184–192. Sie sind eine Hommage an Dragonflight und ältere, weniger detaillierte Texturen.
+**Nicht verwenden:** Die Quaderwände 144–155 und 171/172. Sie sind eine Hommage an Dragonflight und ältere, weniger detaillierte Texturen. (184–192 sind dagegen eigene Advanced-Texturen für das Morag-Gefängnis und die alte Stadt.)
+
+### Neue Sandsteinwände (193–195)
+Aus `textures/Pixel-Art-Sandsteinwand mit Tempelfriesen.png` erzeugt (`tools/make_sandstone_walls.py`): 193 Fries mit zwei Lotussäulen, 194 Fries ohne Säulen, 195 Tor (begehbar). Fenster, Wappen, Rosette und Gemälde kommen als Overlays auf 194. Dazu passt Palette 59 „Wüstentempel“. Erster Einsatz im Prototyp S'Riel (Map 487).
 
 ### Thematische Wände
 | Nr. | Beschreibung | Tempel |

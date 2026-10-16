@@ -15,6 +15,10 @@ Gebaut wird mit `python assets/Temples/tools/build_prototype.py` (schreibt in `g
 `python tools/ambtools/make_testdata.py <ordner>` erzeugen und dann z. B. `Ambermoon.net --data <ordner>/Amberfiles --skip-intro --load 0 --cheat 3 "teleport 487 9 4 up" --screenshot 5 --exit-after 7` starten. Die Bilder `487_remake_*.png` sind so entstanden.
 
 ![Ankunft](487_remake_arrival.png)
+![Halle](487_remake_hall.png)
+![Foyer](487_remake_foyer.png)
+![Ausgang](487_remake_gate.png)
+![Bibliothek](487_remake_library.png)
 ![Schlafgemach](487_remake_bedchamber.png)
 ![Ostflügel](487_remake_eastwing.png)
 
@@ -23,7 +27,7 @@ Gebaut wird mit `python assets/Temples/tools/build_prototype.py` (schreibt in `g
 ![Grundriss](487_plan.png)
 ![Ansichten](487_views.png)
 
-- **Optik:** Labdata 46 ist eine Kopie der Gala-Labdata 5 mit Boden 20 und Decke 8, dazu Palette 59 („Sandstein“). Musik vorerst Song 22, weil Song 33 noch nicht in Music.amb ist (siehe `../music/README.md`).
+- **Optik:** Labdata 46 ist eine Kopie der Gala-Labdata 5 mit Boden 20 und Decke 8. Dazu kommen die neuen Sandsteinwände 193–195 (Wände 131–138, mit Fenster, Wappen, Rosette und Gemälden als Overlays) und Palette 59 („Wüstentempel“). Von Gala bleiben nur Bücherregale und Objekte. Musik vorerst Song 22, weil Song 33 noch nicht in Music.amb ist (siehe `../music/README.md`).
 - **Grundriss** (17×17): Empfangshalle in der Mitte, ringsum Bibliothek (West), Ostflügel, Foyer (Süd) und das Schlafgemach (Nord).
 - **Ankunft:** wie im Original in der Halle (9,10). S'Arin erscheint, die zwei magischen Wachen greifen an.
 - **Bibliothek:** Bücherregale auf beiden Seiten. Vier Regale lassen sich mit dem Auge lesen (Kette 3–6), mit Hinweisen auf S'Arin, S'Endar, S'Trog, S'Kat und S'Lorwin. Das letzte Regal verrät das lose Buch.
