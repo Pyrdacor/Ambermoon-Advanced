@@ -18,6 +18,7 @@ Gebaut wird mit `python assets/Temples/tools/build_prototype.py` (schreibt in `g
 ![Halle](487_remake_hall.png)
 ![Foyer](487_remake_foyer.png)
 ![Ausgang](487_remake_gate.png)
+![Relief im Foyer](487_remake_relief.png)
 ![Bibliothek](487_remake_library.png)
 ![Schlafgemach](487_remake_bedchamber.png)
 ![Ostflügel](487_remake_eastwing.png)
@@ -31,9 +32,9 @@ Gebaut wird mit `python assets/Temples/tools/build_prototype.py` (schreibt in `g
 - **Grundriss** (17×17): Empfangshalle in der Mitte, ringsum Bibliothek (West), Ostflügel, Foyer (Süd) und das Schlafgemach (Nord).
 - **Ankunft:** wie im Original in der Halle (9,10). S'Arin erscheint, die zwei magischen Wachen greifen an.
 - **Bibliothek:** Bücherregale auf beiden Seiten. Vier Regale lassen sich mit dem Auge lesen (Kette 3–6), mit Hinweisen auf S'Arin, S'Endar, S'Trog, S'Kat und S'Lorwin. Das letzte Regal verrät das lose Buch.
-- **Geheimgang:** Das lose Buch an der Nordwand der Bibliothek (2,5) wird mit der Hand gezogen. Dann öffnet sich die Wand (6,4) zum Schlafgemach.
+- **Geheimgang:** Das lose Buch im Regal direkt an der Nordwand der Bibliothek (2,4) wird mit der Hand gezogen (von (3,4) aus nach Westen). Dann öffnet sich die Wand (6,4) zum Schlafgemach.
 - **Schlafgemach:** Bett, Tagebuch auf dem Tisch (Auge) und Truhe 116.
-- **Ostflügel:** Statue, Rüstung und Truhe 117. Die Truhen sind dieselben wie in Map 444, nur für den Test.
+- **Ostflügel:** Statue, Schlangentotem (aus Sansris Tempel, Objektgruppe 40) und Truhe 117. Die Truhen sind dieselben wie in Map 444, nur für den Test.
 - **Ausgang:** Tür im Foyer (9,15) zur Weltkarte 520 (37,41), wie in 444.
 
 | Kette | Feld | Inhalt |
@@ -41,6 +42,6 @@ Gebaut wird mit `python assets/Temples/tools/build_prototype.py` (schreibt in `g
 | 1 | (9,15) | Ausgang nach Morag |
 | 2 | (9,10) | Ankunftstext (Text 1 aus 444), danach deaktiviert |
 | 3–6 | (2,6), (2,8), (2,10), (2,12) | Lesbare Regale (Texte 2–5) |
-| 7 | (2,5) | Loses Buch: Hand → Text 6, Wand (6,4) öffnet sich, Kette deaktiviert |
+| 7 | (2,4) | Loses Buch: Hand → Text 6, Wand (6,4) öffnet sich, Kette deaktiviert |
 | 8 | (11,3) | Tagebuch (Text 7) |
 | 9, 10 | (7,3), (15,4) | Truhen 116 und 117 |

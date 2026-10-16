@@ -42,16 +42,16 @@ SANDSTONE_TEXTURES = (193, 194, 195)    # frieze with columns, frieze, gateway
 
 # new walls of labdata 46 (appended to the 30 walls of labdata 5): (texture, flags, automap, colour, overlays)
 SOLID, PASSABLE = 0x40000082, 0x40000102
-S_COLUMNS, S_PLAIN, S_GATE, S_WINDOW, S_CREST, S_PAINT1, S_ROSETTE, S_PAINT2 = range(131, 139)
+S_COLUMNS, S_PLAIN, S_GATE, S_WINDOW, S_CREST, S_HEAD, S_ROSETTE, S_WINDOWS2 = range(131, 139)
 NEW_WALLS = [
     (193, SOLID, 1, 4, []),
     (194, SOLID, 1, 4, []),
     (195, PASSABLE, 10, 11, []),
     (194, SOLID, 1, 4, [(1, 72, 48, 10, 32, 58)]),
     (194, SOLID, 1, 4, [(1, 74, 32, 14, 64, 52)]),
-    (194, SOLID, 1, 4, [(1, 67, 48, 16, 32, 48)]),
+    (194, SOLID, 2, 4, [(1, 39, 32, 14, 64, 45)]),                         # stone head relief
     (194, SOLID, 1, 4, [(1, 71, 32, 8, 64, 64)]),
-    (194, SOLID, 1, 4, [(1, 68, 48, 24, 32, 32)]),
+    (194, SOLID, 1, 4, [(1, 73, 16, 24, 32, 32), (1, 73, 80, 24, 32, 32)]),  # two small windows
 ]
 
 # labdata 5 walls (tile values) and object groups
@@ -60,6 +60,8 @@ W_FRAME_L, W_FRAME_R, W_ROSETTE, W_WINDOW = 107, 108, 110, 111
 W_PAINT1, W_PAINT2, W_PAINT3, W_CREST = 117, 118, 119, 120
 W_SHELF1, W_SHELF2 = 127, 128
 G_COLUMN, G_MOSAIC, G_STATUE, G_CANDLE, G_TABLE, G_CHEST, G_ARMOUR, G_BED, G_GUARD = 9, 5, 14, 18, 20, 21, 22, 24, 27
+G_TOTEM = 40                # new object group: serpent totem from Sansri's temple (labdata 32, texture 28)
+TOTEM_OBJECT = bytes.fromhex('40000080001c0100605001200155')
 
 MAGIC_GUARDS = 68           # monster group
 GUARD_TILE_FLAGS = 0xc0000111
@@ -148,9 +150,9 @@ def sriel():
         (9, 6): S_ROSETTE, (8, 6): S_COLUMNS, (10, 6): S_COLUMNS, (6, 9): S_CREST, (12, 9): S_CREST,
         (8, 12): S_COLUMNS, (10, 12): S_COLUMNS, (7, 12): S_COLUMNS, (11, 12): S_COLUMNS,
         # bedchamber
-        (7, 2): S_WINDOW, (8, 2): S_PAINT2, (9, 2): S_WINDOW, (10, 2): S_PAINT1, (11, 2): S_WINDOW,
+        (7, 2): S_WINDOW, (8, 2): S_WINDOWS2, (9, 2): S_WINDOW, (10, 2): S_WINDOWS2, (11, 2): S_WINDOW,
         # foyer and exit
-        (9, 15): S_GATE, (6, 15): S_WINDOW, (12, 15): S_WINDOW, (2, 14): S_PAINT1, (16, 14): S_PAINT1,
+        (9, 15): S_GATE, (6, 15): S_WINDOW, (12, 15): S_WINDOW, (2, 14): S_HEAD, (16, 14): S_HEAD,
         (8, 15): S_COLUMNS, (10, 15): S_COLUMNS,
         # east wing
         (16, 5): S_WINDOW, (16, 7): S_CREST, (16, 9): S_WINDOW, (16, 11): S_CREST, (13, 8): S_COLUMNS, (13, 10): S_COLUMNS,
@@ -164,8 +166,8 @@ def sriel():
     objects = {
         (7, 7): G_COLUMN, (11, 7): G_COLUMN, (7, 11): G_COLUMN, (11, 11): G_COLUMN, (9, 9): G_MOSAIC,
         (7, 3): G_CHEST, (9, 3): G_BED, (11, 3): G_TABLE,
-        (3, 4): G_CANDLE, (3, 9): G_TABLE,
-        (15, 4): G_CHEST, (15, 7): G_STATUE, (15, 10): G_ARMOUR,
+        (3, 9): G_TABLE,
+        (15, 4): G_CHEST, (15, 7): G_STATUE, (15, 10): G_TOTEM,
         (3, 14): G_CANDLE, (15, 14): G_CANDLE,
     }
     for (x, y), g in objects.items():
@@ -179,7 +181,7 @@ def sriel():
     p.chain(0, [text(3)], (2, 8))
     p.chain(0, [text(4)], (2, 10))
     p.chain(0, [text(5)], (2, 12))
-    lever = p.chain(9, [], (2, 5))                                                     # 7 loose book
+    lever = p.chain(9, [], (2, 4))                                                     # 7 loose book (shelf at the north wall)
     p.chains[-1] = (9, [ev(0x0d, 0x0e, 1, 0, 0, 0, 0, 0, 0xff, 0xff), text(6, 0),
                         word(ev(0x0a, secret[0], secret[1]), 6, 0), word(ev(0x0e, 0x01, 1), 6, p.event_bit(lever))])
     p.chain(0, [text(7)], (11, 3))                                                     # 8 diary
@@ -267,7 +269,11 @@ def build_labdata(raw5):
     lab = ld.parse(raw5)
     lab.header[6] = CEILING_TEX
     lab.header[7] = FLOOR_TEX
-    assert len(lab.walls) == 30
+    assert len(lab.walls) == 30 and len(lab.object_groups) == G_TOTEM - 1
+    lab.objects.append(bytearray(TOTEM_OBJECT))
+    group = bytearray(66)
+    group[2:10] = struct.pack('>HHHH', 255, 255, 0, len(lab.objects))
+    lab.object_groups.append(group)
     for tex, flags, automap, colour, overlays in NEW_WALLS:
         header = bytearray(struct.pack('>IBBBB', flags, tex, automap, colour, len(overlays)))
         lab.walls.append((header, [bytearray(o) for o in overlays]))
