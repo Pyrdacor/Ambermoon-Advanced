@@ -5,9 +5,12 @@ The real temples 444-450 are not touched.
 
 Writes:
 - 2Map_data.amb: prototype map(s)
-- 2Lab_data.amb: labdata 46 (copy of the Gala labdata 5 with floor 20 and ceiling 8)
-- Palettes.amb: palette 59 ("Wüstentempel", stone colours matched to the sandstone texture)
-- 2Wall3D.amb: sandstone walls 193-195 (textures/generated, see make_sandstone_walls.py)
+- 2Lab_data.amb: labdata 46, the temple base (copy of the Gala labdata 5 with floor 20, ceiling 8, extra walls
+  and the serpent totem), see "Labdata 46.md"
+- Palettes.amb: palette 59 ("Wüstentempel"): the stone colours of palette 6 replaced by sandstone colours with
+  the same meaning (1 brightest ... 6 darkest, 12/13 between), so all Gala walls, overlays and objects turn
+  into sandstone without new graphics
+- 2Wall3D.amb: removes the earlier sandstone textures 193-195 again (sources stay in textures/)
 - Save.00/Automap.amb: automap entries up to the new map (485 and 486 were missing too)
 - AllTexts (german + english) 2Map_texts.amb/<map>, imported into the german 2Map_texts.amb
 
@@ -37,27 +40,28 @@ GALA_LAB = 5
 NEW_LAB = 46
 NEW_PALETTE = 59
 FLOOR_TEX, CEILING_TEX = 20, 8
-GENERATED = os.path.join(HERE, '..', 'textures', 'generated')
-SANDSTONE_TEXTURES = (193, 194, 195)    # frieze with columns, frieze, gateway
+BASE_PALETTE = 6
+# palette 59: stone colours with the meaning of palette 6 (histogram match of wall 99 against the sandstone picture)
+SANDSTONE = {1: 'ffe', 2: 'eda', 3: 'cb8', 12: 'db6', 4: 'c73', 13: '964', 5: '653', 6: '323'}
+OLD_SANDSTONE_TEXTURES = (193, 194, 195)
 
-# new walls of labdata 46 (appended to the 30 walls of labdata 5): (texture, flags, automap, colour, overlays)
+# extra walls of labdata 46 (appended to the 30 walls of labdata 5): (texture, flags, automap, colour, overlays)
 SOLID, PASSABLE = 0x40000082, 0x40000102
-S_COLUMNS, S_PLAIN, S_GATE, S_WINDOW, S_CREST, S_HEAD, S_ROSETTE, S_WINDOWS2 = range(131, 139)
+FRAMES = [(0, 24, 0, 0, 32, 80), (0, 25, 96, 0, 32, 80)]       # column frames left and right (no blending)
+W_FRAMES, W_FRAMES_ROSETTE, W_FRAMES_WINDOW, W_FRAMES_CREST = range(131, 135)
 NEW_WALLS = [
-    (193, SOLID, 1, 4, []),
-    (194, SOLID, 1, 4, []),
-    (195, PASSABLE, 10, 11, []),
-    (194, SOLID, 1, 4, [(1, 72, 48, 10, 32, 58)]),
-    (194, SOLID, 1, 4, [(1, 74, 32, 14, 64, 52)]),
-    (194, SOLID, 2, 4, [(1, 39, 32, 14, 64, 45)]),                         # stone head relief
-    (194, SOLID, 1, 4, [(1, 71, 32, 8, 64, 64)]),
-    (194, SOLID, 1, 4, [(1, 73, 16, 24, 32, 32), (1, 73, 80, 24, 32, 32)]),  # two small windows
+    (99, SOLID, 1, 4, FRAMES),
+    (99, SOLID, 1, 4, FRAMES + [(1, 71, 32, 8, 64, 64)]),
+    (99, SOLID, 1, 4, FRAMES + [(1, 72, 48, 10, 32, 58)]),
+    (99, SOLID, 1, 4, FRAMES + [(1, 74, 32, 10, 64, 52)]),
 ]
 
 # labdata 5 walls (tile values) and object groups
-W_PLAIN, W_DOOR_FRAMED = 103, 126
-W_FRAME_L, W_FRAME_R, W_ROSETTE, W_WINDOW = 107, 108, 110, 111
+W_DOOR, W_ARCHES, W_PLAIN, W_PILLAR, W_FRIEZE, W_GATE = 101, 102, 103, 104, 105, 106
+W_FRAME_L, W_FRAME_R, W_HEAD, W_ROSETTE, W_WINDOW, W_WINDOWS2, W_ARCH_WINDOWS = 107, 108, 109, 110, 111, 112, 113
+W_STAIRS_UP, W_STAIRS_DOWN, W_ILLUSION = 114, 115, 116
 W_PAINT1, W_PAINT2, W_PAINT3, W_CREST = 117, 118, 119, 120
+W_SWITCH1, W_SWITCH2, W_DOOR_FRAMED = 122, 123, 126
 W_SHELF1, W_SHELF2 = 127, 128
 G_COLUMN, G_MOSAIC, G_STATUE, G_CANDLE, G_TABLE, G_CHEST, G_ARMOUR, G_BED, G_GUARD = 9, 5, 14, 18, 20, 21, 22, 24, 27
 G_TOTEM = 40                # new object group: serpent totem from Sansri's temple (labdata 32, texture 28)
@@ -144,22 +148,23 @@ def sriel():
             if (x, y) in floor:
                 p.tiles[y][x] = 0
             elif any((x + dx, y + dy) in floor for dx in (-1, 0, 1) for dy in (-1, 0, 1)) or (x, y) == secret:
-                p.tiles[y][x] = S_PLAIN
+                p.tiles[y][x] = W_PLAIN
     walls = {
         # hall
-        (9, 6): S_ROSETTE, (8, 6): S_COLUMNS, (10, 6): S_COLUMNS, (6, 9): S_CREST, (12, 9): S_CREST,
-        (8, 12): S_COLUMNS, (10, 12): S_COLUMNS, (7, 12): S_COLUMNS, (11, 12): S_COLUMNS,
+        (9, 6): W_ROSETTE, (8, 6): W_FRAME_R, (10, 6): W_FRAME_L, (6, 9): W_FRAMES_CREST, (12, 9): W_FRAMES_CREST,
+        (8, 12): W_FRAME_R, (10, 12): W_FRAME_L, (7, 12): W_PILLAR, (11, 12): W_PILLAR,
         # bedchamber
-        (7, 2): S_WINDOW, (8, 2): S_WINDOWS2, (9, 2): S_WINDOW, (10, 2): S_WINDOWS2, (11, 2): S_WINDOW,
+        (7, 2): W_WINDOW, (8, 2): W_WINDOWS2, (9, 2): W_ARCH_WINDOWS, (10, 2): W_WINDOWS2, (11, 2): W_WINDOW,
         # foyer and exit
-        (9, 15): S_GATE, (6, 15): S_WINDOW, (12, 15): S_WINDOW, (2, 14): S_HEAD, (16, 14): S_HEAD,
-        (8, 15): S_COLUMNS, (10, 15): S_COLUMNS,
+        (9, 15): W_DOOR_FRAMED, (6, 15): W_FRAMES_WINDOW, (12, 15): W_FRAMES_WINDOW, (2, 14): W_HEAD, (16, 14): W_HEAD,
+        (8, 15): W_FRIEZE, (10, 15): W_FRIEZE,
         # east wing
-        (16, 5): S_WINDOW, (16, 7): S_CREST, (16, 9): S_WINDOW, (16, 11): S_CREST, (13, 8): S_COLUMNS, (13, 10): S_COLUMNS,
+        (16, 5): W_FRAMES_WINDOW, (16, 7): W_CREST, (16, 9): W_FRAMES_ROSETTE, (16, 11): W_CREST, (13, 8): W_FRAMES,
+        (13, 10): W_FRAMES, (16, 13): W_PAINT3,
     }
     for y in range(4, 14):                      # library shelves on both sides
         p.tiles[y][2] = W_SHELF1 if y % 2 else W_SHELF2
-        if p.tiles[y][5] == S_PLAIN and y > 4:
+        if p.tiles[y][5] == W_PLAIN and y > 4:
             p.tiles[y][5] = W_SHELF2 if y % 2 else W_SHELF1
     for (x, y), t in walls.items():
         p.tiles[y][x] = t
@@ -281,11 +286,24 @@ def build_labdata(raw5):
 
 
 def build_palette():
-    return open(os.path.join(GENERATED, 'wuestentempel.pal'), 'rb').read()
+    out = bytearray(amb.read_container(os.path.join(DATA, 'Palettes.amb'))[BASE_PALETTE])
+    for i, hx in SANDSTONE.items():
+        out[i * 2:i * 2 + 2] = struct.pack('>H', int(hx, 16))
+    return bytes(out)
 
 
-def sandstone_textures():
-    return {n: open(os.path.join(GENERATED, f'sandstone_{n}.tex'), 'rb').read() for n in SANDSTONE_TEXTURES}
+def amnp_remove(rel, indices):
+    """Remove trailing entries of an AMNP container (all other entries stay byte-identical)."""
+    path = os.path.join(DATA, rel)
+    entries = amnp_entries(open(path, 'rb').read())
+    keep = len(entries)
+    while keep and keep in indices:
+        keep -= 1
+    if keep == len(entries):
+        return
+    entries = entries[:keep]
+    out = b'AMNP' + struct.pack('>H', len(entries)) + b''.join(struct.pack('>I', len(e)) for e in entries) + b''.join(entries)
+    open(path, 'wb').write(out)
 
 
 def amnp_entries(d):
@@ -346,7 +364,6 @@ def preview(p, lab_raw, pal_raw):
     os.makedirs(PREVIEW, exist_ok=True)
     a = s.Assets()
     a.labs[(2, NEW_LAB)] = ld.parse(lab_raw)
-    a.walls.update(sandstone_textures())
     for header, ovs in a.labs[(2, NEW_LAB)].walls:
         for ov in ovs:
             a.ovl_size.setdefault(ov[1], (ov[4], ov[5]))
@@ -361,7 +378,7 @@ def preview(p, lab_raw, pal_raw):
             t = p.tiles[y][x]
             if t == 255:
                 row += '#'
-                legend['#'] = a.lab_wall((2, NEW_LAB), S_PLAIN)
+                legend['#'] = a.lab_wall((2, NEW_LAB), W_PLAIN)
             elif t > 100:
                 c = chars.setdefault(t, chr(0x100 + t))
                 legend[c] = a.lab_wall((2, NEW_LAB), t)
@@ -413,11 +430,11 @@ def preview(p, lab_raw, pal_raw):
             c = colours.get(t, (110, 90, 70) if t > 100 else (200, 190, 160))
             if t in (W_SHELF1, W_SHELF2):
                 c = (150, 90, 40)
-            elif t in (W_WINDOW, W_ROSETTE, S_WINDOW, S_ROSETTE):
+            elif t in (W_WINDOW, W_ROSETTE, W_WINDOWS2, W_ARCH_WINDOWS, W_FRAMES_WINDOW, W_FRAMES_ROSETTE):
                 c = (90, 140, 200)
-            elif t in (W_DOOR_FRAMED, S_GATE):
+            elif t in (W_DOOR, W_DOOR_FRAMED):
                 c = (220, 160, 40)
-            elif t in (W_CREST, S_CREST):
+            elif t in (W_CREST, W_FRAMES_CREST):
                 c = (180, 60, 60)
             for yy in range(cell - 1):
                 for xx in range(cell - 1):
@@ -455,7 +472,7 @@ def main():
     open(sub(maps, p.index), 'wb').write(build_map(p))
     pack('2Map_data.amb', 'AMPC', maps)
 
-    amnp_set('2Wall3D.amb', sandstone_textures())
+    amnp_remove('2Wall3D.amb', OLD_SANDSTONE_TEXTURES)
 
     labs = unpack('2Lab_data.amb', 'AMPC')
     n = len(os.listdir(labs))

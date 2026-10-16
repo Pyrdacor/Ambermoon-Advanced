@@ -41,8 +41,10 @@ Grundlage aller Mockups. Detaillierte Texturen, die bereits im Gala-Tempel (Labd
 
 **Nicht verwenden:** Die Quaderwände 144–155 und 171/172. Sie sind eine Hommage an Dragonflight und ältere, weniger detaillierte Texturen. (184–192 sind dagegen eigene Advanced-Texturen für das Morag-Gefängnis und die alte Stadt.)
 
-### Neue Sandsteinwände (193–195)
-Aus `textures/Pixel-Art-Sandsteinwand mit Tempelfriesen.png` erzeugt (`tools/make_sandstone_walls.py`): 193 Fries mit zwei Lotussäulen, 194 Fries ohne Säulen, 195 Tor (begehbar). Fenster, Wappen, Rosette und Gemälde kommen als Overlays auf 194. Dazu passt Palette 59 „Wüstentempel“. Erster Einsatz im Prototyp S'Riel (Map 487).
+### Sandstein-Basis (Labdata 46, Palette 59)
+Grundwand ist die Gala-Wand 99, dazu 96, 98, 100, 103, die Treppen 125/126 und die Overlays (Säulenrahmen 24/25, Bilder, Schalter, Rätselmund …). Palette 59 „Wüstentempel“ färbt alles in Sandstein, ohne neue Grafiken. Details und Wandtabelle: `Labdata 46.md`.
+
+Die zwischenzeitlich erzeugten Fries-Texturen 193–195 (`textures/`) sind nicht mehr in den Spieldaten. Die Vorlagen liegen weiter in `textures/`.
 
 ### Thematische Wände
 | Nr. | Beschreibung | Tempel |

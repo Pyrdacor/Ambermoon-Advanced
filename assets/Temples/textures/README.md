@@ -1,5 +1,7 @@
 # Texturen
 
+**Hinweis:** Die Tempel nutzen inzwischen die Gala-Wände mit Palette 59 (`../Labdata 46.md`). Die hier erzeugten Fries-Texturen 193–195 sind nicht mehr in den Spieldaten, die Werkzeuge bleiben für spätere Vorlagen.
+
 | Datei | Inhalt |
 |---|---|
 | `Pixelart-Sandsteinmauer mit ägyptischen Säulen.png` | Aktuelle Vorlage (1585×992, 16:10), breite dunkle Fugen |

@@ -5,6 +5,7 @@ Hier sammeln wir Ideen und Assets für die Neugestaltung der sieben Ratspaläste
 | Pfad | Inhalt |
 |---|---|
 | `Ideen.md` | Ideensammlung (Gestaltung, Mechaniken, Story) |
+| `Labdata 46.md` | **Tempel-Basis**: Labdata 46 und Palette 59 (Sandstein), alle Wände und Objektgruppen mit Nummern |
 | `Analyse Optik.md` | Was an Wänden, Objekten, Overlays, Böden und Paletten vorhanden ist und was sich eignet |
 | `analysis/` | Übersichtsbilder aller 3D-Texturen mit Nummern, gerendert mit der Tempel-Palette 6 (`tools/ambtools/render3d.py`) |
 | `mockups/` | 3D-Ansichten je Tempel (`temples.png`) und die Gala-Halle in allen Kandidaten-Paletten (`palettes.png`), Legende in `legend.txt` (`tools/mockups.py`, Raycaster `tools/scene3d.py`) |
