@@ -1,7 +1,8 @@
-"""Make the sandstone temple walls from textures/Pixel-Art-Sandsteinwand mit Tempelfriesen.png.
+"""Make the sandstone temple walls from textures/Pixelart-Sandsteinmauer mit ägyptischen Säulen.png
+(or the picture given in the environment variable SANDSTONE_SRC).
 
 - 193 frieze wall with two lotus columns (the picture)
-- 194 frieze wall without columns (middle section repeated, separated by a joint)
+- 194 frieze wall without columns (middle section repeated, courses staggered)
 - 195 gateway: dark passage between the columns, through the lower frieze down to the floor
 
 Usage: python make_sandstone_walls.py [sharpen contrast [out dir [threshold]]]
@@ -19,14 +20,13 @@ import ambcontainer as amb  # noqa: E402
 import textures as tx  # noqa: E402
 
 DATA = os.path.join(HERE, '..', '..', '..', 'german', 'Amberfiles')
-SRC = os.path.join(HERE, '..', 'textures', 'Pixel-Art-Sandsteinwand mit Tempelfriesen.png')
+SRC = os.path.join(HERE, '..', 'textures', os.environ.get('SANDSTONE_SRC', 'Pixelart-Sandsteinmauer mit ägyptischen Säulen.png'))
 OUT = os.path.join(HERE, '..', 'textures', 'generated')
 STONE = {1: 'eb7', 2: 'd94', 3: 'b73', 4: '863', 5: '642', 6: '421', 12: 'c84', 13: 'a63'}
 
 WALL_TOP, WALL_BOTTOM = 11, 68          # rows between the friezes
-SHARPEN, CONTRAST, THRESHOLD = 2.5, 1.1, 6    # see sharpen()
-MID = (36, 91)                          # stone section between the columns
-JOINT_X = 35                            # column frame edge, used as a vertical joint
+SHARPEN, CONTRAST, THRESHOLD = 1.0, 1.05, 8   # see sharpen()
+MID = (37, 88)                          # stone section between the columns (joint at 36)
 
 
 def sharpen(img, amount=1.5, contrast=1.15, threshold=THRESHOLD):
@@ -72,13 +72,23 @@ def pal_bytes(pal):
 
 
 def plain(cols):
+    """The stone section between the columns (with its left joint) is repeated over the whole width. Each
+    course (found by its horizontal joints) gets its own offset, so the vertical joints are staggered like
+    in real masonry instead of running through the whole height."""
     rows = [list(r) for r in cols]
-    a, b = MID
-    seg = list(range(a, b + 1))
-    xs = (seg + [JOINT_X]) * 3
+    seq = [MID[0] - 1] + list(range(MID[0], MID[1] + 1))       # joint + stone section
+    period = len(seq)
+    dark = (5, 6)
+    joints = [y for y in range(WALL_TOP, WALL_BOTTOM + 1)
+              if sum(cols[y][x] in dark for x in seq) > 0.6 * period]
+    course, last = 0, None
     for y in range(WALL_TOP, WALL_BOTTOM + 1):
-        src = cols[y]
-        rows[y] = [src[x] for x in xs[:128]]
+        if y in joints:
+            if last is not None and y != last + 1:
+                course += 1
+            last = y
+        phase = (course * 23) % period
+        rows[y] = [cols[y][seq[(x + phase) % period]] for x in range(128)]
     return rows
 
 
