@@ -21,4 +21,8 @@ Basis ist Song 22 „Psychedelic Dune Groove“ (Sandschiff). Er passt zur Drama
   - Deshalb werden alle Stimmen verschoben.
 - **Tonhöhe** per Nulldurchgängen geprüft: −3 ergibt Faktor 1,17 (theoretisch 1,19), −5 ergibt 1,28 (theoretisch 1,33).
 - **Werkzeug:** `tools/transpose_music.py`. Mit `--skip-voices` lassen sich Schlagzeugstimmen auslassen, mit `--start`/`--repeat` Start- und Wiederholposition setzen, mit `--remove ERSTE LETZTE` Positionen entfernen (Pointer, Stop- und Wiederholposition werden angepasst), mit `--speed N` das Tempo ändern (Speed-Befehle und Slides werden mit skaliert). Eine Position dauert bei diesem Song 1,92 s (Speed 6 × 16 Zeilen / 50 Hz).
-- **Ins Spiel** kommt eine Variante erst, wenn wir sie ausgewählt haben: als neuer Eintrag 33 in `Music.amb`. Dafür muss geprüft werden, ob Code und Remake mehr als 32 Songs zulassen.
+- **Song 33:** `_ab34_cut2` ist als Tempelmusik ausgewählt.
+  - Der Amiga-Code kann einen Song 33 abspielen (`Max_music` = 33 in `Set_music`).
+  - Im Remake ist Song 33 aber im Enum `Song` schon „Intro“ (34 Outro, 35 Menu). Ein 33. Eintrag in Music.amb führt deshalb beim Laden der Daten zu „An item with the same key has already been added. Key: Intro“, und das Remake lädt die Advanced-Daten gar nicht.
+  - Darum ist Music.amb vorerst wieder das Original. Sobald das Remake angepasst ist, wird `SONIC.PsychedelicDuneGroove_ab34_cut2` als Eintrag 33 angehängt.
+  - Dabei bleiben die Einträge 1–32 roh übernommen. Nur Eintrag 33 wird mit AmbermoonPack (AMNP, Schlüssel = Eintragsnummer) gepackt, denn ein komplettes Neupacken verändert einige Original-Einträge um 2 Byte.

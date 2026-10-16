@@ -169,7 +169,7 @@ def sriel():
     p.chain(13, [ev(0x03, 75, 0, 0xff, 116 - 1 + 1)], (7, 3))                           # 9 chest 116
     p.chain(13, [ev(0x03, 50, 0, 0xff, 117 - 1 + 1)], (15, 4))                          # 10 chest 117
     p.chars = [(MAGIC_GUARDS, 0x06, G_GUARD, 8, 8), (MAGIC_GUARDS, 0x06, G_GUARD, 10, 8)]
-    p.header = dict(flags=0x0899, music=33, labdata=NEW_LAB, palette=NEW_PALETTE, world=2)
+    p.header = dict(flags=0x0899, music=22, labdata=NEW_LAB, palette=NEW_PALETTE, world=2)
     p.texts = SRIEL_TEXTS
     return p
 
