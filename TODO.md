@@ -139,7 +139,8 @@ Order and details: `000 Plan Episode 4.md`, milestones M1–M4.
   - Suggested order: S'Riel, S'Orel, S'Arin, S'Endar, S'Trog, S'Kat, S'Lorwin.
   - Song 33 (Psychedelic Dune Groove, temple version, `assets/Temples/music/`) is chosen but **not in `Music.amb` yet**: in the remake `Song` 33 is `Intro` (34 Outro, 35 Menu), so a 33rd entry makes loading the game data fail. First change the remake (e.g. move Intro/Outro/Menu out of the Music.amb range), then append the song. The Amiga code already allows it (`Max_music` = 33). Then decide which temple uses it.
   - Optics: mockups in `assets/Temples/mockups/` (Gala/Sansri textures, one palette per temple).
-  - **Prototype S'Riel (map 487)** built 2026-10-15 (`assets/Temples/prototypes/`, labdata 46, palette 59). Test on the Amiga with a new game and the cheat map jump. Next: feedback, then S'Orel.
+  - **Prototypes** in `assets/Temples/prototypes/` (labdata 46 = temple base, see `assets/Temples/Labdata 46.md`): S'Riel (map 487, palette 59) and S'Orel (map 488, palette 60, monster group 172). Test on the Amiga with a new game and the cheat map jump. Next: S'Arin.
+  - Stronger temple guards (new monsters) are still missing, the prototypes only use the magic guard (monster 42).
   - Savegame patcher: add the automaps 485, 486 and 487 (missing in old saves → fatal error on the Amiga when entering these maps).
   - Remake test works (`make_testdata.py` + teleport cheat), screenshots in `assets/Temples/prototypes/`.
 - [x] **Bore the dwarf as a party member** (built 2026-10-14, german data + english AllTexts, see the xlsx):

@@ -1,4 +1,4 @@
-"""Build the temple prototypes into the german Amberfiles (pilot: S'Riel).
+"""Build the temple prototypes into the german Amberfiles (S'Riel 487, S'Orel 488).
 
 Prototype maps live on free map indices (487+) and are only reachable with a teleport cheat.
 The real temples 444-450 are not touched.
@@ -7,7 +7,8 @@ Writes:
 - 2Map_data.amb: prototype map(s)
 - 2Lab_data.amb: labdata 46, the temple base (copy of the Gala labdata 5 with floor 20, ceiling 8, extra walls
   and the serpent totem), see "Labdata 46.md"
-- Palettes.amb: palette 59 ("Wüstentempel"): the stone colours of palette 6 replaced by sandstone colours with
+- Monster_groups.amb: group 172 (6 magic guards)
+- Palettes.amb: palette 59 ("Wüstentempel", S'Riel) and 60 ("Kaserne", S'Orel): the stone colours of palette 6 replaced by sandstone colours with
   the same meaning (1 brightest ... 6 darkest, 12/13 between), so all Gala walls, overlays and objects turn
   into sandstone without new graphics
 - 2Wall3D.amb 193-200 / 2Overlay3D.amb 151-155: copies of the stone walls and overlays without the colours
@@ -39,11 +40,12 @@ import mapmodel as mm  # noqa: E402
 
 GALA_LAB = 5
 NEW_LAB = 46
-NEW_PALETTE = 59
 FLOOR_TEX, CEILING_TEX = 20, 8
 BASE_PALETTE = 6
 # palette 59: stone colours with the meaning of palette 6 (histogram match of wall 99 against the sandstone picture)
 SANDSTONE = {1: 'ffe', 2: 'eda', 3: 'cb8', 4: 'c73', 5: '653', 6: '323', 12: '5a9', 13: '367'}
+KASERNE = {1: 'eed', 2: 'dcb', 3: 'ba8', 4: 'a76', 5: '654', 6: '322', 12: '69b', 13: '357'}   # S'Orel: darker brownish sandstone, steel blue
+PALETTES = {59: SANDSTONE, 60: KASERNE}
 # 12/13 are the moss/glass tones of palette 6. In the temple they are blue-green accents (glass, mosaics,
 # marble, books, paintings). The stone graphics that use 12/13 as stone colour get copies without them.
 STONE_REMAP = {12: 3, 13: 5}
@@ -67,14 +69,20 @@ W_DOOR, W_ARCHES, W_PLAIN, W_PILLAR, W_FRIEZE, W_GATE = 101, 102, 103, 104, 105,
 W_FRAME_L, W_FRAME_R, W_HEAD, W_ROSETTE, W_WINDOW, W_WINDOWS2, W_ARCH_WINDOWS = 107, 108, 109, 110, 111, 112, 113
 W_STAIRS_UP, W_STAIRS_DOWN, W_ILLUSION = 114, 115, 116
 W_PAINT1, W_PAINT2, W_PAINT3, W_CREST = 117, 118, 119, 120
-W_SWITCH1, W_SWITCH2, W_DOOR_FRAMED = 122, 123, 126
+W_SWITCH1, W_SWITCH2, W_DOOR_FRAMED, W_ARCHES_CREST = 122, 123, 126, 130
 W_SHELF1, W_SHELF2 = 127, 128
 G_COLUMN, G_MOSAIC, G_STATUE, G_CANDLE, G_TABLE, G_CHEST, G_ARMOUR, G_BED, G_GUARD = 9, 5, 14, 18, 20, 21, 22, 24, 27
+G_MOSAIC_ORANGE = 8
 G_MOSAIC_GREEN = 6         # round mosaic with blue-green inlay (colours 12/13)
+G_SPIKES = 41               # new object group: three floor spikes (object 39, texture 10, like the spikes in 445)
+G_WEAPONS, G_TABLET, G_GOLEM, G_ROBE = 34, 38, 1, 14
 G_TOTEM = 40                # new object group: serpent totem from Sansri's temple (labdata 32, texture 28)
 TOTEM_OBJECT = bytes.fromhex('40000080001c0100605001200155')
 
-MAGIC_GUARDS = 68           # monster group
+MAGIC_GUARDS = 68           # monster group: 4 magic guards
+TWO_GUARDS = 67             # 2 magic guards
+SIX_GUARDS = 172            # new: 6 magic guards
+SIX_GUARDS_DATA = struct.pack('>18H', 0, 0, 0, 0, 0, 0, 0, 42, 0, 0, 42, 0, 42, 42, 0, 0, 42, 42)
 GUARD_TILE_FLAGS = 0xc0000111
 
 
@@ -200,9 +208,110 @@ def sriel():
     p.chain(13, [ev(0x03, 75, 0, 0xff, 116 - 1 + 1)], (7, 3))                           # 9 chest 116
     p.chain(13, [ev(0x03, 50, 0, 0xff, 117 - 1 + 1)], (15, 4))                          # 10 chest 117
     p.chars = [(MAGIC_GUARDS, 0x06, G_GUARD, 8, 8), (MAGIC_GUARDS, 0x06, G_GUARD, 10, 8)]
-    p.header = dict(flags=0x0899, music=22, labdata=NEW_LAB, palette=NEW_PALETTE, world=2)
+    p.header = dict(flags=0x0899, music=22, labdata=NEW_LAB, palette=59, world=2)
     p.texts = SRIEL_TEXTS
+    p.open_tiles = [secret]
+    p.views = [(9, 10, 0, 'Halle, Blick nach Norden', False), (9, 14, 0, 'Foyer, Blick auf die Halle', False),
+               (3, 12, 0, 'Bibliothek, Blick nach Norden', False), (5, 4, 90, 'Geheimgang, Blick ins Schlafgemach', True),
+               (9, 4, 0, 'Schlafgemach', True), (14, 12, 0, 'Ostflügel, Blick nach Norden', False)]
     return p
+
+
+def sorel():
+    """S'Orel (barracks): outer corridor with guards and a spike trap (switched off by a hidden button),
+    at the far end the gate to the inner part (key 388 from S'Riel's chest 117). Inside: armoury with weapon
+    racks and chest 118, then the training hall with the big guard group and chest 119 (key 389 for S'Arin)."""
+    p = Proto(488, 21, 21)
+    floor = set()
+
+    def rect(x0, y0, x1, y1):
+        for y in range(y0, y1 + 1):
+            for x in range(x0, x1 + 1):
+                floor.add((x, y))
+    rect(4, 4, 5, 18)           # outer corridor west
+    rect(17, 4, 18, 18)         # east
+    rect(4, 4, 18, 5)           # north
+    rect(4, 17, 18, 18)         # south
+    rect(7, 7, 15, 8)           # armoury
+    rect(7, 10, 15, 15)         # training hall
+    floor.add((11, 9))          # arch between armoury and hall
+    gate, button = (11, 6), (19, 9)
+    spikes = [(4, 9), (5, 11), (4, 13)]
+    for y in range(1, p.h + 1):
+        for x in range(1, p.w + 1):
+            if (x, y) in floor:
+                p.tiles[y][x] = 0
+            elif any((x + dx, y + dy) in floor for dx in (-1, 0, 1) for dy in (-1, 0, 1)):
+                p.tiles[y][x] = W_PLAIN
+    walls = {
+        # outer wall
+        (11, 3): W_FRAMES_WINDOW, (7, 3): W_FRAMES_CREST, (15, 3): W_FRAMES_CREST,
+        (3, 11): W_FRAMES_WINDOW, (3, 7): W_FRAMES_CREST, (3, 15): W_FRAMES_CREST,
+        (19, 11): W_FRAMES_WINDOW, (19, 7): W_FRAMES_CREST, (19, 15): W_FRAMES_CREST, button: W_SWITCH1,
+        (11, 19): W_DOOR_FRAMED, (10, 19): W_FRIEZE, (12, 19): W_FRIEZE, (7, 19): W_FRAMES_WINDOW, (15, 19): W_FRAMES_WINDOW,
+        # inner building, outside
+        gate: W_GATE, (10, 6): W_FRAME_R, (12, 6): W_FRAME_L, (6, 11): W_PILLAR, (16, 11): W_PILLAR,
+        (11, 16): W_ARCHES_CREST, (8, 16): W_CREST, (14, 16): W_CREST, (6, 8): W_FRIEZE, (16, 8): W_FRIEZE,
+        # inside: wall between armoury and hall
+        (10, 9): W_FRAME_R, (12, 9): W_FRAME_L, (8, 9): W_ARCHES, (14, 9): W_ARCHES,
+    }
+    for (x, y), tl in walls.items():
+        p.tiles[y][x] = tl
+    objects = {
+        (4, 4): G_ROBE, (18, 4): G_ROBE, (4, 18): G_ROBE, (18, 18): G_ROBE,
+        (7, 7): G_TABLET, (8, 7): G_WEAPONS, (10, 7): G_WEAPONS, (12, 7): G_WEAPONS, (14, 7): G_WEAPONS, (15, 7): G_CHEST,
+        (8, 11): G_COLUMN, (14, 11): G_COLUMN, (8, 14): G_COLUMN, (14, 14): G_COLUMN, (11, 15): G_CHEST,
+        (7, 10): G_GOLEM, (15, 10): G_GOLEM, (11, 12): G_MOSAIC_ORANGE,
+    }
+    for xy in spikes:
+        objects[xy] = G_SPIKES
+    for (x, y), g in objects.items():
+        p.tiles[y][x] = g
+
+    text = lambda n, trigger=2: ev(0x04, 0xff, trigger, 0, 0, n)    # noqa: E731
+    hand = lambda: ev(0x0d, 0x0e, 1, 0, 0, 0, 0, 0, 0xff, 0xff)    # noqa: E731
+    p.chain(14, [word(ev(0x01, 33, 28, 2, 0xff, 0), 6, 525)], (11, 19))                # 1 exit -> Morag (like 445)
+    trap = p.chain(5, [text(1, 1), ev(0x06, 0x09, 1, 3, 0xff)], *spikes)                # 2 spikes (text and trap of 445)
+    btn = p.chain(7, [], button)                                                       # 3 hidden button
+    p.chains[-1] = (7, [hand(), text(2, 0), word(ev(0x0a, button[0], button[1]), 6, W_SWITCH2),
+                        word(ev(0x0e, 0x01, 1), 6, p.event_bit(btn))]
+                   + [word(ev(0x0a, x, y), 6, 0) for x, y in spikes] + [word(ev(0x0e, 0x01, 1), 6, p.event_bit(trap))])
+    door = p.chain(9, [], gate)                                                        # 4 gate, key 388 (door 33 like 445)
+    p.chains[-1] = (9, [hand(), bytearray.fromhex('026421ffff000184ffffffff'), ev(0x0d, 0x09, 1, 0, 0, 0, 0, 0, 0xff, 0xff),
+                        word(ev(0x0e, 0x01, 1), 6, p.event_bit(door)), word(ev(0x0a, gate[0], gate[1]), 6, 0)])
+    p.chain(0, [text(3)], (7, 7))                                                      # 5 duty roster
+    p.chain(13, [ev(0x03, 85, 0, 0xff, 118)], (15, 7))                                 # 6 chest 118 (armoury)
+    p.chain(13, [ev(0x03, 50, 0, 0xff, 119)], (11, 15))                                # 7 chest 119 (key 389)
+    p.chars = [(TWO_GUARDS, 0x06, G_GUARD, 18, 12), (MAGIC_GUARDS, 0x06, G_GUARD, 11, 5),
+               (MAGIC_GUARDS, 0x06, G_GUARD, 4, 16), (SIX_GUARDS, 0x06, G_GUARD, 11, 13),
+               (TWO_GUARDS, 0x06, G_GUARD, 9, 8)]
+    p.header = dict(flags=0x0891, music=18, labdata=NEW_LAB, palette=60, world=2)    # lit, no map (445 was dark)
+    p.texts = SOREL_TEXTS
+    p.open_tiles = [gate]
+    p.views = [(11, 18, 0, 'Suedgang, Blick auf das Hallengebaeude', False), (4, 17, 0, 'Westgang mit Spiessfalle', False),
+               (18, 9, 90, 'Ostgang, versteckter Schalter', False), (11, 5, 180, 'Tor zum Innenbereich', False),
+               (7, 8, 90, 'Waffenkammer', True), (11, 10, 180, 'Uebungshalle mit Wachen und Truhe', True)]
+    return p
+
+
+SOREL_TEXTS = {
+    'de': [
+        (445, 0),
+        (445, 1),
+        (445, 2),
+        "AUF EINER STEINTAFEL STEHT DER DIENSTPLAN DER PALASTWACHE. DARUNTER HAT JEMAND IN EILIGER SCHRIFT ERGÄNZT:^ "
+        "\"SEIT S'OREL AUF LYRAMION GEFALLEN IST, ERHALTEN DIE WACHEN IHRE BEFEHLE VON S'ARIN. DEN SCHLÜSSEL ZU SEINEM "
+        "PALAST VERWAHRT DER HAUPTMANN IN DER TRUHE DER ÜBUNGSHALLE.\"",
+    ],
+    'en': [
+        (445, 0),
+        (445, 1),
+        (445, 2),
+        "THE DUTY ROSTER OF THE PALACE GUARD IS WRITTEN ON A STONE TABLET. BELOW IT SOMEONE HAS ADDED IN HASTY LETTERS:^ "
+        "\"SINCE S'OREL FELL ON LYRAMION, THE GUARDS RECEIVE THEIR ORDERS FROM S'ARIN. THE CAPTAIN KEEPS THE KEY TO HIS "
+        "PALACE IN THE CHEST OF THE TRAINING HALL.\"",
+    ],
+}
 
 
 SRIEL_TEXTS = {
@@ -313,6 +422,11 @@ def build_labdata(raw5, wall_map=None, ovl_map=None):
     group = bytearray(66)
     group[2:10] = struct.pack('>HHHH', 255, 255, 0, len(lab.objects))
     lab.object_groups.append(group)
+    spikes = bytearray(66)
+    for k, (x, y) in enumerate(((150, 150), (370, 210), (240, 390))):
+        spikes[2 + k * 8:10 + k * 8] = struct.pack('>HHHH', x, y, 0, 39)
+    lab.object_groups.append(spikes)
+    assert len(lab.object_groups) == G_SPIKES
     for tex, flags, automap, colour, overlays in NEW_WALLS:
         header = bytearray(struct.pack('>IBBBB', flags, tex, automap, colour, len(overlays)))
         lab.walls.append((header, [bytearray(o) for o in overlays]))
@@ -323,9 +437,9 @@ def build_labdata(raw5, wall_map=None, ovl_map=None):
     return ld.serialize(lab)
 
 
-def build_palette():
+def build_palette(stone):
     out = bytearray(amb.read_container(os.path.join(DATA, 'Palettes.amb'))[BASE_PALETTE])
-    for i, hx in SANDSTONE.items():
+    for i, hx in stone.items():
         out[i * 2:i * 2 + 2] = struct.pack('>H', int(hx, 16))
     return bytes(out)
 
@@ -390,6 +504,8 @@ def write_texts(p):
         for i, t in enumerate(p.texts[lang]):
             if t is None:
                 t = open(os.path.join(root, '2Map_texts.amb', '444', '001.txt'), encoding='utf-8-sig').read()
+            elif isinstance(t, tuple):                      # (map, text) copied from the original temple
+                t = open(os.path.join(root, '2Map_texts.amb', str(t[0]), '%03d.txt' % t[1]), encoding='utf-8-sig').read()
             with open(os.path.join(d, '%03d.txt' % i), 'w', encoding='utf-8-sig', newline='') as f:
                 f.write(t)
     assert os.path.exists(src444)
@@ -439,21 +555,15 @@ def preview(p, lab_raw, pal_raw, wall_files, ovl_files):
         objs.append((x - 0.5, y - 0.5, 0, a.obj((2, NEW_LAB), oi)))
     # grid is 0-based for the renderer: cell (x, y) 1-based -> index (x-1, y-1)
     # (tile x, tile y, direction in degrees) 1-based like the map
-    views = [(9, 10, 0, 'Halle, Blick nach Norden'),
-             (9, 14, 0, 'Foyer, Blick auf die Halle'),
-             (3, 12, 0, 'Bibliothek, Blick nach Norden'),
-             (5, 4, 90, 'Geheimgang, Blick ins Schlafgemach'),
-             (9, 4, 0, 'Schlafgemach'),
-             (14, 12, 0, 'Ostflügel, Blick nach Norden')]
-    views = [(x - 0.5, y - 0.5 + (0.45 if ang == 0 else 0), ang, n) for x, y, ang, n in views]
+    views = [(x - 0.5, y - 0.5 + (0.45 if ang == 0 else 0), ang, n, o) for x, y, ang, n, o in p.views]
     size, scale = (176, 144), 2
     vw, vh = size[0] * scale, size[1] * scale
     cv = r.Canvas(8 + 3 * (vw + 8), 8 + 2 * (vh + 24))
     open_grid = [list(rw) for rw in grid]
-    sx, sy = 6 - 1, 4 - 1                                   # show the secret passage open
-    open_grid[sy][sx] = '.'
-    for i, (cx, cy, ang, _) in enumerate(views):
-        g = [''.join(rw) for rw in open_grid] if i >= 3 else grid
+    for sx, sy in p.open_tiles:                             # show secret passages / doors open
+        open_grid[sy - 1][sx - 1] = '.'
+    for i, (cx, cy, ang, _, use_open) in enumerate(views):
+        g = [''.join(rw) for rw in open_grid] if use_open else grid
         img, w, h = s.render(a, None, g, legend, (cx, cy, ang), objs, floor=FLOOR_TEX, ceiling=CEILING_TEX,
                              size=size, fov=60)
         x0, y0 = 8 + (i % 3) * (vw + 8), 8 + (i // 3) * (vh + 24)
@@ -498,24 +608,27 @@ def main():
     ap.add_argument('--preview-only', action='store_true')
     args = ap.parse_args()
     os.makedirs(WORK, exist_ok=True)
-    p = sriel()
+    protos = [sriel(), sorel()]
     raw5 = amb.read_container(os.path.join(DATA, '2Lab_data.amb'))[GALA_LAB]
     wall_files, ovl_files, wall_map, ovl_map = recoloured_graphics(ld.parse(raw5))
     lab_raw = build_labdata(raw5, wall_map, ovl_map)
-    pal_raw = build_palette()
-    names = preview(p, lab_raw, pal_raw, wall_files, ovl_files)
-    print('preview:', ', '.join(names))
+    pal_raws = {i: build_palette(stone) for i, stone in PALETTES.items()}
+    for p in protos:
+        names = preview(p, lab_raw, pal_raws[p.header['palette']], wall_files, ovl_files)
+        print('preview', p.index, ':', ', '.join(names))
     if args.preview_only:
         return
 
     maps = unpack('2Map_data.amb', 'AMPC')
-    old = open(sub(maps, p.index), 'rb').read()
-    assert not old or old[6] == NEW_LAB, 'map slot not free'      # empty or an earlier prototype build
-    open(sub(maps, p.index), 'wb').write(build_map(p))
+    for p in protos:
+        old = open(sub(maps, p.index), 'rb').read()
+        assert not old or old[6] == NEW_LAB, 'map slot not free'      # empty or an earlier prototype build
+        open(sub(maps, p.index), 'wb').write(build_map(p))
     pack('2Map_data.amb', 'AMPC', maps)
 
     amnp_set('2Wall3D.amb', wall_files)
     amnp_set('2Overlay3D.amb', ovl_files)
+    amnp_set('Monster_groups.amb', {SIX_GUARDS: SIX_GUARDS_DATA})
 
     labs = unpack('2Lab_data.amb', 'AMPC')
     n = len(os.listdir(labs))
@@ -525,13 +638,14 @@ def main():
 
     pals = unpack('Palettes.amb', 'AMPC')
     n = len(os.listdir(pals))
-    assert n in (NEW_PALETTE - 1, NEW_PALETTE), n
-    open(sub(pals, NEW_PALETTE), 'wb').write(pal_raw)
+    assert min(PALETTES) - 1 <= n <= max(PALETTES), n
+    for i, raw in pal_raws.items():
+        open(sub(pals, i), 'wb').write(raw)
     pack('Palettes.amb', 'AMPC', pals)
 
     autos = unpack('Save.00/Automap.amb', 'AMBR')
     m2 = amb.read_container(os.path.join(DATA, '2Map_data.amb'))
-    for k in range(1, p.index + 1):
+    for k in range(1, max(p.index for p in protos) + 1):
         f = sub(autos, k)
         if not os.path.exists(f):
             d = m2.get(k, b'')
@@ -539,9 +653,10 @@ def main():
             open(f, 'wb').write(bytes(size))
     pack('Save.00/Automap.amb', 'AMBR', autos)
 
-    write_texts(p)
+    for p in protos:
+        write_texts(p)
     run('AmbermoonTextManager', '-i', DATA, os.path.join(DATA, 'AllTexts'), '-f', '2Map_texts.amb')
-    print('built map', p.index)
+    print('built maps', ', '.join(str(p.index) for p in protos))
 
 
 if __name__ == '__main__':

@@ -1,6 +1,6 @@
 # Labdata 46 – Basis für die Ratsechsen-Tempel
 
-Labdata 46 ist eine Kopie der Gala-Labdata 5 (Boden 20, Decke 8) mit vier zusätzlichen Wänden (131–134) und dem Schlangentotem (Objektgruppe 40). Zusammen mit **Palette 59 „Wüstentempel“** wird daraus Sandstein mit blaugrünen Akzenten.
+Labdata 46 ist eine Kopie der Gala-Labdata 5 (Boden 20, Decke 8) mit vier zusätzlichen Wänden (131–134), dem Schlangentotem (Objektgruppe 40) und der Spießfalle (41). Zusammen mit **Palette 59 „Wüstentempel“** wird daraus Sandstein mit blaugrünen Akzenten.
 
 Gebaut wird sie von `tools/build_prototype.py`. Erster Einsatz: Prototyp S'Riel (Map 487).
 
@@ -8,6 +8,8 @@ Gebaut wird sie von `tools/build_prototype.py`. Erster Einsatz: Prototyp S'Riel 
 ![Objekte](labdata46/labdata_2_46_objects.png)
 
 ## Palette 59 „Wüstentempel“
+
+Weitere Tempel bekommen Varianten mit derselben Bedeutung der Indizes, z. B. Palette 60 „Kaserne“ (S'Orel): Stein `eed dcb ba8 a76 654 322`, Akzente 12/13 stahlblau `69b 357`.
 
 | Index | Farbe | Bedeutung |
 |---|---|---|
@@ -108,5 +110,6 @@ Die Bilder oben sind nach **Objekt** nummeriert, die Karte verwendet **Gruppen**
 | 37 | 41 | Krieger (animiert) |
 | 38, 39 | 37 | Steintafel (links bzw. rechts versetzt) |
 | 40 | 42 | **neu:** Schlangentotem (aus Sansris Tempel, Textur 28) |
+| 41 | 39 ×3 | **neu:** Spießfalle (drei Spieße, Textur 10 wie in 445) |
 
 Für die Wüstentempel gut geeignet sind: Säulen, Mosaike, Statuen, Golems, Kerzen, Tisch, Truhe, Kugel, Steintafeln, Stern, Funkeln und das Schlangentotem. Die Rüstungen (22, 23, 33) und das Schiffsgemälde (118) besser nicht verwenden.
