@@ -1,6 +1,6 @@
 # Labdata 46 – Basis für die Ratsechsen-Tempel
 
-Labdata 46 ist eine Kopie der Gala-Labdata 5 (Boden 20, Decke 8) mit vier zusätzlichen Wänden (131–134) und dem Schlangentotem (Objektgruppe 40). Zusammen mit **Palette 59 „Wüstentempel“** wird daraus Sandstein, ohne dass neue Grafiken nötig sind.
+Labdata 46 ist eine Kopie der Gala-Labdata 5 (Boden 20, Decke 8) mit vier zusätzlichen Wänden (131–134) und dem Schlangentotem (Objektgruppe 40). Zusammen mit **Palette 59 „Wüstentempel“** wird daraus Sandstein mit blaugrünen Akzenten.
 
 Gebaut wird sie von `tools/build_prototype.py`. Erster Einsatz: Prototyp S'Riel (Map 487).
 
@@ -9,18 +9,26 @@ Gebaut wird sie von `tools/build_prototype.py`. Erster Einsatz: Prototyp S'Riel 
 
 ## Palette 59 „Wüstentempel“
 
-| Index | Farbe | Bedeutung (wie in Palette 6) |
+| Index | Farbe | Bedeutung |
 |---|---|---|
 | 1, 2, 3 | `ffe eda cb8` | hellste Stufen: Glanzlichter cremeweiß, Kanten sandgrau |
-| 12 | `db6` | heller Zwischenton, ockergelb (in Palette 6 Moos-Grün) |
 | 4 | `c73` | Grundton der Steine, gebranntes Orange |
-| 13 | `964` | dunkler Zwischenton, graubraun (in Palette 6 Moos-Grün) |
 | 5, 6 | `653 323` | Schatten und Fugen, kühl |
 | 7–11 | wie Palette 6 | Holz, Gold (Türen, Regale, Truhen) |
+| **12, 13** | `5a9 367` | **Blaugrün:** Glas (Fenster, Rosette), Mosaike, Marmorwand 121, Bücher, Gemälde, Klingen |
 | 14, 15 | wie Palette 6 | Rot (Rosette, Wachen, Flammen) |
 | 16–31 | wie Palette 6 | |
 
-Ausgangspunkt war ein Helligkeitsabgleich von Wand 99 mit der Sandstein-Vorlage (`textures/Pixel-Art-Sandsteinwand mit Tempelfriesen.png`). Danach haben die Stufen unterschiedliche Farbtöne bekommen (gelb, orange, graubraun, kühle Schatten), damit die Steine nicht eintönig wirken. Weil die Bedeutung der Indizes gleich bleibt, passen alle Wände, Overlays und Objekte des Spiels automatisch dazu. Graue Monster werden in 3D mit eingefärbt.
+**Wie das zusammenpasst:** In Palette 6 sind 12/13 Grüntöne (Moos, Glas). Die Steinwände nutzen sie aber auch als Steinfarbe (15–23 % der Pixel). Deshalb zeigt Labdata 46 bei diesen Wänden und Overlays auf **Kopien ohne 12/13** (12 → 3, 13 → 5):
+
+| Original | Kopie | Was |
+|---|---|---|
+| Wände 96, 98, 99, 100, 103, 104, 125, 126 | 193–200 (2Wall3D) | Prunktür, Bögen, Grundwand, Reliefpfeiler, Fries, Tor, Treppen |
+| Overlays 24, 25, 39, 96, 97 | 151–155 (2Overlay3D) | Säulenrahmen, Steinkopf, Türsäulen |
+
+Die Wände bleiben dadurch rein sandsteinfarben, und 12/13 leuchten nur dort blaugrün, wo das Original Glas oder Schmuck hat. Ein neuer Steingrafik-Typ für die Tempel braucht ebenfalls so eine Kopie, sonst bekommt er blaugrüne Flecken. Die Kopien erzeugt `build_prototype.py` (`RECOLOURED_WALLS`, `RECOLOURED_OVERLAYS`).
+
+Die Steinfarben stammen aus einem Helligkeitsabgleich von Wand 99 mit der Sandstein-Vorlage (`textures/Pixel-Art-Sandsteinwand mit Tempelfriesen.png`), danach mit unterschiedlichen Farbtönen versehen, damit die Steine nicht eintönig wirken. Graue Monster werden in 3D mit eingefärbt.
 
 ## Wände
 
@@ -63,7 +71,7 @@ Ausgangspunkt war ein Helligkeitsabgleich von Wand 99 mit der Sandstein-Vorlage 
 | 133 | 99 | 24, 25, 72 | | **neu:** Fenster zwischen Säulenrahmen |
 | 134 | 99 | 24, 25, 74 | | **neu:** Wappen zwischen Säulenrahmen |
 
-Im Map-Feld steht die Wandnummer direkt (101 = erste Wand). Weitere Overlays (Schalter, Schilder, Rätselmund, Ketten …) lassen sich jederzeit als neue Wände anhängen. Overlays müssen auf dem Amiga an 8-Pixel-Grenzen liegen (x = 0, 8, 16, …).
+Die Spalte „Textur“ nennt das Original. In den Daten steht bei den kopierten Texturen die Kopie (siehe oben). Im Map-Feld steht die Wandnummer direkt (101 = erste Wand). Weitere Overlays (Schalter, Schilder, Rätselmund, Ketten …) lassen sich jederzeit als neue Wände anhängen. Overlays müssen auf dem Amiga an 8-Pixel-Grenzen liegen (x = 0, 8, 16, …).
 
 ## Objektgruppen
 
@@ -74,7 +82,7 @@ Die Bilder oben sind nach **Objekt** nummeriert, die Karte verwendet **Gruppen**
 | 1, 4 | 1, 4 | Golemstatue (4 animiert, „lebende Statue“) |
 | 2 | 2 | Funkeln (Magie, Teleporter) |
 | 3 | 3 | Bronzestatue |
-| 5–8 | 5–8 | Bodenmosaike (achteckig, rund) |
+| 5–8 | 5–8 | Bodenmosaike (5 achteckig, 6 rund mit blaugrüner Einlage, 7/8 rund) |
 | 9–12 | 9–12 | Säulen (gedreht, verziert, schlank, gedreht hell) |
 | 13 | 13 | Kleiner Ständer |
 | 14 | 14 | Statue in Robe |

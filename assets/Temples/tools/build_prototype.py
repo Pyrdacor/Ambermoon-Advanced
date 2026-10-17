@@ -10,7 +10,8 @@ Writes:
 - Palettes.amb: palette 59 ("Wüstentempel"): the stone colours of palette 6 replaced by sandstone colours with
   the same meaning (1 brightest ... 6 darkest, 12/13 between), so all Gala walls, overlays and objects turn
   into sandstone without new graphics
-- 2Wall3D.amb: removes the earlier sandstone textures 193-195 again (sources stay in textures/)
+- 2Wall3D.amb 193-200 / 2Overlay3D.amb 151-155: copies of the stone walls and overlays without the colours
+  12/13, which are blue-green accents in palette 59
 - Save.00/Automap.amb: automap entries up to the new map (485 and 486 were missing too)
 - AllTexts (german + english) 2Map_texts.amb/<map>, imported into the german 2Map_texts.amb
 
@@ -42,8 +43,13 @@ NEW_PALETTE = 59
 FLOOR_TEX, CEILING_TEX = 20, 8
 BASE_PALETTE = 6
 # palette 59: stone colours with the meaning of palette 6 (histogram match of wall 99 against the sandstone picture)
-SANDSTONE = {1: 'ffe', 2: 'eda', 3: 'cb8', 12: 'db6', 4: 'c73', 13: '964', 5: '653', 6: '323'}
-OLD_SANDSTONE_TEXTURES = (193, 194, 195)
+SANDSTONE = {1: 'ffe', 2: 'eda', 3: 'cb8', 4: 'c73', 5: '653', 6: '323', 12: '5a9', 13: '367'}
+# 12/13 are the moss/glass tones of palette 6. In the temple they are blue-green accents (glass, mosaics,
+# marble, books, paintings). The stone graphics that use 12/13 as stone colour get copies without them.
+STONE_REMAP = {12: 3, 13: 5}
+RECOLOURED_WALLS = (96, 98, 99, 100, 103, 104, 125, 126)        # -> 2Wall3D.amb 193...
+RECOLOURED_OVERLAYS = (24, 25, 39, 96, 97)                      # -> 2Overlay3D.amb 151...
+FIRST_WALL_COPY, FIRST_OVERLAY_COPY = 193, 151
 
 # extra walls of labdata 46 (appended to the 30 walls of labdata 5): (texture, flags, automap, colour, overlays)
 SOLID, PASSABLE = 0x40000082, 0x40000102
@@ -64,6 +70,7 @@ W_PAINT1, W_PAINT2, W_PAINT3, W_CREST = 117, 118, 119, 120
 W_SWITCH1, W_SWITCH2, W_DOOR_FRAMED = 122, 123, 126
 W_SHELF1, W_SHELF2 = 127, 128
 G_COLUMN, G_MOSAIC, G_STATUE, G_CANDLE, G_TABLE, G_CHEST, G_ARMOUR, G_BED, G_GUARD = 9, 5, 14, 18, 20, 21, 22, 24, 27
+G_MOSAIC_GREEN = 6         # round mosaic with blue-green inlay (colours 12/13)
 G_TOTEM = 40                # new object group: serpent totem from Sansri's temple (labdata 32, texture 28)
 TOTEM_OBJECT = bytes.fromhex('40000080001c0100605001200155')
 
@@ -169,7 +176,7 @@ def sriel():
     for (x, y), t in walls.items():
         p.tiles[y][x] = t
     objects = {
-        (7, 7): G_COLUMN, (11, 7): G_COLUMN, (7, 11): G_COLUMN, (11, 11): G_COLUMN, (9, 9): G_MOSAIC,
+        (7, 7): G_COLUMN, (11, 7): G_COLUMN, (7, 11): G_COLUMN, (11, 11): G_COLUMN, (9, 9): G_MOSAIC_GREEN,
         (7, 3): G_CHEST, (9, 3): G_BED, (11, 3): G_TABLE,
         (3, 9): G_TABLE,
         (15, 4): G_CHEST, (15, 7): G_STATUE, (15, 10): G_TOTEM,
@@ -270,7 +277,34 @@ def build_map(p):
     return raw
 
 
-def build_labdata(raw5):
+def recoloured_graphics(lab):
+    """Copies of the stone walls/overlays with 12/13 replaced by stone colours.
+    Returns ({wall copy index: data}, {overlay copy index: data}, wall map, overlay map)."""
+    sys.path.insert(0, os.path.join(REPO, 'tools', 'ambtools'))
+    import textures as tx
+    walls = amb.read_container(os.path.join(DATA, '2Wall3D.amb'))
+    overlays = amb.read_container(os.path.join(DATA, '2Overlay3D.amb'))
+    sizes = {}
+    for header, ovs in lab.walls:
+        for ov in ovs:
+            sizes.setdefault(ov[1], (ov[4], ov[5]))
+
+    def remap(data, w, h):
+        rows = tx.decode_texture(data, w, h)
+        rows = [[STONE_REMAP.get(v, v) for v in row] for row in rows]
+        return tx.encode_texture(rows, w)
+    wall_files, ovl_files, wall_map, ovl_map = {}, {}, {}, {}
+    for k, n in enumerate(RECOLOURED_WALLS):
+        wall_map[n] = FIRST_WALL_COPY + k
+        wall_files[wall_map[n]] = remap(walls[n], 128, 80)
+    for k, n in enumerate(RECOLOURED_OVERLAYS):
+        w, h = sizes[n]
+        ovl_map[n] = FIRST_OVERLAY_COPY + k
+        ovl_files[ovl_map[n]] = remap(overlays[n], w, h)
+    return wall_files, ovl_files, wall_map, ovl_map
+
+
+def build_labdata(raw5, wall_map=None, ovl_map=None):
     lab = ld.parse(raw5)
     lab.header[6] = CEILING_TEX
     lab.header[7] = FLOOR_TEX
@@ -282,6 +316,10 @@ def build_labdata(raw5):
     for tex, flags, automap, colour, overlays in NEW_WALLS:
         header = bytearray(struct.pack('>IBBBB', flags, tex, automap, colour, len(overlays)))
         lab.walls.append((header, [bytearray(o) for o in overlays]))
+    for header, ovs in lab.walls:                  # use the recoloured copies
+        header[4] = (wall_map or {}).get(header[4], header[4])
+        for ov in ovs:
+            ov[1] = (ovl_map or {}).get(ov[1], ov[1])
     return ld.serialize(lab)
 
 
@@ -358,12 +396,14 @@ def write_texts(p):
 
 
 # ------------------------------------------------------------------ preview
-def preview(p, lab_raw, pal_raw):
+def preview(p, lab_raw, pal_raw, wall_files, ovl_files):
     import scene3d as s
     import render3d as r
     os.makedirs(PREVIEW, exist_ok=True)
     a = s.Assets()
     a.labs[(2, NEW_LAB)] = ld.parse(lab_raw)
+    a.walls.update(wall_files)
+    a.overlays.update(ovl_files)
     for header, ovs in a.labs[(2, NEW_LAB)].walls:
         for ov in ovs:
             a.ovl_size.setdefault(ov[1], (ov[4], ov[5]))
@@ -459,9 +499,11 @@ def main():
     args = ap.parse_args()
     os.makedirs(WORK, exist_ok=True)
     p = sriel()
-    lab_raw = build_labdata(amb.read_container(os.path.join(DATA, '2Lab_data.amb'))[GALA_LAB])
+    raw5 = amb.read_container(os.path.join(DATA, '2Lab_data.amb'))[GALA_LAB]
+    wall_files, ovl_files, wall_map, ovl_map = recoloured_graphics(ld.parse(raw5))
+    lab_raw = build_labdata(raw5, wall_map, ovl_map)
     pal_raw = build_palette()
-    names = preview(p, lab_raw, pal_raw)
+    names = preview(p, lab_raw, pal_raw, wall_files, ovl_files)
     print('preview:', ', '.join(names))
     if args.preview_only:
         return
@@ -472,7 +514,8 @@ def main():
     open(sub(maps, p.index), 'wb').write(build_map(p))
     pack('2Map_data.amb', 'AMPC', maps)
 
-    amnp_remove('2Wall3D.amb', OLD_SANDSTONE_TEXTURES)
+    amnp_set('2Wall3D.amb', wall_files)
+    amnp_set('2Overlay3D.amb', ovl_files)
 
     labs = unpack('2Lab_data.amb', 'AMPC')
     n = len(os.listdir(labs))
