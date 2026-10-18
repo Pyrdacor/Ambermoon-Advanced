@@ -84,6 +84,7 @@ TWO_GUARDS = 67             # 2 magic guards
 SIX_GUARDS = 172            # new: 6 magic guards
 SIX_GUARDS_DATA = struct.pack('>18H', 0, 0, 0, 0, 0, 0, 0, 42, 0, 0, 42, 0, 42, 42, 0, 0, 42, 42)
 GUARD_TILE_FLAGS = 0xc0000111
+GUARD_STAY = 0x86           # monster (2) + moving (bit 2) + only move when they see the party (bit 7)
 
 
 def run(*args):
@@ -282,9 +283,10 @@ def sorel():
     p.chain(0, [text(3)], (7, 7))                                                      # 5 duty roster
     p.chain(13, [ev(0x03, 85, 0, 0xff, 118)], (15, 7))                                 # 6 chest 118 (armoury)
     p.chain(13, [ev(0x03, 50, 0, 0xff, 119)], (11, 15))                                # 7 chest 119 (key 389)
-    p.chars = [(TWO_GUARDS, 0x06, G_GUARD, 18, 12), (MAGIC_GUARDS, 0x06, G_GUARD, 11, 5),
-               (MAGIC_GUARDS, 0x06, G_GUARD, 4, 16), (SIX_GUARDS, 0x06, G_GUARD, 11, 13),
-               (TWO_GUARDS, 0x06, G_GUARD, 9, 8)]
+    # monsters that only move when they see the party (flag 0x80), so they don't wander into corners
+    p.chars = [(TWO_GUARDS, GUARD_STAY, G_GUARD, 18, 12), (MAGIC_GUARDS, GUARD_STAY, G_GUARD, 11, 5),
+               (MAGIC_GUARDS, GUARD_STAY, G_GUARD, 5, 7), (SIX_GUARDS, GUARD_STAY, G_GUARD, 11, 13),
+               (TWO_GUARDS, GUARD_STAY, G_GUARD, 9, 8)]
     p.header = dict(flags=0x0891, music=18, labdata=NEW_LAB, palette=60, world=2)    # lit, no map (445 was dark)
     p.texts = SOREL_TEXTS
     p.open_tiles = [gate]

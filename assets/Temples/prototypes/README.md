@@ -64,7 +64,7 @@ Gebaut wird mit `python assets/Temples/tools/build_prototype.py` (schreibt in `g
 Nach Tempelanalyse.md: Außengang mit Wachen, ganz hinten das Tor zum Innenbereich (Schlüssel nötig), innen Truhe und große Wächtergruppe. Keine Karte. Mit Licht (das Original 445 war dunkel).
 
 - **Außengang** (2 breit) rund um das Hallengebäude. Ausgang im Süden (11,19) zur Weltkarte 525 (33,28), wie in 445.
-- **Wachen im Gang:** Gruppe 67 (2 Wachen) im Osten, Gruppe 68 (4) vor dem Tor und im Westen.
+- **Wachen im Gang:** Gruppe 67 (2 Wachen) im Osten, Gruppe 68 (4) vor dem Tor und im Westgang (5,7). Alle Wachen bewegen sich erst, wenn sie die Gruppe sehen.
 - **Spießfalle** im Westgang (4,9), (5,11), (4,13), Text und Falle wie in 445. Ein Schalter am Reliefpfeiler im Ostgang (19,9) legt sie still (Text wie in 445).
 - **Tor** im Norden (11,6): Tür 33 mit Schlüssel 388 „Palast S'Orel“ (aus S'Riels Truhe 117), wie in 445. Danach ist der Durchgang offen.
 - **Waffenkammer:** vier Waffenständer, Truhe 118 (Morag-Robe, Morag-Dart), 2 Wachen, Steintafel mit dem Dienstplan der Wache (Hinweis auf S'Arin und die Truhe).
