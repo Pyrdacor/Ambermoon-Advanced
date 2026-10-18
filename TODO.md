@@ -199,6 +199,10 @@ Fixed: barrels on the door teleport targets in Ship's End (372), stone block on 
 - [ ] Ancient building (484): the dark doors (wall 115, texture 192) at (2,5) and (2,13) are walkable but have no event and lead to the map border. Make them solid or give them a destination?
 - [ ] 3D maps with walkable floor at the map edge (no event): 284, 339, 413, 415, 416, 424 (all original, cosmetic).
 
+### English text check (`tools/ambtools/textcheck.py`, 2026-10-18)
+Fixed: untranslated text 369/2, 22 texts with missing or extra quotes, typos (also in the Ambermoon repo), stale English texts of maps 335 and 440, monster 111 renamed to ANCIENT WARDEN (16 characters didn't fit), German party text 8/8 quote.
+- [ ] Optional: Grail swamp hint (NPC 47, text 4) highlights GRAL and NACHTS in German with ~INK 15~, English only uses quotes.
+
 ### Original bugs (also fix in the Ambermoon repo)
 - [x] Lava tiles must block walking and the horse (world map). Tileset 1, tiles 235-238 (2026-10-18). Already fixed in the Ambermoon repo.
 - [ ] Stairs in the Thalion office.
