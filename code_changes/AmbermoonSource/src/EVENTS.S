@@ -4146,7 +4146,7 @@ FUN_EventDynamicTileChange:
 
 ;*****************************************************************************
 ; [ Rectangular exploration event (31) ]
-; Bytes 1-4: X, Y, width, height, byte 5: 0 = reveal, 1 = hide, 2 = invert,
+; Bytes 1-4: X, Y, width, height, byte 5: 0 = hide, 1 = reveal, 2 = invert,
 ; word 6: map (0 = current map). Only the automap of the current 3D map can
 ; be changed.
 ;*****************************************************************************
@@ -4188,7 +4188,7 @@ FUN_EventVerticalLineReveal:
 	moveq	#0,d3
 	move.b	(a1)+,d3			; Height
 	moveq	#1,d2			; Width
-	moveq	#0,d4			; Reveal
+	moveq	#1,d4			; Reveal
 	jsr	FUN_ChangeExplorationArea
 	dbra	d5,.Loop
 .Exit:	rts
@@ -4199,7 +4199,7 @@ FUN_EventVerticalLineReveal:
 ;        d1 - Y {1...} (.w)
 ;        d2 - Width (.w)
 ;        d3 - Height (.w)
-;        d4 - 0 = reveal, 1 = hide, 2 = invert (.w)
+;        d4 - 0 = hide, 1 = reveal, 2 = invert (.w)
 ; All registers are restored
 ; Notes :
 ;   - Works on the automap of the current map (like the remake, coordinates
@@ -4242,11 +4242,11 @@ FUN_ChangeExplorationArea:
 	lsr.l	#3,d3
 	andi.w	#7,d2			; Bit in byte
 	cmp.w	#1,d4
-	beq.s	.Hide
+	beq.s	.Reveal
 	bhi.s	.Invert
-	bset	d2,0(a0,d3.l)		; Reveal
+	bclr	d2,0(a0,d3.l)		; Hide
 	bra.s	.Next
-.Hide:	bclr	d2,0(a0,d3.l)
+.Reveal:	bset	d2,0(a0,d3.l)
 	bra.s	.Next
 .Invert:	bchg	d2,0(a0,d3.l)
 .Next:	addq.w	#1,d7			; Next X
