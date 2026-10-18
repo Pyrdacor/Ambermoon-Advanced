@@ -183,7 +183,7 @@ Order and details: `000 Plan Episode 4.md`, milestones M1–M4.
   - Proofread the 244 translated Episode 4 texts (`tools/translations/ep4_english.py`).
   - Add translations for later German texts.
   - Copy the German binaries for the release.
-- [ ] Run `tools/ambtools/validate.py` after every data change.
+- [ ] Run `tools/ambtools/validate.py` and `tools/ambtools/audit.py` after every data change.
 - [ ] Full playthrough of Episode 4 on the remake and the Amiga, German and English.
 - [ ] `Changes.md`, `NewContent.md`, release creator, version bump.
 - [ ] Manual: level shard effects, new spells, more spell details, spoiler section.
@@ -193,13 +193,19 @@ Order and details: `000 Plan Episode 4.md`, milestones M1–M4.
 
 ## 4. Bugs in data and texts
 
+### Data audit (`tools/ambtools/audit.py`, 2026-10-18) – open questions
+Fixed: barrels on the door teleport targets in Ship's End (372), stone block on the arrival tile of the ancient city (483 from 522), stray floor tile in the prison (479).
+- [ ] Manyeyes' castle 1 (461): the undead groups 90/91 start inside statues (15,10) and (17,12). Intended (living statues) or move them?
+- [ ] Ancient building (484): the dark doors (wall 115, texture 192) at (2,5) and (2,13) are walkable but have no event and lead to the map border. Make them solid or give them a destination?
+- [ ] 3D maps with walkable floor at the map edge (no event): 284, 339, 413, 415, 416, 424 (all original, cosmetic).
+
 ### Original bugs (also fix in the Ambermoon repo)
-- [ ] Lava tiles must block walking and the horse (world map).
+- [x] Lava tiles must block walking and the horse (world map). Tileset 1, tiles 235-238 (2026-10-18). Already fixed in the Ambermoon repo.
 - [ ] Stairs in the Thalion office.
 - [ ] Non-blocking walls in 3 maps *(check: #123/#146 fixed several walls on 2026-10-06/07)*.
 - [ ] Text bug in the thief cellar: early rooms show texts although a later room was already entered (wrong teleport rooms).
 - [ ] Two-hand weapon equipped while a shield is equipped and no free slot: the shield stays in its slot (red cross) or seems lost. Check v1.07.
-- [ ] Monsters can't pass the green slime in the old cave.
+- [x] Monsters can't pass the green slime in the old cave. Labdata 2, objects 15-17 also allow class 1 (2026-10-18, also in the Ambermoon repo, master).
 - [ ] Map 273 (town house): move the teleport lower so you don't land in the door.
 - [ ] S'Angrila inn NPC: "und ich der letzte meiner Familie" is missing "bin".
 - [ ] Sleep and fear lead to game over although you can wake up or flee.

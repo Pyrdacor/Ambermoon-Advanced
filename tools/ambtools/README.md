@@ -5,6 +5,7 @@ Small Python helpers (no dependencies, Python 3.8+) to inspect and patch the gam
 | Script | Purpose |
 |---|---|
 | `validate.py [Amberfiles dir] [map ...]` | Checks all reachable map events for broken references: missing map texts, monster groups, chest data, items, teleport targets, out-of-range event pointers. Run it after every data change. |
+| `audit.py [Amberfiles dir] [map ...]` | Deeper checks: teleport targets and character start tiles that are blocked (wall, blocking object or tile), walkable map edges and passable walls without an event next to the border in 3D, chests and doors used by several maps. Tile changes that alter a target are noted (often intended reveals). Run it on the original data too to see which findings are new. |
 | `dumpmap.py <map> [--layout] [--chains 1,2]` | Readable dump of a map: characters, goto points, optional ASCII layout and all event chains (with else branches). |
 | `ambcontainer.py` | Read-only container access (LOB, JH, AMPC, AMNP, ...). |
 | `mapmodel.py` | Lossless parse/serialize of a single unpacked map file plus event descriptions. |
