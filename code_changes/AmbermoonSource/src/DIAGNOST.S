@@ -88,17 +88,55 @@ Jump_to_map:
 	moveq.l	#15,d2
 	jsr	Input_string
 	jsr	Close_window		; Close window
-	jsr	String_to_number		; Convert to number
+	bsr	.Get_number		; Get map number
 	tst.w	d0			; Error ?
 	beq	.Exit
 	cmp.w	#Max_maps+1,d0
 	bpl	.Exit
-	move.w	d0,Map_nr			; No -> new map
-	move.w	#5,Map_Xcoord
-	move.w	#5,Map_Ycoord
+	move.w	d0,d4
+	moveq.l	#5,d5			; Default position is 5,5
+	moveq.l	#5,d6
+	bsr	.Get_number		; Optional X-coordinate
+	tst.w	d0
+	beq.s	.Go
+	move.w	d0,d5
+	bsr	.Get_number		; Optional Y-coordinate
+	tst.w	d0
+	beq.s	.Go
+	move.w	d0,d6
+.Go:	move.w	d4,Map_nr			; New map
+	move.w	d5,Map_Xcoord
+	move.w	d6,Map_Ycoord
 	jsr	Exit_map
 	jsr	Init_map
 .Exit:	rts
+
+; Get the next number of the input string (separated by any non-digits)
+;   IN : a0 - Pointer to string (.l)
+;  OUT : d0 - Number, 0 if none (.w)
+;        a0 - Pointer behind the number (.l)
+.Get_number:
+	moveq.l	#0,d0
+	moveq.l	#0,d1
+.Skip:	move.b	(a0),d1			; Skip separators
+	beq.s	.Done
+	cmp.b	#"0",d1
+	bmi.s	.Sep
+	cmp.b	#"9"+1,d1
+	bmi.s	.Digit
+.Sep:	addq.l	#1,a0
+	bra.s	.Skip
+.Digit:	move.b	(a0),d1			; Read digits
+	cmp.b	#"0",d1
+	bmi.s	.Done
+	cmp.b	#"9"+1,d1
+	bpl.s	.Done
+	subi.b	#"0",d1
+	mulu.w	#10,d0
+	add.w	d1,d0
+	addq.l	#1,a0
+	bra.s	.Digit
+.Done:	rts
 
 ;*****************************************************************************
 ; [ Toggle Superchicken mode ]
