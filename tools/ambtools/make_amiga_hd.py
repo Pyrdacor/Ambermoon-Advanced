@@ -4,7 +4,7 @@ The drive is made of:
 - the boot files (C, Devs, L, S, System) of an existing bootable Ambermoon drive,
 - the latest german Advanced release (loader, music, intro, ...),
 - the current german Advanced data of this repo (git-tracked files only),
-- Save.00 of this repo, also copied to Initial (like make_testdata.py),
+- Save.00 of this repo, also copied to Initial (like make_testdata.py) and to the slots Save.01-10,
 - an AM2_CPU of your choice (default: code_changes/AM2_CPU).
 
 Usage: python make_amiga_hd.py <output dir> [--exe <AM2_CPU>] [--extra <file>...] [--boot <drive>] [--release <zip>]
@@ -60,6 +60,12 @@ def main():
 
     shutil.rmtree(os.path.join(target, 'Initial'), ignore_errors=True)
     shutil.copytree(os.path.join(target, 'Save.00'), os.path.join(target, 'Initial'))
+    # The release only has empty placeholder slots (Episode 3 data). Fill them with the current Save.00 so every
+    # slot matches the data (e.g. the automap entries of new 3D maps).
+    for i in range(1, 11):
+        slot = os.path.join(target, 'Save.%02d' % i)
+        shutil.rmtree(slot, ignore_errors=True)
+        shutil.copytree(os.path.join(target, 'Save.00'), slot)
     shutil.copyfile(args.exe, os.path.join(target, 'AM2_CPU'))
     for extra in args.extra:
         shutil.copyfile(extra, os.path.join(target, os.path.basename(extra)))
