@@ -501,8 +501,18 @@ Event_name_ptrs:
 	dc.l .N13,.N14,.N15,.N16
 	dc.l .N17,.N18,.N19,.N20
 	dc.l .N21,.N22,.N23,.N24
+	dc.l .N25,.N26,.N27,.N28	; ADVANCED
+	dc.l .N29,.N30,.N31,.N32
 
 .N1:	dc.b "Map exit",0
+.N25:	dc.b "Delay",0		; ADVANCED
+.N26:	dc.b "Member condition",0
+.N27:	dc.b "Shake",0
+.N28:	dc.b "Show map",0
+.N29:	dc.b "Toggle switch",0
+.N30:	dc.b "Dynamic icon",0
+.N31:	dc.b "Explore area",0
+.N32:	dc.b "Reveal lines",0
 .N2:	dc.b "Door",0
 .N3:	dc.b "Item found",0
 .N4:	dc.b "Show pic+txt",0

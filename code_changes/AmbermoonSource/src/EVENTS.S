@@ -438,16 +438,21 @@ Handle_event:
 	move.b	Current_event_data,d0
 	tst.w	d0			; Legal ?
 	beq.s	.Exit
-	cmpi.w #$0000001c,D0 ; max index is 27
+	; ADVANCED CHANGES - START
+	cmpi.w #33,D0 ; max index is 32
 	bpl.s	.Exit
 
 	ifne	Cheat
 	jsr	Print_current_event
 	endc
 
-	move.l #$0f58fffe,D1 ; valid events for maps (no conversation, print text, create, exit, interact)
+	cmpi.w #32,D0 ; vertical line reveal (bit 32 doesn't fit into the mask)
+	beq.s .Valid
+	move.l #$ff58fffe,D1 ; valid events for maps (no conversation, print text, create, exit, interact)
 	btst	d0,d1
 	beq.s	.Exit
+.Valid:
+	; ADVANCED CHANGES - END
 	move.l	#Clear_success_mask,d1	; Clear success ?
 	btst	d0,d1
 	beq.s	.No
@@ -4013,6 +4018,282 @@ FUN_EventDelay:
 	mulu.w D1,D0
 	divu.w #1000,D0
 	jmp Wait_4_sequence
+; ADVANCED CHANGES - END
+
+; ADVANCED CHANGES - START
+;*****************************************************************************
+; [ Show map event (28) ]
+; Opens the automap like the map button, also on maps where the map is
+; disabled. Byte 1: options (1 = secret doors, 2 = monsters, 4 = persons,
+; 8 = traps). Only works on 3D maps.
+;*****************************************************************************
+FUN_EventShowMap:
+	cmp.b	#Map_3D,Current_map_type	; 3D map ?
+	bmi.s	.Exit
+	lea	Current_event_data,a5
+	move.b	Event_b1(a5),d1		; Options
+	moveq	#0,d0
+	btst	#0,d1			; Secret doors ?
+	beq.s	.No1
+	bset	#Show_hidden_function,d0
+.No1:	btst	#1,d1			; Monsters ?
+	beq.s	.No2
+	bset	#Show_monsters_function,d0
+.No2:	btst	#2,d1			; Persons ?
+	beq.s	.No3
+	bset	#Show_NPCs_function,d0
+.No3:	btst	#3,d1			; Traps ?
+	beq.s	.No4
+	bset	#Show_traps_function,d0
+.No4:	move.b	d0,Automap_function
+	jsr	Exit_display		; Show automap
+	Push	Module,Automap_Mod
+.Exit:	rts
+
+;*****************************************************************************
+; [ Toggle switch event (29) ]
+; Toggles the front tile at the event position between the off (word 6) and
+; on (word 8) tile and toggles up to 4 global variables. The variables are
+; stored with 10 bits each in the bytes 1-5. Variable 0 is ignored.
+;*****************************************************************************
+FUN_EventToggleSwitch:
+	lea	Current_event_data,a5
+	move.w	Current_event_X,d0		; Event position
+	move.w	Current_event_Y,d1
+	jsr	FUN_GetFrontTile		; d2 = current tile
+	move.w	Event_w8(a5),d3		; On tile
+	cmp.w	d3,d2			; Switch on ?
+	bne.s	.Set
+	move.w	Event_w6(a5),d3		; Yes -> off tile
+.Set:	move.w	d3,d2
+	move.w	Map_nr,d7
+	jsr	Do_change_icon
+	jsr	Enter_modification
+; ---------- Toggle global variables --------------
+	moveq	#0,d3			; 32 bits of bytes 1-4
+	move.b	1(a5),d3
+	lsl.l	#8,d3
+	move.b	2(a5),d3
+	lsl.l	#8,d3
+	move.b	3(a5),d3
+	lsl.l	#8,d3
+	move.b	4(a5),d3
+	move.l	d3,d0			; Variable 1: bits 31-22
+	moveq	#22,d4
+	lsr.l	d4,d0
+	bsr.s	.Toggle
+	move.l	d3,d0			; Variable 2: bits 21-12
+	moveq	#12,d4
+	lsr.l	d4,d0
+	bsr.s	.Toggle
+	move.l	d3,d0			; Variable 3: bits 11-2
+	lsr.l	#2,d0
+	bsr.s	.Toggle
+	move.l	d3,d0			; Variable 4: bits 1-0 and byte 5
+	lsl.w	#8,d0
+	move.b	5(a5),d0
+.Toggle:	andi.w	#$03ff,d0			; 10 bits
+	beq.s	.None			; Variable 0 is a dummy
+	moveq	#Quest_bit_array,d1
+	moveq	#2,d2			; Toggle
+	jsr	Access_bit_array
+.None:	rts
+
+;*****************************************************************************
+; [ Dynamic tile change event (30) ]
+; Changes a tile like the change icon event, the new front tile depends on a
+; global variable (off/on tile with 12 bits each in the bytes 5-7).
+; Byte 1/2: X/Y (0 = event position), bytes 3-4: global variable,
+; word 8: map (0 = current map).
+;*****************************************************************************
+FUN_EventDynamicTileChange:
+	lea	Current_event_data,a5
+	moveq	#0,d0			; Global variable
+	move.b	3(a5),d0
+	lsl.w	#8,d0
+	move.b	4(a5),d0
+	moveq	#Quest_bit_array,d1
+	moveq	#3,d2			; Test
+	jsr	Access_bit_array
+	bne.s	.On
+	moveq	#0,d2			; Off tile: bits 23-12
+	move.b	5(a5),d2
+	lsl.w	#4,d2
+	move.b	6(a5),d3
+	lsr.b	#4,d3
+	or.b	d3,d2
+	bra.s	.Pos
+.On:	moveq	#$0f,d2			; On tile: bits 11-0
+	and.b	6(a5),d2
+	lsl.w	#8,d2
+	move.b	7(a5),d2
+.Pos:	moveq	#0,d0			; Coordinates
+	move.b	Event_b1(a5),d0
+	moveq	#0,d1
+	move.b	Event_b2(a5),d1
+	tst.w	d0			; Event coordinates ?
+	bne.s	.Ok
+	tst.w	d1
+	bne.s	.Ok
+	move.w	Current_event_X,d0		; Yes -> Get
+	move.w	Current_event_Y,d1
+.Ok:	move.w	Event_w8(a5),d7		; Current map ?
+	bne.s	.Do
+	move.w	Map_nr,d7			; Yes
+.Do:	jsr	Do_change_icon		; Change it
+	jsr	Enter_modification		; Save it for posterity
+	rts
+
+;*****************************************************************************
+; [ Rectangular exploration event (31) ]
+; Bytes 1-4: X, Y, width, height, byte 5: 0 = reveal, 1 = hide, 2 = invert,
+; word 6: map (0 = current map). Only the automap of the current 3D map can
+; be changed.
+;*****************************************************************************
+FUN_EventRectExploration:
+	cmp.b	#Map_3D,Current_map_type	; 3D map ?
+	bmi.s	.Exit
+	lea	Current_event_data,a5
+	move.w	Event_w6(a5),d0		; Current map ?
+	beq.s	.Do
+	cmp.w	Map_nr,d0
+	bne.s	.Exit
+.Do:	moveq	#0,d0
+	move.b	1(a5),d0			; X
+	moveq	#0,d1
+	move.b	2(a5),d1			; Y
+	moveq	#0,d2
+	move.b	3(a5),d2			; Width
+	moveq	#0,d3
+	move.b	4(a5),d3			; Height
+	moveq	#0,d4
+	move.b	5(a5),d4			; Exploration type
+	jsr	FUN_ChangeExplorationArea
+.Exit:	rts
+
+;*****************************************************************************
+; [ Vertical line reveal event (32) ]
+; Reveals up to 3 vertical lines on the automap of the current 3D map.
+; Bytes 1-3, 4-6 and 7-9: X, Y and height of each line (height 0 = unused).
+;*****************************************************************************
+FUN_EventVerticalLineReveal:
+	cmp.b	#Map_3D,Current_map_type	; 3D map ?
+	bmi.s	.Exit
+	lea	Current_event_data+1,a1
+	moveq	#3-1,d5
+.Loop:	moveq	#0,d0
+	move.b	(a1)+,d0			; X
+	moveq	#0,d1
+	move.b	(a1)+,d1			; Y
+	moveq	#0,d3
+	move.b	(a1)+,d3			; Height
+	moveq	#1,d2			; Width
+	moveq	#0,d4			; Reveal
+	jsr	FUN_ChangeExplorationArea
+	dbra	d5,.Loop
+.Exit:	rts
+
+;*****************************************************************************
+; [ Change the exploration of an automap area ]
+;   IN : d0 - X {1...} (.w)
+;        d1 - Y {1...} (.w)
+;        d2 - Width (.w)
+;        d3 - Height (.w)
+;        d4 - 0 = reveal, 1 = hide, 2 = invert (.w)
+; All registers are restored
+; Notes :
+;   - Works on the automap of the current map (like the remake, coordinates
+;     of 0 are treated as 1 and the area is clipped to the map).
+;*****************************************************************************
+FUN_ChangeExplorationArea:
+	movem.l	d0-d7/a0,-(sp)
+	tst.w	d2			; Empty ?
+	beq	.Exit
+	tst.w	d3
+	beq	.Exit
+	tst.w	d0			; 1-based -> 0-based
+	beq.s	.X0
+	subq.w	#1,d0
+.X0:	tst.w	d1
+	beq.s	.Y0
+	subq.w	#1,d1
+.Y0:	cmp.w	Width_of_map,d0		; Inside map ?
+	bhs	.Exit
+	cmp.w	Height_of_map,d1
+	bhs	.Exit
+	move.w	d0,d5			; End X (clipped)
+	add.w	d2,d5
+	cmp.w	Width_of_map,d5
+	bls.s	.Ok_X
+	move.w	Width_of_map,d5
+.Ok_X:	move.w	d1,d6			; End Y (clipped)
+	add.w	d3,d6
+	cmp.w	Height_of_map,d6
+	bls.s	.Ok_Y
+	move.w	Height_of_map,d6
+.Ok_Y:	Get	Automap_handle,a0
+	moveq	#0,d7			; Upper word stays 0 (used as .l below)
+.Loop_Y:	move.w	d0,d7			; Start X
+.Loop_X:	moveq	#0,d2			; Bit number = Y * width + X
+	move.w	d1,d2
+	mulu.w	Width_of_map,d2
+	add.l	d7,d2
+	move.l	d2,d3			; Byte offset
+	lsr.l	#3,d3
+	andi.w	#7,d2			; Bit in byte
+	cmp.w	#1,d4
+	beq.s	.Hide
+	bhi.s	.Invert
+	bset	d2,0(a0,d3.l)		; Reveal
+	bra.s	.Next
+.Hide:	bclr	d2,0(a0,d3.l)
+	bra.s	.Next
+.Invert:	bchg	d2,0(a0,d3.l)
+.Next:	addq.w	#1,d7			; Next X
+	cmp.w	d5,d7
+	blo.s	.Loop_X
+	addq.w	#1,d1			; Next Y
+	cmp.w	d6,d1
+	blo.s	.Loop_Y
+	Free	Automap_handle
+	st	Automap_updated		; Save it
+.Exit:	movem.l	(sp)+,d0-d7/a0
+	rts
+
+;*****************************************************************************
+; [ Get front tile ]
+;   IN : d0 - X {1...} (.w)
+;        d1 - Y {1...} (.w)
+;  OUT : d2 - Front tile (3D: wall/object block, 2D: overlay icon) or 0 (.l)
+; All registers are restored
+;*****************************************************************************
+FUN_GetFrontTile:
+	movem.l	d0/d1/a0,-(sp)
+	moveq	#0,d2
+	cmp.b	#World_2D,Current_map_type	; World maps are not supported
+	beq.s	.Exit
+	subq.w	#1,d0			; Inside map ?
+	subq.w	#1,d1
+	cmp.w	Width_of_map,d0
+	bhs.s	.Exit
+	cmp.w	Height_of_map,d1
+	bhs.s	.Exit
+	mulu.w	Width_of_map,d1		; Offset
+	ext.l	d0
+	add.l	d0,d1
+	add.l	d1,d1
+	Get	Mapdata_handle,a0
+	lea	Map_data(a0),a0
+	cmp.b	#Map_3D,Current_map_type	; 3D map ?
+	bpl.s	.3D
+	add.l	d1,d1			; 2D: 4 bytes, overlay word at +2
+	move.w	2(a0,d1.l),d2
+	bra.s	.Done
+.3D:	move.b	0(a0,d1.l),d2		; 3D: block
+.Done:	Free	Mapdata_handle
+.Exit:	movem.l	(sp)+,d0/d1/a0
+	rts
+; ADVANCED CHANGES - END
 ; PartyMemberConditionEvent
 	rsreset
 	rs.b 1 ; type = 26 ($1a)
@@ -4858,13 +5139,21 @@ Event_ptrs:
 	dc.l FUN_EventDelay
 	dc.l FUN_PartyMemberCondition
 	dc.l FUN_EventShake
-	dc.l FUN_EventUpgradeSavegame ; TODO: NOT USED YET AND NOT COMPLETELY IMPLEMENTED
+	; ADVANCED CHANGES - START
+	; FUN_EventUpgradeSavegame was a placeholder at 28 (never used)
+	dc.l FUN_EventShowMap		; 28
+	dc.l FUN_EventToggleSwitch		; 29
+	dc.l FUN_EventDynamicTileChange	; 30
+	dc.l FUN_EventRectExploration	; 31
+	dc.l FUN_EventVerticalLineReveal	; 32
+	; ADVANCED CHANGES - END
 Event_messages:
 	dc.b 0,0,0,0,58
 	dc.b 59,0,0,0,0
 	dc.b 0,0,0,0,0
 	dc.b 0,0,0,0,0
 	dc.b 0,0,0,0
+	dc.b 0,0,0,0,0,0,0,0	; ADVANCED: events 25-32
 	even
 
 Door_CIL:	dc.w Pick_lock_cicon,Use_item_cicon,Exit_cicon

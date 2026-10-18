@@ -34,7 +34,7 @@ The detailed design of each Episode 4 item is in the docs folder, see the file i
 
 ### Missing Advanced features on the Amiga (remake has them)
 - [ ] Level > 50 through events, and the max-attribute increases for levels 51–55.
-- [ ] Events 28–32: show map, toggle switch, dynamic tile change, rectangular exploration, vertical line reveal.
+- [ ] Events 28–32 (show map, toggle switch, dynamic tile change, rectangular exploration, vertical line reveal): **implemented 2026-10-18** (`EVENTS.S`), built, not tested yet. Test in FS-UAE in the ancient city (483) and the ancient building (484): switches (29) with their doors/walls (30), the map tables (28) and the revealed rooms (31). Before, these events were silently skipped on the Amiga.
 - [ ] Hour movement does not seem to work on the Amiga.
 - [ ] New spells:
   - New spell target "enemy row in range": picking for player and monster, visuals, range checks.
