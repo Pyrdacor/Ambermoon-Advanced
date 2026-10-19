@@ -1834,6 +1834,7 @@ Make_levels:
 	Get	(a2),a1			; Yes
 	moveq.l	#0,d6			; How many ?
 	move.b	(a4),d6
+	clr.b	(a4)			; ADVANCED: done (several reward events would repeat it otherwise)
 	bra	.Entry2
 ; ---------- Increase character values ------------
 .Loop2:	addq.b	#1,Level_nr(a1)		; Next level

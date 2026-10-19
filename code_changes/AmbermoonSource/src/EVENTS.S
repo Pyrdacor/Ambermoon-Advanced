@@ -2688,8 +2688,6 @@ Datachange:
 	move.w D0,($0016,A0)
 	rts
 .FUN_EventRewardLevel:
-	; note: D7 is the loop var for the 6 slots (so 5 is first slot and 0 is last slot)
-	; this won't work with targets other than "all, first animal, etc" though!
 	moveq #$00000000,D0
 	move.b ($0005,A0),D0 ; level
 	move.b D0,D2
@@ -2703,13 +2701,33 @@ Datachange:
 	jsr .Do
 	sub.b D2,D0 ; we only want to know the added levels
 	ble.b .LAB_LevelUpEnd ; none (or a decrease) -> nothing to do
-	moveq #5,D1
-	sub.b D7,D1
+	; Find the party slot of the character in A0. D7 can't be used for that,
+	; it is only the slot counter for the target "all" (not e.g. for the active member).
+	movem.l D3/D4/A2,-(SP) ; the random target code needs D3/D4
+	move.b D0,D2 ; added levels
+	lea Party_handles,A2
+	moveq #0,D3
+.FindSlot:
+	move.b (A2,D3.w),D0
+	beq.b .NextSlot
+	move.b D0,D4
+	jsr Claim_pointer
+	exg D0,D4 ; D0 = handle, D4 = address
+	jsr Free_pointer
+	cmp.l A0,D4
+	beq.b .SlotFound
+.NextSlot:
+	addq.w #1,D3
+	cmp.w #6,D3
+	bmi.b .FindSlot
+	bra.b .SlotEnd
+.SlotFound:
 	lea Make_level_counters,A1
-	add.l D1,A1
-	move.b D0,(A1)
+	move.b D2,(A1,D3.w)
 	lea Make_levels_Mod,A0
 	jsr Push_Module
+.SlotEnd:
+	movem.l (SP)+,D3/D4/A2
 .LAB_LevelUpEnd:
 	rts
 .FUN_EventRewardDamage:
