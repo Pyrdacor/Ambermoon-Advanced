@@ -2693,11 +2693,16 @@ Datachange:
 	moveq #$00000000,D0
 	move.b ($0005,A0),D0 ; level
 	move.b D0,D2
-	moveq #50,D1
+	moveq #Max_level,D1 ; below level 50 the reward stops at 50
+	cmp.b D1,D0
+	bmi.b .LevelMaxOk
+	moveq #Max_shard_level,D1 ; from level 50 on it goes up to 55
 	cmp.b D1,D0
 	bpl.b .LAB_LevelUpEnd
+.LevelMaxOk:
 	jsr .Do
 	sub.b D2,D0 ; we only want to know the added levels
+	ble.b .LAB_LevelUpEnd ; none (or a decrease) -> nothing to do
 	moveq #5,D1
 	sub.b D7,D1
 	lea Make_level_counters,A1

@@ -1849,6 +1849,26 @@ Make_levels:
 .One:	moveq.l	#1,d0
 .Ok1:	move.b	d0,Attacks_per_round(a1)	; Store
 .LAB_SkipAPRCalculation:
+	; ADVANCED: levels 51-55 increase the maximum of a class attribute by 5
+	moveq.l	#0,d0
+	move.b	Level_nr(a1),d0
+	subi.w	#Max_level+1,d0		; 0-4 for levels 51-55
+	bmi.s	.No_shard
+	cmp.w	#Max_shard_level-Max_level,d0
+	bpl.s	.No_shard
+	moveq.l	#0,d1
+	move.b	Char_class(a1),d1
+	cmp.w	#9,d1			; Animals and monsters get nothing
+	bpl.s	.No_shard
+	mulu.w	#Max_shard_level-Max_level,d1
+	add.w	d1,d0
+	lea.l	Level_shard_attributes,a0
+	moveq.l	#0,d1
+	move.b	0(a0,d0.w),d1
+	mulu.w	#Attr_data_size,d1
+	lea.l	Attributes(a1),a0
+	addq.w	#5,Maximum(a0,d1.w)
+.No_shard:
 	move.w	Special_2(a1),d0		; Calculate extra LP & LP max
 	jsr	Get_random_50_100
 	; ADVANCED: now STA/25 is added to hp on level up
@@ -2049,6 +2069,20 @@ Make_levels:
 	jsr	Set_map_music		; Reset music
 	movem.l	(sp)+,d0-d7/a0-a4
 	jmp	Pop_Module
+
+; ADVANCED: attribute whose maximum rises by 5 for the levels 51-55, per class
+; (0 = STR, 1 = INT, 2 = DEX, 3 = SPD, 4 = STA, 7 = A-M, like the remake)
+Level_shard_attributes:
+	dc.b 4,1,3,7,0			; Adventurer
+	dc.b 4,0,3,7,0			; Warrior
+	dc.b 4,1,3,7,0			; Paladin
+	dc.b 4,2,3,7,0			; Thief
+	dc.b 4,1,3,7,0			; Ranger
+	dc.b 1,4,3,7,1			; Healer
+	dc.b 1,4,3,7,1			; Alchemist
+	dc.b 1,4,3,7,1			; Mystic
+	dc.b 1,4,3,7,1			; Mage
+	even
 
 ;*****************************************************************************
 ; [ Switch music on ]

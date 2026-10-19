@@ -202,6 +202,7 @@ Max_words	EQU 1024
 Max_skills	EQU 10
 Max_attrs	EQU 8
 Max_level	EQU 50
+Max_shard_level	EQU 55			; Levels 51-55 only through events
 Max_languages	EQU 8
 Max_spell_classes	EQU 7
 Max_spells	EQU 30
