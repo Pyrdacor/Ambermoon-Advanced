@@ -259,7 +259,7 @@ NPC_manager_2D:
 ; All registers are restored
 ;*****************************************************************************
 NPC_manager_3D:
-	movem.l	d0-d3/d6/d7/a1,-(sp)
+	movem.l	d0-d7/a1,-(sp)
 	jsr	Get_CD_value		; Updated at all times !
 	sf	Big_brother_flag
 	tst.w	Monster_move_delay		; Waiting ?
@@ -368,7 +368,17 @@ NPC_manager_3D:
 	add.w	VSource_Y(a1),d3
 	move.w	d2,d0			; Move possible ?
 	move.w	d3,d1
-	jsr	NPC_movement_check_3D
+	; ADVANCED: persons on a path follow it without collision checks (like the remake).
+	; Otherwise two path persons on the same square (e.g. hour movement objects in
+	; the ancient building) block each other forever.
+	move.b	NPC_status_bits(a1),d4
+	moveq.l	#3,d5
+	and.b	d4,d5
+	cmp.b	#Monster_type,d5		; Monster ?
+	beq.s	.Check
+	andi.b	#$84,d4			; Random or stationary ?
+	beq.s	.Yes			; No -> path, no check
+.Check:	jsr	NPC_movement_check_3D
 	beq.s	.Yes
 .Block:	bset	#Movement_ended,VFlags(a1)	; No -> end of movement
 	bset	#NPC_collided,VFlags(a1)
@@ -389,7 +399,7 @@ NPC_manager_3D:
 	bmi	.Loop2
 .Exit:	sf	New_move			; Clear flags
 	sf	New_step
-	movem.l	(sp)+,d0-d3/d6/d7/a1
+	movem.l	(sp)+,d0-d7/a1
 	rts
 
 .X:	dc.w 0				; Target dungeon coordinates
