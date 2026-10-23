@@ -205,41 +205,37 @@ Fixed: untranslated text 369/2, 22 texts with missing or extra quotes, typos (al
 
 ### Original bugs (also fix in the Ambermoon repo)
 - [x] Lava tiles must block walking and the horse (world map). Tileset 1, tiles 235-238 (2026-10-18). Already fixed in the Ambermoon repo.
-- [ ] Stairs in the Thalion office.
-- [ ] Non-blocking walls in 3 maps *(check: #123/#146 fixed several walls on 2026-10-06/07)*.
-- [ ] Text bug in the thief cellar: early rooms show texts although a later room was already entered (wrong teleport rooms).
-- [ ] Two-hand weapon equipped while a shield is equipped and no free slot: the shield stays in its slot (red cross) or seems lost. Check v1.07.
+- [x] Stairs in the Thalion office: original fix taken over, new tileset 4 tiles 0x4a6-0x4a8 in map 257 (2026-10-23).
+- [ ] Non-blocking walls: trainer house 268 upper wall fixed in both repos (tileset 4 tiles 0x3b1-0x3b3 use background flags, 2026-10-23). Remaining candidates to check visually: 411 (17,7) ts4 0x324, 407 (10,10) ts5 0x186; probably intended: 417 (14..18,8), 341 (18,11), 477 (2..3,2).
+- [x] Text bug in the thief cellar (bandit house cellar, map 276): the original fix from the Ambermoon repo taken over (2026-10-23).
+- [x] Two-hand weapon and shield: the Amiga is correct (drag and drop only). Remake bug in shift-click equipping fixed in `Windowing.cs` (2026-10-23, Ambermoon.net, not committed).
 - [x] Monsters can't pass the green slime in the old cave. Labdata 2, objects 15-17 also allow class 1 (2026-10-18, also in the Ambermoon repo, master).
-- [ ] Map 273 (town house): move the teleport lower so you don't land in the door.
-- [ ] S'Angrila inn NPC: "und ich der letzte meiner Familie" is missing "bin".
-- [ ] Sleep and fear lead to game over although you can wake up or flee.
+- [x] Map 273 (town house): teleport from map 263 (event 72) now leads to (10,4), both repos (2026-10-23).
+- [x] S'Angrila (map 442 text 2) "bin": was already fixed in Advanced, fixed in the Ambermoon repo (2026-10-23).
+- [ ] Sleep and fear lead to game over: **fixed 2026-10-23**, not tested. Amiga (both repos): no defeat while members are on the battlefield, the leader is kept if nobody can lead, OK starts the next round. Remake: `RecheckActivePartyMember` starts the next round automatically (not committed). Test: battle where all members get asleep/panicked.
 - [ ] Forest moon: don't allow leaving without a yellow or green navstone (you can get stuck on Morag/Lyramion).
-- [ ] Text 2 in AA4 ("GEHEMNISVOLL").
-- [ ] Automap shows traps without Mystic Map (but not in the legend). Decide, and make the remake match.
-- [ ] Remove the sword/attack icon if the weapon breaks.
+- [x] Text 2 in AA4 ("GEHEMNISVOLL"): already fixed in Advanced, fixed in the Ambermoon repo (2026-10-23).
+- [x] Automap shows traps without Mystic Map: the Amiga now also hides trap/trapdoor/spinner icons of walls and objects without the trap function, like the remake and the legend (both repos, 2026-10-23).
+- [x] Attack icon after the weapon breaks: the Amiga was correct; the remake now updates the battle buttons after each round (`BattleHandling.cs`, 2026-10-23, not committed).
 
 ### Advanced
 - [ ] Some world map shadows are broken (sand boat tower etc.).
 - [ ] Wrong tiles on the Morag world map.
-- [ ] Moving mushrooms in Dor Grestin can't be picked up.
+- [x] Moving mushrooms in Dor Grestin: hand/eye condition in front of the text (map 339, 2026-10-23). The original has the same data, but the condition needs the Advanced executable.
 - [ ] The 4th wall storage can be reached diagonally through the wall from the corner (original too?).
-- [ ] Transfer stone can be used on yourself (Amiga too?).
-- [ ] The battery goes to the first member with space, not to the active one (original behaviour?).
+- [x] Transfer stone on yourself: the caster can't be selected anymore (Amiga) / the stone is not used up (remake, not committed) (2026-10-23).
+- [x] Battery: items added by events go to the active member first (Amiga: the loop advanced the item pointer instead of the party pointer; remake too, not committed). Also fixed the random reward target code (2026-10-23).
 - [ ] Empowered Kasimir still says "I am too weak…" when dismissed.
 - [ ] Kasimir gets many TP, but all skills except Crit are already maxed after the transformations.
-- [ ] "Here is a trap" message comes too often.
-- [ ] Magic should be usable on drugs (the drug penalty now reduces the hit chance), at least in battle.
-- [ ] Unused texts: map 339 texts 18/19 (Dor Grestin), map 368 text 3 (reuse as skeleton hint), AA4 text 14 (empty).
+- [x] "Here is a trap" too often: clairvoyance reports each square only once (it also ran on every idle time step), both repos (2026-10-23).
+- [x] Magic while drugged: `Magic_mask` no longer contains drugged (Amiga, 2026-10-23); the remake already allowed it.
+- [ ] Unused texts: map 368 text 3 is already used (skeleton hint, chain 15). Map 339 texts 18/19 are the old inn texts (inn moved to map 381, which has no "refreshed" text; could reuse 339/18 there). AA4 text 14 is empty in the original too.
 - [ ] Event editor crashes on chains 8 and E in AA4 and chain 26 in map 368 (graph command).
-- [ ] Mystic tower: check the 3 map events when done in a different order.
+- [x] Mystic tower: doing the 3 map events out of order breaks nothing; the later ones just stay active until the right order (no feedback).
 - [ ] Check all automap icons of all events.
 - [ ] Check glob var 193 (set when looting Shandra's grave, not connected in map 428).
 - [ ] Episode 3 changelog: the Gnome mine goto points must also be in the English version *(check)*.
-- [ ] Old Ep3 notes *(check)*:
-  - Crystal shield is English in the German version.
-  - Kapitain → Kapitän, began → begann.
-  - Music missing after the turtle and when using a torch in the wine cellar.
-  - Reading runes in the wine cellar turns the whole UI into runes.
+- [x] Old Ep3 notes (2026-10-23): crystal shield and "began" no longer found; Kapitän Torle fixed in both repos; turtle/torch music was fixed in be63b8bf, the same music bug fixed in Isdir's cave (377), Milzor (NPC 21) and the original S'Arin palace (446, Ambermoon repo); rune texts in 465/469/470 switch back to the normal font.
 - [ ] Black Mountains *(check)*:
   - Test huge lava performance on the Amiga.
   - Players can slip through the double pillars.
