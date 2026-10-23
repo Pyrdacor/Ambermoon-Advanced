@@ -2433,7 +2433,7 @@ Datachange:
 	jsr Random
 	mulu.w #$0006,D0 ; 6 character slots
 	swap D0
-	add.l D0,A3
+	adda.w D0,A3 ; FIX: was add.l (garbage in the upper word)
 	move.b (A3),D0 ; this now holds the character index
 	move.b D0,D4
 	beq.b .LAB_FindRandomTarget ; skip non-existing characters
@@ -2442,18 +2442,18 @@ Datachange:
 	move.w ($001e,A0),D0
 	andi.w #-$1b80,D0 ; no dead or petrified characters
 	bne.b .LAB_NextRandomTry
-	movem.l A2/A1/D7,-(SP)
+	movem.l A5-A1/D7-D0,-(SP) ; FIX: D3/D4 are needed afterwards
 	jsr (A1) ; apply to the character
-	movem.l (SP)+,D7/A1/A2
+	movem.l (SP)+,D0-D7/A1-A5
 	bra.b .LAB_EndRandomApply ; and end
 .LAB_NextRandomTry:
 	st D3 ; Try again
 .LAB_EndRandomApply:
 	move.b D4,D0
 	jsr Free_pointer
-	tst.l D3
+	tst.b D3 ; FIX: was tst.l (only the low byte is set)
 	bne.b .LAB_FindRandomTarget
-	move.w (SP)+,D0
+	move.l (SP)+,D0 ; FIX: was move.w (stack was off by 2)
 .Exit_all:
 	; Check if the leader died
 	move.b Active_handle,D0
@@ -3482,15 +3482,21 @@ Modify:
 	moveq #$00000005,D4
 	moveq #0,D0
 	exg A0,A1 ; A0 now points to the item (slot) to add/drop, A1 points to the party
+	; FIX: the active member gets the items first, then the others in party order
+	move.b Active_handle,D0
+	jsr Auto_move_to_backpack
+	tst.b (A0)
+	beq.b .End
 .LoopPartyMembers:
-	tst.b (A1) ; anybody there?
-	beq.b .Next ; no? go to next
 	move.b (A1),D0 ; index to party member
+	beq.b .Next ; nobody there? go to next
+	cmp.b Active_handle,D0 ; already served
+	beq.b .Next
 	jsr Auto_move_to_backpack ; add/drop item(s)
 	tst.b (A0)
 	beq.b .End ; end early if the remaining item count reaches 0
 .Next:
-	addq.l #$00000001,A0
+	addq.l #$00000001,A1
 	dbf D4,.LoopPartyMembers
 .End:
 	movem.l (SP)+,D0/D4/A0/A1

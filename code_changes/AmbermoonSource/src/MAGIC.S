@@ -378,6 +378,13 @@ Do_magic:
 .No:	move.w	#235,MemberSel_prompt	; No
 .Go_on2:
 	move.l #Present_check,MemberSel_ptr
+	; ADVANCED FIX: the exp exchange (transfer stone) can't target the caster
+	cmpi.w	#6,Selected_class
+	bne.s	.Not_exchange
+	cmpi.w	#24,Selected_spell
+	bne.s	.Not_exchange
+	move.l	#FUN_PresentNotCasterCheck,MemberSel_ptr
+.Not_exchange:
 	Push	Module,MemberSel_Mod
 	move.w	Selected_member,d0		; No-one ?
 	beq	.Exit
@@ -2025,6 +2032,14 @@ FUN_SpellSelfRevive:
 	jsr Free_pointer
 	movem.l (SP)+,D0/D7/A0/A1/A2
 LAB_SelfReviveCastFailed:
+	rts
+; [ Member selection check: present and not the caster ]
+;   IN : d0 - Member number (.w)
+FUN_PresentNotCasterCheck:
+	cmp.w Casting_member,D0
+	beq.b .Exit
+	jmp Present_check
+.Exit:
 	rts
 FUN_SpellExchangeExp:
 	jsr Handle_spell

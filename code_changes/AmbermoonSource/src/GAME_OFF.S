@@ -236,7 +236,7 @@ Attack_mask	EQU %1110010110001100
 Move_mask		EQU %1110010110000100
 Blink_mask		EQU %1110010010000000
 Flee_mask		EQU %1110010110000100
-Magic_mask		EQU %1110010010101101
+Magic_mask		EQU %1110010010001101	; ADVANCED: drugged can cast (hit chance penalty instead)
 Use_item_mask	EQU %1110010110101110
 Reset_mask		EQU %1111111101110010	; To reset combat conditions
 Animate_mask	EQU %1110010110000100
