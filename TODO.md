@@ -169,6 +169,7 @@ Order and details: `000 Plan Episode 4.md`, milestones M1–M4.
 ## 3. Savegames, English, release (M6)
 
 - [ ] **Savegame patcher Ep3 → Ep4.** Episode 3 saves don't load with Episode 4 data in the remake.
+  - Kasimir (party member 16): event 22 → `0d 00 00 00 00 00 01 34 00 1d 00 17`, append event 29 `11 09 00 00 00 00 00 00 00 00 00 18` (event count 29 → 30), for the dismiss text after the essence.
   - Party member 17 (S'Ebi).
   - Extended chests 286+.
   - Global vars 402+.
@@ -225,7 +226,7 @@ Fixed: untranslated text 369/2, 22 texts with missing or extra quotes, typos (al
 - [x] Wall storages in map 484 could only be used diagonally because the robot wrecks blocked the front tile: the wreck object (lab 44 object 2) is walkable now (2026-10-27).
 - [x] Transfer stone on yourself: the caster can't be selected anymore (Amiga) / the stone is not used up (remake, not committed) (2026-10-23).
 - [x] Battery: items added by events go to the active member first (Amiga: the loop advanced the item pointer instead of the party pointer; remake too, not committed). Also fixed the random reward target code (2026-10-23).
-- [ ] Empowered Kasimir still says "I am too weak…" when dismissed.
+- [x] Empowered Kasimir dismiss text: with glob var 308 set he says Party_texts 16/9 ("SO, SO. ERST MACHT IHR AUS MIR DEN MÄCHTIGSTEN KATER…"), Save.00 Party_char 16 event 22 checks the var, new event 29 (2026-10-27). Existing saves need the savegame patcher (see 3.).
 - [x] Kasimir TP: Sandra gives +10 parry max instead of +25 TP, and crit max +7 instead of +5 (NPC 5, 2026-10-27). Existing saves are not affected (NPC data).
 - [x] "Here is a trap" too often: clairvoyance reports each square only once (it also ran on every idle time step), both repos (2026-10-23).
 - [x] Magic while drugged: `Magic_mask` no longer contains drugged (Amiga, 2026-10-23); the remake already allowed it.
