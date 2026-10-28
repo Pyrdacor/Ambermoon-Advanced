@@ -31,7 +31,7 @@ The detailed design of each Episode 4 item is in the docs folder, see the file i
 - [ ] Check whether the remake has the same two bugs (Foresee Attack, aging index) or its own logic.
 - [x] Moved `FUN_CalculateSpellDamage`, `FUN_GetWorstElementBonus` and `DAT_ElementTable` from `KERNEL/TEXTS.S` to `COMBAT/COMBAT_M.S` and `FUN_DebugPrint` to `KERNEL/START.S` (2026-10-28). Fixed on the way: the table index D4.w had garbage in the upper byte, the worst bonus used a signed compare (150% counted as negative, an immune 0% was ignored as first element), and wind against water was 150% instead of 100% (see ElementalSpells.md and the remake).
 - [x] Element table: the game data is right (mental column: spirit 125%, earth/wind/fire/water 75%), ElementalSpells.md updated (2026-10-28).
-- [ ] Nalven's element table (Object_texts 1/6, German and English) still shows 100% in the mental column.
+- [x] Nalven's element table (Object_texts 1/6, German and English) shows the mental column of the game data, and the hint also lists Ghost Inferno and Mystic Decay (both spirit) (2026-10-28).
 - [ ] Optional: restore the original source formatting where the port only replaced lines with disassembly style. Examples: `Default_PA`/`Default_MA`, the stack definitions, comments lost on `cmpa.l`.
 
 ### Missing Advanced features on the Amiga (remake has them)
