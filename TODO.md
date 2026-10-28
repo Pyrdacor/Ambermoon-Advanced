@@ -154,6 +154,7 @@ Order and details: `000 Plan Episode 4.md`, milestones M1–M4.
   - NPC 24 (Gemstone) is level 30. Leaving the forest moon (airship 436, var 320) hides him and shows party member 18 (dwarf warrior level 30) at his place.
   - Party member 18 tells about the forest moon on the first talk (gives the first navstone, var 399), trades amber chunks for navstones and can join.
   - Dor Kiredon (343), chain 20 at (16,21)/(16,23): with Bore in the party, text 21, the remove party member event puts his things into the extended chests 307/308, he is hidden in Gemstone, NPC 80 and the chests appear in the mine (345), var 471.
+  - Labdata 14: chest object 54 (block 61) and the Dor Kiredon dwarf as object 55 / group 62 for NPC 80. 2Lab_data.amb and 3Lab_data.amb must stay identical (the remake only reads 2Lab_data, the Amiga reads the one of the map disk).
   - NPC 80 in the mine: first talk gives 5000 EXP (var 472), then he trades navstones.
 - [ ] Bore quest follow-ups:
   - Test it on the Amiga (cheat build) and in the remake.
