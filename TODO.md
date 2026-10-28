@@ -47,7 +47,7 @@ The detailed design of each Episode 4 item is in the docs folder, see the file i
 - [x] 3D combat background 13 → graphic 13 (desert, palettes 35/46/47 like the remake, 2026-10-28).
 - [x] The APR reward adjusts `APRPerLevel` like the remake (level / (APR − 1), at APR 1 at least level + 1), and a level up never lowers the APR anymore (2026-10-28).
 - [x] Reward targets 100+ and 200+ ("all but X") work. Fixed: the pointer was not freed for 100+ / first animal, and death (HP −100%) and revival / kill via conditions used the loop counter as the member number, so they were wrong for the active and random targets. Killing via a condition reward now shows the death instead of setting 1 HP (2026-10-28). Not tested in FS-UAE yet.
-- [x] A 100+ / first animal reward target without a matching member stops the event chain like in the remake (Break_event, 2026-10-28). Note: the Amiga skips dead members there (also counts as no match), the remake doesn't.
+- [x] A 100+ / first animal reward target without a matching member stops the event chain like in the remake (Break_event, 2026-10-28). Like the remake, these two targets also apply to dead members; a party member condition with disallowed ailments filters them.
 - [ ] Automaps for the new maps.
 
 ### Remake (Ambermoon.net, branch `aa4-fixes`)
