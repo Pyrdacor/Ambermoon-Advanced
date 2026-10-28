@@ -134,6 +134,47 @@ Exit_to_loader:
 	move.l	Return_address,a0
 	jmp	(a0)
 
+;*****************************************************************************
+; [ Debug print of a number ]
+; IN : d0 - Number (.l)
+;      d7 - Number of digits (.w)
+; All registers are restored
+; ADVANCED (moved here from KERNEL/TEXTS.S)
+;*****************************************************************************
+DAT_DebugTextBuffer:
+	dc.b $00
+	dc.b $00
+	dc.b $00
+	dc.b $00
+	dc.b $00
+	dc.b $00
+	dc.b $00
+	dc.b $00
+	dc.b $00
+	dc.b $00
+	dc.b $00
+	dc.b $00
+FUN_DebugPrint: ; D0 = number, D7 = length (num digits)
+	movem.l A6/A5/A4/A3/A2/A1/A0/D7/D6/D5/D4/D3/D2/D1/D0,-(SP)
+	jsr Own_blitter
+	moveq #$20,D6
+	lea DAT_DebugTextBuffer,A0
+	jsr DecR_convert
+	lea Text_list,A1
+	lea DAT_DebugTextBuffer,A0
+	move.l A0,(A1)
+	clr.l ($0004,A1)
+	move.l A1,TxtW_ptr
+	lea TxtW_Mod,A0
+	jsr Push_Module
+	;move.l A1,DAT_002889fa
+	;st Bool_AllowNoButton
+	;lea WindowData_PopupYesNo,A0
+	;jsr FUN_ShowWindow
+	jsr Free_blitter_usage
+	movem.l (SP)+,D0/D1/D2/D3/D4/D5/D6/D7/A0/A1/A2/A3/A4/A5/A6
+	rts	
+
 
 	SECTION	Chip_DATA,data_c
 	SECTION	Longword_BSS,bss

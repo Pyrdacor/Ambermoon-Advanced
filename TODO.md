@@ -29,7 +29,8 @@ The detailed design of each Episode 4 item is in the docs folder, see the file i
   - Foresee Attack now only affects monsters.
   - The aging index is now 0–17 for monsters and 18–23 for party members.
 - [ ] Check whether the remake has the same two bugs (Foresee Attack, aging index) or its own logic.
-- [ ] Move `FUN_CalculateSpellDamage`, `FUN_GetWorstElementBonus` and `DAT_ElementTable` from `KERNEL/TEXTS.S` (the old patch space) to the combat files. Move `FUN_DebugPrint` to the kernel.
+- [x] Moved `FUN_CalculateSpellDamage`, `FUN_GetWorstElementBonus` and `DAT_ElementTable` from `KERNEL/TEXTS.S` to `COMBAT/COMBAT_M.S` and `FUN_DebugPrint` to `KERNEL/START.S` (2026-10-28). Fixed on the way: the table index D4.w had garbage in the upper byte, the worst bonus used a signed compare (150% counted as negative, an immune 0% was ignored as first element), and wind against water was 150% instead of 100% (see ElementalSpells.md and the remake).
+- [ ] Element table: the mental column (spirit 125%, earth/wind/water 75%, fire 75%) differs from ElementalSpells.md (100%). The remake has the same values as the Amiga. Decide which one is right.
 - [ ] Optional: restore the original source formatting where the port only replaced lines with disassembly style. Examples: `Default_PA`/`Default_MA`, the stack definitions, comments lost on `cmpa.l`.
 
 ### Missing Advanced features on the Amiga (remake has them)

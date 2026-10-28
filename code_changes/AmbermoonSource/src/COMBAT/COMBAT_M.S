@@ -3945,9 +3945,135 @@ Move_COMOBs_to_target:
 	rts
 
 ;*****************************************************************************
+; [ Calculate the damage of a damage spell ]
+; IN : d0 - Regular damage (.w)
+;      a0 - Pointer to target participant data (.l)
+;      a1 - Pointer to caster participant data (.l)
+; OUT: d0 - Damage with level, intelligence and element bonus (.w)
+; ADVANCED (moved here from KERNEL/TEXTS.S)
+;*****************************************************************************
+FUN_CalculateSpellDamage:
+	; D0: regular damage
+	movem.l A1/A0/D5/D4/D3/D2/D1,-(SP)
+	moveq #0,D1
+	move.w D0,D1 ; damage
+	move.b ($0005,A0),D4 ; target handle
+	move.b ($0005,A1),D5 ; caster handle
+	move.b D5,D0
+	jsr Claim_pointer
+	movea.l D0,A0 ; Now A0 is the character data
+	moveq #0,D2
+	moveq #0,D3
+	move.b ($0005,A0),D2 ; Get current character level
+	move.w ($0032,A0),D3 ; Get current INT
+	add.w ($0036,A0),D3 ; Add bonus INT
+	move.b D5,D0
+	jsr Free_pointer
+	lea Spell_data,A1
+	move.w Selected_class,D0
+	mulu.w #30,D0
+	add.w Selected_spell,D0
+	subq.w #$00000001,D0
+	mulu.w #$0005,D0 ; Calc index to spell info struct (5 bytes long)
+	adda.w D0,A1
+	; add together all percentage values
+	; (INT-50)/5 + level
+	sub.w #50,D3
+	ext.l D3
+	divs.w #5,D3
+	add.w D3,D2
+	; element bonus
+	moveq #0,D3
+	move.b ($0004,A1),D3 ; spell element
+	lsl.b #3,D3 ; Multiply by 8 (8 entries per element)
+	move.b D4,D0
+	jsr Claim_pointer
+	movea.l D0,A0 ; Now A0 is the target data
+	move.b ($0013,A0),D5 ; get target element bits
+	move.b D4,D0
+	jsr Free_pointer
+	jsr FUN_GetWorstElementBonus ; D3 now holds the element bonus in percent
+	moveq #0,D0
+	move.b D3,D0
+	tst.b D0
+	beq.b .Skip_element_bonus
+	add.w D0,D2 ; + bonus
+	; Note: In theory we have to sub 100 to get the
+	; right elemental bonus. But in addition we have to
+	; add 100% as well as the total value is a bonus.
+	; Both would cancel each other out.
+.Skip_element_bonus:
+	; D2 now holds the total damage bonus in percent
+	tst.w D2
+	bpl.b .Positive_factor
+	moveq #1,D0 ; limit to at least 1 damage
+	bra.b .Return_damage
+.Positive_factor:
+	mulu.w D2,D1 ; multiply bonus with damage
+	divu.w #100,D1 ; divide by 100
+	moveq #0,D0
+	move.w D1,D0
+	move.w ($0076,A0),D1 ; possible magic damage reduction
+	muls.w D0,D1
+	divs.w #100,D1
+	sub.w D1,D0
+	tst.w D0
+	bgt.b .Return_damage
+	moveq #1,D0 ; limit to at least 1 damage
+.Return_damage:
+	movem.l (SP)+,D1/D2/D3/D4/D5/A0/A1
+	rts
+
+;*****************************************************************************
+; [ Get the worst element bonus of a target ]
+; IN : d3 - Row offset into [ DAT_ElementTable ] (.b)
+;      d5 - Target element bits (.b)
+; OUT: d3 - Worst element bonus in percent (.b)
+; ADVANCED (moved here from KERNEL/TEXTS.S)
+;*****************************************************************************
+FUN_GetWorstElementBonus:
+	movem.l A1/D7/D6/D5/D4,-(SP)
+	; In D3 : row offset into element table
+	; In D5 : target element bits
+	; Out D3 : worst element bonus
+	moveq #0,D4 ; FIX: D4.w is the table index
+	move.b D3,D4
+	move.b #$ff,D3
+	addq.b #7,D4
+	lea DAT_ElementTable,A1
+	moveq #7,D7 ; 8 iterations (element bits)
+.Loop:
+	btst.l D7,D5
+	beq.b .Skip
+	move.b ($0,A1,D4.w),D6 ; elemental bonus
+	cmp.b D6,D3
+	bcs.b .Skip ; FIX: unsigned compare (was bmi)
+	move.b D6,D3
+.Skip:
+	subq.b #1,D4
+	dbf D7,.Loop
+	cmpi.b #$ff,D3
+	bne.b .End
+	moveq #100,D3 ; if no element at all, use 100% as factor
+.End:
+	movem.l (SP)+,D4/D5/D6/D7/A1
+	rts
+
+;*****************************************************************************
 ; The DATA & BSS segments
 ;*****************************************************************************
 	SECTION	Fast_DATA,data
+; ADVANCED: element bonus in percent (row: spell element, column: target element)
+DAT_ElementTable:
+	dc.b 0,100,100,100,100,100,100,100 ; Mental spells
+	dc.b 125,0,150,150,100,100,100,100 ; Spirit spells
+	dc.b 100,100,0,100,100,100,100,100 ; Physical spells
+	dc.b 100,100,100,0,100,100,100,100 ; Undead spells
+	dc.b 75,100,100,75,0,50,100,150 ; Earth spells
+	dc.b 75,100,100,75,150,0,50,100 ; Wind spells (FIX: 100% against water, was 150%)
+	dc.b 75,75,100,125,100,150,0,50 ; Fire spells
+	dc.b 75,100,100,75,50,100,150,0 ; Water spells
+
 Spell_exception_table:
 	dc.w 1,9				; Blink
 	dc.l Enter_blink_target,Show_blink_target
