@@ -21,7 +21,54 @@ CMMagical_projectiles:
 ;        a1 - Pointer to caster's participant data (.l)
 ; No registers are restored
 .Do:
-	movem.l	a0/a1,-(sp)
+	jsr	Show_missile_to_member	; ADVANCED: moved to a routine
+	jsr	Handle_magical_defense	; Defend ?
+	bne.s	.Exit2
+	Get	Part_handle(a1),a2		; Get caster's level
+	moveq.l	#0,d0
+	move.b	Level_nr(a2),d0
+	move.w ($0072,A2),D2 ; base spell dmg bonus
+	move.w ($0074,A2),D3 ; max spell dmg bonus
+	move.w ($0078,A2),D4 ; percentage damage
+	Free	Part_handle(a1)
+	; ADVANCED CHANGES - START
+	move.l D4,-(SP)
+	move.w D0,D4 ; backup damage
+	jsr Random	
+	mulu.w D3,D0 ; random max bonus
+	swap D0
+	add.w D2,D0 ; total random bonus
+	add.w D4,D0 ; add initial damage
+	move.l (SP)+,D4
+	tst.w D4
+	beq.b .LAB_CalcSpellDamageMagicProjectileMonster
+	cmpi.w #-99,D4
+	bpl.b .LAB_CalcPercDamageMagicProjectileMonster
+	moveq #1,D0 ; limit to 1 damage if perc value is -100% or lower
+	bra.b .LAB_CalcSpellDamageMagicProjectileMonster
+.LAB_CalcPercDamageMagicProjectileMonster:
+	add.w #100,D4
+	mulu.w D4,D0
+	divu.w #100,D0
+	bgt.b .LAB_CalcSpellDamageMagicProjectileMonster
+	moveq #1,D0 ; deal at least 1 damage
+.LAB_CalcSpellDamageMagicProjectileMonster:
+	jsr FUN_CalculateSpellDamage
+	jsr	Do_combat_damage		; Do damage !
+	move.l	a1,a0			; Process
+	jsr	Process_damage
+.Exit2:	rts
+
+;*****************************************************************************
+; [ Show a magic missile from a monster to a party member ]
+;   IN : a0 - Pointer to victim's participant data (.l)
+;        a1 - Pointer to caster's participant data (.l)
+; All registers are restored
+; ADVANCED: moved here from [ CMMagical_projectiles ] (also used by the
+;  magic sword attack)
+;*****************************************************************************
+Show_missile_to_member:
+	movem.l	d0-d7/a0/a1,-(sp)
 ; ---------- Create magic missile -----------------
 	jsr	Determine_COMOB_flip	; Determine flip
 	spl	d0
@@ -72,43 +119,8 @@ CMMagical_projectiles:
 .Entry2:	dbra	d7,.Loop2
 ; ---------- The end ------------------------------
 	jsr	Delete_COMOB		; Delete
-	movem.l	(sp)+,a0/a1
-	jsr	Handle_magical_defense	; Defend ?
-	bne.s	.Exit2
-	Get	Part_handle(a1),a2		; Get caster's level
-	moveq.l	#0,d0
-	move.b	Level_nr(a2),d0
-	move.w ($0072,A2),D2 ; base spell dmg bonus
-	move.w ($0074,A2),D3 ; max spell dmg bonus
-	move.w ($0078,A2),D4 ; percentage damage
-	Free	Part_handle(a1)
-	; ADVANCED CHANGES - START
-	move.l D4,-(SP)
-	move.w D0,D4 ; backup damage
-	jsr Random	
-	mulu.w D3,D0 ; random max bonus
-	swap D0
-	add.w D2,D0 ; total random bonus
-	add.w D4,D0 ; add initial damage
-	move.l (SP)+,D4
-	tst.w D4
-	beq.b .LAB_CalcSpellDamageMagicProjectileMonster
-	cmpi.w #-99,D4
-	bpl.b .LAB_CalcPercDamageMagicProjectileMonster
-	moveq #1,D0 ; limit to 1 damage if perc value is -100% or lower
-	bra.b .LAB_CalcSpellDamageMagicProjectileMonster
-.LAB_CalcPercDamageMagicProjectileMonster:
-	add.w #100,D4
-	mulu.w D4,D0
-	divu.w #100,D0
-	bgt.b .LAB_CalcSpellDamageMagicProjectileMonster
-	moveq #1,D0 ; deal at least 1 damage
-.LAB_CalcSpellDamageMagicProjectileMonster:
-	jsr FUN_CalculateSpellDamage
-	jsr	Do_combat_damage		; Do damage !
-	move.l	a1,a0			; Process
-	jsr	Process_damage
-.Exit2:	rts
+	movem.l	(sp)+,d0-d7/a0/a1
+	rts
 
 ; *** Dissolve victim ***
 CMDissolve_victim:
@@ -691,7 +703,7 @@ CMIceshower:
 ; ********** Monster magic ************************
 Monster_comma_class_ptrs:
 	dc.l 0,.Class_1_ptrs,0,.Class_3_ptrs
-	dc.l 0,0,0
+	dc.l 0,0,.Class_6_ptrs		; ADVANCED: class 6
 
 .Class_1_ptrs:
 	dc.l 0,0,0,0
@@ -712,3 +724,11 @@ Monster_comma_class_ptrs:
 	dc.l CThunderbolt,CMWhirlwind,CFirebeam,CFireball
 	dc.l CFirestorm,CFirecolumn,CMWaterfall,CIceball
 	dc.l CIcestorm,CMIceshower
+.Class_6_ptrs:				; ADVANCED
+	dc.l 0,0,0,0
+	dc.l 0,0,0,0
+	dc.l 0,0,0,0
+	dc.l 0,0,0,0
+	dc.l 0,0,0,0
+	dc.l 0,0,0,0
+	dc.l 0,CMagic_sword_attack ; 26

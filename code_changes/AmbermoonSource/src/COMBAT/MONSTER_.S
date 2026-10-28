@@ -316,6 +316,7 @@ Try_magical_attack:
 ; ---------- Determine possible spells & targets --
 .Ok:	clr.l	Monster_spells_1		; Clear
 	clr.l	Monster_spells_3
+	clr.l	Monster_sword_targets	; ADVANCED
 	moveq.l	#0,d1			; None
 	move.w	Power_points(a1),d6		; Get spell points
 	move.l	Spells_class_1(a1),d0	; Try spell class 1
@@ -364,7 +365,19 @@ Try_magical_attack:
 	cmp.w	#Max_spells,d7
 	bls.s	.Loop2
 	move.l	d3,Monster_spells_3		; Store
-.Done_3:	tst.b	d1			; Any targets ?
+.Done_3:
+; ---------- ADVANCED: Magic sword attack ? -------
+	move.l	Spells_class_6(a1),d0	; Known ?
+	btst	#Magic_sword_spell,d0
+	beq.s	.Done_6
+	jsr	Get_rows_in_weapon_range	; Yes -> Targets in range ?
+	move.l	d0,d3
+	jsr	Get_longrange_targets
+	and.l	d3,d0
+	beq.s	.Done_6
+	move.l	d0,Monster_sword_targets	; Yes -> Store
+	bset	#3,d1			; Mark
+.Done_6:	tst.b	d1			; Any targets ?
 	beq	.Fail
 	move.b	d1,Monster_magic_target	; Yes -> Store
 ; ---------- Determine maximum danger -------------
@@ -445,7 +458,8 @@ Try_magical_attack:
 	moveq.l	#5,d1
 	bra	.Select
 ; ---------- Maybe a party row ? ------------------
-.Not_all:	btst	#1,Monster_magic_target	; Is possible target ?
+.Not_all:	move.b	Monster_magic_target,d1	; Is possible target ?
+	andi.b	#%1010,d1			; (ADVANCED: or magic sword attack)
 	beq	.Not_row
 	lea.l	Combat_matrix+18*4,a2	; Calculate mean relative
 	moveq.l	#0,d1			;  danger of 1st row
@@ -485,6 +499,28 @@ Try_magical_attack:
 	beq.s	.2nd_MT
 	divu.w	d2,d1			; Calculate
 .2nd_MT:	move.w	(sp)+,d2			; Restore 1st row
+; ---------- ADVANCED: Magic sword attack ? -------
+	move.l	Monster_sword_targets,d3	; Possible ?
+	beq.s	.No_sword
+	moveq.l	#0,d4			; Yes -> Find most dangerous
+	moveq.l	#50-1,d5			;  row in range
+	move.l	#%00000000111111000000000000000000,d7	; 1st row ?
+	and.l	d3,d7
+	beq.s	.Sword2
+	cmp.w	d5,d2			; Dangerous enough ?
+	ble.s	.Sword2
+	move.w	d2,d5			; Yes
+	move.l	#%00000000111111000000000000000000,d4
+.Sword2:	move.l	#%00111111000000000000000000000000,d7	; 2nd row ?
+	and.l	d3,d7
+	beq.s	.Sword3
+	cmp.w	d5,d1			; More dangerous ?
+	ble.s	.Sword3
+	move.l	#%00111111000000000000000000000000,d4
+.Sword3:	tst.l	d4			; Found one ?
+	bne	.Sword
+.No_sword:	btst	#1,Monster_magic_target	; Other row spells ?
+	beq	.Not_row
 	cmp.w	d1,d2			; Which row is best ?
 	bpl.s	.1st_best
 	cmp.w	#50,d1			; Attack 2nd row ?
@@ -562,8 +598,46 @@ Try_magical_attack:
 	addq.w	#1,d7
 	cmp.w	#Max_spells,d7
 	bls.s	.Loop10
+; ---------- ADVANCED: Fallback ------------------
+; FIX: Without a spell for the selected target a stale spell was cast.
+.Not_3:	tst.w	d2			; Any spell for this target ?
+	bne	.Pick
+	move.l	Monster_sword_targets,d3	; No -> Magic sword attack ?
+	beq.s	.Fb_row
+	move.l	#%00000000111111000000000000000000,d4	; Yes
+	move.l	d4,d7
+	and.l	d3,d7
+	bne.s	.Sword
+	move.l	#%00111111000000000000000000000000,d4
+	bra.s	.Sword
+.Fb_row:	btst	#1,Monster_magic_target	; Row spells ?
+	beq.s	.Fb_all
+	jsr	Get_longrange_targets	; Yes -> Row with targets
+	move.l	#%00000000111111000000000000000000,d3
+	and.l	d3,d0
+	bne.s	.Fb_row2
+	move.l	#%00111111000000000000000000000000,d3
+.Fb_row2:	move.b	#Enemy_row_targmode,Part_target+6(a0)	; Enter data
+	move.l	d3,Part_target(a0)
+	moveq.l	#4,d1
+	bra	.Select
+.Fb_all:	btst	#2,Monster_magic_target	; All spells ?
+	beq.s	.Fb_none
+	move.b	#All_enemies_targmode,Part_target+6(a0)	; Enter data
+	move.l	#Combat_party_mask,Part_target(a0)
+	moveq.l	#5,d1
+	bra	.Select
+.Fb_none:	bclr	#Part_magic_cap,Part_flags(a0)	; No spell at all
+	bra	.Exit
+; ---------- ADVANCED: Magic sword attack ---------
+.Sword:	move.b	#Enemy_row_targmode,Part_target+6(a0)	; Enter data
+	move.l	d4,Part_target(a0)
+	move.b	#6,Part_target+4(a0)
+	move.b	#Magic_sword_spell,Part_target+5(a0)
+ 	move.b	#Cast_spell_action,Part_action(a0)	; Enter action
+	bra	.Exit
 ; ---------- Select & enter spell -----------------
-.Not_3:	jsr	Random			; Select random spell
+.Pick:	jsr	Random			; Select random spell
 	mulu.w	d2,d0
 	swap	d0
 	lea.l	Monster_spells,a3		; Find info
@@ -1151,4 +1225,5 @@ Monster_magic_target:	ds.b 1
 Monster_single_target:	ds.l 1
 Monster_spells_1:	ds.l 1
 Monster_spells_3:	ds.l 1
+Monster_sword_targets:	ds.l 1		; ADVANCED
 Monster_spells:	ds.w Max_monster_spells

@@ -1585,12 +1585,13 @@ Spell_data:
 	dc.b $01 ; SpellInfo.SLP
 	dc.b $00 ; = None ; SpellInfo.Target
 	dc.b $20 ; = None ; SpellInfo.Element
-	; Rest is unused
-	dc.b $00 ; = None ; SpellInfo.UseConditions
+	; Magic sword attack (ID: 26), a physical special attack of the energy sword
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $00 ; SpellInfo.SP
 	dc.b $00 ; SpellInfo.SLP
-	dc.b $00 ; = None ; SpellInfo.Target
-	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $02 ; = EnemyRowInWeaponRange (was the unused FriendRow) ; SpellInfo.Target
+	dc.b $01 ; = Spirit (only for the damage bonus) ; SpellInfo.Element
+	; Rest is unused
 	dc.b $00 ; = None ; SpellInfo.UseConditions
 	dc.b $00 ; SpellInfo.SP
 	dc.b $00 ; SpellInfo.SLP

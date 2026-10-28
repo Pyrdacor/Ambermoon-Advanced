@@ -206,6 +206,7 @@ Max_shard_level	EQU 55			; Levels 51-55 only through events
 Max_languages	EQU 8
 Max_spell_classes	EQU 7
 Max_spells	EQU 30
+Magic_sword_spell	EQU 26		; ADVANCED: class 6 (magic sword attack)
 Max_monsters	EQU 18
 Max_event	EQU Max_maps*Events_per_map
 Max_CD	EQU Max_maps*Max_chars

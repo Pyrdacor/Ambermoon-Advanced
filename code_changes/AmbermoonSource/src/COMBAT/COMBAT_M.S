@@ -1891,7 +1891,58 @@ CMagical_projectiles:
 ;        a1 - Pointer to caster's participant data (.l)
 ; No registers are restored
 .Do:
-	move.l	a0,-(sp)
+	jsr	Show_missile_to_monster	; ADVANCED: moved to a routine
+	jsr	Handle_magical_defense	; Defend ?
+	bne	.Exit2
+	Get	Part_handle(a1),a2		; Get caster's level
+	moveq.l	#0,d0
+	move.b	Level_nr(a2),d0
+	move.w ($0072,A2),D2 ; base spell dmg bonus
+	move.w ($0074,A2),D3 ; max spell dmg bonus
+	move.w ($0078,A2),D4 ; percentage damage
+	Free	Part_handle(a1)
+	lsr.w	#1,d0			; Half
+	bne.s	.Notzero
+	moveq.l	#1,d0			; At least one
+.Notzero:
+	; ADVANCED CHANGES - START
+	move.l D4,-(SP)
+	move.w D0,D4 ; backup damage
+	jsr Random
+	mulu.w D3,D0 ; random max bonus
+	swap D0
+	add.w D2,D0 ; total random bonus
+	add.w D4,D0 ; add initial damage
+	move.l (SP)+,D4
+	tst.w D4
+	beq.b .LAB_CalcSpellDamageMagicProjectile
+	cmpi.w #-99,D4
+	bpl.b .LAB_CalcPercDamageMagicProjectile
+	moveq #1,D0 ; limit to 1 damage if perc value is -100% or lower
+	bra.b .LAB_CalcSpellDamageMagicProjectile
+.LAB_CalcPercDamageMagicProjectile:
+	add.w #100,D4
+	mulu.w D4,D0
+	divu.w #100,D0
+	bgt.b .LAB_CalcSpellDamageMagicProjectile
+	moveq #1,D0 ; deal at least 1 damage
+.LAB_CalcSpellDamageMagicProjectile:
+	jsr FUN_CalculateSpellDamage
+	jsr	Do_damage_to_monster; Do damage !
+	move.l	a1,a0			; Process
+	jsr	Process_damage
+.Exit2:	rts
+
+;*****************************************************************************
+; [ Show a magic missile from a party member to a monster ]
+;   IN : a0 - Pointer to victim's participant data (.l)
+;        a1 - Pointer to caster's participant data (.l)
+; All registers are restored
+; ADVANCED: moved here from [ CMagical_projectiles ] (also used by the
+;  magic sword attack)
+;*****************************************************************************
+Show_missile_to_monster:
+	movem.l	d0-d7/a0/a1,-(sp)
 ; ---------- Create magic missile -----------------
 	exg	a1,a0			; Get source coordinates
 	jsr	Get_3D_part_coordinates
@@ -1940,47 +1991,120 @@ CMagical_projectiles:
 .Entry2:	dbra	d7,.Loop2
 ; ---------- The end ------------------------------
 	jsr	Delete_COMOB		; Delete
-	move.l	(sp)+,a0
-	jsr	Handle_magical_defense	; Defend ?
-	bne	.Exit2
-	Get	Part_handle(a1),a2		; Get caster's level
-	moveq.l	#0,d0
-	move.b	Level_nr(a2),d0
-	move.w ($0072,A2),D2 ; base spell dmg bonus
-	move.w ($0074,A2),D3 ; max spell dmg bonus
-	move.w ($0078,A2),D4 ; percentage damage
+	movem.l	(sp)+,d0-d7/a0/a1
+	rts
+
+;*****************************************************************************
+; [ Magic sword attack (energy sword) ]
+;   IN : a0 - Pointer to casting participant data (.l)
+; No registers are restored
+; NOTES :
+;   - ADVANCED: Class 6 spell 26. It is a physical special attack against an
+;     enemy row in weapon range, so it can be parried but not deflected by
+;     anti-magic, and it can't fail like a spell. Used by party members (via
+;     the item) and by monsters.
+;   - Damage : attack damage (min. 1) x (APR + 1) / 2, plus 0-25%, plus the
+;     spell damage bonus (level, intelligence, spirit element).
+;   - The caster is healed by 10% of the damage.
+;*****************************************************************************
+CMagic_sword_attack:
+	tst.b	Magic_object_flag		; From object ?
+	beq.s	.No_object
+	jsr	Handle_spell		; Yes -> Use charge
+	bne	.Exit
+.No_object:	lea.l	.Do,a2			; Do all targets
+	jsr	Do_all_combat_targets
+.Exit:	rts
+
+; [ Do magic sword attack ]
+;   IN : a0 - Pointer to victim's participant data (.l)
+;        a1 - Pointer to caster's participant data (.l)
+; No registers are restored
+.Do:
+	cmp.b	#1,Part_type(a1)		; Party or monster ?
+	bne.s	.Monster
+	jsr	Show_missile_to_monster	; Show
+	bra.s	.Shown
+.Monster:	jsr	Show_missile_to_member
+.Shown:	exg	a0,a1			; Like a weapon attack
+	Get	Part_handle(a0),a2		; Get character data
+	Get	Part_handle(a1),a3
+
+; *** R E G I S T E R   C O N T E N T S ***
+;  a0 - Pointer to attacker's participant data
+;  a1 - Pointer to defender's participant data
+;  a2 - Pointer to attacker's character data
+;  a3 - Pointer to defender's character data
+
+; ---------- Check undamageability ----------------
+	move.w	Body_conditions(a3),d0	; Undamageable ?
+	andi.w	#Damage_mask,d0
+	beq.s	.Ok1
+	move.w	#262,d0			; Yes -> "Cannot damage !"
+	jsr	Do_prompt
+	bra	.Done
+; ---------- Probe defender's parade skill --------
+.Ok1:	cmp.b	#Parade_action,Part_action(a1)	; Defending ?
+	bne.s	.Ok2
+	jsr	FUN_TestDefenderParry
+	bpl.s	.Ok2
+	move.w	#214,d0			; "Attack was deflected !"
+	jsr	Do_part_prompt
+	bra	.Done
+; ---------- Calculate damage ---------------------
+.Ok2:	moveq.l	#0,d0			; Get attack damage
+	move.w	Damage(a2),d0
+	add.w	Damage_magic(a2),d0
+	bgt.s	.Ok3
+	moveq.l	#1,d0			; At least 1
+.Ok3:	moveq.l	#0,d1			; x (APR + 1) / 2
+	move.b	Attacks_per_round(a2),d1
+	bne.s	.Ok4
+	moveq.l	#1,d1
+.Ok4:	addq.w	#1,d1
+	mulu.w	d1,d0
+	lsr.l	#1,d0
+	cmp.l	#$7fff,d0			; Clip
+	bls.s	.Ok5
+	move.l	#$7fff,d0
+.Ok5:	move.w	d0,d2			; Add 0-25%
+	move.w	d0,d1
+	lsr.w	#2,d1
+	addq.w	#1,d1
+	jsr	Random
+	mulu.w	d1,d0
+	swap	d0
+	add.w	d2,d0
+	exg	a0,a1			; Add spell damage bonus
+	jsr	FUN_CalculateSpellDamage
+	exg	a0,a1
+; ---------- Do damage ----------------------------
+	move.l	a0,-(sp)			; Do damage
+	move.l	a1,a0
+	cmp.b	#1,Part_type(a0)		; Party or monster ?
+	bne.s	.Monster2
+	jsr	Do_combat_damage
+	bra.s	.Damaged
+.Monster2:	jsr	Do_damage_to_monster
+.Damaged:	move.l	(sp)+,a0
+	jsr	Process_damage		; For the records
+; ---------- Heal attacker ------------------------
+	and.l	#$ffff,d0			; 10% of the damage
+	divu.w	#10,d0
+	beq.s	.Done
+	move.w	Life_points(a2),d1		; Add
+	move.w	Life_points+Maximum(a2),d2
+	add.w	Life_points+Magic(a2),d2
+	add.w	d0,d1
+	cmp.w	d2,d1			; Too much ?
+	bls.s	.Ok6
+	move.w	d2,d1			; Yes -> Clip
+.Ok6:	cmp.w	Life_points(a2),d1		; (never decrease)
+	bls.s	.Done
+	move.w	d1,Life_points(a2)
+.Done:	Free	Part_handle(a0)
 	Free	Part_handle(a1)
-	lsr.w	#1,d0			; Half
-	bne.s	.Notzero
-	moveq.l	#1,d0			; At least one
-.Notzero:
-	; ADVANCED CHANGES - START
-	move.l D4,-(SP)
-	move.w D0,D4 ; backup damage
-	jsr Random
-	mulu.w D3,D0 ; random max bonus
-	swap D0
-	add.w D2,D0 ; total random bonus
-	add.w D4,D0 ; add initial damage
-	move.l (SP)+,D4
-	tst.w D4
-	beq.b .LAB_CalcSpellDamageMagicProjectile
-	cmpi.w #-99,D4
-	bpl.b .LAB_CalcPercDamageMagicProjectile
-	moveq #1,D0 ; limit to 1 damage if perc value is -100% or lower
-	bra.b .LAB_CalcSpellDamageMagicProjectile
-.LAB_CalcPercDamageMagicProjectile:
-	add.w #100,D4
-	mulu.w D4,D0
-	divu.w #100,D0
-	bgt.b .LAB_CalcSpellDamageMagicProjectile
-	moveq #1,D0 ; deal at least 1 damage
-.LAB_CalcSpellDamageMagicProjectile:
-	jsr FUN_CalculateSpellDamage
-	jsr	Do_damage_to_monster; Do damage !
-	move.l	a1,a0			; Process
-	jsr	Process_damage
-.Exit2:	rts
+	rts
 
 ; *** Set condition spells ***
 CCondition:
@@ -3364,6 +3488,21 @@ Monster_row_target:
 	jsr	Enter_action
 .Exit:	rts
 
+; ADVANCED: Row of enemies in weapon range (magic sword attack)
+Monster_row_in_range_target:
+	jsr	Get_rows_in_weapon_range	; Get reachable rows
+	move.w	#239,ItemSelect_prompt	; "Which monster row ?"
+	jsr	Select_monster_row_in_range
+	tst.w	d0			; Any target ?
+	bmi.s	.Exit
+	move.b	#Enemy_row_targmode,Part_target+6(a0)	; Enter data
+	move.l	#%00000000000000000000000000111111,d1
+	mulu.w	#6,d0
+	lsl.l	d0,d1
+	move.l	d1,Part_target(a0)
+	jsr	Enter_action
+.Exit:	rts
+
 All_members_target:
 	move.b	#All_friends_targmode,Part_target+6(a0)	; Enter data
 	move.l	#Combat_party_mask,Part_target(a0)
@@ -4082,7 +4221,7 @@ Spell_exception_table:
 Member_spell_target_table:
 	dc.b %00000001			; 0 - A friend
 	dc.b %00001000			; 1 - An enemy 
-	dc.b %00000010			; 2 - Row of friends
+	dc.b %00000010			; 2 - ADVANCED: Row of enemies in weapon range (was: row of friends)
 	dc.b %00010000			; 3 - Row of enemies
 	dc.b %00000100			; 4 - All friends
 	dc.b %00100000			; 5 - All enemies
@@ -4094,7 +4233,7 @@ CCondition_table:
 Member_spell_target_vectors:
 	dc.l Member_target
 	dc.l Monster_target
-	dc.l Member_row_target
+	dc.l Monster_row_in_range_target	; ADVANCED (was Member_row_target)
 	dc.l Monster_row_target
 	dc.l All_members_target
 	dc.l All_monsters_target
@@ -4162,7 +4301,9 @@ Party_comma_class_ptrs:
 	dc.l FUN_SpellSelfHealing ; 22
 	dc.l FUN_SpellSelfRevive ; 23
 	dc.l FUN_SpellExchangeExp ; 24
-	dc.l 0,0,0,0
+	dc.l 0
+	dc.l CMagic_sword_attack ; 26
+	dc.l 0,0
 	dc.l 0,0
 
 ; 21 colour values
