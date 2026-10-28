@@ -2006,6 +2006,8 @@ Show_missile_to_monster:
 ;   - Damage : attack damage (min. 1) x (APR + 1) / 2, plus 0-25%, minus
 ;     50-100% of the defender's protection x APR, plus the spell damage bonus
 ;     (level, intelligence, spirit element). No damage if not positive.
+;   - Like a weapon attack there is no damage at all if the defender has the
+;     element of the weapon.
 ;   - The caster is healed by 10% of the damage.
 ;*****************************************************************************
 CMagic_sword_attack:
@@ -2055,8 +2057,15 @@ CMagic_sword_attack:
 	move.w	#214,d0			; "Attack was deflected !"
 	jsr	Do_part_prompt
 	bra	.Done
+; ---------- Same element as the weapon ? --------
+.Ok2:	jsr	Get_weapon_element_factor	; Like a weapon attack
+	tst.w	d0
+	bne.s	.Ok2b
+	move.w	#215,d0			; Yes -> "No damage was done !"
+	jsr	Do_part_prompt
+	bra	.Done
 ; ---------- Calculate damage ---------------------
-.Ok2:	moveq.l	#0,d0			; Get attack damage
+.Ok2b:	moveq.l	#0,d0			; Get attack damage
 	move.w	Damage(a2),d0
 	add.w	Damage_magic(a2),d0
 	bgt.s	.Ok3
