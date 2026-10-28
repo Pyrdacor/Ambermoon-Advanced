@@ -30,7 +30,7 @@ The same table is used for weapons and ammunition with an element. There is no u
 Spell \\ Monster | Mental | Spirit | Physical | Undead | Earth | Wind | Fire |Water
 --- | --- | --- | --- | --- | --- | --- | --- | ---
 Spirit | 125 | 0 | 150 | 150 | 100 | 100 | 100 | 100
-Undead | 100 | 100 | 100 | 0 | 100 | 100 | 100 | 100
+Undead | 125 | 50 | 200 | 0 | 75 | 75 | 75 | 75
 Earth | 75 | 100 | 100 | 75 | 0 | 50 | 100 | 150
 Wind | 75 | 100 | 100 | 75 | 150 | 0 | 50 | 100
 Fire | 75 | 75 | 100 | 125 | 100 | 150 | 0 | 50
@@ -45,6 +45,8 @@ So the 4 base elements (earth, wind, fire and water) build a circle of effects:
 All of them are a bit weaker against undeads (75% damage) with the exception of fire which deals even more damage to them (125%). But in exchange fire is weaker against spirit monsters (75%).
 
 Spirit spells are strong against physical and undead monsters (150%). They are also a bit stronger against mental monsters (125%), while all four base elements are a bit weaker against mental monsters (75%).
+
+Undead weapons are very strong against physical monsters (200%) and a bit stronger against mental monsters (125%). But they are weak against spirit monsters (50%) and a bit weaker against the four base elements (75%).
 
 
 # Elemental Damage Spells

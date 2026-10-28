@@ -4208,7 +4208,7 @@ DAT_ElementTable:
 	dc.b 0,100,100,100,100,100,100,100 ; Mental spells
 	dc.b 125,0,150,150,100,100,100,100 ; Spirit spells
 	dc.b 100,100,0,100,100,100,100,100 ; Physical spells
-	dc.b 100,100,100,0,100,100,100,100 ; Undead spells
+	dc.b 125,50,200,0,75,75,75,75 ; Undead spells (and weapons)
 	dc.b 75,100,100,75,0,50,100,150 ; Earth spells
 	dc.b 75,100,100,75,150,0,50,100 ; Wind spells (FIX: 100% against water, was 150%)
 	dc.b 75,75,100,125,100,150,0,50 ; Fire spells
