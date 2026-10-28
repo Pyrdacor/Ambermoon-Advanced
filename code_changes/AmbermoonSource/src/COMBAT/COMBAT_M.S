@@ -2003,8 +2003,9 @@ Show_missile_to_monster:
 ;     enemies in close range (the 8 squares around the attacker), so it can
 ;     be parried but not deflected by anti-magic, and it can't fail like a
 ;     spell. Used by party members (via the equipped item) and by monsters.
-;   - Damage : attack damage (min. 1) x (APR + 1) / 2, plus 0-25%, plus the
-;     spell damage bonus (level, intelligence, spirit element).
+;   - Damage : attack damage (min. 1) x (APR + 1) / 2, plus 0-25%, minus
+;     50-100% of the defender's protection x APR, plus the spell damage bonus
+;     (level, intelligence, spirit element). No damage if not positive.
 ;   - The caster is healed by 10% of the damage.
 ;*****************************************************************************
 CMagic_sword_attack:
@@ -2078,7 +2079,23 @@ CMagic_sword_attack:
 	mulu.w	d1,d0
 	swap	d0
 	add.w	d2,d0
-	exg	a0,a1			; Add spell damage bonus
+	move.w	d0,d3			; Save
+; ---------- Subtract protection ------------------
+	moveq.l	#0,d1			; Get 50-100% of the protection
+	jsr	Calculate_damage_and_protection
+	moveq.l	#0,d1			; x APR
+	move.b	Attacks_per_round(a2),d1
+	bne.s	.Ok6a
+	moveq.l	#1,d1
+.Ok6a:	mulu.w	d1,d2
+	moveq.l	#0,d0			; Subtract
+	move.w	d3,d0
+	sub.l	d2,d0
+	bgt.s	.Ok6b
+	move.w	#215,d0			; "No damage was done !"
+	jsr	Do_part_prompt
+	bra	.Done
+.Ok6b:	exg	a0,a1			; Add spell damage bonus
 	jsr	FUN_CalculateSpellDamage
 	exg	a0,a1
 ; ---------- Do damage ----------------------------
