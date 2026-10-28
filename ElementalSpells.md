@@ -27,11 +27,11 @@ The following table shows the damage in percent. On the left side there are the 
 
 Spell \\ Monster | Mental | Spirit | Physical | Undead | Earth | Wind | Fire |Water
 --- | --- | --- | --- | --- | --- | --- | --- | ---
-Spirit | 100 | 0 | 150 | 150 | 100 | 100 | 100 | 100
-Earth | 100 | 100 | 100 | 75 | 0 | 50 | 100 | 150
-Wind | 100 | 100 | 100 | 75 | 150 | 0 | 50 | 100
-Fire | 100 | 75 | 100 | 125 | 100 | 150 | 0 | 50
-Water | 100 | 100 | 100 | 75 | 50 | 100 | 150 | 0
+Spirit | 125 | 0 | 150 | 150 | 100 | 100 | 100 | 100
+Earth | 75 | 100 | 100 | 75 | 0 | 50 | 100 | 150
+Wind | 75 | 100 | 100 | 75 | 150 | 0 | 50 | 100
+Fire | 75 | 75 | 100 | 125 | 100 | 150 | 0 | 50
+Water | 75 | 100 | 100 | 75 | 50 | 100 | 150 | 0
 
 So the 4 base elements (earth, wind, fire and water) build a circle of effects:
 - Earth deals 150% damage against water but only 50% against wind
@@ -41,7 +41,7 @@ So the 4 base elements (earth, wind, fire and water) build a circle of effects:
 
 All of them are a bit weaker against undeads (75% damage) with the exception of fire which deals even more damage to them (125%). But in exchange fire is weaker against spirit monsters (75%).
 
-Spirit spells are strong against physical and undead monsters (150%).
+Spirit spells are strong against physical and undead monsters (150%). They are also a bit stronger against mental monsters (125%), while all four base elements are a bit weaker against mental monsters (75%).
 
 
 # Elemental Damage Spells
