@@ -2373,13 +2373,6 @@ Datachange:
 	move.w ($0001,A5),D0 ; copy reward type and operation
 	cmpi.w #$0505,D0 ; = remove condition ?
 	beq.b .AfterDisableCheck
-	; ADVANCED: 100+ and first animal also apply to dead members (like the remake,
-	; use a party member condition with disallowed ailments to filter)
-	cmpi.w #3,D2
-	bcs.s .Alive_check
-	cmpi.w #200,D2
-	bcs.s .AfterDisableCheck
-.Alive_check:
 	move.w	Body_conditions(a0),d0	; Alive and kicking ?
 	andi.w	#Alive_mask,d0
 	bne.s	.Done
