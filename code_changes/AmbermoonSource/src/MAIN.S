@@ -1848,7 +1848,9 @@ Make_levels:
 	addq #1,D0
 	bra.b .Ok1
 .One:	moveq.l	#1,d0
-.Ok1:	move.b	d0,Attacks_per_round(a1)	; Store
+.Ok1:	cmp.b	Attacks_per_round(a1),d0	; ADVANCED: never lower the APR (rewards)
+	bls.s	.LAB_SkipAPRCalculation
+	move.b	d0,Attacks_per_round(a1)	; Store
 .LAB_SkipAPRCalculation:
 	; ADVANCED: levels 51-55 increase the maximum of a class attribute by 5
 	moveq.l	#0,d0

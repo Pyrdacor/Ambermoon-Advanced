@@ -2400,27 +2400,23 @@ Datachange:
 	cmp.b D2,D7
 	movem.l (SP)+,D2/D7/A0
 	bne.b .Done ; check next character
-	movem.l A5-A1/D7-D0,-(SP)
-	jsr	(a1)	
-	movem.l (SP)+,D0-D7/A1-A5
-	bra.w .Exit_all ; and end
+	bra.b .Apply_once
 .CheckAnimal:
 	; If we are here the target is "FIRST ANIMAL"
 	cmpi.b #13,($0002,A0) ; animal race
 	bne.b .Done ; no? continue with next character
-	movem.l A5-A1/D7-D0,-(SP)
-	jsr (A1) ; apply to the character
-	movem.l (SP)+,D0-D7/A1-A5
+.Apply_once:
+	jsr .Call_handler ; apply to the character
+	Free	-1(a2) ; FIX: the pointer was not freed
 	bra.w .Exit_all ; and end
 .LAB_ApplyRewardEffects:
-	movem.l A5-A1/D7-D0,-(SP)
-	jsr (A1)
-	movem.l (SP)+,D0-D7/A1-A5
+	jsr .Call_handler
 .Done:	Free	-1(a2)
 .Next:	dbra	d7,.Loop			; Next member
-	bra.s	.Exit_all
+	bra.w	.Exit_all
 .LAB_ApplyToActivePlayer:
 .Active:	Get	Active_handle,a0		; Active member only
+	move.w	Active_member,d7		; FIX: member number for death/revival
 	jsr	(a1)			; Change data
 	Free	Active_handle
 	bra.b .Exit_all
@@ -2443,6 +2439,9 @@ Datachange:
 	andi.w #-$1b80,D0 ; no dead or petrified characters
 	bne.b .LAB_NextRandomTry
 	movem.l A5-A1/D7-D0,-(SP) ; FIX: D3/D4 are needed afterwards
+	move.l A3,D7 ; FIX: member number for death/revival
+	sub.l A2,D7
+	addq.w #1,D7
 	jsr (A1) ; apply to the character
 	movem.l (SP)+,D0-D7/A1-A5
 	bra.b .LAB_EndRandomApply ; and end
@@ -2470,6 +2469,19 @@ Datachange:
 .End:
 	rts
 
+; [ Call the data type handler for a party member of the loop ]
+;   IN : d7 - Loop counter {5...0} (.w)
+;        a0 - Pointer to character data (.l)
+;        a1 - Pointer to handler (.l)
+; All registers are restored
+.Call_handler:
+	movem.l	d0-d7/a1-a5,-(sp)
+	neg.w	d7			; Get member number {1...6}
+	addq.w	#6,d7
+	jsr	(a1)
+	movem.l	(sp)+,d0-d7/a1-a5
+	rts
+
 .Ptrs1:	dc.l .Attribute,.Skill,.LP,.SP,.SLP
 	dc.l .Conditions,.Spell_classes,.Languages,.XP
 	dc.l .FUN_EventRewardMaxAttribute
@@ -2489,6 +2501,7 @@ Datachange:
 
 ; [ Data type handlers ]
 ;   IN : d1 - -1 (default maximum value) (.l)
+;        d7 - Member number {1...6} (.w)
 ;        a0 - Pointer to character data (.l)
 ; No registers are restored
 
@@ -2533,12 +2546,10 @@ Datachange:
 	jsr	.Do			; Change
 	move.w	d0,Life_points(a0)		; Store
 	bne.b .End_Adv
-	; at 0 hp we will kill the player, but silently
+	; at 0 hp we will kill the player (a new leader is selected at the end)
 	move.w ($001e,A0),D0
 	bset.l #$0000000d,D0
 	move.w D0,($001e,A0)
-	neg.w D7
-	addq #6,D7
 	jsr Show_death
 	jsr Force_status_update
 .End_Adv:
@@ -2568,19 +2579,18 @@ Datachange:
 	jsr	.Do			; Change
 	move.w	d0,Body_conditions(a0)	; Store
 	move.l (SP)+,D2 ; previous ailments
-	eor.w D2,D0
-	andi.w #$2000,D0
+	eor.w D0,D2
+	btst #Dead,D2 ; dead bit changed?
 	beq.b .End_Adv3
-	; Here the dead bit changed so the player
-	; was revived.
-	move.w #$0001,($00ca,A0) ; set 1 hp
-	; note: D7 is the loop var for the 6 slots (so 5 is first slot and 0 is last slot)
-	; this won't work with targets other than "all" though!
-	moveq #6,D1
-	sub.b D7,D1
-	exg D1,D7
+	btst #Dead,D0 ; FIX: killed or revived?
+	bne.b .Killed
+	move.w #$0001,($00ca,A0) ; revived: set 1 hp
 	jsr Force_status_update
-	move.l D1,D7
+	bra.b .End_Adv3
+.Killed:
+	clr.w ($00ca,A0) ; killed: 0 hp
+	jsr Show_death
+	jsr Force_status_update
 .End_Adv3:
 	rts
 
@@ -2658,22 +2668,24 @@ Datachange:
 	move.b D0,($0011,A0)
 	cmp.b D0,D2 ; Changed APR?
 	beq .End_Adv4
+	; Adjust the APR level increases so that the next level up continues
+	; from the new APR (APR = level / increases + 1, like the remake)
 	moveq #0,D2
-	move.w ($00e2,A0),D2 ; APR level increases
+	move.b ($0005,A0),D2 ; character level
 	cmpi.b #1,D0 ; changed down to 1?
 	bne.b .Not1
 	; --- Changed down to 1 APR ---
-	tst.w D2
-	beq.b .End_Adv4 ; already APR/Lvl is 0, so just end
-	moveq #0,D0
-	move.b ($0005,A0),D0 ; character level
-	move.w D0,($00e2,A0) ; update APR/lvl value (it matches the level as APRLvlValue = level / APR = level / 1 = level)
+	tst.w ($00e2,A0)
+	beq.b .End_Adv4 ; APR/Lvl is 0 (never increases), so just end
+	addq.w #1,D2 ; FIX: at least level + 1 (was level which gives 2 APR)
+	cmp.w ($00e2,A0),D2
+	bls.b .End_Adv4
+	move.w D2,($00e2,A0) ; update APR/lvl value
 	bra.b .End_Adv4
 .Not1:
 	; --- Change to APR > 1 ---
-	moveq #0,D2
-	move.b ($0005,A0),D2 ; character level
-	divu.w D0,D2 ; level / APR
+	subq.w #1,D0 ; FIX: level / (APR - 1) (was level / APR)
+	divu.w D0,D2
 	tst.w D2 ; is new APR/lvl value ok (> 0)?
 	bne.b .ValueOk
 	moveq #1,D2 ; If not, set it to 1
