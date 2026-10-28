@@ -1413,7 +1413,7 @@ Get_weapon_element_factor:
 	rts
 
 ;*****************************************************************************
-; [ Print "... is immune against an attack with element ..." ]
+; [ Print "... is immune against an attack with ...-element" ]
 ;   IN : d0 - Element {0...7} (.w)
 ;        a0 - Pointer to defender's participant data (.l)
 ; All registers are restored
@@ -1421,24 +1421,33 @@ Get_weapon_element_factor:
 Do_immune_prompt:
 	movem.l	d0/d1/a0-a2,-(sp)
 	move.l	a0,a2
-	move.w	d0,d1			; Get element name number
-	beq.s	.None
-	addq.w	#1,d1			;  (no element name for mental)
-.None:	add.w	#304,d1
 	lea.l	Text_list,a1
 	Get	Part_handle(a2),a0		; Get participant name
 	lea.l	Char_name(a0),a0
 	move.l	a0,(a1)
-	move.l	Prompts_ptr,a0		; " is immune against ..."
+	move.w	d0,d1			; Any element ?
+	bne.s	.Element
+	move.l	Prompts_ptr,a0		; No -> " ... neutral element"
+	move.w	#332,d0
+	jsr	Find_large_text
+	move.l	a0,4(a1)
+	clr.l	8(a1)			; End text list
+	bra.s	.Print
+.Element:	move.l	Prompts_ptr,a0		; Yes -> " ... with "
 	move.w	#318,d0
 	jsr	Find_large_text
 	move.l	a0,4(a1)
 	move.l	Prompts_ptr,a0		; Element name
-	move.w	d1,d0
+	move.w	d1,d0			;  (no element name for mental)
+	add.w	#304+1,d0
 	jsr	Find_large_text
 	move.l	a0,8(a1)
-	clr.l	12(a1)			; End text list
-	move.l	a1,a0			; Print text
+	move.l	Prompts_ptr,a0		; "-element"
+	move.w	#331,d0
+	jsr	Find_large_text
+	move.l	a0,12(a1)
+	clr.l	16(a1)			; End text list
+.Print:	move.l	a1,a0			; Print text
 	moveq.l	#0,d0
 	jsr	Display_combat_text
 	Free	Part_handle(a2)
