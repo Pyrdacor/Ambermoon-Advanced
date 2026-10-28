@@ -25,9 +25,12 @@ Note that the spells SP Stealer and LP Stealer are not included here as they are
 
 The following table shows the damage in percent. On the left side there are the spell elements and on the top side the monster elements.
 
+The same table is used for weapons and ammunition with an element. There is no undead damage spell, so the undead row is only used by undead weapons (e.g. the necromancer dagger).
+
 Spell \\ Monster | Mental | Spirit | Physical | Undead | Earth | Wind | Fire |Water
 --- | --- | --- | --- | --- | --- | --- | --- | ---
 Spirit | 125 | 0 | 150 | 150 | 100 | 100 | 100 | 100
+Undead | 100 | 100 | 100 | 0 | 100 | 100 | 100 | 100
 Earth | 75 | 100 | 100 | 75 | 0 | 50 | 100 | 150
 Wind | 75 | 100 | 100 | 75 | 150 | 0 | 50 | 100
 Fire | 75 | 75 | 100 | 125 | 100 | 150 | 0 | 50
