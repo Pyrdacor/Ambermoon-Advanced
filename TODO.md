@@ -44,7 +44,10 @@ The detailed design of each Episode 4 item is in the docs folder, see the file i
   - [ ] Implement the other new spells (bow and staff of bosses 2/3).
   - [ ] Function spells for monsters, spell infos (class 6 is now possible for monsters, only spell 26 has a handler).
   - [x] Monster spell fallback: without a spell for the chosen target monsters now use the row in range, row or all spells (remake: didn't cast; Amiga: cast a stale spell from the list) (2026-10-28).
-- [ ] Item elements, monster immunity flags (AdvancedMonsterFlags), item minimum level ([Weapon elements.md], [Waffenlevel.md]).
+- [x] Weapon and ammunition elements ([Weapon elements.md], 2026-10-28): element in Misc_1 / SpecialValue (0 none, 1 spirit, 3 undead, 4–7 earth, wind, fire, water), ammunition with an element overrides the weapon. Same element as the target: no damage and no critical hit. Otherwise the factor of the spell element table (after the defense). Monster immunity flags (monster byte $0B, bit 0 = without element, bit n = element n) abort all attacks of the round with "<monster> is immune against an attack with element <x>". Amiga new, remake completed (factor, same element, no crit). Not tested yet. No weapon has an element in the data yet, only monster 98 (Staubteufel) has immunity flags ($39).
+  - Note: Weapon elements.md says ghost = 2 and immunity bits 2..7, the code uses spirit = 1 (like the element table) and bit = element index.
+  - Remake fixes on the way: the immunity message named the attacker instead of the monster, and item element names were off by one (spirit showed "Mental").
+- [ ] Item minimum level ([Waffenlevel.md]).
 - [ ] Extended languages.
 - [x] 3D combat background 13 → graphic 13 (desert, palettes 35/46/47 like the remake, 2026-10-28).
 - [x] The APR reward adjusts `APRPerLevel` like the remake (level / (APR − 1), at APR 1 at least level + 1), and a level up never lowers the APR anymore (2026-10-28).

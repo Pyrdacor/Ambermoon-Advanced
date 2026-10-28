@@ -1310,6 +1310,142 @@ FUN_TestDefenderParry:
 	rts
 
 ;*****************************************************************************
+; [ Get the element of a character's weapon attack ]
+;   IN : a2 - Pointer to character data (.l)
+;  OUT : d0 - Element {0 = none, 1 = spirit, 3 = undead, 4...7 = earth,
+;              wind, fire, water} (.w)
+; Changed registers : d0
+; NOTES :
+;   - ADVANCED: The element is stored in [ Misc_1 ] of weapons and
+;     ammunition. Ammunition with an element overrides the element of the
+;     weapon. Without a weapon in the right hand a close-range weapon in the
+;     left hand is used (like the remake).
+;*****************************************************************************
+Get_weapon_element:
+	movem.l	d1/a0,-(sp)
+	moveq.l	#0,d1			; Default is none
+	move.w	Char_inventory+Right_hand_slot+Object_index(a2),d0
+	bne.s	.Right
+	move.w	Char_inventory+Left_hand_slot+Object_index(a2),d0	; Left hand ?
+	beq.s	.Exit
+	jsr	.Get_item
+	cmp.b	#Closerange_itemtype,Item_type(a0)	; Close-range weapon ?
+	bne.s	.Exit
+	move.b	Misc_1(a0),d1		; Yes
+	bra.s	.Exit
+.Right:	jsr	.Get_item			; Get weapon element
+	move.b	Misc_1(a0),d1
+	tst.b	Ammo_use_ID(a0)		; Uses ammunition ?
+	beq.s	.Exit
+	move.w	Char_inventory+Left_hand_slot+Object_index(a2),d0	; Yes
+	beq.s	.Exit
+	jsr	.Get_item
+	tst.b	Misc_1(a0)		; Ammunition element ?
+	beq.s	.Exit
+	move.b	Misc_1(a0),d1		; Yes -> Overrides
+.Exit:	andi.w	#7,d1			; Output
+	move.w	d1,d0
+	movem.l	(sp)+,d1/a0
+	rts
+
+.Get_item:
+	move.l	Object_data_ptr,a0		; Get item data
+	subq.w	#1,d0
+	mulu.w	#Item_data_size,d0
+	add.l	d0,a0
+	rts
+
+;*****************************************************************************
+; [ Check if a monster is immune to an attack ]
+;   IN : a1 - Pointer to defender's participant data (.l)
+;        a2 - Pointer to attacker's character data (.l)
+;        a3 - Pointer to defender's character data (.l)
+;  OUT : d0 - Element of the attack (.w)
+;        eq - Not immune
+;        ne - Immune
+; Changed registers : d0
+; NOTES :
+;   - ADVANCED: [ Advanced_monster_flags ] bit 0 = immune to attacks without
+;     element, bits 1...7 = immune to attacks with this element.
+;*****************************************************************************
+Check_attack_immunity:
+	move.l	d1,-(sp)
+	jsr	Get_weapon_element		; Get element
+	moveq.l	#0,d1			; Default is not immune
+	cmp.b	#2,Part_type(a1)		; Monster ?
+	bne.s	.Exit
+	move.b	Advanced_monster_flags(a3),d1	; Yes -> Immune ?
+	btst	d0,d1
+	sne	d1
+.Exit:	tst.b	d1
+	movem.l	(sp)+,d1			; (doesn't change the flags)
+	rts
+
+;*****************************************************************************
+; [ Get the damage factor of a weapon attack's element ]
+;   IN : a2 - Pointer to attacker's character data (.l)
+;        a3 - Pointer to defender's character data (.l)
+;  OUT : d0 - Damage factor in percent (0 = same element as the defender) (.w)
+; Changed registers : d0
+; NOTES :
+;   - ADVANCED: Attacks without element always deal 100%. Attacks with the
+;     element of the defender deal no damage and can't be critical hits.
+;     Otherwise the element table of the spells is used.
+;*****************************************************************************
+Get_weapon_element_factor:
+	movem.l	d3/d5,-(sp)
+	jsr	Get_weapon_element		; Any element ?
+	tst.w	d0
+	beq.s	.Normal
+	move.b	Spell_type_immunity(a3),d5	; Yes -> Same element ?
+	btst	d0,d5			;  (= element bits)
+	bne.s	.Zero
+	move.w	d0,d3			; No -> Get factor
+	lsl.w	#3,d3
+	jsr	FUN_GetWorstElementBonus
+	moveq.l	#0,d0
+	move.b	d3,d0
+	bra.s	.Exit
+.Zero:	moveq.l	#0,d0			; Yes -> No damage
+	bra.s	.Exit
+.Normal:	moveq.l	#100,d0			; 100%
+.Exit:	movem.l	(sp)+,d3/d5
+	rts
+
+;*****************************************************************************
+; [ Print "... is immune against an attack with element ..." ]
+;   IN : d0 - Element {0...7} (.w)
+;        a0 - Pointer to defender's participant data (.l)
+; All registers are restored
+;*****************************************************************************
+Do_immune_prompt:
+	movem.l	d0/d1/a0-a2,-(sp)
+	move.l	a0,a2
+	move.w	d0,d1			; Get element name number
+	beq.s	.None
+	addq.w	#1,d1			;  (no element name for mental)
+.None:	add.w	#304,d1
+	lea.l	Text_list,a1
+	Get	Part_handle(a2),a0		; Get participant name
+	lea.l	Char_name(a0),a0
+	move.l	a0,(a1)
+	move.l	Prompts_ptr,a0		; " is immune against ..."
+	move.w	#318,d0
+	jsr	Find_large_text
+	move.l	a0,4(a1)
+	move.l	Prompts_ptr,a0		; Element name
+	move.w	d1,d0
+	jsr	Find_large_text
+	move.l	a0,8(a1)
+	clr.l	12(a1)			; End text list
+	move.l	a1,a0			; Print text
+	moveq.l	#0,d0
+	jsr	Display_combat_text
+	Free	Part_handle(a2)
+	movem.l	(sp)+,d0/d1/a0-a2
+	rts
+
+;*****************************************************************************
 ; [ Combat action - Close-range weapon ]
 ;   IN : a0 - Pointer to participant data (.l)
 ; No registers are restored
@@ -1372,6 +1508,16 @@ Do_close_range:
 	bra.w .Exit
 ; ---------- Get number of attacks ----------------
 .NumAttacks:
+; ---------- ADVANCED: Element of the weapon ------
+	jsr	Check_attack_immunity	; Immune ?
+	beq.s	.Not_immune
+	jsr	Show_closerange_attack	; Yes -> Abort all attacks
+	exg	a0,a1
+	jsr	Do_immune_prompt
+	exg	a0,a1
+	bra	.Exit
+.Not_immune:	jsr	Get_weapon_element_factor	; Get damage factor
+	move.w	d0,Weapon_element_factor
 	moveq.l	#0,d6; Get
 	move.b	Attacks_per_round(a2),d6
 	bclr	#Part_hurried,Part_flags(a0)	; Hurried ?
@@ -1400,6 +1546,8 @@ Do_close_range:
 ; ---------- Probe attacker's critical hit skill --
 .Ok3:	btst	#End_monster_type,Monster_type_status(a3)	; Endmonster ?
 	bne.s	.Ok4
+	tst.w	Weapon_element_factor	; ADVANCED: Same element ?
+	beq.s	.Ok4
 	move.w	SCritical_hit(a2),d0	; Get critical hit skill
 	add.w	SCritical_hit+Magic(a2),d0
 	jsr	Probe_100			; Probe
@@ -1415,8 +1563,12 @@ Do_close_range:
 	jsr	Break_attacker		; Break NOW!
 	jsr	Break_defender
 	sub.w	d2,d1			; Calculate difference
+	ble.s	.No_damage
+	mulu.w	Weapon_element_factor,d1	; ADVANCED: Element factor
+	divu.w	#100,d1
+	tst.w	d1
 	bgt.s	.Do
-	move.w	#215,d0			; "No damage was done !"
+.No_damage:	move.w	#215,d0			; "No damage was done !"
 	jsr	Do_part_prompt
 	bra	.Done
 ; ---------- Do damage ----------------------------
@@ -1853,6 +2005,16 @@ Do_long_range:
 	jsr Do_part_prompt
 	bra.w .Exit
 .NumAttacks:
+; ---------- ADVANCED: Element of the weapon ------
+	jsr	Check_attack_immunity	; Immune ?
+	beq.s	.Not_immune
+	jsr	Show_longrange_attack	; Yes -> Abort all attacks
+	exg	a0,a1
+	jsr	Do_immune_prompt
+	exg	a0,a1
+	bra	.Exit
+.Not_immune:	jsr	Get_weapon_element_factor	; Get damage factor
+	move.w	d0,Weapon_element_factor
 	moveq.l	#0,d6; Get
 	move.b	Attacks_per_round(a2),d6
 	bclr	#Part_hurried,Part_flags(a0)	; Hurried ?
@@ -1880,6 +2042,8 @@ Do_long_range:
 ; ---------- Probe attacker's critical hit skill --
 .Ok3:	btst	#End_monster_type,Monster_type_status(a3)	; Endmonster ?
 	bne.s	.Ok4
+	tst.w	Weapon_element_factor	; ADVANCED: Same element ?
+	beq.s	.Ok4
 	move.w	SCritical_hit(a2),d0	; Get critical hit skill
 	add.w	SCritical_hit+Magic(a2),d0
 	jsr	Probe_100			; Probe
@@ -1895,8 +2059,12 @@ Do_long_range:
 	jsr	Break_attacker		; Break NOW!
 	jsr	Break_defender
 	sub.w	d2,d1			; Calculate difference
+	ble.s	.No_damage
+	mulu.w	Weapon_element_factor,d1	; ADVANCED: Element factor
+	divu.w	#100,d1
+	tst.w	d1
 	bgt.s	.Do
-	move.w	#215,d0			; "No damage was done !"
+.No_damage:	move.w	#215,d0			; "No damage was done !"
 	jsr	Do_part_prompt
 	bra	.Done
 ; ---------- Do damage ----------------------------
@@ -4023,6 +4191,7 @@ Apres_gold:	ds.w 1
 Apres_food:	ds.w 1
 Selected_tactic:	ds.w 1
 Tactic_mask:	ds.l 1
+Weapon_element_factor:	ds.w 1		; ADVANCED
 Target_mask:	ds.l 1
 
 Recolour_list:	ds.w Max_monsters*3

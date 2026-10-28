@@ -590,7 +590,7 @@ Ringfingers_occupied:	rs.b 1
 Learned_languages:	rs.b 1
 Secret_inventory:	rs.b 1		; x Will not show or accept anything
 Portrait_nr:	rs.b 1
-	rs.b 1			; x
+Advanced_monster_flags:	rs.b 1		; ADVANCED: monsters only (immunities, see [ Check_attack_immunity ])
 Monster_picture_load_nr:	rs.b 1
 	rs.b 1			; x
 	rs.b 1			; x
