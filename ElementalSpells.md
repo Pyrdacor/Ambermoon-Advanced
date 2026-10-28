@@ -29,13 +29,13 @@ Spell \\ Monster | Mental | Spirit | Physical | Undead | Earth | Wind | Fire |Wa
 --- | --- | --- | --- | --- | --- | --- | --- | ---
 Spirit | 100 | 0 | 150 | 150 | 100 | 100 | 100 | 100
 Earth | 100 | 100 | 100 | 75 | 0 | 50 | 100 | 150
-Wind | 100 | 100 | 100 | 75 | 150 | 0 | 50 | 100
+Wind | 100 | 100 | 100 | 75 | 150 | 0 | 50 | 150
 Fire | 100 | 75 | 100 | 125 | 100 | 150 | 0 | 50
 Water | 100 | 100 | 100 | 75 | 50 | 100 | 150 | 0
 
 So the 4 base elements (earth, wind, fire and water) build a circle of effects:
 - Earth deals 150% damage against water but only 50% against wind
-- Wind deals 150% damage against earth but only 50% against fire
+- Wind deals 150% damage against earth and water but only 50% against fire
 - Fire deals 150% damage against wind but only 50% against water
 - Water deals 150% damage against fire but only 50% against earth
 
