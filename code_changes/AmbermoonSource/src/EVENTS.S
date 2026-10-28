@@ -2413,6 +2413,12 @@ Datachange:
 	jsr .Call_handler
 .Done:	Free	-1(a2)
 .Next:	dbra	d7,.Loop			; Next member
+	cmpi.w	#3,d2			; First animal or 100+ target ?
+	bcs.s	.No_break
+	cmpi.w	#200,d2
+	bcc.s	.No_break
+	st	Break_event		; No match -> stop the event chain (like the remake)
+.No_break:
 	bra.w	.Exit_all
 .LAB_ApplyToActivePlayer:
 .Active:	Get	Active_handle,a0		; Active member only
