@@ -2218,18 +2218,22 @@ Do_ItemView2:
 ; [ Item view window 2 ]
 ;*****************************************************************************
 ItemView2_DisInit:
-	move.w	#ItemView2_X-16,d0		; Open a window
-	move.w	#ItemView2_Y-16,d1
-	moveq.l	#12,d2
-	moveq.l	#6,d3
-	sub.l	a0,a0
-	jsr	Open_window
 	lea.l	Inter_packet,a1		; Get object packet
 	move.l	Object_data_ptr,a2		; Get object data address
 	move.w	Object_index(a1),d0
 	subq.w	#1,d0
 	mulu.w	#Item_data_size,d0
 	add.l	d0,a2
+	moveq.l	#6,d3			; ADVANCED: Equipment ?
+	tst.b	Item_body_place(a2)
+	sne	ItemView2_equip
+	beq.s	.Not_equip
+	moveq.l	#7,d3			; Yes -> Higher window
+.Not_equip:	move.w	#ItemView2_X-16,d0		; Open a window
+	move.w	#ItemView2_Y-16,d1
+	moveq.l	#12,d2
+	sub.l	a0,a0
+	jsr	Open_window
 	move.w	#2,Ink_colour		; Set colours
 	move.l	LP_max_nr_ptr,a0		; Convert LP-max
 	move.b	LP_max(a2),d0
@@ -2350,7 +2354,47 @@ ItemView2_DisInit:
 	add.w	d7,d0
 	lea.l	Charges_txt,a0
 	jsr	Put_text_line
-.No_magic:	jsr	Update_screen
+.No_magic:	tst.b	ItemView2_equip		; ADVANCED: Equipment ?
+	beq	.No_equip
+	move.w	#17,Ink_colour		; Yes -> Print "ELEMENT"
+	move.l	Prompts_ptr,a0
+	move.w	#329,d0
+	jsr	Find_large_text
+	move.w	#ItemView2_X,d0
+	move.w	#ItemView2_Y+56,d1
+	jsr	Put_text_line
+	move.l	Prompts_ptr,a0		; Print "MIN-LEVEL"
+	move.w	#330,d0
+	jsr	Find_large_text
+	move.w	#ItemView2_X+80,d0
+	move.w	#ItemView2_Y+56,d1
+	jsr	Put_text_line
+	move.w	#2,Ink_colour
+	moveq.l	#0,d0			; Print element name
+	move.b	Misc_1(a2),d0
+	andi.w	#7,d0
+	beq.s	.No_element
+	addq.w	#1,d0			;  (no element name for mental)
+.No_element:	add.w	#304,d0
+	move.l	Prompts_ptr,a0
+	jsr	Find_large_text
+	move.w	#ItemView2_X,d0
+	move.w	#ItemView2_Y+63,d1
+	jsr	Put_text_line
+	lea.l	Min_level_nr,a0		; Print minimum level
+	moveq.l	#0,d0
+	move.b	Min_level(a2),d0
+	bne.s	.Level
+	move.b	#"-",(a0)			; (none)
+	clr.b	1(a0)
+	bra.s	.Print_level
+.Level:	moveq.l	#2,d7
+	jsr	DecL_convert
+	lea.l	Min_level_nr,a0
+.Print_level:	move.w	#ItemView2_X+80,d0
+	move.w	#ItemView2_Y+63,d1
+	jsr	Put_text_line
+.No_equip:	jsr	Update_screen
 	rts
 
 Accursed_blink:
@@ -2360,7 +2404,10 @@ Accursed_blink:
 	move.w	Blinked_colour,Ink_colour
 	move.w	#ItemView2_X,d0		; Print "CURSED"
 	move.w	#ItemView2_Y+56,d1
-	move.w	#160,d2
+	tst.b	ItemView2_equip		; ADVANCED: Below element and level
+	beq.s	.Print
+	move.w	#ItemView2_Y+70,d1
+.Print:	move.w	#160,d2
 	move.l	Cursed_txt_ptr,a0
 	jsr	Print_centered_string
 .Exit:	rts
@@ -2637,8 +2684,17 @@ Body_item_moved:
 	moveq.l	#36,d0			; Wrong sex !
 	jsr	Do_prompt
 	bra	.Done
-; ---------- Do you have enough hands free ? ------
+; ---------- ADVANCED: Is the level high enough ? -
 .Sex_OK:
+	move.b	Min_level(a1),d0		; Minimum level ?
+	beq.s	.Level_OK
+	cmp.b	Level_nr(a0),d0		; Yes -> Reached ?
+	bls.s	.Level_OK
+	move.w	#328,d0			; No -> Not experienced enough !
+	jsr	Do_prompt
+	bra	.Done
+; ---------- Do you have enough hands free ? ------
+.Level_OK:
 	move.b	Hand_use(a1),d0		; Does it matter ?
 	beq.s	.Hands_OK
 	moveq.l	#2,d1			; Maximum is two hands

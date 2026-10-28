@@ -984,7 +984,8 @@ Item_skill_2:	rs.b 1
 Malus_1:	rs.b 1
 Malus_2:	rs.b 1
 Misc_1:	rs.b 1
-Misc_2:	rs.b 1
+Misc_2:	rs.b 1			; ADVANCED: equipment = minimum level (Min_level)
+Min_level	EQU Misc_2
 Spell_class:	rs.b 1
 Spell_number:	rs.b 1
 Spell_charges:	rs.b 1			; Initial value

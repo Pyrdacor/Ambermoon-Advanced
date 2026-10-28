@@ -2551,6 +2551,8 @@ ObjGoldFood:	ds.b 1
 Query_result:	ds.b 1
 Success:	ds.b 1
 Cursed_flag:	ds.b 1
+ItemView2_equip:	ds.b 1		; ADVANCED
+Min_level_nr:	ds.b 5			; ADVANCED (6 bytes with ItemView2_equip, keeps the alignment)
 Trap_found:	ds.b 1
 Trap_disarmed:	ds.b 1
 Chest_text_printed:	ds.b 1
