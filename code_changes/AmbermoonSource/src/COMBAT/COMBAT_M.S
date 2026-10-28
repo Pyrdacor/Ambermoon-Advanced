@@ -1999,10 +1999,10 @@ Show_missile_to_monster:
 ;   IN : a0 - Pointer to casting participant data (.l)
 ; No registers are restored
 ; NOTES :
-;   - ADVANCED: Class 6 spell 26. It is a physical special attack against an
-;     enemy row in weapon range, so it can be parried but not deflected by
-;     anti-magic, and it can't fail like a spell. Used by party members (via
-;     the item) and by monsters.
+;   - ADVANCED: Class 6 spell 26. It is a physical special attack against all
+;     enemies in close range (the 8 squares around the attacker), so it can
+;     be parried but not deflected by anti-magic, and it can't fail like a
+;     spell. Used by party members (via the equipped item) and by monsters.
 ;   - Damage : attack damage (min. 1) x (APR + 1) / 2, plus 0-25%, plus the
 ;     spell damage bonus (level, intelligence, spirit element).
 ;   - The caster is healed by 10% of the damage.
@@ -2012,7 +2012,10 @@ CMagic_sword_attack:
 	beq.s	.No_object
 	jsr	Handle_spell		; Yes -> Use charge
 	bne	.Exit
-.No_object:	lea.l	.Do,a2			; Do all targets
+.No_object:	jsr	Get_closerange_targets	; Targets in reach NOW
+	move.l	d0,Part_target(a0)
+	move.b	#Enemy_row_targmode,Part_target+6(a0)
+	lea.l	.Do,a2			; Do all targets
 	jsr	Do_all_combat_targets
 .Exit:	rts
 
@@ -3488,18 +3491,16 @@ Monster_row_target:
 	jsr	Enter_action
 .Exit:	rts
 
-; ADVANCED: Row of enemies in weapon range (magic sword attack)
-Monster_row_in_range_target:
-	jsr	Get_rows_in_weapon_range	; Get reachable rows
-	move.w	#239,ItemSelect_prompt	; "Which monster row ?"
-	jsr	Select_monster_row_in_range
-	tst.w	d0			; Any target ?
-	bmi.s	.Exit
-	move.b	#Enemy_row_targmode,Part_target+6(a0)	; Enter data
-	move.l	#%00000000000000000000000000111111,d1
-	mulu.w	#6,d0
-	lsl.l	d0,d1
-	move.l	d1,Part_target(a0)
+; ADVANCED: All enemies in close range (magic sword attack)
+Close_range_enemies_target:
+	jsr	Get_closerange_targets	; Any targets ?
+	tst.l	d0
+	bne.s	.Yes
+	move.w	#206,d0			; No -> "Out of reach !"
+	jsr	Do_prompt
+	bra.s	.Exit
+.Yes:	move.b	#Enemy_row_targmode,Part_target+6(a0)	; Enter data
+	move.l	d0,Part_target(a0)
 	jsr	Enter_action
 .Exit:	rts
 
@@ -4221,7 +4222,7 @@ Spell_exception_table:
 Member_spell_target_table:
 	dc.b %00000001			; 0 - A friend
 	dc.b %00001000			; 1 - An enemy 
-	dc.b %00000010			; 2 - ADVANCED: Row of enemies in weapon range (was: row of friends)
+	dc.b %00000010			; 2 - ADVANCED: Enemies in close range (was: row of friends)
 	dc.b %00010000			; 3 - Row of enemies
 	dc.b %00000100			; 4 - All friends
 	dc.b %00100000			; 5 - All enemies
@@ -4233,7 +4234,7 @@ CCondition_table:
 Member_spell_target_vectors:
 	dc.l Member_target
 	dc.l Monster_target
-	dc.l Monster_row_in_range_target	; ADVANCED (was Member_row_target)
+	dc.l Close_range_enemies_target	; ADVANCED (was Member_row_target)
 	dc.l Monster_row_target
 	dc.l All_members_target
 	dc.l All_monsters_target

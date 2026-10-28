@@ -370,10 +370,8 @@ Try_magical_attack:
 	move.l	Spells_class_6(a1),d0	; Known ?
 	btst	#Magic_sword_spell,d0
 	beq.s	.Done_6
-	jsr	Get_rows_in_weapon_range	; Yes -> Targets in range ?
-	move.l	d0,d3
-	jsr	Get_longrange_targets
-	and.l	d3,d0
+	jsr	Get_closerange_targets	; Yes -> Targets in reach ?
+	tst.l	d0
 	beq.s	.Done_6
 	move.l	d0,Monster_sword_targets	; Yes -> Store
 	bset	#3,d1			; Mark
@@ -458,8 +456,31 @@ Try_magical_attack:
 	moveq.l	#5,d1
 	bra	.Select
 ; ---------- Maybe a party row ? ------------------
-.Not_all:	move.b	Monster_magic_target,d1	; Is possible target ?
-	andi.b	#%1010,d1			; (ADVANCED: or magic sword attack)
+.Not_all:
+; ---------- ADVANCED: Magic sword attack ? -------
+	move.l	Monster_sword_targets,d3	; Possible ?
+	beq.s	.No_sword
+	lea.l	Combat_matrix,a2		; Yes -> Calculate mean
+	moveq.l	#0,d1			;  relative danger of the
+	moveq.l	#0,d2			;  targets in reach
+	moveq.l	#0,d4
+	moveq.l	#0,d7
+.Loop_s:	btst	d7,d3			; Target ?
+	beq.s	.Next_s
+	move.l	(a2),a3			; Yes
+	move.w	Part_work(a3),d4		; Add
+	add.l	d4,d1
+	addq.w	#1,d2			; Count
+.Next_s:	addq.l	#4,a2			; Next
+	addq.w	#1,d7
+	cmp.w	#6*5,d7
+	bmi.s	.Loop_s
+	divu.w	d2,d1			; Calculate
+	cmp.w	#50,d1			; Attack them ?
+	bmi.s	.No_sword
+	move.l	d3,d4			; Yes
+	bra	.Sword
+.No_sword:	btst	#1,Monster_magic_target	; Is possible target ?
 	beq	.Not_row
 	lea.l	Combat_matrix+18*4,a2	; Calculate mean relative
 	moveq.l	#0,d1			;  danger of 1st row
@@ -499,28 +520,6 @@ Try_magical_attack:
 	beq.s	.2nd_MT
 	divu.w	d2,d1			; Calculate
 .2nd_MT:	move.w	(sp)+,d2			; Restore 1st row
-; ---------- ADVANCED: Magic sword attack ? -------
-	move.l	Monster_sword_targets,d3	; Possible ?
-	beq.s	.No_sword
-	moveq.l	#0,d4			; Yes -> Find most dangerous
-	moveq.l	#50-1,d5			;  row in range
-	move.l	#%00000000111111000000000000000000,d7	; 1st row ?
-	and.l	d3,d7
-	beq.s	.Sword2
-	cmp.w	d5,d2			; Dangerous enough ?
-	ble.s	.Sword2
-	move.w	d2,d5			; Yes
-	move.l	#%00000000111111000000000000000000,d4
-.Sword2:	move.l	#%00111111000000000000000000000000,d7	; 2nd row ?
-	and.l	d3,d7
-	beq.s	.Sword3
-	cmp.w	d5,d1			; More dangerous ?
-	ble.s	.Sword3
-	move.l	#%00111111000000000000000000000000,d4
-.Sword3:	tst.l	d4			; Found one ?
-	bne	.Sword
-.No_sword:	btst	#1,Monster_magic_target	; Other row spells ?
-	beq	.Not_row
 	cmp.w	d1,d2			; Which row is best ?
 	bpl.s	.1st_best
 	cmp.w	#50,d1			; Attack 2nd row ?
@@ -602,14 +601,8 @@ Try_magical_attack:
 ; FIX: Without a spell for the selected target a stale spell was cast.
 .Not_3:	tst.w	d2			; Any spell for this target ?
 	bne	.Pick
-	move.l	Monster_sword_targets,d3	; No -> Magic sword attack ?
-	beq.s	.Fb_row
-	move.l	#%00000000111111000000000000000000,d4	; Yes
-	move.l	d4,d7
-	and.l	d3,d7
+	move.l	Monster_sword_targets,d4	; No -> Magic sword attack ?
 	bne.s	.Sword
-	move.l	#%00111111000000000000000000000000,d4
-	bra.s	.Sword
 .Fb_row:	btst	#1,Monster_magic_target	; Row spells ?
 	beq.s	.Fb_all
 	jsr	Get_longrange_targets	; Yes -> Row with targets

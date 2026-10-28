@@ -87,14 +87,9 @@ Select_member_row:
 ;   - This routine assumes [ ItemSelect_prompt ] has already been set.
 ;*****************************************************************************
 Select_monster_row:
-	move.l	#Combat_monster_mask,d0	; All monster rows
-; ADVANCED: Select row of monsters in range (magic sword attack)
-;  IN : d0 - Bitlist of the rows in range (.l)
-Select_monster_row_in_range:
 	move.l	a0,-(sp)
 	move.l	#Show_monster_row_tactic,Tactic_draw_vector	; Who ?
-	and.l	#Combat_monster_mask,d0
-	move.l	d0,Tactic_mask
+	move.l	#Combat_monster_mask,Tactic_mask
 	Push	Module,TacticSel_Mod
 	moveq.l	#0,d0			; Get row number
 	move.w	Selected_tactic,d0
@@ -288,9 +283,6 @@ Show_monster_row_tactic:
 	cmpi.w	#4,d0			; Too high ?
 	bpl	.Exit
 	mulu.w	#6,d0			; Get offset
-	move.l	Tactic_mask,d1		; ADVANCED: Row selectable ?
-	btst	d0,d1			;  (magic sword attack)
-	beq	.Exit
 	lea.l	Combat_matrix,a0		; Search matrix row
 	move.w	d0,d1
 	lsl.w	#2,d1

@@ -3116,49 +3116,6 @@ Get_longrange_targets:
 	rts
 
 ;*****************************************************************************
-; [ Make bitlist of the rows in weapon range ]
-;   IN : a0 - Pointer to participant data (.l)
-;  OUT : d0 - Bitlist of all squares in the rows in range (.l)
-; Changed registers : d0
-; NOTES :
-;   - ADVANCED: used by the magic sword attack (enemy row in weapon range).
-;     With a long-range weapon all rows are in range, otherwise only the
-;     participant's row and the rows next to it (like the remake).
-;*****************************************************************************
-Get_rows_in_weapon_range:
-	movem.l	d1-d3/d7/a1,-(sp)
-	Get	Part_handle(a0),a1		; Long-range weapon ?
-	move.w	Char_inventory+Right_hand_slot+Object_index(a1),d0
-	beq.s	.No_weapon
-	move.l	Object_data_ptr,a1
-	subq.w	#1,d0
-	mulu.w	#Item_data_size,d0
-	add.l	d0,a1
-	cmp.b	#Longrange_itemtype,Item_type(a1)
-	bne.s	.No_weapon
-	Free	Part_handle(a0)
-	move.l	#%00111111111111111111111111111111,d0	; Yes -> All rows
-	bra.s	.Exit
-.No_weapon:	Free	Part_handle(a0)
-	moveq.l	#0,d0			; Rows Y-1 to Y+1
-	move.w	Part_Y(a0),d7
-	subq.w	#1,d7
-	moveq.l	#3-1,d1
-.Loop:	tst.w	d7			; Legal row ?
-	bmi.s	.Next
-	cmp.w	#5,d7
-	bpl.s	.Next
-	moveq.l	#%00111111,d2		; Yes -> Set row
-	move.w	d7,d3
-	mulu.w	#6,d3
-	lsl.l	d3,d2
-	or.l	d2,d0
-.Next:	addq.w	#1,d7			; Next row
-	dbra	d1,.Loop
-.Exit:	movem.l	(sp)+,d1-d3/d7/a1
-	rts
-
-;*****************************************************************************
 ; [ Make bitlist of close-range attack targets ]
 ;   IN : a0 - Pointer to attacker's participant data (.l)
 ;  OUT : d0 - Bitlist (.l)

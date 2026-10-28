@@ -957,6 +957,16 @@ Use_item:
 	move.b	Spell_number(a2),d0
 	move.w	d0,Selected_spell
 ; ADVANCED CHANGES - START
+	cmpi.w	#6,Selected_class		; Magic sword attack ?
+	bne.s	.Not_sword
+	cmpi.w	#Magic_sword_spell,Selected_spell
+	bne.s	.Not_sword
+	cmpi.w	#Backpack_slots/Object_packet_size,Selected_item	; Yes -> Equipped ?
+	bmi.s	.Not_sword
+	move.w	#327,d0			; No -> "Must be equipped !"
+	jsr	Do_prompt
+	bra	.Exit
+.Not_sword:
 	cmpi.w #6,Selected_class ; this is 0-based, check for school "function" here
 	bne.b .LAB_CastItemSpell
 	cmpi.w #23,Selected_spell ; this is a 1-based index, 23 = self revive
