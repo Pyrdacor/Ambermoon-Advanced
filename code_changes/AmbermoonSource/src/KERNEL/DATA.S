@@ -2053,10 +2053,15 @@ Combat_bg_3D_table:
 	dc.b	$22		; CombatBackgroundInfo.PaletteIdDay
 	dc.b	$22		; CombatBackgroundInfo.PaletteIdTwilight
 	dc.b	$22		; CombatBackgroundInfo.PaletteIdNight
-	dc.b	1		; CombatBackgroundInfo.ImageIndex
-	dc.b	$25		; CombatBackgroundInfo.PaletteIdDay
-	dc.b	$25		; CombatBackgroundInfo.PaletteIdTwilight
-	dc.b	$25		; CombatBackgroundInfo.PaletteIdNight
+	;dc.b $01 ; CombatBackgroundInfo.ImageIndex
+	;dc.b $25 ; CombatBackgroundInfo.PaletteIdDay
+	;dc.b $25 ; CombatBackgroundInfo.PaletteIdTwilight
+	;dc.b $25 ; CombatBackgroundInfo.PaletteIdNight
+	; ADVANCED CHANGE - Background 13 (desert, ancient city on Morag)
+	dc.b $0d ; CombatBackgroundInfo.ImageIndex
+	dc.b $23 ; CombatBackgroundInfo.PaletteIdDay
+	dc.b $2e ; CombatBackgroundInfo.PaletteIdTwilight
+	dc.b $2f ; CombatBackgroundInfo.PaletteIdNight
 	dc.b	5		; CombatBackgroundInfo.ImageIndex
 	dc.b	$28		; CombatBackgroundInfo.PaletteIdDay
 	dc.b	$28		; CombatBackgroundInfo.PaletteIdTwilight

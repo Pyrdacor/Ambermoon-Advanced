@@ -43,7 +43,7 @@ The detailed design of each Episode 4 item is in the docs folder, see the file i
   - Monster spell fallback: if the average priority is below 50, monsters currently don't cast at all. They should fall back to single-target spells.
 - [ ] Item elements, monster immunity flags (AdvancedMonsterFlags), item minimum level ([Weapon elements.md], [Waffenlevel.md]).
 - [ ] Extended languages.
-- [ ] 3D combat background 13 → graphic 13 (remake done).
+- [x] 3D combat background 13 → graphic 13 (desert, palettes 35/46/47 like the remake, 2026-10-28).
 - [x] The APR reward adjusts `APRPerLevel` like the remake (level / (APR − 1), at APR 1 at least level + 1), and a level up never lowers the APR anymore (2026-10-28).
 - [x] Reward targets 100+ and 200+ ("all but X") work. Fixed: the pointer was not freed for 100+ / first animal, and death (HP −100%) and revival / kill via conditions used the loop counter as the member number, so they were wrong for the active and random targets. Killing via a condition reward now shows the death instead of setting 1 HP (2026-10-28). Not tested in FS-UAE yet.
 - [ ] Difference: the remake stops the event chain if no member matches a 100+ / first animal target, the Amiga continues.
