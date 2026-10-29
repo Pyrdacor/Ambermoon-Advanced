@@ -157,8 +157,7 @@ Order and details: `000 Plan Episode 4.md`, milestones M1–M4.
   - Labdata 14: chest object 54 (block 61) and the Dor Kiredon dwarf as object 55 / group 62 for NPC 80. 2Lab_data.amb and 3Lab_data.amb must stay identical (the remake only reads 2Lab_data, the Amiga reads the one of the map disk).
   - NPC 80 in the mine: first talk gives 5000 EXP (var 472), then he trades navstones.
 - [ ] Bore quest follow-ups:
-  - Test it on the Amiga (cheat build) and in the remake.
-  - Remake: implement the remove party member event, including the extended chest flags (byte 4, bit 0/1).
+  - Test it on the Amiga (cheat build). Remake: remove party member event built and tested (2026-10-29), older savegames get missing party members/chests from the initial savegame.
   - Savegame patcher: add the chests 307/308 (the remove party member event crashes on the Amiga if the chest file is missing), hide party member 18 in Gemstone (char bit 12961) and NPC 80 in the mine (char bit 11009). For saves after the forest moon (var 320) hide NPC 24 (char bit 12960) and show party member 18 instead.
   - English release: party member 18 must be in the english Save.00/Party_char.amb (currently only the german one has the episode 4 party members).
 - [ ] Easter eggs ([Eastereggs.md]):
