@@ -35,6 +35,7 @@ Details are in the items further down.
 - [ ] Reward targets 100+ and 200+, killing and reviving via condition rewards, no match stops the chain.
 - [ ] Events 29/30: switches and doors in the ancient city (483) and the ancient building (484).
 - [ ] Bore quest: forest moon (436), Gemstone, Dor Kiredon (343), mine (345) with the chests (14,3)/(15,4), NPC 80 at (13,3) with texture 322.
+- [ ] Boss 1 in map 484: teleporter (4,20), statue at (4,17), flee, win, wall (12,21) opens.
 - [ ] Temple prototypes S'Riel (487) and S'Orel (488) with a new game.
 - [ ] Huge lava performance in the Black Mountains.
 
@@ -113,7 +114,7 @@ Details are in the items further down.
 Order and details: `000 Plan Episode 4.md`, milestones M1–M4.
 
 ### 2.1 Ancient city (M1)
-- [ ] **Boss 1 (S-1, sword)** in map 484: boss room events (vars 461/464), blue plate drop, energy sword item 556 (test the spell-from-item path).
+- [x] **Boss 1 (S-1, sword)** in map 484 (2026-10-30, tested in the remake): statue at (4,17) with its own graphic from the combat frame (texture 411 in 2Object3D, labdata 44 object 10 / group 16, palette 55, source `assets/desert-city/boss_statue`) and its own debris without the sword (texture 412, object 11 / group 17, `boss_statue_debris`), text 10, battle group 166, on flight text 6 and teleport to (7,16), on victory debris and wall (12,21) opens, var 464. Loot: energy sword and 7 ancient fragments. The blue plate is not a drop, it comes from the letter puzzle; the three boss rooms open the way to the red plate at (12,27).
 - [ ] **Boss 2 (B-1, bow):** spell (all enemies, heal 2% MaxHP per target, DEX/20), monster, gfx, ancient bow ([Neue Zauber.md]).
 - [ ] **Boss 3 (F-1, staff):** spell (fireball per target, SP refill, INT/20, 5 SP, 50 charges, rechargeable), monster, gfx, ancient staff.
 - Decided (2026-10-14) for the ancient weapon spells ([Neue Zauber.md]):
