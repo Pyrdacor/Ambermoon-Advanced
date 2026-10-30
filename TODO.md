@@ -15,6 +15,40 @@ The detailed design of each Episode 4 item is in the docs folder, see the file i
 
 ---
 
+## 0. Still to test (Robert)
+
+Details are in the items further down.
+
+**Amiga (FS-UAE, config `AmbermoonADV_Cheat`):**
+- [ ] Source-built `AM2_CPU` in general: combat, events, Sage, dialogues. Also on the A500 config (68000).
+- [ ] Extended languages (not committed yet):
+  - Morag maps 522 (4,3) and (7,49), 523 (27,20) and 528 (31,7) without the ancient language: the other text must come.
+  - Talk to NPC 79 in the wise man house (482): "Alte Sprache" must be in the inventory.
+  - The same Morag spots with the language: the chain goes on.
+  - Inventory: languages at the bottom, condition icons at the top in the right place.
+  - Switch to a member without a common language in a conversation with an NPC which only has an extended language.
+- [ ] Battle: Foresee Attack only affects monsters; aging index; poison, hit, parry and damage penalties.
+- [ ] Battle stalemate: all members asleep, panicked or lamed (no wrong game over, OK starts the next round).
+- [ ] Magic sword attack with the energy sword (556): damage, heal, parade, "no damage" against spirit, must be equipped, minimum level 51.
+- [ ] Weapon and ammunition elements: factor, same element no damage and no crit, immune message at the dust devil (98).
+- [ ] Minimum level: equipping with a too low level (message 328), second item window with ELEMENT and MIN-LEVEL.
+- [ ] Reward targets 100+ and 200+, killing and reviving via condition rewards, no match stops the chain.
+- [ ] Events 29/30: switches and doors in the ancient city (483) and the ancient building (484).
+- [ ] Bore quest: forest moon (436), Gemstone, Dor Kiredon (343), mine (345) with the chests (14,3)/(15,4), NPC 80 at (13,3) with texture 322.
+- [ ] Temple prototypes S'Riel (487) and S'Orel (488) with a new game.
+- [ ] Huge lava performance in the Black Mountains.
+
+**Remake:**
+- [ ] Magic sword attack (not tested in a real fight yet).
+- [ ] Sleep and fear stalemate, as above.
+- [ ] Self Heal and fast clicking with several party members and the real spell list: does the player selection still hang? Number keys working means `InputEnable` is stuck.
+- [ ] Laser traps of map 380 with the new cheat `clairvoyance`: no message when the laser is off (vars 336-341). The cheats `clairvoyance` and `mysticmap` themselves.
+
+**Visual, compare remake and Amiga:**
+- [ ] Shelf corner tile 0x1d4 is blocking: wise man house (482) at (6,5), also 442 (20,11) and (20,15), 443 (5,10), 451 (13,11).
+
+---
+
 ## 1. Engine / code (Amiga, `code_changes/AmbermoonSource`)
 
 `AM2_CPU` is now built from source (`code_changes/compile.sh`). `AM2_CPU.s` is gone.
@@ -48,12 +82,12 @@ The detailed design of each Episode 4 item is in the docs folder, see the file i
   - Note: Weapon elements.md says ghost = 2 and immunity bits 2..7, the code uses spirit = 1 (like the element table) and bit = element index.
   - Remake fixes on the way: the immunity message named the attacker instead of the monster, and item element names were off by one (spirit showed "Mental").
 - [x] Minimum level for all equipment (item byte 22 = Misc_2 / TextSubIndex, 0 = none, 2026-10-28): equipping with a lower level shows message 328 "~INVN~ ist nicht erfahren genug, um diesen Gegenstand auszurüsten.". The second item window (identified items) is one row higher for equipment and shows ELEMENT (name incl. "Keins") and MIN-LEVEL ("-" or the number), messages 329/330. Remake tested 2026-10-28, Amiga not tested yet. Energy sword (556) has minimum level 50.
-- [ ] Extended languages: not on the Amiga yet (character byte $0D is unused there, conversations, inventory and the language reward only use `Learned_languages`). Remake has them. In the data only NPC 79 uses them (extended bit 1), and he also speaks all normal languages, so nothing is broken yet.
+- [x] Extended languages on the Amiga (2026-10-30, built, not tested in FS-UAE): character byte $0D, conversations and switching the active member compare them too, language reward bits 8-15, party member condition type 4 (language, index 8 = ancient, used in the Morag maps 522, 523, 528; before it was skipped, so the chain went on as if true), inventory shows them with languages and conditions swapped like the remake. NPC 79 gives the ancient language. Test: Morag events without and with the language, NPC 79, inventory.
 - [x] 3D combat background 13 → graphic 13 (desert, palettes 35/46/47 like the remake, 2026-10-28).
 - [x] The APR reward adjusts `APRPerLevel` like the remake (level / (APR − 1), at APR 1 at least level + 1), and a level up never lowers the APR anymore (2026-10-28).
 - [x] Reward targets 100+ and 200+ ("all but X") work. Fixed: the pointer was not freed for 100+ / first animal, and death (HP −100%) and revival / kill via conditions used the loop counter as the member number, so they were wrong for the active and random targets. Killing via a condition reward now shows the death instead of setting 1 HP (2026-10-28). Not tested in FS-UAE yet.
 - [x] A 100+ / first animal reward target without a matching member stops the event chain like in the remake (Break_event, 2026-10-28). Dead and petrified members are never rewarded (except condition removal) and count as no match, now also in the remake (2026-10-28).
-- [x] Automaps for the new maps: `Save.00/Automap.amb` has an entry for all 3D maps incl. 483-488 (checked 2026-10-30). Entry 483 has 401 bytes, 191 would be enough (harmless). The icons are a separate item (see 4.).
+- [x] Automaps for the new maps: `Save.00/Automap.amb` has an entry for all 3D maps incl. 483-488 (checked 2026-10-30). Entry 483 shrunk to its 191 bytes. It starts fully revealed on purpose: the 3 monitors on the walls (show map event) show the whole map. The icons are a separate item (see 4.).
 
 ### Remake (Ambermoon.net, branch `master`)
 - [ ] On the Episode 4 release (v1.40, Episode 3 is 1.3x): move `AdvancedMonsterFlags | ItemElements | ExtendedLanguages | LevelShards` into `Features.AmbermoonAdvanced`. Until then they are only switched on for external data in `GameWindow.cs` on purpose (Episode 4 development), the builtin Episode 3 versions must not get them.
@@ -68,7 +102,7 @@ The detailed design of each Episode 4 item is in the docs folder, see the file i
 - [ ] Short wrong wall colours after teleporting (Cavetown, Spannenberg goto point), probably time-of-day dependent.
 - [ ] 3D movement with WASD is sometimes slow.
 - [ ] Lava stream: player drawn above the bottom rocks when moving down (remake bug?).
-- [ ] Wise man house (map 482, tileset 7): chairs and shelf have a strange z-order with the player. Compare with the Amiga, maybe change Normal → Background. Candidates: shelf corner 0x1d4 at (6,5) has no Background flag unlike its neighbours; chair seat 0x1f2 is also Normal, but sitting behind the chair looks right in the remake (2026-10-30).
+- [x] Wise man house (map 482): the player stood half inside the shelf on the corner (6,5). Tileset 7 tile 0x1d4 is blocking now, also in the maps 442, 443 and 451 (2026-10-30). The chair was already fixed.
 - [x] Laser trap is noticed by Clairvoyance although its condition is not met: already fixed in the remake (23ee6720, conditions are evaluated before a trap/spinner is reported, e.g. the lasers of map 380 with vars 336-341). Checked 2026-10-29.
 - [x] Eye cursor near lockpick doors in the Gral temple shows the spinner text: no bug. In map 475 the corners (25,18), (27,18), (25,20), (27,20) of the door room are spinners; looking at them from next to a door shows text 58 like on the Amiga (own tile first, then the tile in front). Looking at the door opens the door (tested 2026-10-29).
 
