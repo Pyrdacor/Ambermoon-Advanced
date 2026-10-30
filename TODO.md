@@ -1,6 +1,6 @@
 # Ambermoon Advanced – Todo
 
-State: 2026-10-14, branch `episode4`.
+State: 2026-10-29, branch `episode4`.
 
 This file is the only todo list. The *Todo* sheet of `AmbermoonAdvanced.xlsx` and the former `todo.txt` were merged into it.
 
@@ -31,11 +31,11 @@ The detailed design of each Episode 4 item is in the docs folder, see the file i
 - [ ] Check whether the remake has the same two bugs (Foresee Attack, aging index) or its own logic.
 - [x] Moved `FUN_CalculateSpellDamage`, `FUN_GetWorstElementBonus` and `DAT_ElementTable` from `KERNEL/TEXTS.S` to `COMBAT/COMBAT_M.S` and `FUN_DebugPrint` to `KERNEL/START.S` (2026-10-28). Fixed on the way: the table index D4.w had garbage in the upper byte, the worst bonus used a signed compare (150% counted as negative, an immune 0% was ignored as first element), and wind against water was 150% instead of 100% (see ElementalSpells.md and the remake).
 - [x] Element table: the game data is right (mental column: spirit 125%, earth/wind/fire/water 75%), ElementalSpells.md updated (2026-10-28).
-- [x] Nalven's element table (Object_texts 1/6, German and English) shows the mental column of the game data, and the hint also lists Ghost Inferno and Mystic Decay (both spirit) (2026-10-28).
+- [x] Nalven's element table (Object_texts 1/6, German and English) shows the mental column of the game data, and the hint also lists Ghost Inferno and Mystic Decay (both spirit) (2026-10-28). Undead row added, left side is now spell/weapon element, hint: only weapons have the element undead (2026-10-29).
 - [ ] Optional: restore the original source formatting where the port only replaced lines with disassembly style. Examples: `Default_PA`/`Default_MA`, the stack definitions, comments lost on `cmpa.l`.
 
 ### Missing Advanced features on the Amiga (remake has them)
-- [x] Level > 50 through events, and the max-attribute increases for levels 51–55: done and tested 2026-10-19 with the wise man in S'Angrila (NPC 79). From level 50 on, the level reward goes up to 55; each of the levels 51–55 raises the maximum of a class attribute by 5 (`Level_shard_attributes` in `MAIN.S`, same table as the remake). Also fixed: the level reward used the "all" loop counter as party slot (wrong for the active member), and the level counters are now cleared after the level up. Remake: the level reward from level 50 on now also shows the level-up window like the Amiga (`EventHandling.cs`, Ambermoon.net master, not committed yet).
+- [x] Level > 50 through events, and the max-attribute increases for levels 51–55: done and tested 2026-10-19 with the wise man in S'Angrila (NPC 79). From level 50 on, the level reward goes up to 55; each of the levels 51–55 raises the maximum of a class attribute by 5 (`Level_shard_attributes` in `MAIN.S`, same table as the remake). Also fixed: the level reward used the "all" loop counter as party slot (wrong for the active member), and the level counters are now cleared after the level up. Remake: the level reward from level 50 on now also shows the level-up window like the Amiga (`EventHandling.cs`, Ambermoon.net master).
 - [ ] Events 28–32 (show map, toggle switch, dynamic tile change, rectangular exploration, vertical line reveal): **implemented 2026-10-18** (`EVENTS.S`), built, not tested yet. Test in FS-UAE in the ancient city (483) and the ancient building (484): switches (29) with their doors/walls (30), the map tables (28) and the revealed rooms (31). The map table (28) and the revealed areas (31) work (2026-10-18, hide/reveal fixed); switches (29/30) still to be tested. Before, these events were silently skipped on the Amiga.
 - [x] Hour movement does not seem to work on the Amiga: **fixed 2026-10-20**, tested 2026-10-21. Loading and the position per time step (step modulo 12) were already right. The cause was the 3D collision check: two path persons on the same square (objects 0/1 at (13,13) and 2/3 at (6,5) in the ancient building 484) blocked each other forever. Path persons in 3D now follow their path without collision checks, like the remake (`NPC_manager_3D` in `PERSONS.S`).
 - [ ] New spells:
@@ -48,32 +48,29 @@ The detailed design of each Episode 4 item is in the docs folder, see the file i
   - Note: Weapon elements.md says ghost = 2 and immunity bits 2..7, the code uses spirit = 1 (like the element table) and bit = element index.
   - Remake fixes on the way: the immunity message named the attacker instead of the monster, and item element names were off by one (spirit showed "Mental").
 - [x] Minimum level for all equipment (item byte 22 = Misc_2 / TextSubIndex, 0 = none, 2026-10-28): equipping with a lower level shows message 328 "~INVN~ ist nicht erfahren genug, um diesen Gegenstand auszurüsten.". The second item window (identified items) is one row higher for equipment and shows ELEMENT (name incl. "Keins") and MIN-LEVEL ("-" or the number), messages 329/330. Remake tested 2026-10-28, Amiga not tested yet. Energy sword (556) has minimum level 50.
-- [ ] Extended languages.
+- [ ] Extended languages: not on the Amiga yet (character byte $0D is unused there, conversations, inventory and the language reward only use `Learned_languages`). Remake has them. In the data only NPC 79 uses them (extended bit 1), and he also speaks all normal languages, so nothing is broken yet.
 - [x] 3D combat background 13 → graphic 13 (desert, palettes 35/46/47 like the remake, 2026-10-28).
 - [x] The APR reward adjusts `APRPerLevel` like the remake (level / (APR − 1), at APR 1 at least level + 1), and a level up never lowers the APR anymore (2026-10-28).
 - [x] Reward targets 100+ and 200+ ("all but X") work. Fixed: the pointer was not freed for 100+ / first animal, and death (HP −100%) and revival / kill via conditions used the loop counter as the member number, so they were wrong for the active and random targets. Killing via a condition reward now shows the death instead of setting 1 HP (2026-10-28). Not tested in FS-UAE yet.
 - [x] A 100+ / first animal reward target without a matching member stops the event chain like in the remake (Break_event, 2026-10-28). Dead and petrified members are never rewarded (except condition removal) and count as no match, now also in the remake (2026-10-28).
-- [ ] Automaps for the new maps.
+- [x] Automaps for the new maps: `Save.00/Automap.amb` has an entry for all 3D maps incl. 483-488 (checked 2026-10-30). Entry 483 has 401 bytes, 191 would be enough (harmless). The icons are a separate item (see 4.).
 
-### Remake (Ambermoon.net, branch `aa4-fixes`)
-- [ ] Move `AdvancedMonsterFlags | ItemElements | ExtendedLanguages | LevelShards` into `Features.AmbermoonAdvanced` with version gating. They are currently switched on by a hack in `GameWindow.cs`.
-- [ ] Episode 3 changes that are missing in the remake:
-  - STA/25 HP on level up, including bonus STA.
-  - Bow damage bonus (STR/50 + DEX/25).
-  - DEX/50 bonus for other weapons.
-- [ ] Bow and staff boss spells, item minimum level (see 2.1).
-- [ ] Combat conditions like on the Amiga (2026-10-14):
+### Remake (Ambermoon.net, branch `master`)
+- [ ] On the Episode 4 release (v1.40, Episode 3 is 1.3x): move `AdvancedMonsterFlags | ItemElements | ExtendedLanguages | LevelShards` into `Features.AmbermoonAdvanced`. Until then they are only switched on for external data in `GameWindow.cs` on purpose (Episode 4 development), the builtin Episode 3 versions must not get them.
+- [x] Episode 3 changes (STA/25 HP on level up incl. bonus STA, bow damage bonus STR/50 + DEX/25, DEX/50 for other weapons): already in the remake (`StaminaHPOnLevelUp`, `AdjustedWeaponDamage`, checked 2026-10-29).
+- [ ] Bow and staff boss spells (see 2.1).
+- [x] Combat conditions like on the Amiga (2026-10-14): already in the remake (`ExtendedCurseEffects`, checked 2026-10-29). Fixed on the way: drugged bosses got no hit penalty at all, now half of it like on the Amiga.
   - Poison: per round 1 to 5% of max LP. The maximum is limited to 20 for party members and bosses and to 35 for other monsters. The remake uses a fixed 1–5.
   - Hit and parry penalties: drugs −25 (attack only), blind −50, aging −10 per step. The steps rise every round up to 5 and are reset each battle. Blind replaces aging. Bosses get half the penalty.
   - Damage and defense: disease −50% (bosses −25%), aging −10% per step up to −50% (bosses half).
 - [ ] Crash when removing many items twice.
-- [ ] Casting Self Heal in battle and clicking fast afterwards blocks the player selection (the keyboard still works).
+- [ ] Casting Self Heal in battle and clicking fast afterwards blocks the player selection (the keyboard still works). Not reproduced (2026-10-30, 6 rounds with one party member, spell picked by script, fast clicks on portrait and battlefield, `InputEnable` stayed true). Hint: portrait clicks need `InputEnable`, the number keys don't, so it was probably stuck on false. Needs a repro with several party members and the real spell list.
 - [ ] Short wrong wall colours after teleporting (Cavetown, Spannenberg goto point), probably time-of-day dependent.
 - [ ] 3D movement with WASD is sometimes slow.
 - [ ] Lava stream: player drawn above the bottom rocks when moving down (remake bug?).
-- [ ] Wise man house: chairs and shelf have a strange z-order with the player. Screenshots exist; compare with the Amiga, maybe change Normal → Background.
-- [ ] Laser trap is noticed by Clairvoyance although its condition is not met *(check, maybe fixed)*.
-- [ ] Eye cursor near lockpick doors in the Gral temple shows the spinner text.
+- [ ] Wise man house (map 482, tileset 7): chairs and shelf have a strange z-order with the player. Compare with the Amiga, maybe change Normal → Background. Candidates: shelf corner 0x1d4 at (6,5) has no Background flag unlike its neighbours; chair seat 0x1f2 is also Normal, but sitting behind the chair looks right in the remake (2026-10-30).
+- [x] Laser trap is noticed by Clairvoyance although its condition is not met: already fixed in the remake (23ee6720, conditions are evaluated before a trap/spinner is reported, e.g. the lasers of map 380 with vars 336-341). Checked 2026-10-29.
+- [x] Eye cursor near lockpick doors in the Gral temple shows the spinner text: no bug. In map 475 the corners (25,18), (27,18), (25,20), (27,20) of the door room are spinners; looking at them from next to a door shows text 58 like on the Amiga (own tile first, then the tile in front). Looking at the door opens the door (tested 2026-10-29).
 
 ---
 
@@ -119,17 +116,13 @@ Order and details: `000 Plan Episode 4.md`, milestones M1–M4.
   - Temple chests.
   - Random battles on all Morag world maps (513 and 526 have none yet).
   - Hide shards, add them to monsters.
-- [ ] **Level-gated equipment 51–55** ([Waffenlevel.md]):
-  - Item byte for the minimum level, shown in the item window.
-  - Enforce it in the remake and on the Amiga.
-  - Ancient weapons need 51/53/55, the Rebellenklinge 52.
-- [ ] **Elemental weapons in the data:**
-  - Feuerbrand gets the element fire (decided 2026-10-14). Place another weapon in Luminor's tower, so you can't get stuck there.
-  - Flamberge, Eisschwert, Waldbogen, Nekromantendolch, Geisterstab.
-  - New Sandschwert (earth).
-  - Check the undead entry of the element table.
+- [ ] **Level-gated equipment 51–55** ([Waffenlevel.md]): the item byte, the item window and the check are done (see 1.). Still to set in the data: the ancient bow 53 and staff 55 (the energy sword 556 has 51 since 2026-10-29), the Rebellenklinge 52.
+- [ ] **Elemental weapons in the data** (most are set, see the list in 1.):
+  - Feuerbrand (276) stays spirit (decided 2026-10-29, with fire it would be useless in Luminor's tower).
+  - New Sandschwert (earth). There is no Eisschwert; the Eisstab (465) has water.
+  - [x] Flamberge (428, fire), Waldbogen (473, wind), Necromanten Dolch (237, undead), Geisterstab (477, spirit) and the undead row of the element table are done (2026-10-28).
 - [ ] Are there element change spell scrolls anywhere?
-- [ ] Monster immunity flags in the data (e.g. dust devil: only fire/ghost/ice weapons).
+- [ ] Monster immunity flags in the data: only the dust devil (98, $39) has them so far. Decide which other monsters get some.
 - [ ] Council lizards and machines much stronger ([Ratsechsen.md]): very high MBR, DEF and damage, magic damage reduction. Not winnable without endgame equipment, and long fights even with it.
 - [ ] New endgame weapons and armour.
 - [ ] Moranians stronger, maybe with stronger escorts (enhanced magic guards).
@@ -216,15 +209,15 @@ Fixed: untranslated text 369/2, 22 texts with missing or extra quotes, typos (al
 - [x] Stairs in the Thalion office: original fix taken over, new tileset 4 tiles 0x4a6-0x4a8 in map 257 (2026-10-23).
 - [ ] Non-blocking walls: trainer house 268 upper wall fixed in both repos (tileset 4 tiles 0x3b1-0x3b3 use background flags, 2026-10-23). Remaining candidates to check visually: witch house 411 (17,7) ts4 0x324 (BringToFront object on blocking background), armoury 407 (10,10) ts5 0x186; probably intended: 417 (14..18,8), 341 (18,11), 477 (2..3,2).
 - [x] Text bug in the thief cellar (bandit house cellar, map 276): the original fix from the Ambermoon repo taken over (2026-10-23).
-- [x] Two-hand weapon and shield: the Amiga is correct (drag and drop only). Remake bug in shift-click equipping fixed in `Windowing.cs` (2026-10-23, Ambermoon.net, not committed).
+- [x] Two-hand weapon and shield: the Amiga is correct (drag and drop only). Remake bug in shift-click equipping fixed in `Windowing.cs` (2026-10-23).
 - [x] Monsters can't pass the green slime in the old cave. Labdata 2, objects 15-17 also allow class 1 (2026-10-18, also in the Ambermoon repo, master).
 - [x] Map 273 (town house): teleport from map 263 (event 72) now leads to (10,4), both repos (2026-10-23).
 - [x] S'Angrila (map 442 text 2) "bin": was already fixed in Advanced, fixed in the Ambermoon repo (2026-10-23).
-- [ ] Sleep and fear lead to game over: **fixed 2026-10-23**, not tested. Amiga (both repos): no defeat while members are on the battlefield, the leader is kept if nobody can lead, OK starts the next round. Remake: `RecheckActivePartyMember` starts the next round automatically. Stalemate check after each round (2026-10-27, Amiga in both repos, remake): mad, asleep, panicked, lamed and petrified count as incapable; the battle goes on if a party member is capable, anyone is only panicked or a member is only asleep while a monster is capable, otherwise game over. Ambermoon repo: branch `fix/combat-stalemate` (needs a PR). Test: battle where all members get asleep/panicked/lamed.
+- [ ] Sleep and fear lead to game over: **fixed 2026-10-23**, not tested. Amiga (both repos): no defeat while members are on the battlefield, the leader is kept if nobody can lead, OK starts the next round. Remake: `RecheckActivePartyMember` starts the next round automatically. Stalemate check after each round (2026-10-27, Amiga in both repos, remake): mad, asleep, panicked, lamed and petrified count as incapable; the battle goes on if a party member is capable, anyone is only panicked or a member is only asleep while a monster is capable, otherwise game over. Ambermoon repo: branch `fix/combat-stalemate`, merged into master. Test: battle where all members get asleep/panicked/lamed.
 - [x] Forest moon navstones: left as is (2026-10-27). Gemstone gives navstones after the return to Lyramion (the first one for free), Morag has some too.
 - [x] Text 2 in AA4 ("GEHEMNISVOLL"): already fixed in Advanced, fixed in the Ambermoon repo (2026-10-23).
 - [x] Automap shows traps without Mystic Map: the Amiga now also hides trap/trapdoor/spinner icons of walls and objects without the trap function, like the remake and the legend (both repos, 2026-10-23).
-- [x] Attack icon after the weapon breaks: the Amiga was correct; the remake now updates the battle buttons after each round (`BattleHandling.cs`, 2026-10-23, not committed).
+- [x] Attack icon after the weapon breaks: the Amiga was correct; the remake now updates the battle buttons after each round (`BattleHandling.cs`, 2026-10-23).
 
 ### Advanced
 - [ ] Some world map shadows are broken (sand boat tower etc.).
@@ -232,8 +225,8 @@ Fixed: untranslated text 369/2, 22 texts with missing or extra quotes, typos (al
 - [x] Moving mushrooms in Dor Grestin: hand/eye condition in front of the text (map 339, 2026-10-23). The original has the same data, but the condition needs the Advanced executable.
 - [x] Protection spell: the protection bonus was added when the attacker was a party member, so it protected the monsters instead of the party (original bug, fixed in Advanced and on the Ambermoon branch fix/combat-stalemate, 2026-10-28). The remake was already right.
 - [x] Wall storages in map 484 could only be used diagonally because the robot wrecks blocked the front tile: the wreck object (lab 44 object 2) is walkable now (2026-10-27).
-- [x] Transfer stone on yourself: the caster can't be selected anymore (Amiga) / the stone is not used up (remake, not committed) (2026-10-23).
-- [x] Battery: items added by events go to the active member first (Amiga: the loop advanced the item pointer instead of the party pointer; remake too, not committed). Also fixed the random reward target code (2026-10-23).
+- [x] Transfer stone on yourself: the caster can't be selected anymore (Amiga) / the stone is not used up (remake) (2026-10-23).
+- [x] Battery: items added by events go to the active member first (Amiga: the loop advanced the item pointer instead of the party pointer; remake too). Also fixed the random reward target code (2026-10-23).
 - [x] Empowered Kasimir dismiss text: with glob var 308 set he says Party_texts 16/9 ("SO, SO. ERST MACHT IHR AUS MIR DEN MÄCHTIGSTEN KATER…"), Save.00 Party_char 16 event 22 checks the var, new event 29 (2026-10-27). Existing saves need the savegame patcher (see 3.).
 - [x] Kasimir TP: Sandra gives +10 parry max instead of +25 TP, and crit max +7 instead of +5 (NPC 5, 2026-10-27). Existing saves are not affected (NPC data).
 - [x] "Here is a trap" too often: clairvoyance reports each square only once (it also ran on every idle time step), both repos (2026-10-23).
