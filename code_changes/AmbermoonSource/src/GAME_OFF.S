@@ -592,7 +592,7 @@ Secret_inventory:	rs.b 1		; x Will not show or accept anything
 Portrait_nr:	rs.b 1
 Advanced_monster_flags:	rs.b 1		; ADVANCED: monsters only (immunities, see [ Check_attack_immunity ])
 Monster_picture_load_nr:	rs.b 1
-	rs.b 1			; x
+Extended_languages:	rs.b 1		; ADVANCED: languages 9-16 (bit 0 = ancient language)
 	rs.b 1			; x
 Courage:	rs.b 1
 Spell_class_immunity:	rs.b 1	; x

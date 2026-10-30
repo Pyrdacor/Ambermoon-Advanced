@@ -339,15 +339,15 @@ Display_Inv1_member_info:
 	LOCAL
 ; ---------- Print known languages ----------------
 	move.w	#22,Ink_colour		; Set ink
-	move.w	#16+15*6,d0		; Print "LANGUAGES"
-	move.w	#50,d1
+	move.w	#16+15*6,d0		; Print "LANGUAGES" (ADVANCED: below the conditions, there are more now)
+	move.w	#50+65,d1
 	move.w	#12*6,d2
 	move.l	Language_txt_ptr,a0
 	jsr	Print_centered_string
 	move.w	#2,Ink_colour		; Set ink
 	move.l	Language_names_ptr,a2		; Print languages
 	move.w	#16+15*6,d0
-	move.w	#50+7,d1
+	move.w	#50+65+7,d1
 	move.b	Learned_languages(a1),d6
 	moveq.l	#0,d7
 .Loop1:	btst	d7,d6			; Language known ?
@@ -360,11 +360,26 @@ Display_Inv1_member_info:
 	addq.w	#1,d7
 	cmpi.w	#Max_languages,d7
 	bmi.s	.Loop1
+	move.b	Extended_languages(a1),d6	; ADVANCED: extended languages
+	moveq.l	#0,d7
+	move.w	d0,d2
+.Loop3:	btst	d7,d6			; Language known ?
+	beq.s	.Next3
+	move.l	Prompts_ptr,a0		; Print language name
+	move.w	#319,d0
+	add.w	d7,d0
+	jsr	Find_large_text
+	move.w	d2,d0
+	jsr	Put_text_line
+	addq.w	#Char_height+2,d1		; Next language
+.Next3:	addq.w	#1,d7
+	cmpi.w	#Max_languages,d7
+	bmi.s	.Loop3
 	LOCAL
 ; ---------- Display conditions -------------------
 	move.w	#22,Ink_colour		; Set ink
 	move.w	#96,d0			; Print "CONDITIONS"
-	move.w	#50+65,d1
+	move.w	#50,d1
 	move.w	#80,d2
 	move.l	Conditions_txt_ptr,a0
 	jsr	Print_centered_string
@@ -373,7 +388,7 @@ Display_Inv1_member_info:
 	andi.w	#Dead_mask,d0
 	beq.s	.Alive
 	move.w	#96,d0			; Display cross icon
-	move.w	#124,d1
+	move.w	#124-65,d1
 	moveq.l	#Screen_depth,d5
 	lea.l	Status_icons+(Dead_icon*160)-160,a0
 	jsr	Put_masked_icon
@@ -382,7 +397,7 @@ Display_Inv1_member_info:
 	lea.l	Condition_icon_table,a3
 	lea.l	Status_icons,a4
 	move.w	#96,d2
-	move.w	#124,d3
+	move.w	#124-65,d3
 	moveq.l	#Screen_depth,d5
 .Again:	move.b	(a3),d7			; Get condition number
 	cmp.b	#-1,d7			; Last one ?

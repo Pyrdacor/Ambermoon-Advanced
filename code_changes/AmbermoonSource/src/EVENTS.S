@@ -2609,9 +2609,13 @@ Datachange:
 
 .Languages:
 	moveq.l	#0,d0			; Get languages
+	move.b	Extended_languages(a0),d0	; ADVANCED: bits 8-15 are the extended languages
+	lsl.w	#8,d0
 	move.b	Learned_languages(a0),d0
 	jsr	.Do			; Change
 	move.b	d0,Learned_languages(a0)	; Store
+	lsr.w	#8,d0
+	move.b	d0,Extended_languages(a0)
 	rts
 
 .XP:
@@ -4357,6 +4361,7 @@ PMCE_Level:			rs.b 1
 PMCE_Attribute:		rs.b 1
 PMCE_Skill:			rs.b 1
 PMCE_TP:			rs.b 1
+PMCE_Language:		rs.b 1
 PMCE_TypeCount:		rs.b 0
 	rsreset
 ; targets
@@ -4374,6 +4379,7 @@ PTR_PartyMemberConditionEventFunctions:
 	dc.l FUN_PartyMemberConditionAttribute
 	dc.l FUN_PartyMemberConditionSkill
 	dc.l FUN_PartyMemberConditionTP
+	dc.l FUN_PartyMemberConditionLanguage
 ; ---- Targets
 	dc.l FUN_PartyMemberConditionInv ; Has index - 1 (255)
 PTR_PartyMemberConditionEventCheckFunctions:
@@ -4436,6 +4442,28 @@ FUN_PartyMemberConditionTP:
 .GetTP:
 	moveq #0,D0
 	move.w ($16,A2),D0 ; TP
+	rts
+FUN_PartyMemberConditionLanguage:
+	lea .GetLanguage,A3
+	jmp FUN_PartyMemberConditionCheck
+.GetLanguage:
+	; Index 0-7 are the normal languages, 8-15 the extended ones.
+	; The checks compare with the event value, so return it if the language is known and less otherwise.
+	move.l D1,-(SP)
+	moveq #0,D1
+	move.b Extended_languages(A2),D1
+	lsl.w #8,D1
+	move.b Learned_languages(A2),D1
+	moveq #0,D0
+	move.b PCME_CondValIndex(A5),D0
+	btst D0,D1
+	sne D1
+	move.w PCME_Value(A5),D0
+	tst.b D1
+	bne.b .Known
+	subq.w #1,D0
+.Known:
+	move.l (SP)+,D1
 	rts
 FUN_PartyMemberConditionCheck:
 	moveq #$00000000,D0

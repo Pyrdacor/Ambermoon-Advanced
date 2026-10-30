@@ -391,8 +391,11 @@ Activate_member:
 	bra.s	.No1
 .Skip:	Get	Dialogue_handle,a0		; Get NPC's languages
 	move.b	Learned_languages(a0),d0
+	move.b	Extended_languages(a0),d1	; ADVANCED: extended languages
 	Free	Dialogue_handle
 	and.b	Learned_languages(a1),d0	; Compare with new active's
+	and.b	Extended_languages(a1),d1
+	or.b	d1,d0
 	tst.b	d0			; Que ?
 	bne.s	.No1
 	move.w	#106,d0			; No comprendo, signor !

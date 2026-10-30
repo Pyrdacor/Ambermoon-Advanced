@@ -756,10 +756,13 @@ Talk:
 	jsr	Load_NPC_data		; Load data
 	Get	Dialogue_handle,a0		; Get NPC's languages
 	move.b	Learned_languages(a0),d0
+	move.b	Extended_languages(a0),d2	; ADVANCED: extended languages
 	Free	Dialogue_handle
 	Get	Active_handle,a0		; Compare with active's
 	and.b	Learned_languages(a0),d0
+	and.b	Extended_languages(a0),d2
 	Free	Active_handle
+	or.b	d2,d0
 	tst.b	d0			; Que ?
 	bne.s	.Capito
 	jsr	Destroy_NPC_data		; No comprendo, signor !
