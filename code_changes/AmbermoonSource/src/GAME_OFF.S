@@ -207,6 +207,7 @@ Max_languages	EQU 8
 Max_spell_classes	EQU 7
 Max_spells	EQU 30
 Magic_sword_spell	EQU 26		; ADVANCED: class 6 (magic sword attack)
+Arrow_hail_spell	EQU 27		; ADVANCED: class 6 (magic arrow hail)
 Max_monsters	EQU 18
 Max_event	EQU Max_maps*Events_per_map
 Max_CD	EQU Max_maps*Max_chars

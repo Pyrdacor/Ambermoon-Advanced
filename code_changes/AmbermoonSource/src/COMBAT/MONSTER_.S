@@ -317,6 +317,7 @@ Try_magical_attack:
 .Ok:	clr.l	Monster_spells_1		; Clear
 	clr.l	Monster_spells_3
 	clr.l	Monster_sword_targets	; ADVANCED
+	sf	Monster_arrow_hail		; ADVANCED
 	moveq.l	#0,d1			; None
 	move.w	Power_points(a1),d6		; Get spell points
 	move.l	Spells_class_1(a1),d0	; Try spell class 1
@@ -375,7 +376,14 @@ Try_magical_attack:
 	beq.s	.Done_6
 	move.l	d0,Monster_sword_targets	; Yes -> Store
 	bset	#3,d1			; Mark
-.Done_6:	tst.b	d1			; Any targets ?
+.Done_6:
+; ---------- ADVANCED: Magic arrow hail ? ----------
+	move.l	Spells_class_6(a1),d0	; Known ?
+	btst	#Arrow_hail_spell,d0
+	beq.s	.Done_6b
+	st	Monster_arrow_hail		; Yes -> Store
+	bset	#2,d1			; Mark as "all" spell
+.Done_6b:	tst.b	d1			; Any targets ?
 	beq	.Fail
 	move.b	d1,Monster_magic_target	; Yes -> Store
 ; ---------- Determine maximum danger -------------
@@ -603,6 +611,8 @@ Try_magical_attack:
 	bne	.Pick
 	move.l	Monster_sword_targets,d4	; No -> Magic sword attack ?
 	bne.s	.Sword
+	tst.b	Monster_arrow_hail		; Magic arrow hail ?
+	bne	.Hail
 .Fb_row:	btst	#1,Monster_magic_target	; Row spells ?
 	beq.s	.Fb_all
 	jsr	Get_longrange_targets	; Yes -> Row with targets
@@ -627,6 +637,13 @@ Try_magical_attack:
 	move.l	d4,Part_target(a0)
 	move.b	#6,Part_target+4(a0)
 	move.b	#Magic_sword_spell,Part_target+5(a0)
+ 	move.b	#Cast_spell_action,Part_action(a0)	; Enter action
+	bra	.Exit
+; ---------- ADVANCED: Magic arrow hail ------------
+.Hail:	move.b	#All_enemies_targmode,Part_target+6(a0)	; Enter data
+	move.l	#Combat_party_mask,Part_target(a0)
+	move.b	#6,Part_target+4(a0)
+	move.b	#Arrow_hail_spell,Part_target+5(a0)
  	move.b	#Cast_spell_action,Part_action(a0)	; Enter action
 	bra	.Exit
 ; ---------- Select & enter spell -----------------
@@ -1219,4 +1236,6 @@ Monster_single_target:	ds.l 1
 Monster_spells_1:	ds.l 1
 Monster_spells_3:	ds.l 1
 Monster_sword_targets:	ds.l 1		; ADVANCED
+Monster_arrow_hail:	ds.b 1		; ADVANCED
+Weapon_spell_mode:	ds.b 1		; ADVANCED: 0 = sword, otherwise bow
 Monster_spells:	ds.w Max_monster_spells

@@ -2003,7 +2003,8 @@ Show_missile_to_monster:
 ;     enemies in close range (the 8 squares around the attacker), so it can
 ;     be parried but not deflected by anti-magic, and it can't fail like a
 ;     spell. Used by party members (via the equipped item) and by monsters.
-;   - Damage : attack damage (min. 1) x (APR + 1) / 2, plus 0-25%, minus
+;   - Damage : (attack damage + STR / 25 + DEX / 50, min. 1) x (APR + 1) / 2,
+;     plus 0-25%, minus
 ;     50-100% of the defender's protection x APR, plus the spell damage bonus
 ;     (level, intelligence, spirit element). No damage if not positive.
 ;   - Like a weapon attack there is no damage at all if the defender has the
@@ -2011,6 +2012,7 @@ Show_missile_to_monster:
 ;   - The caster is healed by 10% of the damage.
 ;*****************************************************************************
 CMagic_sword_attack:
+	sf	Weapon_spell_mode		; Sword
 	tst.b	Magic_object_flag		; From object ?
 	beq.s	.No_object
 	jsr	Handle_spell		; Yes -> Use charge
@@ -2018,15 +2020,36 @@ CMagic_sword_attack:
 .No_object:	jsr	Get_closerange_targets	; Targets in reach NOW
 	move.l	d0,Part_target(a0)
 	move.b	#Enemy_row_targmode,Part_target+6(a0)
-	lea.l	.Do,a2			; Do all targets
+	lea.l	Do_weapon_spell,a2		; Do all targets
 	jsr	Do_all_combat_targets
 .Exit:	rts
 
-; [ Do magic sword attack ]
+;*****************************************************************************
+; [ Magic arrow hail (magic bow) ]
+;   IN : a0 - Pointer to casting participant data (.l)
+; No registers are restored
+; NOTES :
+;   - ADVANCED: Class 6 spell 27. Like the magic sword attack, but it hits all
+;     enemies and is a long range attack.
+;   - Damage : (attack damage + DEX / 25 + STR / 50, min. 1) x (APR + 3) / 4,
+;     the rest is identical to the magic sword attack.
+;   - The caster is healed by 5% of the damage.
+;*****************************************************************************
+CMagic_arrow_hail:
+	st	Weapon_spell_mode		; Bow
+	tst.b	Magic_object_flag		; From object ?
+	beq.s	.No_object
+	jsr	Handle_spell		; Yes -> Use charge
+	bne	.Exit
+.No_object:	lea.l	Do_weapon_spell,a2		; Do all targets
+	jsr	Do_all_combat_targets
+.Exit:	rts
+
+; [ Do magic sword attack / magic arrow hail ]
 ;   IN : a0 - Pointer to victim's participant data (.l)
 ;        a1 - Pointer to caster's participant data (.l)
 ; No registers are restored
-.Do:
+Do_weapon_spell:
 	cmp.b	#1,Part_type(a1)		; Party or monster ?
 	bne.s	.Monster
 	jsr	Show_missile_to_monster	; Show
@@ -2068,16 +2091,36 @@ CMagic_sword_attack:
 .Ok2b:	moveq.l	#0,d0			; Get attack damage
 	move.w	Damage(a2),d0
 	add.w	Damage_magic(a2),d0
+	moveq.l	#0,d1			; Get DEX & STR
+	move.w	ADexterity(a2),d1
+	add.w	ADexterity+Magic(a2),d1
+	moveq.l	#0,d2
+	move.w	AStrength(a2),d2
+	add.w	AStrength+Magic(a2),d2
+	tst.b	Weapon_spell_mode		; Bow ?
+	bne.s	.Bow_bonus
+	exg	d1,d2			; No -> STR / 25 + DEX / 50
+.Bow_bonus:	divu.w	#25,d1			; Yes -> DEX / 25 + STR / 50
+	divu.w	#50,d2
+	add.w	d1,d0
+	add.w	d2,d0
+	tst.w	d0
 	bgt.s	.Ok3
 	moveq.l	#1,d0			; At least 1
-.Ok3:	moveq.l	#0,d1			; x (APR + 1) / 2
+.Ok3:	moveq.l	#0,d1			; Get APR
 	move.b	Attacks_per_round(a2),d1
 	bne.s	.Ok4
 	moveq.l	#1,d1
-.Ok4:	addq.w	#1,d1
+.Ok4:	tst.b	Weapon_spell_mode		; Bow ?
+	bne.s	.Bow_factor
+	addq.w	#1,d1			; No -> x (APR + 1) / 2
 	mulu.w	d1,d0
 	lsr.l	#1,d0
-	cmp.l	#$7fff,d0			; Clip
+	bra.s	.Clip
+.Bow_factor:	addq.w	#3,d1			; Yes -> x (APR + 3) / 4
+	mulu.w	d1,d0
+	lsr.l	#2,d0
+.Clip:	cmp.l	#$7fff,d0			; Clip
 	bls.s	.Ok5
 	move.l	#$7fff,d0
 .Ok5:	move.w	d0,d2			; Add 0-25%
@@ -2119,7 +2162,12 @@ CMagic_sword_attack:
 	jsr	Process_damage		; For the records
 ; ---------- Heal attacker ------------------------
 	and.l	#$ffff,d0			; 10% of the damage
+	tst.b	Weapon_spell_mode		; (bow: 5%)
+	bne.s	.Bow_heal
 	divu.w	#10,d0
+	bra.s	.Healed
+.Bow_heal:	divu.w	#20,d0
+.Healed:	tst.w	d0
 	beq.s	.Done
 	move.w	Life_points(a2),d1		; Add
 	move.w	Life_points+Maximum(a2),d2
@@ -4330,7 +4378,8 @@ Party_comma_class_ptrs:
 	dc.l FUN_SpellExchangeExp ; 24
 	dc.l 0
 	dc.l CMagic_sword_attack ; 26
-	dc.l 0,0
+	dc.l CMagic_arrow_hail ; 27
+	dc.l 0
 	dc.l 0,0
 
 ; 21 colour values

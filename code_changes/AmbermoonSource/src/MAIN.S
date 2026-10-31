@@ -387,7 +387,7 @@ Activate_member:
 	tst.b	Joined			; Joined ?
 	beq.s	.Skip
 .Yes:	cmp.w	Dialogue_NPC_index,d7	; With this member ?
-	beq.s	.Exit
+	beq	.Exit
 	bra.s	.No1
 .Skip:	Get	Dialogue_handle,a0		; Get NPC's languages
 	move.b	Learned_languages(a0),d0

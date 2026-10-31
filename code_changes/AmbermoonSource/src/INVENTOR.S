@@ -975,7 +975,10 @@ Use_item:
 	cmpi.w	#6,Selected_class		; Magic sword attack ?
 	bne.s	.Not_sword
 	cmpi.w	#Magic_sword_spell,Selected_spell
+	beq.s	.Is_sword
+	cmpi.w	#Arrow_hail_spell,Selected_spell
 	bne.s	.Not_sword
+.Is_sword:
 	cmpi.w	#Backpack_slots/Object_packet_size,Selected_item	; Yes -> Equipped ?
 	bmi.s	.Not_sword
 	move.w	#327,d0			; No -> "Must be equipped !"

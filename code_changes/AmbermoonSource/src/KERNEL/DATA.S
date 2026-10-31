@@ -1591,12 +1591,13 @@ Spell_data:
 	dc.b $00 ; SpellInfo.SLP
 	dc.b $02 ; = EnemiesInCloseRange (was the unused FriendRow) ; SpellInfo.Target
 	dc.b $01 ; = Spirit (only for the damage bonus) ; SpellInfo.Element
-	; Rest is unused
-	dc.b $00 ; = None ; SpellInfo.UseConditions
+	; Magic arrow hail (ID: 27), a physical special attack of the magic bow
+	dc.b $f0 ; = Battle | Lyramion | ForestMoon | Morag ; SpellInfo.UseConditions
 	dc.b $00 ; SpellInfo.SP
 	dc.b $00 ; SpellInfo.SLP
-	dc.b $00 ; = None ; SpellInfo.Target
-	dc.b $00 ; = None ; SpellInfo.Element
+	dc.b $20 ; = AllEnemies ; SpellInfo.Target
+	dc.b $01 ; = Spirit (only for the damage bonus) ; SpellInfo.Element
+	; Rest is unused
 	dc.b $00 ; = None ; SpellInfo.UseConditions
 	dc.b $00 ; SpellInfo.SP
 	dc.b $00 ; SpellInfo.SLP

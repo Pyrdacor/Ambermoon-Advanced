@@ -732,3 +732,4 @@ Monster_comma_class_ptrs:
 	dc.l 0,0,0,0
 	dc.l 0,0,0,0
 	dc.l 0,CMagic_sword_attack ; 26
+	dc.l CMagic_arrow_hail ; 27
