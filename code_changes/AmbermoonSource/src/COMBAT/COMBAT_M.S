@@ -2005,8 +2005,8 @@ Show_missile_to_monster:
 ;     spell. Used by party members (via the equipped item) and by monsters.
 ;   - Damage : (attack damage + STR / 25 + DEX / 50, min. 1) x (APR + 1) / 2,
 ;     plus 0-25%, minus
-;     50-100% of the defender's protection x APR, plus the spell damage bonus
-;     (level, intelligence, spirit element). No damage if not positive.
+;     50-100% of the defender's protection x APR. There is no spell damage
+;     bonus as it is a weapon attack. No damage if not positive.
 ;   - Like a weapon attack there is no damage at all if the defender has the
 ;     element of the weapon.
 ;   - The caster is healed by 10% of the damage.
@@ -2041,15 +2041,83 @@ CMagic_arrow_hail:
 	beq.s	.No_object
 	jsr	Handle_spell		; Yes -> Use charge
 	bne	.Exit
-.No_object:	lea.l	Do_weapon_spell,a2		; Do all targets
+.No_object:	clr.w	Arrow_volley_count		; Create an arrow per target
+	lea.l	.Add_arrow,a2
+	jsr	Do_all_combat_targets
+	jsr	.Show_volley		; All fly at the same time
+	lea.l	Do_weapon_spell,a2		; Do all targets
 	jsr	Do_all_combat_targets
 .Exit:	rts
+
+; [ Create an arrow of the volley ]
+;   IN : a0 - Pointer to victim's participant data (.l)
+;        a1 - Pointer to caster's participant data (.l)
+; No registers are restored
+.Add_arrow:
+	exg	a0,a1
+	jsr	Determine_COMOB_flip	; Determine flip
+	smi	d1
+	moveq.l	#30,d0			; Prepare movement
+	jsr	Prepare_COMOB_movement
+	tst.b	d1			; Left or right ?
+	beq.s	.Right
+	bset	#0,COMOB_Mirror_flags(a0)	; Flip
+.Right:	tst.w	COMOB_3D_vector_Z(a0)	; To or fro ?
+	bpl.s	.To
+	move.l	#Arrow_fro_FXGFX,COMOB_Gfx_base(a0)
+	bra.s	.Go_on
+.To:	move.l	#Arrow_to_FXGFX,COMOB_Gfx_base(a0)
+.Go_on:	move.w	#16,COMOB_Source_width(a0)	; Initialize COMOB
+	move.w	#20,COMOB_Source_height(a0)
+	move.w	#24,COMOB_Display_width(a0)
+	move.w	#13,COMOB_Display_height(a0)
+	move.b	FXGFX_handle,COMOB_Gfx_handle(a0)
+	lea.l	Arrow_volley_COMOBs,a2	; Store
+	lea.l	Arrow_volley_steps,a3
+	move.w	Arrow_volley_count,d0
+	add.w	d0,d0
+	move.w	d7,0(a3,d0.w)
+	add.w	d0,d0
+	move.l	a0,0(a2,d0.w)
+	addq.w	#1,Arrow_volley_count
+	rts
+
+; [ Show the volley until each arrow has arrived ]
+; All registers are restored
+.Show_volley:
+	movem.l	d0/d6/d7/a0/a2/a3,-(sp)
+.Again:	jsr	Update_combat_screen	; Show
+	moveq.l	#0,d6			; None flying
+	lea.l	Arrow_volley_COMOBs,a2
+	lea.l	Arrow_volley_steps,a3
+	move.w	Arrow_volley_count,d7
+	bra.s	.Entry
+.Loop:	tst.l	(a2)			; Still flying ?
+	beq.s	.Next
+	move.l	(a2),a0
+	moveq.l	#1,d0			; Yes -> Animate
+	jsr	Circle_COMOB
+	subq.w	#1,(a3)			; Arrived ?
+	bgt.s	.Fly
+	jsr	Delete_COMOB		; Yes -> Delete
+	clr.l	(a2)
+	bra.s	.Next
+.Fly:	moveq.l	#1,d6			; No -> Keep going
+.Next:	addq.l	#4,a2
+	addq.l	#2,a3
+.Entry:	dbra	d7,.Loop
+	tst.w	d6			; Any left ?
+	bne.s	.Again
+	movem.l	(sp)+,d0/d6/d7/a0/a2/a3
+	rts
 
 ; [ Do magic sword attack / magic arrow hail ]
 ;   IN : a0 - Pointer to victim's participant data (.l)
 ;        a1 - Pointer to caster's participant data (.l)
 ; No registers are restored
 Do_weapon_spell:
+	tst.b	Weapon_spell_mode		; Bow ?
+	bne.s	.Shown			; Yes -> Already shown
 	cmp.b	#1,Part_type(a1)		; Party or monster ?
 	bne.s	.Monster
 	jsr	Show_missile_to_monster	; Show
@@ -2147,9 +2215,7 @@ Do_weapon_spell:
 	move.w	#215,d0			; "No damage was done !"
 	jsr	Do_part_prompt
 	bra	.Done
-.Ok6b:	exg	a0,a1			; Add spell damage bonus
-	jsr	FUN_CalculateSpellDamage
-	exg	a0,a1
+.Ok6b:
 ; ---------- Do damage ----------------------------
 	move.l	a0,-(sp)			; Do damage
 	move.l	a1,a0
@@ -2160,6 +2226,14 @@ Do_weapon_spell:
 .Monster2:	jsr	Do_damage_to_monster
 .Damaged:	move.l	(sp)+,a0
 	jsr	Process_damage		; For the records
+	tst.b	Weapon_spell_mode		; Bow ?
+	beq.s	.No_globes
+	movem.l	a0-a2,-(sp)		; Yes -> Green globes to the shooter
+	exg	a0,a1
+	lea.l	PP_globe_FXGFX,a2
+	jsr	Show_absorption_globes
+	movem.l	(sp)+,a0-a2
+.No_globes:
 ; ---------- Heal attacker ------------------------
 	and.l	#$ffff,d0			; 10% of the damage
 	tst.b	Weapon_spell_mode		; (bow: 5%)

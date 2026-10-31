@@ -1262,6 +1262,9 @@ Monster_spells_3:	ds.l 1
 Monster_sword_targets:	ds.l 1		; ADVANCED
 Monster_arrow_hail:	ds.b 1		; ADVANCED
 Weapon_spell_mode:	ds.b 1		; ADVANCED: 0 = sword, otherwise bow
+Arrow_volley_COMOBs:	ds.l 30		; ADVANCED
+Arrow_volley_steps:	ds.w 30		; ADVANCED
+Arrow_volley_count:	ds.w 1		; ADVANCED
 Monster_absorption:	ds.b 1		; ADVANCED
 Lightning_upwards:	ds.b 1		; ADVANCED
 Monster_spells:	ds.w Max_monster_spells

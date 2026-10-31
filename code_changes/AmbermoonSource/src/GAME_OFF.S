@@ -61,7 +61,7 @@ Combat_height	EQU 95
 Combat_camera_height	EQU 57
 Combat_cX	EQU Combat_X+Combat_width/2
 Combat_cY	EQU 80
-Max_COMOBs	EQU 30
+Max_COMOBs	EQU 48		; ADVANCED: Was 30, the arrow hail shows an arrow per target
 Move_steps	EQU 4
 Max_projectiles	EQU 3
 Projectile_speed	EQU 30
