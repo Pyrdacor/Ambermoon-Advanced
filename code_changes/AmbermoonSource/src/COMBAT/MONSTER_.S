@@ -318,6 +318,7 @@ Try_magical_attack:
 	clr.l	Monster_spells_3
 	clr.l	Monster_sword_targets	; ADVANCED
 	sf	Monster_arrow_hail		; ADVANCED
+	sf	Monster_absorption		; ADVANCED
 	moveq.l	#0,d1			; None
 	move.w	Power_points(a1),d6		; Get spell points
 	move.l	Spells_class_1(a1),d0	; Try spell class 1
@@ -383,7 +384,16 @@ Try_magical_attack:
 	beq.s	.Done_6b
 	st	Monster_arrow_hail		; Yes -> Store
 	bset	#2,d1			; Mark as "all" spell
-.Done_6b:	tst.b	d1			; Any targets ?
+.Done_6b:
+; ---------- ADVANCED: Energy absorption ? ---------
+	move.l	Spells_class_6(a1),d0	; Known ?
+	btst	#Energy_absorption_spell,d0
+	beq.s	.Done_6c
+	cmp.w	#Energy_absorption_SP,d6	; Yes -> Enough SP ?
+	bmi.s	.Done_6c
+	st	Monster_absorption		; Yes -> Store
+	bset	#1,d1			; Mark as row spell
+.Done_6c:	tst.b	d1			; Any targets ?
 	beq	.Fail
 	move.b	d1,Monster_magic_target	; Yes -> Store
 ; ---------- Determine maximum danger -------------
@@ -613,6 +623,8 @@ Try_magical_attack:
 	bne.s	.Sword
 	tst.b	Monster_arrow_hail		; Magic arrow hail ?
 	bne	.Hail
+	tst.b	Monster_absorption		; Energy absorption ?
+	bne	.Absorb
 .Fb_row:	btst	#1,Monster_magic_target	; Row spells ?
 	beq.s	.Fb_all
 	jsr	Get_longrange_targets	; Yes -> Row with targets
@@ -644,6 +656,18 @@ Try_magical_attack:
 	move.l	#Combat_party_mask,Part_target(a0)
 	move.b	#6,Part_target+4(a0)
 	move.b	#Arrow_hail_spell,Part_target+5(a0)
+ 	move.b	#Cast_spell_action,Part_action(a0)	; Enter action
+	bra	.Exit
+; ---------- ADVANCED: Energy absorption -----------
+.Absorb:	jsr	Get_longrange_targets	; Row with targets
+	move.l	#%00000000111111000000000000000000,d3
+	and.l	d3,d0
+	bne.s	.Absorb2
+	move.l	#%00111111000000000000000000000000,d3
+.Absorb2:	move.b	#Enemy_row_targmode,Part_target+6(a0)	; Enter data
+	move.l	d3,Part_target(a0)
+	move.b	#6,Part_target+4(a0)
+	move.b	#Energy_absorption_spell,Part_target+5(a0)
  	move.b	#Cast_spell_action,Part_action(a0)	; Enter action
 	bra	.Exit
 ; ---------- Select & enter spell -----------------
@@ -1238,4 +1262,6 @@ Monster_spells_3:	ds.l 1
 Monster_sword_targets:	ds.l 1		; ADVANCED
 Monster_arrow_hail:	ds.b 1		; ADVANCED
 Weapon_spell_mode:	ds.b 1		; ADVANCED: 0 = sword, otherwise bow
+Monster_absorption:	ds.b 1		; ADVANCED
+Lightning_upwards:	ds.b 1		; ADVANCED
 Monster_spells:	ds.w Max_monster_spells

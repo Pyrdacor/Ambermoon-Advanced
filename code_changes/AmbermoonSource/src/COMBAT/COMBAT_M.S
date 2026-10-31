@@ -2783,8 +2783,158 @@ CWindhowler:
 
 ; *** Thunderbolt ***
 CThunderbolt:
+	sf	Lightning_upwards
 	jsr	Handle_spell		; Handle spell
 	bne	.Exit
+	jsr	Show_lightning_bolts
+; ---------- Do damage ----------------------------
+	lea.l	Do_destruction_damage,a2	; Do all targets
+	jsr	Do_all_combat_targets
+.Exit:	rts
+
+;*****************************************************************************
+; [ Energy absorption (energy staff) ]
+;   IN : a0 - Pointer to casting participant data (.l)
+; No registers are restored
+; NOTES :
+;   - ADVANCED: Class 6 spell 28. A normal spell on an enemy row. It looks like
+;     an upside down thunderbolt.
+;   - Damage : 50-100% of the caster's level plus the spell damage bonus.
+;   - The caster gains 5% of the damage as LP and SP.
+;*****************************************************************************
+CEnergy_absorption:
+	st	Lightning_upwards
+	jsr	Handle_spell		; Handle spell
+	bne	.Exit
+	jsr	Show_lightning_bolts
+	lea.l	.Do,a2			; Do all targets
+	jsr	Do_all_combat_targets
+.Exit:	rts
+
+; [ Do energy absorption ]
+;   IN : a0 - Pointer to victim's participant data (.l)
+;        a1 - Pointer to caster's participant data (.l)
+; No registers are restored
+.Do:
+	jsr	Handle_magical_defense	; Defend ?
+	bne	.Exit2
+; ---------- Calculate damage ---------------------
+	Get	Part_handle(a1),a2		; Get caster's level
+	moveq.l	#0,d0
+	move.b	Level_nr(a2),d0
+	Free	Part_handle(a1)
+	tst.w	d0
+	bne.s	.Ok1
+	moveq.l	#1,d0			; At least 1
+.Ok1:	move.w	d0,d1			; 50% of the level
+	addq.w	#1,d0
+	lsr.w	#1,d0
+	move.w	d0,d2
+	sub.w	d0,d1			; Add 0-50%
+	addq.w	#1,d1
+	jsr	Random
+	mulu.w	d1,d0
+	swap	d0
+	add.w	d2,d0
+	jsr	FUN_CalculateSpellDamage
+	move.w	d0,d6			; Save
+; ---------- Show globes --------------------------
+	lea.l	PP_globe_FXGFX,a2		; First green, then blue
+	jsr	Show_absorption_globes
+	lea.l	LP_globe_FXGFX,a2
+	jsr	Show_absorption_globes
+; ---------- Do damage ----------------------------
+	move.w	d6,d0
+	cmp.b	#1,Part_type(a0)		; Party or monster ?
+	bne.s	.Monster
+	jsr	Do_combat_damage		; Member gets damage !
+	bra.s	.Go_on
+.Monster:	jsr	Do_damage_to_monster	; Monster gets damage !
+.Go_on:	exg	a1,a0			; For the records
+	jsr	Process_damage
+	exg	a1,a0
+; ---------- Caster gains 5% as LP and SP ---------
+	moveq.l	#0,d6			; 5% of the damage
+	move.w	d0,d6
+	divu.w	#20,d6
+	beq.s	.Exit2
+	Get	Part_handle(a1),a2
+	move.w	Life_points(a2),d1		; Add LP
+	move.w	Life_points+Maximum(a2),d2
+	add.w	Life_points+Magic(a2),d2
+	add.w	d6,d1
+	cmp.w	d2,d1			; Too much ?
+	bls.s	.Ok2
+	move.w	d2,d1			; Yes -> Clip
+.Ok2:	cmp.w	Life_points(a2),d1		; (never decrease)
+	bls.s	.Ok3
+	move.w	d1,Life_points(a2)
+.Ok3:	move.w	Power_points(a2),d1		; Add SP
+	move.w	Power_points+Maximum(a2),d2
+	add.w	Power_points+Magic(a2),d2
+	add.w	d6,d1
+	cmp.w	d2,d1			; Too much ?
+	bls.s	.Ok4
+	move.w	d2,d1			; Yes -> Clip
+.Ok4:	cmp.w	Power_points(a2),d1		; (never decrease)
+	bls.s	.Ok5
+	move.w	d1,Power_points(a2)
+.Ok5:	Free	Part_handle(a1)
+.Exit2:	rts
+
+;*****************************************************************************
+; [ Show energy globes flying from the victim to the caster ]
+;   IN : a0 - Pointer to victim's participant data (.l)
+;        a1 - Pointer to caster's participant data (.l)
+;        a2 - Pointer to graphics (.l)
+; All registers are restored
+;*****************************************************************************
+Show_absorption_globes:
+	movem.l	d0-d7/a0-a6,-(sp)
+	moveq.l	#16,d5			; Globe size / 4
+	moveq.l	#30,d0			; Create first
+	jsr	Prepare_COMOB_movement
+	move.l	a0,FXGFX_workspace
+	move.w	d5,COMOB_Display_width(a0)	; Set dimensions
+	move.w	d5,COMOB_Display_height(a0)
+	move.w	#16,COMOB_Source_width(a0)	; Set other data
+	move.w	#16,COMOB_Source_height(a0)
+	move.b	FXGFX_handle,COMOB_Gfx_handle(a0)
+	move.l	a2,COMOB_Gfx_base(a0)
+	moveq.l	#4,d0			; Create others
+	lea.l	.Modify,a0
+	jsr	Make_COMOB_chain
+	cmp.w	#4,d7			; Less steps
+	bmi.s	.Ok
+	subq.w	#3,d7
+.Ok:	moveq.l	#0,d0			; Move
+	moveq.l	#4,d1
+	jsr	Move_COMOBs_to_target
+	movem.l	(sp)+,d0-d7/a0-a6
+	rts
+
+.Modify:
+	move.w	d5,d1			; Adjust for growth
+	lsr.w	#1,d1
+	neg.w	d1
+	move.w	COMOB_3D_vector_X(a1),d0	; Move along vector
+	add.w	COMOB_3D_vector_Y(a1),d1
+	move.w	COMOB_3D_vector_Z(a1),d2
+	add.w	d0,COMOB_3D_X(a0)		; Store coordinates
+	add.w	d1,COMOB_3D_Y(a0)
+	add.w	d2,COMOB_3D_Z(a0)
+	add.w	d5,COMOB_Display_width(a0)	; Grow bigger
+	add.w	d5,COMOB_Display_height(a0)
+	rts
+
+;*****************************************************************************
+; [ Show lightning bolts on the target row ]
+;   IN : a0 - Pointer to casting participant data (.l)
+; ADVANCED: Was part of CThunderbolt. They are upside down if
+;           [ Lightning_upwards ] is set.
+; Changed registers : d0,d1,d7,a2,a3
+;*****************************************************************************
+Show_lightning_bolts:
 ; ---------- Prepare lightning bolts --------------
 	move.l	Part_target(a0),d0		; Get row number
 	jsr	Get_target_row_number
@@ -2827,7 +2977,10 @@ CThunderbolt:
 	btst	#5,d0
 	beq.s	.Zero
 	bset	#0,COMOB_Mirror_flags(a0)
-.Zero:	clr.w	COMOB_3D_Y(a0)		; Set other parameters
+.Zero:	tst.b	Lightning_upwards		; Upside down ?
+	beq.s	.Down
+	bset	#1,COMOB_Mirror_flags(a0)
+.Down:	clr.w	COMOB_3D_Y(a0)		; Set other parameters
 	move.w	#128,COMOB_Display_height(a0)
 	move.w	#32,COMOB_Source_width(a0)
 	move.w	#64,COMOB_Source_height(a0)
@@ -2855,11 +3008,8 @@ CThunderbolt:
 	moveq.l	#Pal_size-1,d7
 .Loop4:	move.w	(a1)+,(a0)+
 	dbra	d7,.Loop4
-; ---------- Do damage ----------------------------
-	movem.l	(sp)+,a0/a1		; Do all targets
-	lea.l	Do_destruction_damage,a2
-	jsr	Do_all_combat_targets
-.Exit:	rts
+	movem.l	(sp)+,a0/a1
+	rts
 
 ; *** Whirlwind ***
 CWhirlwind:
@@ -4379,7 +4529,7 @@ Party_comma_class_ptrs:
 	dc.l 0
 	dc.l CMagic_sword_attack ; 26
 	dc.l CMagic_arrow_hail ; 27
-	dc.l 0
+	dc.l CEnergy_absorption ; 28
 	dc.l 0,0
 
 ; 21 colour values
