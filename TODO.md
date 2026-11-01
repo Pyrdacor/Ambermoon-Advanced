@@ -37,6 +37,7 @@ Details are in the items further down.
 - [ ] Bore quest: forest moon (436), Gemstone, Dor Kiredon (343), mine (345) with the chests (14,3)/(15,4), NPC 80 at (13,3) with texture 322.
 - [ ] Boss 1 in map 484: teleporter (4,20), statue at (4,17), flee, win, wall (12,21) opens.
 - [ ] Boss 2 in map 484: teleporter (3,21), statue at (12,17), flee, win, wall (12,23) opens, magic bow (559) with arrow hail (equipped, party member cast, damage, heal 5%, parade). Amiga: source-built `AM2_CPU` with the extended languages from 161a524a, which did not assemble before.
+- [ ] Tower top 405 on the Amiga: lever (10,11) while standing on (10,10). The banish chain starts through a teleport onto the own tile, which works in the remake. If it does not on the Amiga, the player just stays in the room with the wall open. Also the whole flow: wall, Lebab, song 30, world map (38,28), wall closed and lever usable again.
 - [ ] Temple prototypes S'Riel (487) and S'Orel (488) with a new game.
 - [ ] Huge lava performance in the Black Mountains.
 
@@ -138,12 +139,10 @@ Order and details: `000 Plan Episode 4.md`, milestones M1–M4.
 - [ ] New monsters: Morag golem, giant lizard and its escort ([Neue Monster.md]).
 
 ### 2.2 Portals and Lyramion vault (M2)
-- [ ] Two new teleporter stone items in colours that don't exist yet (e.g. violet and white) instead of green/red, so they can't be confused with item 488 (decided 2026-10-14).
-- [ ] New 3D map(s) for the vault in the Thuna desert, using a free index 487–512. Never append: the Amiga archive limit is 530 entries.
-  - Riddles, lever, rumble.
-  - The temple rises on the Lyramion world map.
-- [ ] Portal 1: Morag ↔ Lyramion vault.
-- [ ] Portal 2: Morag ↔ AA2. On arrival, disable the walking lightning and place the red stone.
+- [x] Two new portal stones (2026-11-01), so they can't be confused with the red, yellow and green ones: blue (item 561, icon 260, tower top chest 309) and grey (item 562, icon 261, sources assets/portal_orb_*.png). The grey one still has to be placed in the Antike Anlage.
+- [x] Thuna desert vault replaced (2026-11-01): the temple teleporter (485, (12,14)) leads to the tower top (405, (13,10)). Lever (10,11) opens the wall (9,10). Without the lever bit of map 404 (tower never played) Lebab banishes the party to the world map (38,28), the wall closes and the lever is usable again. Labdata 27: table with stools (group 24), wall 113 with overlay 70. The upper part of the room has a 1-tile corridor (10,7–8) with chest 309 at (10,7) holding the blue portal stone (item 561) and the Portalbuch (item 563, object text 5/5). Opening it sets glob var 475; on a later talk Lebab tells about it once (var 476, NPC 23 text 12) and adds the keywords 175-177 (text 13). Showing or giving him the portal stones or the book also gives text 13, the items stay with the party. The corridor is open to the lower room at (10,9). Savegame patcher: add chest 309. Free map indices stay 489–512, never append: the Amiga archive limit is 530 entries.
+- [x] Portal 1: Morag ↔ tower top (405), both directions (2026-11-01). Still always active, no plate or stone condition yet.
+- [x] Portal 2 (2026-11-01): temple (16,14) pushes the party back to (15,14) looking east without the blue portal stone, uses up the blue portal stone (561) once, sets glob var 473 and leads to AA2 367 (12,4) looking east, afterwards it works normally. First arrival (chain 24): guard group of the second storage from the left at (14,3), all walking lightnings off. The groups of the other storages still spawn at the teleporter when picking the lock fails. Wall storage (14,2): defective text while var 473 is 0, otherwise it opens chest 216 (0-based) with the grey portal stone (562), text only once (var 474). The teleporter (11,4) leads back to the temple center when var 473 is 1.
 - [ ] Portal 3: "coming in Episode 5" text, then the party is teleported back 1 tile.
 
 ### 2.3 Morag progression and balancing (M3)
@@ -215,6 +214,7 @@ Order and details: `000 Plan Episode 4.md`, milestones M1–M4.
   - Current damage of left-hand items (e.g. sling daggers).
   - Wrong weights of some party members (Erik > 50 kg with nothing carried); reduce by 225 g per food.
   - Remove all tile change events of Antique Area 3.
+  - Ancient site 2 (367), wall storage (14,2), chest 217 (1-based) now holds the grey portal stone (562), glob vars 473 and 474 are new: hide the guard group of the second storage from the left (character bit 367:2) if it already spawned. Move items, gold and food of the old chest content into a neighbouring open chest of the room (215/217/220, 0-based), otherwise delete them silently, this case is very rare. Reset the chest unlock flag of chest 216 (0-based) to not unlocked for correctness.
   - Aman doesn't spawn if the thief cellar was visited before patching. If event bit 265:4 is inactive and glob var 376 is 0, set character bit 407:4 (show) and 264:3 (hide).
 - [ ] English:
   - Proofread the 244 translated Episode 4 texts (`tools/translations/ep4_english.py`).
