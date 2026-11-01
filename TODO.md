@@ -130,12 +130,12 @@ Order and details: `000 Plan Episode 4.md`, milestones M1–M4.
   - Attribute-gated levers.
   - Morag golems (no gfx yet).
   - Giant lizard at the red entrance.
-- [ ] **Central temple, map 485** (empty so far):
+- [ ] **Central temple, map 485**. The four stairs of the city centre building (483) lead to the matching temple entrances: north (20,18) <-> (14,3), east (22,20) <-> (25,14), south (20,22) <-> (14,25), west (18,20) <-> (3,14) (2026-11-01). The doors in front of them need the plates. Still open:
   - Four entrances matching the plates.
   - Rotating centre section.
   - Switch chain leading to the central room with 3 teleporters.
   - Consume all key cards when the portals are activated.
-- [ ] Giant lizard drops the Kasimir essence. The wise man applies it, and Kasimir becomes level 55 ([Neue Essenz.md]).
+- [ ] Giant lizard: monster 116 and battle group 173 exist (2026-11-01, based on the sand lizard, blood red, 1200/1287 HP, 800/891 SP, damage 100, defense 22, attack 90, M-B 95, crit 2, APR 2). City 483 (20,16), behind the red door: text 8, battle with 3 sand lizards until won, on flight text 9. Drops 5 fragments and the lizard essence for Kasimir (item 564 "Echsenessenz", icon 262, source assets/lizard_essence.png). Spells: madness, whirlwind, earthquake, earth spell damage bonus. Still open: level, the wise man applying the essence. The wise man applies it, and Kasimir becomes level 55 ([Neue Essenz.md]).
 - [ ] New monsters: Morag golem, giant lizard and its escort ([Neue Monster.md]).
 
 ### 2.2 Portals and Lyramion vault (M2)
