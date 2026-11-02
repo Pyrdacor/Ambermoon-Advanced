@@ -158,6 +158,9 @@ Order and details: `000 Plan Episode 4.md`, milestones M1–M4.
   - [x] Flamberge (428, fire), Waldbogen (473, wind), Necromanten Dolch (237, undead), Geisterstab (477, spirit) and the undead row of the element table are done (2026-10-28).
 - [ ] Are there element change spell scrolls anywhere?
 - [ ] Monster immunity flags in the data: only the dust devil (98, $39) has them so far. Decide which other monsters get some.
+- [x] New item icons follow the style of the originals (2026-11-02): no outline, shadow to the lower right in color 26, diagonal corners in color 27. Changed: 211 (also without the red cross), 226, 227, 231, 233, 239, 241-245, 247-255, 257, 264-266.
+- [x] Icons (2026-11-02): 239, 240 and 243 edited by hand, 211 is now a green pearl, new icon 267 is an amber pearl for item 446 "Stein der Erkenntnis".
+- [x] New icons for Morag equipment (2026-11-02): robe 382 = icon 264, sword 394 = icon 265, dagger 532 = icon 266, sources in assets/morag-equip (*-final.png use the item palette).
 - [x] Council lizards on Morag drop ancient fragments (2026-11-01): S'Arin 15, S'Endar 20, S'Trog 25, S'Kat 35, S'Lorwin 50. S'Riel and S'Orel drop none.
 - [ ] Council lizards and machines much stronger ([Ratsechsen.md]): very high MBR, DEF and damage, magic damage reduction. Not winnable without endgame equipment, and long fights even with it.
 - [ ] New endgame weapons and armour.
