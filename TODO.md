@@ -124,7 +124,7 @@ Order and details: `000 Plan Episode 4.md`, milestones M1–M4.
   - A normal attack with an ancient weapon is a plain weapon attack. The spell is only cast via "use item".
 - [ ] Bosses use the new spells and may need different battle actions (moving closer).
 - [ ] Boss rooms 2/3 of map 484 use the placeholder groups 170/171. Only adjust these groups when building the real bosses.
-- [ ] Map 484: remaining events, debris for the boss rooms, other robots.
+- [ ] Map 484: only boss 2 and boss 3 are still open. No other events are planned (2026-11-01).
 - [ ] Map 483 (surface):
   - Patrols (trap + text + teleport, maybe a new "unavoidable trap" flag).
   - Attribute-gated levers.
@@ -135,7 +135,7 @@ Order and details: `000 Plan Episode 4.md`, milestones M1–M4.
   - Rotating centre section.
   - Switch chain leading to the central room with 3 teleporters.
   - Consume all key cards when the portals are activated.
-- [ ] Giant lizard: monster 116 and battle group 173 exist (2026-11-01, based on the sand lizard, blood red, 1200/1287 HP, 800/891 SP, damage 100, defense 22, attack 90, M-B 95, crit 2, APR 2). City 483 (20,16), behind the red door: text 8, battle with 3 sand lizards until won, on flight text 9. Drops 5 fragments and the lizard essence for Kasimir (item 564 "Echsenessenz", icon 262, source assets/lizard_essence.png). Spells: madness, whirlwind, earthquake, earth spell damage bonus. Still open: level, the wise man applying the essence. The wise man applies it, and Kasimir becomes level 55 ([Neue Essenz.md]).
+- [ ] Giant lizard: monster 116 and battle group 173 exist (2026-11-01, based on the sand lizard, blood red, 1200/1287 HP, 800/891 SP, damage 100, defense 22, attack 90, M-B 95, crit 2, APR 2). City 483 (20,16), behind the red door: text 8, battle with 3 sand lizards until won, on flight text 9. Drops 15 fragments and the lizard essence for Kasimir (item 564 "Echsenessenz", icon 262, source assets/lizard_essence.png). Spells: madness, whirlwind, earthquake, earth spell damage bonus. The wise man (NPC 79) applies the essence if Kasimir has all others (vars 262-267, 477 set by Dorina for the wasp essence): level + 5, damage 10-12, defense 3-5, APR + 1, M-B-W + 1, search + 20, current luck + 15, portrait 109 (dark red with glowing stripes, assets/KasimirLizard.png). Afterwards he gives the important item 565 "Halsband der Wüste" (animals only, min level 55, LP 40, defense 10, damage 10, M-B-W 1, M-B-R 1, attack 10, anti-magic 10, whirlwind with 30 charges, unlimited recharges at 10 gold per charge). Icon 263, source assets/desert_collar.png. Sandra and Dorina only mention the strong aura. Still open: level of the lizard. Savegame patcher: set glob var 477 if Kasimir already has the wasp essence (portrait 108). The wise man applies it, and Kasimir becomes level 55 ([Neue Essenz.md]).
 - [ ] New monsters: Morag golem, giant lizard and its escort ([Neue Monster.md]).
 
 ### 2.2 Portals and Lyramion vault (M2)
@@ -158,6 +158,7 @@ Order and details: `000 Plan Episode 4.md`, milestones M1–M4.
   - [x] Flamberge (428, fire), Waldbogen (473, wind), Necromanten Dolch (237, undead), Geisterstab (477, spirit) and the undead row of the element table are done (2026-10-28).
 - [ ] Are there element change spell scrolls anywhere?
 - [ ] Monster immunity flags in the data: only the dust devil (98, $39) has them so far. Decide which other monsters get some.
+- [x] Council lizards on Morag drop ancient fragments (2026-11-01): S'Arin 15, S'Endar 20, S'Trog 25, S'Kat 35, S'Lorwin 50. S'Riel and S'Orel drop none.
 - [ ] Council lizards and machines much stronger ([Ratsechsen.md]): very high MBR, DEF and damage, magic damage reduction. Not winnable without endgame equipment, and long fights even with it.
 - [ ] New endgame weapons and armour.
 - [ ] Moranians stronger, maybe with stronger escorts (enhanced magic guards).
@@ -233,7 +234,7 @@ Order and details: `000 Plan Episode 4.md`, milestones M1–M4.
 ### Data audit (`tools/ambtools/audit.py`, 2026-10-18) – open questions
 Fixed: barrels on the door teleport targets in Ship's End (372), stone block on the arrival tile of the ancient city (483 from 522), stray floor tile in the prison (479).
 - [ ] Manyeyes' castle 1 (461): the undead groups 90/91 start inside statues (15,10) and (17,12). Intended (living statues) or move them?
-- [ ] Ancient building (484): the dark doors (wall 115, texture 192) at (2,5) and (2,13) are walkable but have no event and lead to the map border. Make them solid or give them a destination?
+- [x] Ancient building (484): the dark doors (wall 115, texture 192) at (2,5) and (2,13) are only a design element for the autonomous robots. The player never reaches this area, so they have no events (2026-11-01).
 - [ ] 3D maps with walkable floor at the map edge (no event): 284, 339, 413, 415, 416, 424 (all original, cosmetic).
 
 ### English text check (`tools/ambtools/textcheck.py`, 2026-10-18)
