@@ -103,7 +103,10 @@ Determine_monster_action:
 	bmi.s	.Ok2
 	moveq.l	#100,d0
 ; ---------- Determine offensive/defensive --------
-.Ok2:	moveq.l	#0,d1			; Too dangerous ?
+.Ok2:	move.w	Body_conditions(a1),d1	; ADVANCED: Can move ?
+	andi.w	#Move_mask,d1
+	bne.s	.Offend			; No -> Defending is useless (e.g. lamed monsters cast instead)
+	moveq.l	#0,d1			; Too dangerous ?
 	move.b	Courage(a1),d1
 	sub.w	d0,d1
 	bmi.s	.Defend
