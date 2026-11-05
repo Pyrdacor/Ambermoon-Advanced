@@ -305,8 +305,12 @@ Combat_ModInit:
 	Free	Part_original_handle(a0)
 	tst.b	d0
 	beq.s	.Next
+	move.l	a0,-(sp)			; AMBERMOON ADVANCED: Zzz pointer during the appear animation
+	Push	Mptr,Default_Mptr+2700
+	move.l	(sp)+,a0
 	Set_anim	Appear_anim,a0		; Yes -> Appear !
 	jsr	Wait_4_animation
+	Pop	Mptr			; AMBERMOON ADVANCED
 	Get	Part_original_handle(a0),a1	; Get default frame
 	moveq.l	#0,d0
 	move.b	Anim_dat(a1),d0
@@ -1138,7 +1142,13 @@ Do_move:
 	jsr	Do_part_prompt
 .Go_on:	Get	Part_original_handle(a0),a1
 	moveq.l	#0,d5			; Get number of frames
+	; AMBERMOON ADVANCED: Use the move animation (slot 8) if present
+	move.b	#Move_anim,Move_anim_type
+	move.b	Anim_frame+Move_anim-1(a1),d5
+	bne.s	.Has_move
+	move.b	#Stand_anim,Move_anim_type
 	move.b	Anim_frame(a1),d5
+.Has_move:
 ;	btst	#0,Anim_motion(a1)		; Wave or circle ?
 ;	beq.s	.Circle
 ;	move.w	d5,d0			; Wave
@@ -1160,7 +1170,9 @@ Do_move:
 	tst.l	0(a1,d0.w)		; Empty ?
 	bne	.Done
 	move.l	a0,0(a1,d0.w)		; Copy to destination
-	Set_anim	Stand_anim,a0
+	move.b	Move_anim_type,Part_anim(a0)	; AMBERMOON ADVANCED: Set_anim with Stand_anim or Move_anim
+	st	Part_anim_index(a0)
+	bclr	#Part_wavedir,Part_flags(a0)
 	move.w	Part_Y(a0),d0		; Clear source
 	mulu.w	#6,d0
 	add.w	Part_X(a0),d0
@@ -4179,6 +4191,7 @@ CellA_completed:	ds.b 1
 Combat_icons:	ds.b 6
 Move_cells:	ds.b 5*6
 Random_animating:	ds.b 1
+Move_anim_type:	ds.b 1		; AMBERMOON ADVANCED: Stand_anim or Move_anim while moving
 Fighting:	ds.b 1
 Keep_original:	ds.b 1
 Night_palette:	ds.b 1

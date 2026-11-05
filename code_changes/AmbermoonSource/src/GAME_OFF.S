@@ -1652,6 +1652,7 @@ Magic_anim:	rs.b 1
 Hit_anim:	rs.b 1
 Die_anim:	rs.b 1
 Appear_anim:	rs.b 1
+Move_anim:	rs.b 1		; AMBERMOON ADVANCED: used for moving if present, otherwise Stand_anim
 
 Set_anim	macro
 	move.b	#\1,Part_anim(\2)		; Set animation type
