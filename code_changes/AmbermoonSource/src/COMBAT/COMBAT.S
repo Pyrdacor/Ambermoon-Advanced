@@ -297,20 +297,29 @@ Combat_ModInit:
 	jsr	Set_music
 ; ---------- Let monsters appear ------------------
 	sf	COMOBs_blocked		; Start display
-	lea.l	Combat_monsters,a0		; For all monsters
+	st	d6			; AMBERMOON ADVANCED: 1st pass bosses, 2nd pass the others
+.Pass:	lea.l	Combat_monsters,a0		; For all monsters
 	move.w	Nr_monsters,d7
 	bra	.Entry
 .Loop:	Get	Part_original_handle(a0),a1	; Appear animation ?
-	move.b	Anim_frame+Appear_anim-1(a1),d0
-	Free	Part_original_handle(a0)
+	moveq.l	#0,d0
+	tst.b	Anim_frame+Appear_anim-1(a1)
+	beq.s	.Free
+	btst	#2,$12(a1)			; AMBERMOON ADVANCED: Boss ?
+	sne	d0
+	eor.b	d6,d0			; Appears in this pass ? (-1 = yes)
+	not.b	d0
+.Free:	Free	Part_original_handle(a0)
 	tst.b	d0
 	beq.s	.Next
-	move.l	a0,-(sp)			; AMBERMOON ADVANCED: Zzz pointer during the appear animation
+	movem.l	d6/d7/a0,-(sp)		; AMBERMOON ADVANCED: Zzz pointer during the appear animation
 	Push	Mptr,Default_Mptr+2700
-	move.l	(sp)+,a0
+	movem.l	(sp)+,d6/d7/a0
+	movem.l	d6/d7,-(sp)
 	Set_anim	Appear_anim,a0		; Yes -> Appear !
 	jsr	Wait_4_animation
 	Pop	Mptr			; AMBERMOON ADVANCED
+	movem.l	(sp)+,d6/d7
 	Get	Part_original_handle(a0),a1	; Get default frame
 	moveq.l	#0,d0
 	move.b	Anim_dat(a1),d0
@@ -320,7 +329,11 @@ Combat_ModInit:
 	move.w	d0,COMOB_Frame(a1)
 .Next:	lea.l	Participant_data_size(a0),a0	; Next monster
 .Entry:	dbra	d7,.Loop
-	st	Random_animating		; Start random animations
+	tst.b	d6			; AMBERMOON ADVANCED: 2nd pass ?
+	beq.s	.Done
+	sf	d6			; No -> Now the others
+	bra	.Pass
+.Done:	st	Random_animating		; Start random animations
 	LOCAL
 ; ---------- Start 1st round when flight failed ---
 	tst.b 	Could_not_flee		; Could not flee ?
