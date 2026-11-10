@@ -74,6 +74,8 @@ Determine_monster_action:
 	move.b	Monster_type_status(a1),d0	; End monster ?
 	btst	#End_monster_type,d0
 	bne	.Offend
+	btst	#Passive_type,d0		; ADVANCED: Passive ? (never flees or retreats)
+	bne	.Offend
 ; ---------- Determine danger ---------------------
 	move.w	Life_points+Maximum(a1),d1	; Calculate local danger
 	add.w	Life_points+Magic(a1),d1	; 0...75
@@ -274,6 +276,10 @@ Select_offensive_monster_action:
 	movem.l	d0/d1/a2,-(sp)
 	move.b	Part_flags(a0),d1		; Capable of anything ?
 	andi.b	#%00001110,d1
+	btst	#Passive_type,Monster_type_status(a1)	; ADVANCED: Passive monsters only cast
+	beq.s	.Not_passive
+	andi.b	#1<<Part_magic_cap,d1
+.Not_passive:	tst.b	d1
 	beq	.Exit
 .Again:	jsr	Random			; Yes -> Select capability
 	andi.w	#$000f,d0

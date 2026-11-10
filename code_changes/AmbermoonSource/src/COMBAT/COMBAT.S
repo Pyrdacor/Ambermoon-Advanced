@@ -916,6 +916,8 @@ Do_combat_round:
 	dbra	d7,.Loop2
 	cmp.w	#1,Remaining_members	; More than one left ?
 	bls.s	.Exit
+	jsr	All_monsters_can_advance	; ADVANCED: None passive or unable to move ?
+	beq.s	.Exit
 	move.w	#226,d0			; "The monsters advance !"
 	jsr	Do_prompt
 	moveq.l	#6-1,d7			; Move all party members up
@@ -955,6 +957,36 @@ FUN_AnyPartyMemberInBattle:
 .Next:	dbra	d7,.Loop
 .Exit:	tst.l	d0
 	movem.l	(sp)+,d0/d7/a0/a1		; (movem doesn't change the flags)
+	rts
+
+; [ Can all monsters advance ? ] (ADVANCED)
+; All monsters advance together, so none of them may be passive, unable to move
+; (lamed, asleep, petrified), mad or panicked.
+;  OUT : ne - Yes, eq - No
+; All registers are restored
+All_monsters_can_advance:
+	movem.l	d0/d2/d7/a0/a1,-(sp)
+	moveq.l	#-1,d2			; Yes so far
+	lea.l	Combat_monsters,a0		; For all monsters
+	move.w	Nr_monsters,d7
+	bra.s	.Entry
+.Loop:	tst.b	Part_type(a0)		; Still there ?
+	beq.s	.Next
+	Get	Part_handle(a0),a1
+	move.w	Body_conditions(a1),d0	; Can move and is not mad or panicked ?
+	andi.w	#Move_mask|(1<<Mad)|(1<<Panicked),d0
+	btst	#Passive_type,Monster_type_status(a1)	; Passive ?
+	beq.s	.Free
+	moveq.l	#-1,d0			; Yes -> Can't advance either
+.Free:	Free	Part_handle(a0)		; (keeps d0)
+	tst.w	d0
+	beq.s	.Next
+	moveq.l	#0,d2			; This one can't advance
+	bra.s	.Exit
+.Next:	lea.l	Participant_data_size(a0),a0	; Next monster
+.Entry:	dbra	d7,.Loop
+.Exit:	tst.l	d2
+	movem.l	(sp)+,d0/d2/d7/a0/a1		; (movem doesn't change the flags)
 	rts
 
 ; [ Any party member who could be the leader ? ]
@@ -3491,6 +3523,8 @@ Select_uncontrollable_action:
 	btst	#Asleep,d0		; Asleep ?
 	bne.s	.Exit
 	btst	#Petrified,d0		; Petrified ?
+	bne.s	.Exit
+	btst	#Passive_type,Monster_type_status(a1)	; ADVANCED: Passive ? (no panic or mad actions)
 	bne.s	.Exit
 	btst	#Panicked,d0		; Panicked ?
 	beq.s	.No_panic

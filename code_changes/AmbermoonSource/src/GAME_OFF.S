@@ -677,6 +677,8 @@ Undead_type:	rs.b 1
 		rs.b 1			; (Demon)
 End_monster_type:	rs.b 1
 Animal_type:	rs.b 1
+		rs.b 3			; ADVANCED: earth, wind and fire spell damage bonus
+Passive_type:	rs.b 1		; ADVANCED: never attacks, moves or flees (only casts)
 
 ;*****************************************************************************
 ; These are the offsets for the dialogue data
