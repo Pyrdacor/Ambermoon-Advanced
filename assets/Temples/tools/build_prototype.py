@@ -11,6 +11,9 @@ Writes:
 - Palettes.amb: palette 59 ("Wüstentempel", S'Riel) and 60 ("Kaserne", S'Orel): the stone colours of palette 6 replaced by sandstone colours with
   the same meaning (1 brightest ... 6 darkest, 12/13 between), so all Gala walls, overlays and objects turn
   into sandstone without new graphics
+- 3Lab_data.amb: the same labdata 46 (2Lab_data and 3Lab_data must stay identical)
+- 2Object3D.amb 413-416: fire bowl halves (from textures/sketches) and the crystal stool and table
+- 2Overlay3D.amb 156/157: the switch overlays 133/134 with a blue-green knob
 - 2Wall3D.amb 193-200 / 2Overlay3D.amb 151-155: copies of the stone walls and overlays without the colours
   12/13, which are blue-green accents in palette 59
 - Save.00/Automap.amb: automap entries up to the new map (485 and 486 were missing too)
@@ -62,7 +65,14 @@ NEW_WALLS = [
     (99, SOLID, 1, 4, FRAMES + [(1, 71, 32, 8, 64, 64)]),
     (99, SOLID, 1, 4, FRAMES + [(1, 72, 48, 10, 32, 58)]),
     (99, SOLID, 1, 4, FRAMES + [(1, 74, 32, 10, 64, 52)]),
+    (99, SOLID, 1, 4, [(1, 156, 40, 16, 40, 32)]),     # 135: plain wall with switch (off), behind the painting
+    (99, SOLID, 1, 4, [(1, 157, 40, 16, 40, 32)]),     # 136: plain wall with switch (on)
 ]
+# 2Overlay3D.amb 156/157: copies of the switch overlays 133/134 with a blue-green knob (the sandstone plate made the
+# golden knob hard to see)
+SWITCH_OVERLAYS = {156: 133, 157: 134}
+SWITCH_KNOB = {0xb: 12, 0xa: 12, 0x7: 13, 0x8: 13}         # only inside the knob area x 17-28, y 10-20
+W_PLAIN_SWITCH_OFF, W_PLAIN_SWITCH_ON = 135, 136
 
 # labdata 5 walls (tile values) and object groups
 W_DOOR, W_ARCHES, W_PLAIN, W_PILLAR, W_FRIEZE, W_GATE = 101, 102, 103, 104, 105, 106
@@ -78,6 +88,33 @@ G_SPIKES = 41               # new object group: three floor spikes (object 39, t
 G_WEAPONS, G_TABLET, G_GOLEM, G_ROBE = 34, 38, 1, 14
 G_TOTEM = 40                # new object group: serpent totem from Sansri's temple (labdata 32, texture 28)
 TOTEM_OBJECT = bytes.fromhex('40000080001c0100605001200155')
+# new object group: fire bowl hanging from the ceiling (layers of textures/sketches/merged.pdn, the two bowl halves
+# exported as fire-bowl-back-v2.png and fire-bowl-front-v2.png). Sub-objects at the block centre, all scaled 3x like
+# the chain: bowl front (new texture), chain (object 27, texture 147) and a second chain piece above it up to the
+# ceiling, flame (texture 144 frame 0 like in merged.pdn, 8 frames), bowl back (new texture). The first sub-object
+# is drawn in front of the others.
+G_FIRE_BOWL = 42
+FIRE_BOWL_BACK_TEX, FIRE_BOWL_FRONT_TEX = 413, 414     # 2Object3D.amb
+FIRE_BOWL_SKETCHES = os.path.join(HERE, '..', 'textures', 'sketches')
+FIRE_BOWL_OBJECTS = [                                   # (texture, frames, width, height), appended as objects 43-45
+    (FIRE_BOWL_FRONT_TEX, 1, 32, 11),
+    (144, 8, 16, 36),
+    (FIRE_BOWL_BACK_TEX, 1, 32, 4),
+]
+CHAIN_OBJECT = 27
+# z of the lower edge (wall height 341, 3 units per pixel). merged.pdn row 0 (top of the flame) is the ceiling:
+# flame rows 0-35, chain rows 10-35 plus a second piece for rows -16-9 (its upper part is hidden in the ceiling),
+# back rows 32-35, front rows 33-43
+FIRE_BOWL_Z = {'front': 341 - 3 * 44, 'chain': 341 - 3 * 36, 'chain_top': 341 - 3 * 10, 'flame': 341 - 3 * 36,
+               'back': 341 - 3 * 36}
+# new object groups: crystal stool (from the stool 255) and crystal table (top 250 squashed on the column 254),
+# the wood/stone colours replaced by the blue-green accents 12/13 with highlights 1/2
+G_CRYSTAL_STOOL, G_CRYSTAL_TABLE = 43, 44
+CRYSTAL_STOOL_TEX, CRYSTAL_TABLE_TEX = 415, 416      # 2Object3D.amb
+CRYSTAL_WOOD = {0x1: 1, 0xb: 2, 0xa: 12, 0x7: 12, 0x8: 13}
+CRYSTAL_STONE = {1: 1, 2: 2, 3: 12, 4: 13, 5: 13, 6: 6}
+G_MORANIAN = 45            # new object group: a single Moranian in a robe (object 30 of group 28 without the guards)
+VAR_PAINTING_REMOVED, VAR_SWITCH_USED = 478, 479       # global variables (S'Riel: painting taken down, switch used)
 
 MAGIC_GUARDS = 68           # monster group: 4 magic guards
 TWO_GUARDS = 67             # 2 magic guards
@@ -144,77 +181,95 @@ class Proto:
 
 
 def sriel():
-    p = Proto(487, 17, 17)
+    """S'Riel (sketch of 2026-11-13): round 13x13 temple, ring corridor around a central chamber.
+    The painting above the entrance tile hides a switch which opens the secret wall to the chamber's north side."""
+    p = Proto(487, 13, 13)
     floor = set()
-
-    def rect(x0, y0, x1, y1):
-        for y in range(y0, y1 + 1):
-            for x in range(x0, x1 + 1):
-                floor.add((x, y))
-    rect(7, 7, 11, 11)          # reception hall
-    rect(3, 4, 4, 13)           # library (west wing)
-    rect(14, 4, 15, 13)         # east wing
-    rect(3, 13, 15, 14)         # foyer
-    rect(7, 3, 11, 4)           # bedchamber
-    floor |= {(9, 12), (5, 4), (5, 5)}  # hall exit, passage to the secret wall, reading nook (the cheat map jump lands on 5,5)
-    secret = (6, 4)
-
+    for x in range(4, 11):
+        floor |= {(x, 3), (x, 11)}                  # ring corridor north and south
+    for y in range(4, 11):
+        floor |= {(3, y), (11, y)}                  # west and east
+    floor |= {(4, 4), (10, 4), (4, 10), (10, 10)}   # rounded inner corners of the ring
+    floor |= {(6, 5), (7, 5), (8, 5), (6, 9), (7, 9), (8, 9)}       # central chamber
+    for y in range(6, 9):
+        for x in range(5, 10):
+            floor.add((x, y))
+    painting, secret, exit_ = (7, 10), (7, 4), (7, 12)
     for y in range(1, p.h + 1):
         for x in range(1, p.w + 1):
             if (x, y) in floor:
                 p.tiles[y][x] = 0
-            elif any((x + dx, y + dy) in floor for dx in (-1, 0, 1) for dy in (-1, 0, 1)) or (x, y) == secret:
+            elif any((x + dx, y + dy) in floor for dx in (-1, 0, 1) for dy in (-1, 0, 1)):
                 p.tiles[y][x] = W_PLAIN
     walls = {
-        # hall
-        (9, 6): W_ROSETTE, (8, 6): W_FRAME_R, (10, 6): W_FRAME_L, (6, 9): W_FRAMES_CREST, (12, 9): W_FRAMES_CREST,
-        (8, 12): W_FRAME_R, (10, 12): W_FRAME_L, (7, 12): W_PILLAR, (11, 12): W_PILLAR,
-        # bedchamber
-        (7, 2): W_WINDOW, (8, 2): W_WINDOWS2, (9, 2): W_ARCH_WINDOWS, (10, 2): W_WINDOWS2, (11, 2): W_WINDOW,
-        # foyer and exit
-        (9, 15): W_DOOR_FRAMED, (6, 15): W_FRAMES_WINDOW, (12, 15): W_FRAMES_WINDOW, (2, 14): W_HEAD, (16, 14): W_HEAD,
-        (8, 15): W_FRIEZE, (10, 15): W_FRIEZE,
-        # east wing
-        (16, 5): W_FRAMES_WINDOW, (16, 7): W_CREST, (16, 9): W_FRAMES_ROSETTE, (16, 11): W_CREST, (13, 8): W_FRAMES,
-        (13, 10): W_FRAMES, (16, 13): W_PAINT3,
+        # outer wall
+        exit_: W_DOOR_FRAMED, (6, 12): W_FRIEZE, (8, 12): W_FRIEZE, (5, 12): W_FRAMES_WINDOW, (9, 12): W_FRAMES_WINDOW,
+        (7, 2): W_FRAMES_ROSETTE, (5, 2): W_FRAMES_WINDOW, (9, 2): W_FRAMES_WINDOW,
+        (2, 7): W_FRAMES_CREST, (2, 5): W_FRAMES_WINDOW, (2, 9): W_FRAMES_WINDOW,
+        (12, 7): W_FRAMES_CREST, (12, 5): W_FRAMES_WINDOW, (12, 9): W_FRAMES_WINDOW,
+        (3, 3): W_PILLAR, (11, 3): W_PILLAR, (3, 11): W_PILLAR, (11, 11): W_PILLAR,
+        # central block (seen from the corridor and from the chamber)
+        painting: W_PAINT1, (6, 10): W_FRAMES, (8, 10): W_FRAMES, (5, 10): W_FRIEZE, (9, 10): W_FRIEZE,
+        (6, 4): W_FRAMES, (8, 4): W_FRAMES, (5, 4): W_FRIEZE, (9, 4): W_FRIEZE,
+        (4, 7): W_CREST, (4, 5): W_PILLAR, (4, 9): W_PILLAR,
+        (10, 6): W_SHELF1, (10, 7): W_SHELF2, (10, 8): W_SHELF1, (10, 5): W_PILLAR, (10, 9): W_PILLAR,
     }
-    for y in range(4, 14):                      # library shelves on both sides
-        p.tiles[y][2] = W_SHELF1 if y % 2 else W_SHELF2
-        if p.tiles[y][5] == W_PLAIN and y > 4:
-            p.tiles[y][5] = W_SHELF2 if y % 2 else W_SHELF1
     for (x, y), t in walls.items():
         p.tiles[y][x] = t
-    objects = {
-        (7, 7): G_COLUMN, (11, 7): G_COLUMN, (7, 11): G_COLUMN, (11, 11): G_COLUMN, (9, 9): G_MOSAIC_GREEN,
-        (7, 3): G_CHEST, (9, 3): G_BED, (11, 3): G_TABLE,
-        (3, 9): G_TABLE,
-        (15, 4): G_CHEST, (15, 7): G_STATUE, (15, 10): G_TOTEM,
-        (3, 14): G_CANDLE, (15, 14): G_CANDLE,
-    }
+    objects = {xy: G_FIRE_BOWL for xy in ((7, 3), (7, 11), (4, 4), (10, 4), (4, 10), (10, 10), (3, 7), (11, 7),
+                                          (6, 6), (8, 6), (6, 8), (8, 8))}
+    objects.update({
+        (5, 7): G_BED, (5, 8): G_CHEST, (7, 7): G_CRYSTAL_TABLE, (8, 7): G_CRYSTAL_STOOL,
+        (7, 6): G_MORANIAN,                         # a Moranian at the table, disappears after the arrival text
+        # carpets
+        (5, 3): G_MOSAIC_GREEN, (9, 3): G_MOSAIC_GREEN, (5, 11): G_MOSAIC_GREEN, (9, 11): G_MOSAIC_GREEN,
+        (3, 5): G_MOSAIC_ORANGE, (3, 9): G_MOSAIC_ORANGE, (11, 5): G_MOSAIC_ORANGE, (11, 9): G_MOSAIC_ORANGE,
+        (7, 5): G_MOSAIC, (7, 9): G_MOSAIC,
+    })
     for (x, y), g in objects.items():
         p.tiles[y][x] = g
 
     text = lambda n, trigger=2: ev(0x04, 0xff, trigger, 0, 0, n)    # noqa: E731
-    p.chain(14, [word(ev(0x01, 37, 41, 2, 0xff, 0), 6, 520)], (9, 15))                 # 1 exit -> Morag
-    arrival = p.chain(0, [text(1, 3), word(ev(0x0e, 0x01, 1), 6, 0)], (9, 10))         # 2 S'Arin appears
-    p.chains[-1][1][1] = word(ev(0x0e, 0x01, 1), 6, p.event_bit(arrival))
-    p.chain(0, [text(2)], (2, 6))                                                      # 3-6 readable shelves
-    p.chain(0, [text(3)], (2, 8))
-    p.chain(0, [text(4)], (2, 10))
-    p.chain(0, [text(5)], (2, 12))
-    lever = p.chain(9, [], (2, 4))                                                     # 7 loose book (shelf at the north wall)
-    p.chains[-1] = (9, [ev(0x0d, 0x0e, 1, 0, 0, 0, 0, 0, 0xff, 0xff), text(6, 0),
-                        word(ev(0x0a, secret[0], secret[1]), 6, 0), word(ev(0x0e, 0x01, 1), 6, p.event_bit(lever))])
-    p.chain(0, [text(7)], (11, 3))                                                     # 8 diary
-    p.chain(13, [ev(0x03, 75, 0, 0xff, 116 - 1 + 1)], (7, 3))                           # 9 chest 116
-    p.chain(13, [ev(0x03, 50, 0, 0xff, 117 - 1 + 1)], (15, 4))                          # 10 chest 117
-    p.chars = [(MAGIC_GUARDS, 0x06, G_GUARD, 8, 8), (MAGIC_GUARDS, 0x06, G_GUARD, 10, 8)]
+    first = lambda: sum(len(c[1]) for c in p.chains)                # map event index of the next chain   # noqa: E731
+
+    def cond(typ, value, obj=0, if_false=0xffff):
+        return word(word(ev(0x0d, typ, value), 6, obj), 8, if_false)
+    p.chain(14, [word(ev(0x01, 37, 41, 2, 0xff, 0), 6, 520)], exit_)                   # 1 exit -> Morag
+    music = lambda song: ev(0x14, 0, song)                          # sound event, b1 = 0: music b2 (255 = map music)   # noqa: E731
+    # character bit of the chamber guard (map character 1): 1 = inactive (hidden), 0 = active
+    guard = lambda active: word(ev(0x0e, 0x04, 0 if active else 1), 6, (p.index - 1) * 32 + 0)   # noqa: E731
+    arrival = p.chain(0, [], (7, 5))           # 2 arrival: guard hidden, dramatic music, delay, text, Moranian vanishes,
+    p.chains[-1][1].extend([guard(False), music(30), word(ev(0x19), 6, 500), text(1, 3),   # guard appears, map music
+                            word(ev(0x0a, 7, 6), 6, 0), guard(True), music(255),
+                            word(ev(0x0e, 0x01, 1), 6, p.event_bit(arrival))])
+    # 3 painting: eye -> text, painting taken down (wall with switch), hand (false branch of the eye) -> switch on, secret wall opens
+    base = first()
+    p.chain(0, [
+        cond(0x14, 1, 0, base + 5),                                         # 0 eye? (else hand branch)
+        cond(0x00, 0, VAR_PAINTING_REMOVED),                                # 1 painting still hanging?
+        text(5, 0),                                                         # 2 "Lyramion and its moons ..."
+        word(ev(0x0a, painting[0], painting[1]), 6, W_PLAIN_SWITCH_OFF),   # 3
+        word(ev(0x0e, 0x00, 1), 6, VAR_PAINTING_REMOVED),                   # 4
+        cond(0x0e, 1),                                                      # 5 hand?
+        cond(0x00, 1, VAR_PAINTING_REMOVED),                                # 6 switch visible?
+        cond(0x00, 0, VAR_SWITCH_USED),                                     # 7 not used yet?
+        text(6, 0),                                                         # 8 "the switch ..."
+        word(ev(0x0a, painting[0], painting[1]), 6, W_PLAIN_SWITCH_ON),    # 9
+        word(ev(0x0a, secret[0], secret[1]), 6, 0),                         # 10 secret wall opens
+        word(ev(0x0e, 0x00, 1), 6, VAR_SWITCH_USED),                        # 11
+    ], painting)
+    p.chain(0, [text(2)], (10, 6))                                                     # 4-6 readable shelves
+    p.chain(0, [text(3)], (10, 7))
+    p.chain(0, [text(4)], (10, 8))
+    p.chain(0, [text(7)], (7, 7))                                                      # 7 diary on the table
+    p.chain(13, [ev(0x03, 50, 0, 0xff, 117)], (5, 8))                                  # 8 chest 117 (key 388 for S'Orel)
+    p.chars = [(TWO_GUARDS, GUARD_STAY, G_GUARD, 7, 6), (TWO_GUARDS, GUARD_STAY, G_GUARD, 7, 11)]
     p.header = dict(flags=0x0899, music=22, labdata=NEW_LAB, palette=59, world=2)
     p.texts = SRIEL_TEXTS
     p.open_tiles = [secret]
-    p.views = [(9, 10, 0, 'Halle, Blick nach Norden', False), (9, 14, 0, 'Foyer, Blick auf die Halle', False),
-               (3, 12, 0, 'Bibliothek, Blick nach Norden', False), (5, 4, 90, 'Geheimgang, Blick ins Schlafgemach', True),
-               (9, 4, 0, 'Schlafgemach', True), (14, 12, 0, 'Ostflügel, Blick nach Norden', False)]
+    p.views = [(7, 11, 0, 'Eingang, Blick auf das Gemaelde', False), (3, 10, 0, 'Westgang, Blick nach Norden', False),
+               (7, 3, 180, 'Nordgang, Blick auf die Geheimwand', False), (7, 9, 0, 'Zentralraum, Blick nach Norden', True),
+               (9, 7, 270, 'Zentralraum, Blick nach Westen', False), (11, 4, 180, 'Ostgang, Blick nach Sueden', False)]
     return p
 
 
@@ -324,12 +379,13 @@ SRIEL_TEXTS = {
         "\"S'ARIN ZÄHLT ALLES, SOGAR DIE SÄULEN UND KUGELN IN SEINEM EIGENEN PALAST. WER IHN BESUCHT, SOLLTE ES IHM GLEICHTUN.\"",
         "EIN SCHMALES BUCH TRÄGT DEN TITEL \"VOM WESEN DES SCHEINS\". AM RAND HAT S'RIEL NOTIERT:^ "
         "\"S'ENDAR TRAUT NICHT EINMAL SEINEN EIGENEN WÄNDEN. VIELE DAVON GIBT ES GAR NICHT. EIN BEHERZTER SCHRITT VERRÄT MEHR ALS JEDES AUGE.\"",
-        "AUF EINEM PERGAMENT STEHT:^ \"S'TROG SPRINGT VON ORT ZU ORT WIE EIN SANDFLOH. WER IHN STELLEN WILL, MUSS IHM ZWEIMAL BEGEGNEN.^ "
-        "S'KATS LABOR STINKT NACH GIFT UND ANGST. DIE KREATUREN IN SEINEN KÄFIGEN STAMMEN NICHT VON MORAG.\"",
-        "EIN ALTES VERZEICHNIS DER RATSMITGLIEDER. HINTER S'LORWINS NAMEN STEHT:^ "
-        "\"DER MÄCHTIGSTE VON UNS. SEIN WASSER HEILT IHN. SOLANGE ES FLIEßT, IST ER KAUM ZU BESIEGEN.\"^ "
-        "GANZ OBEN IM REGAL NEBEN DER NORDWAND STEHT EIN BAND WEITER VOR ALS DIE ANDEREN.",
-        "IHR ZIEHT AN DEM VORSTEHENDEN BAND. MIT EINEM LEISEN KLICKEN GLEITET IRGENDWO IN DER NÄHE EINE WAND ZUR SEITE.",
+        "EIN ALTES VERZEICHNIS DER RATSMITGLIEDER. NEBEN EINIGE NAMEN HAT S'RIEL NOTIZEN GESCHRIEBEN:^ "
+        "S'TROG: \"SPRINGT VON ORT ZU ORT WIE EIN SANDFLOH. WER IHN STELLEN WILL, MUSS IHM ZWEIMAL BEGEGNEN.\"^ "
+        "S'KAT: \"SEIN LABOR STINKT NACH GIFT UND ANGST. DIE KREATUREN IN SEINEN KÄFIGEN STAMMEN NICHT VON MORAG.\"^ "
+        "S'LORWIN: \"DER MÄCHTIGSTE VON UNS. SEIN WASSER HEILT IHN. SOLANGE ES FLIEßT, IST ER KAUM ZU BESIEGEN.\"",
+        "~LEAD~ BETRACHTET DAS GEMÄLDE: \"DAS IST DOCH LYRAMION MIT SEINEN MONDEN! EIN SELTSAMES BILD FÜR EIN RATSMITGLIED.\"^ "
+        "IHR BESCHLIESST, DAS GEMÄLDE VON DER WAND ZU NEHMEN. DAHINTER KOMMT EIN SCHALTER ZUM VORSCHEIN.",
+        "IHR LEGT DEN SCHALTER UM. MIT EINEM DUMPFEN KNIRSCHEN GLEITET IRGENDWO IM NORDEN EINE WAND ZUR SEITE.",
         "S'RIELS TAGEBUCH. DIE LETZTEN SEITEN SIND ERST VOR KURZEM GESCHRIEBEN WORDEN:^ "
         "\"DER RAT HAT BESCHLOSSEN, DIE LUFTSCHIFFE GEGEN LYRAMION ZU SCHICKEN. ICH HABE ALS EINZIGER DAGEGEN GESTIMMT. "
         "SEITDEM LÄSST S'ARIN MICH NICHT MEHR AUS DEN AUGEN.^ SOLLTE MIR ETWAS ZUSTOßEN, FINDET IHR IN MEINER TRUHE ALLES, "
@@ -342,12 +398,13 @@ SRIEL_TEXTS = {
         "\"S'ARIN COUNTS EVERYTHING, EVEN THE PILLARS AND SPHERES IN HIS OWN PALACE. WHOEVER VISITS HIM SHOULD DO THE SAME.\"",
         "A SLIM BOOK IS TITLED \"ON THE NATURE OF ILLUSION\". IN THE MARGIN S'RIEL HAS WRITTEN:^ "
         "\"S'ENDAR DOES NOT EVEN TRUST HIS OWN WALLS. MANY OF THEM DO NOT EXIST AT ALL. A BOLD STEP REVEALS MORE THAN ANY EYE.\"",
-        "A PARCHMENT READS:^ \"S'TROG JUMPS FROM PLACE TO PLACE LIKE A SAND FLEA. WHOEVER WANTS TO CATCH HIM MUST MEET HIM TWICE.^ "
-        "S'KAT'S LABORATORY REEKS OF POISON AND FEAR. THE CREATURES IN HIS CAGES ARE NOT FROM MORAG.\"",
-        "AN OLD REGISTER OF THE COUNCIL MEMBERS. NEXT TO S'LORWIN'S NAME IT SAYS:^ "
-        "\"THE MIGHTIEST OF US. HIS WATER HEALS HIM. AS LONG AS IT FLOWS, HE IS HARDLY TO BE DEFEATED.\"^ "
-        "AT THE TOP OF THE SHELF NEXT TO THE NORTH WALL ONE VOLUME STICKS OUT FURTHER THAN THE OTHERS.",
-        "YOU PULL THE PROTRUDING VOLUME. WITH A QUIET CLICK A WALL NEARBY SLIDES ASIDE.",
+        "AN OLD REGISTER OF THE COUNCIL MEMBERS. S'RIEL HAS WRITTEN NOTES NEXT TO SOME OF THE NAMES:^ "
+        "S'TROG: \"JUMPS FROM PLACE TO PLACE LIKE A SAND FLEA. WHOEVER WANTS TO CATCH HIM MUST MEET HIM TWICE.\"^ "
+        "S'KAT: \"HIS LABORATORY REEKS OF POISON AND FEAR. THE CREATURES IN HIS CAGES ARE NOT FROM MORAG.\"^ "
+        "S'LORWIN: \"THE MIGHTIEST OF US. HIS WATER HEALS HIM. AS LONG AS IT FLOWS, HE IS HARDLY TO BE DEFEATED.\"",
+        "~LEAD~ LOOKS AT THE PAINTING: \"THAT'S LYRAMION WITH ITS MOONS! A STRANGE PICTURE FOR A COUNCIL MEMBER.\"^ "
+        "YOU DECIDE TO TAKE THE PAINTING OFF THE WALL. BEHIND IT A SWITCH COMES TO LIGHT.",
+        "YOU FLIP THE SWITCH. WITH A DULL GRINDING SOUND A WALL SOMEWHERE TO THE NORTH SLIDES ASIDE.",
         "S'RIEL'S DIARY. THE LAST PAGES WERE WRITTEN ONLY RECENTLY:^ "
         "\"THE COUNCIL HAS DECIDED TO SEND THE AIRSHIPS AGAINST LYRAMION. I WAS THE ONLY ONE WHO VOTED AGAINST IT. "
         "SINCE THEN S'ARIN HAS NOT LET ME OUT OF HIS SIGHT.^ SHOULD ANYTHING HAPPEN TO ME, YOU WILL FIND EVERYTHING I HAVE GATHERED "
@@ -412,6 +469,11 @@ def recoloured_graphics(lab):
         w, h = sizes[n]
         ovl_map[n] = FIRST_OVERLAY_COPY + k
         ovl_files[ovl_map[n]] = remap(overlays[n], w, h)
+    for copy, n in SWITCH_OVERLAYS.items():
+        rows = tx.decode_texture(overlays[n], 40, 32)
+        rows = [[SWITCH_KNOB.get(v, v) if 17 <= x <= 28 and 10 <= y <= 20 else v for x, v in enumerate(row)]
+                for y, row in enumerate(rows)]
+        ovl_files[copy] = tx.encode_texture(rows, 40)
     return wall_files, ovl_files, wall_map, ovl_map
 
 
@@ -429,6 +491,26 @@ def build_labdata(raw5, wall_map=None, ovl_map=None):
         spikes[2 + k * 8:10 + k * 8] = struct.pack('>HHHH', x, y, 0, 39)
     lab.object_groups.append(spikes)
     assert len(lab.object_groups) == G_SPIKES
+    first = len(lab.objects) + 1
+    for tex, frames, w, h in FIRE_BOWL_OBJECTS:
+        lab.objects.append(bytearray(struct.pack('>IHBBBBHH', 0x40000300, tex, frames, 0, w, h, w * 3, h * 3)))
+    bowl = bytearray(66)
+    for k, (z, obj) in enumerate(((FIRE_BOWL_Z['front'], first), (FIRE_BOWL_Z['chain'], CHAIN_OBJECT),
+                                  (FIRE_BOWL_Z['chain_top'], CHAIN_OBJECT), (FIRE_BOWL_Z['flame'], first + 1),
+                                  (FIRE_BOWL_Z['back'], first + 2))):
+        bowl[2 + k * 8:10 + k * 8] = struct.pack('>HHHH', 255, 255, z, obj)
+    lab.object_groups.append(bowl)
+    assert len(lab.object_groups) == G_FIRE_BOWL
+    for tex, w, h, x in ((CRYSTAL_STOOL_TEX, 32, 30, 0), (CRYSTAL_TABLE_TEX, 48, 41, 384)):    # stool at the left edge
+        lab.objects.append(bytearray(struct.pack('>IHBBBBHH', 0x40000080, tex, 1, 0, w, h, w * 3, h * 3)))
+        group = bytearray(66)
+        group[2:10] = struct.pack('>HHHH', x, 255, 0, len(lab.objects))
+        lab.object_groups.append(group)
+    assert len(lab.object_groups) == G_CRYSTAL_TABLE
+    group = bytearray(66)
+    group[2:10] = struct.pack('>HHHH', 255, 255, 0, 30)
+    lab.object_groups.append(group)
+    assert len(lab.object_groups) == G_MORANIAN
     for tex, flags, automap, colour, overlays in NEW_WALLS:
         header = bytearray(struct.pack('>IBBBB', flags, tex, automap, colour, len(overlays)))
         lab.walls.append((header, [bytearray(o) for o in overlays]))
@@ -437,6 +519,61 @@ def build_labdata(raw5, wall_map=None, ovl_map=None):
         for ov in ovs:
             ov[1] = (ovl_map or {}).get(ov[1], ov[1])
     return ld.serialize(lab)
+
+
+def fire_bowl_textures():
+    """The two bowl halves (palette 6 colours, which are the same indices in the temple palettes), 32 pixels wide
+    like merged.pdn."""
+    from PIL import Image
+    sys.path.insert(0, os.path.join(REPO, 'tools', 'ambtools'))
+    import textures as tx
+    pal6 = amb.read_container(os.path.join(DATA, 'Palettes.amb'))[BASE_PALETTE]
+    pal6 = [struct.unpack('>H', pal6[i * 2:i * 2 + 2])[0] for i in range(16)]
+
+    def load(name):
+        im = Image.open(os.path.join(FIRE_BOWL_SKETCHES, name))
+        pal, px, transparent = im.getpalette(), im.load(), im.info['transparency']
+        rows = []
+        for y in range(im.height):
+            row = [0] * im.width
+            for x in range(im.width):
+                v = px[x, y]
+                if v != transparent:
+                    r, g, b = pal[v * 3:v * 3 + 3]
+                    row[x] = pal6.index(((r // 17) << 8) | ((g // 17) << 4) | (b // 17), 1)
+            rows.append(row)
+        return tx.encode_texture(rows, im.width)
+    return {FIRE_BOWL_BACK_TEX: load('fire-bowl-back-v2.png'), FIRE_BOWL_FRONT_TEX: load('fire-bowl-front-v2.png')}
+
+
+def crystal_textures():
+    """Crystal stool and table from the wooden stool 255, the round top 250 and the column 254."""
+    sys.path.insert(0, os.path.join(REPO, 'tools', 'ambtools'))
+    import textures as tx
+    objects = amb.read_container(os.path.join(DATA, '3Object3D.amb'))     # 250, 254 and 255 are only there
+    stool = tx.decode_texture(objects[255], 32, 30)
+    top = tx.decode_texture(objects[250], 48, 48)
+    leg = tx.decode_texture(objects[254], 16, 41)
+    stool = [[CRYSTAL_WOOD.get(v, v) for v in row] for row in stool]
+    w, top_h, leg_h = 48, 16, 26
+    h = top_h - 4 + leg_h + 3
+    table = [[0] * w for _ in range(h)]
+    for y in range(h - 7, h):                       # floor shadow like the one of the stool (5 rim, 6 inside)
+        for x in range(w):
+            d = ((x - 24) / 16) ** 2 + ((y - (h - 3.5)) / 3.2) ** 2
+            if d <= 1:
+                table[y][x] = 6 if d < 0.75 else 5
+    for y in range(leg_h):                          # lower part of the column with the rounded foot
+        for x in range(16):
+            v = leg[y + 41 - leg_h][x]
+            if v:
+                table[top_h - 4 + y][16 + x] = CRYSTAL_STONE.get(v, v)
+    for y in range(top_h):                          # the round top squashed to an ellipse (every third row)
+        for x in range(w):
+            v = top[min(47, y * 3 + 1)][x]
+            if v:
+                table[y][x] = CRYSTAL_STONE.get(v, v)
+    return {CRYSTAL_STOOL_TEX: tx.encode_texture(stool, 32), CRYSTAL_TABLE_TEX: tx.encode_texture(table, w)}
 
 
 def build_palette(stone):
@@ -522,6 +659,7 @@ def preview(p, lab_raw, pal_raw, wall_files, ovl_files):
     a.labs[(2, NEW_LAB)] = ld.parse(lab_raw)
     a.walls.update(wall_files)
     a.overlays.update(ovl_files)
+    a.objects.update({**fire_bowl_textures(), **crystal_textures()})
     for header, ovs in a.labs[(2, NEW_LAB)].walls:
         for ov in ovs:
             a.ovl_size.setdefault(ov[1], (ov[4], ov[5]))
@@ -630,6 +768,7 @@ def main():
 
     amnp_set('2Wall3D.amb', wall_files)
     amnp_set('2Overlay3D.amb', ovl_files)
+    amnp_set('2Object3D.amb', {**fire_bowl_textures(), **crystal_textures()})
     amnp_set('Monster_groups.amb', {SIX_GUARDS: SIX_GUARDS_DATA})
 
     labs = unpack('2Lab_data.amb', 'AMPC')
@@ -637,6 +776,9 @@ def main():
     assert n in (NEW_LAB - 1, NEW_LAB), n
     open(sub(labs, NEW_LAB), 'wb').write(lab_raw)
     pack('2Lab_data.amb', 'AMPC', labs)
+    labs = unpack('3Lab_data.amb', 'AMPC')          # 2Lab_data and 3Lab_data must stay identical
+    open(sub(labs, NEW_LAB), 'wb').write(lab_raw)
+    pack('3Lab_data.amb', 'AMPC', labs)
 
     pals = unpack('Palettes.amb', 'AMPC')
     n = len(os.listdir(pals))
@@ -649,7 +791,7 @@ def main():
     m2 = amb.read_container(os.path.join(DATA, '2Map_data.amb'))
     for k in range(1, max(p.index for p in protos) + 1):
         f = sub(autos, k)
-        if not os.path.exists(f):
+        if not os.path.exists(f) or k in [p.index for p in protos]:     # prototype sizes may change
             d = m2.get(k, b'')
             size = math.ceil(d[4] * d[5] / 8) if d and d[2] == 1 else 0
             open(f, 'wb').write(bytes(size))
