@@ -75,6 +75,9 @@ Die Steinfarben stammen aus einem Helligkeitsabgleich von Wand 99 mit der Sandst
 | 135 | 99 | 156 | | **neu:** Grundwand mit Schalter (aus), hinter dem Gemälde in S'Riels Tempel. Overlay 156 = Kopie von 133 mit blaugrünem Knopf |
 | 136 | 99 | 157 | | **neu:** Grundwand mit Schalter (an), Overlay 157 = Kopie von 134 mit blaugrünem Knopf |
 | 137 | 201 | | | **neu:** Gittertor, durchsichtig (Flags 0x40000088 mit Transparenz 0x08, blockiert die Sicht nicht). Textur 201 = Sandsteinwand 195 mit dem Gittertor aus Wandtextur 74 (Bogen x 51–84), die Lücken bleiben Farbe 0 und sind dadurch durchsichtig, das äußerste Pixel links und rechts ist dunkel, die schwarzen Fugen des Sandsteins sind Farbe 6 |
+| 138 | 100 | 158 | | **neu:** Reliefpfeiler mit dem Gemälde von Lyramion und seinen Monden (Overlay 158 = `textures/sketches/lyramion-image.png`, auf 64×40 verkleinert, Farben 1–15 von Palette 59), S'Riel |
+| 139 | 100 | 156 | | **neu:** Reliefpfeiler mit blaugrünem Schalter (aus), hinter dem Gemälde (beide auf Höhe y = 40 zentriert) |
+| 140 | 100 | 157 | | **neu:** Reliefpfeiler mit blaugrünem Schalter (an) |
 
 Die Spalte „Textur“ nennt das Original. In den Daten steht bei den kopierten Texturen die Kopie (siehe oben). Im Map-Feld steht die Wandnummer direkt (101 = erste Wand). Weitere Overlays (Schalter, Schilder, Rätselmund, Ketten …) lassen sich jederzeit als neue Wände anhängen. Overlays müssen auf dem Amiga an 8-Pixel-Grenzen liegen (x = 0, 8, 16, …).
 

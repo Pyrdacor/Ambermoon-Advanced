@@ -13,7 +13,8 @@ Writes:
   into sandstone without new graphics
 - 3Lab_data.amb: the same labdata 46 (2Lab_data and 3Lab_data must stay identical)
 - 2Object3D.amb 413-416: fire bowl halves (from textures/sketches) and the crystal stool and table
-- 2Overlay3D.amb 156/157: the switch overlays 133/134 with a blue-green knob
+- 2Overlay3D.amb 156/157: the switch overlays 133/134 with a blue-green knob, 158: the painting of Lyramion
+- 2Wall3D.amb 201: the sandstone wall with the see-through barred gate
 - 2Wall3D.amb 193-200 / 2Overlay3D.amb 151-155: copies of the stone walls and overlays without the colours
   12/13, which are blue-green accents in palette 59
 - Save.00/Automap.amb: automap entries up to the new map (485 and 486 were missing too)
@@ -81,6 +82,16 @@ BARS_TEX, BARS_SOURCE = 201, 74
 TRANSPARENT_SOLID = 0x40000088                       # blocks movement, transparent, does not block sight
 NEW_WALLS.append((BARS_TEX, TRANSPARENT_SOLID, 1, 4, []))  # 137: barred gate
 W_BARS = 137
+# relief pillar (wall 104) with the painting and with the blue-green switch below it (S'Riel)
+NEW_WALLS += [
+    (100, SOLID, 1, 4, [(1, 158, 32, 20, 64, 40)]),  # 138: relief pillar with the painting of Lyramion and its moons
+    (100, SOLID, 1, 4, [(1, 156, 40, 24, 40, 32)]),  # 139: relief pillar with switch (off), behind the painting (both centred at y 40)
+    (100, SOLID, 1, 4, [(1, 157, 40, 24, 40, 32)]),  # 140: relief pillar with switch (on)
+]
+W_PILLAR_PAINTING, W_PILLAR_SWITCH_OFF, W_PILLAR_SWITCH_ON = 138, 139, 140
+# 2Overlay3D.amb 158: Robert's painting textures/sketches/lyramion-image.png (magenta background) area-averaged to
+# 64x40 and mapped to the nearest of the colours 1-15 of palette 59
+PAINTING_OVERLAY, PAINTING_SIZE = 158, (64, 40)
 
 # labdata 5 walls (tile values) and object groups
 W_DOOR, W_ARCHES, W_PLAIN, W_PILLAR, W_FRIEZE, W_GATE = 101, 102, 103, 104, 105, 106
@@ -206,24 +217,25 @@ def sriel():
         for x in range(5, 10):
             floor.add((x, y))
     painting, secret, exit_ = (7, 10), (7, 4), (7, 12)
+    # walls only 131-133 (Robert, 2026-11-14), corners as relief pillars (104): a corner has floor on two
+    # perpendicular sides or only diagonally
     for y in range(1, p.h + 1):
         for x in range(1, p.w + 1):
             if (x, y) in floor:
                 p.tiles[y][x] = 0
             elif any((x + dx, y + dy) in floor for dx in (-1, 0, 1) for dy in (-1, 0, 1)):
-                p.tiles[y][x] = W_PLAIN
+                ns = (x, y - 1) in floor or (x, y + 1) in floor
+                we = (x - 1, y) in floor or (x + 1, y) in floor
+                p.tiles[y][x] = W_FRAMES if ns != we else W_PILLAR
     walls = {
         # outer wall
-        exit_: W_DOOR_FRAMED, (6, 12): W_FRIEZE, (8, 12): W_FRIEZE, (5, 12): W_FRAMES_WINDOW, (9, 12): W_FRAMES_WINDOW,
+        exit_: W_DOOR_FRAMED, (5, 12): W_FRAMES_WINDOW, (9, 12): W_FRAMES_WINDOW,
         (7, 2): W_FRAMES_ROSETTE, (5, 2): W_FRAMES_WINDOW, (9, 2): W_FRAMES_WINDOW,
-        (2, 7): W_FRAMES_CREST, (2, 5): W_FRAMES_WINDOW, (2, 9): W_FRAMES_WINDOW,
-        (12, 7): W_FRAMES_CREST, (12, 5): W_FRAMES_WINDOW, (12, 9): W_FRAMES_WINDOW,
-        (3, 3): W_PILLAR, (11, 3): W_PILLAR, (3, 11): W_PILLAR, (11, 11): W_PILLAR,
+        (2, 7): W_FRAMES_ROSETTE, (2, 5): W_FRAMES_WINDOW, (2, 9): W_FRAMES_WINDOW,
+        (12, 7): W_FRAMES_ROSETTE, (12, 5): W_FRAMES_WINDOW, (12, 9): W_FRAMES_WINDOW,
         # central block (seen from the corridor and from the chamber)
-        painting: W_PAINT1, (6, 10): W_FRAMES, (8, 10): W_FRAMES, (5, 10): W_FRIEZE, (9, 10): W_FRIEZE,
-        (6, 4): W_FRAMES, (8, 4): W_FRAMES, (5, 4): W_FRIEZE, (9, 4): W_FRIEZE,
-        (4, 7): W_CREST, (4, 5): W_PILLAR, (4, 9): W_PILLAR,
-        (10, 6): W_SHELF1, (10, 7): W_SHELF2, (10, 8): W_SHELF1, (10, 5): W_PILLAR, (10, 9): W_PILLAR,
+        painting: W_PILLAR_PAINTING, (4, 7): W_FRAMES_ROSETTE,
+        (10, 6): W_SHELF1, (10, 7): W_SHELF2, (10, 8): W_SHELF1,
     }
     for (x, y), t in walls.items():
         p.tiles[y][x] = t
@@ -259,13 +271,13 @@ def sriel():
         cond(0x14, 1, 0, base + 5),                                         # 0 eye? (else hand branch)
         cond(0x00, 0, VAR_PAINTING_REMOVED),                                # 1 painting still hanging?
         text(5, 0),                                                         # 2 "Lyramion and its moons ..."
-        word(ev(0x0a, painting[0], painting[1]), 6, W_PLAIN_SWITCH_OFF),   # 3
+        word(ev(0x0a, painting[0], painting[1]), 6, W_PILLAR_SWITCH_OFF),  # 3
         word(ev(0x0e, 0x00, 1), 6, VAR_PAINTING_REMOVED),                   # 4
         cond(0x0e, 1),                                                      # 5 hand?
         cond(0x00, 1, VAR_PAINTING_REMOVED),                                # 6 switch visible?
         cond(0x00, 0, VAR_SWITCH_USED),                                     # 7 not used yet?
         text(6, 0),                                                         # 8 "the switch ..."
-        word(ev(0x0a, painting[0], painting[1]), 6, W_PLAIN_SWITCH_ON),    # 9
+        word(ev(0x0a, painting[0], painting[1]), 6, W_PILLAR_SWITCH_ON),   # 9
         word(ev(0x0a, secret[0], secret[1]), 6, 0),                         # 10 secret wall opens
         word(ev(0x0e, 0x00, 1), 6, VAR_SWITCH_USED),                        # 11
     ], painting)
@@ -485,7 +497,40 @@ def recoloured_graphics(lab):
         for x in xs:
             gate[y][x] = 6 if x - xs[0] < 1 or xs[-1] - x < 1 else src[y][x]
     wall_files[BARS_TEX] = tx.encode_texture(gate, 128)
+    ovl_files[PAINTING_OVERLAY] = painting_overlay(tx)
     return wall_files, ovl_files, wall_map, ovl_map
+
+
+def painting_overlay(tx):
+    from PIL import Image
+    pal = build_palette(SANDSTONE)
+    pal = [struct.unpack('>H', pal[i * 2:i * 2 + 2])[0] for i in range(16)]
+    pal = [((c >> 8) * 17, ((c >> 4) & 15) * 17, (c & 15) * 17) for c in pal]
+    im = Image.open(os.path.join(FIRE_BOWL_SKETCHES, 'lyramion-image.png')).convert('RGB')
+    px, (iw, ih) = im.load(), im.size
+    magenta = lambda c: c[0] > 200 and c[2] > 200 and c[1] < 80                  # noqa: E731
+    xs, ys = zip(*[(x, y) for y in range(0, ih, 2) for x in range(0, iw, 2) if not magenta(px[x, y])])
+    x0, x1, y0, y1 = min(xs), max(xs) + 1, min(ys), max(ys) + 1
+    w, h = PAINTING_SIZE
+    rows = []
+    for ty in range(h):
+        row = []
+        for tx_ in range(w):
+            acc, n, t = [0, 0, 0], 0, 0
+            for y in range(int(y0 + (y1 - y0) * ty / h), int(y0 + (y1 - y0) * (ty + 1) / h), 2):
+                for x in range(int(x0 + (x1 - x0) * tx_ / w), int(x0 + (x1 - x0) * (tx_ + 1) / w), 2):
+                    t += 1
+                    c = px[x, y]
+                    if not magenta(c):
+                        acc = [a + b for a, b in zip(acc, c)]
+                        n += 1
+            v = 0
+            if t and n / t >= 0.5:
+                c = [a / n for a in acc]
+                v = min(range(1, 16), key=lambda i: 2 * (pal[i][0] - c[0]) ** 2 + 4 * (pal[i][1] - c[1]) ** 2 + 3 * (pal[i][2] - c[2]) ** 2)
+            row.append(v)
+        rows.append(row)
+    return tx.encode_texture(rows, w)
 
 
 def walls_all():
