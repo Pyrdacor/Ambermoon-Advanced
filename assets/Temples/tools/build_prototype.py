@@ -73,6 +73,14 @@ NEW_WALLS = [
 SWITCH_OVERLAYS = {156: 133, 157: 134}
 SWITCH_KNOB = {0xb: 12, 0xa: 12, 0x7: 13, 0x8: 13}         # only inside the knob area x 17-28, y 10-20
 W_PLAIN_SWITCH_OFF, W_PLAIN_SWITCH_ON = 135, 136
+# 2Wall3D.amb 201: the sandstone wall (copy 195) with the barred gate of wall texture 74 (arch x 51-84, top at y 18).
+# The gaps between the bars stay colour 0, which is see-through because the wall has the transparency flag 0x08
+# (like wall 74 itself in labdata 35). The outermost gate pixel on the left and right is dark, so the gate
+# looks set into the frame. The black joints (colour 0) of the sandstone become colour 6, otherwise they would be holes.
+BARS_TEX, BARS_SOURCE = 201, 74
+TRANSPARENT_SOLID = 0x40000088                       # blocks movement, transparent, does not block sight
+NEW_WALLS.append((BARS_TEX, TRANSPARENT_SOLID, 1, 4, []))  # 137: barred gate
+W_BARS = 137
 
 # labdata 5 walls (tile values) and object groups
 W_DOOR, W_ARCHES, W_PLAIN, W_PILLAR, W_FRIEZE, W_GATE = 101, 102, 103, 104, 105, 106
@@ -114,6 +122,9 @@ CRYSTAL_STOOL_TEX, CRYSTAL_TABLE_TEX = 415, 416      # 2Object3D.amb
 CRYSTAL_WOOD = {0x1: 1, 0xb: 2, 0xa: 12, 0x7: 12, 0x8: 13}
 CRYSTAL_STONE = {1: 1, 2: 2, 3: 12, 4: 13, 5: 13, 6: 6}
 G_MORANIAN = 45            # new object group: a single Moranian in a robe (object 30 of group 28 without the guards)
+# crystal table in the tile centre and stools in the south (y = 128) or north quarter (y = 384) of their tile, for a
+# table with a stool above and below it (S'Orel)
+G_CRYSTAL_TABLE_CENTRE, G_CRYSTAL_STOOL_SOUTH, G_CRYSTAL_STOOL_NORTH = 46, 47, 48
 VAR_PAINTING_REMOVED, VAR_SWITCH_USED = 478, 479       # global variables (S'Riel: painting taken down, switch used)
 
 MAGIC_GUARDS = 68           # monster group: 4 magic guards
@@ -262,7 +273,7 @@ def sriel():
     p.chain(0, [text(3)], (10, 7))
     p.chain(0, [text(4)], (10, 8))
     p.chain(0, [text(7)], (7, 7))                                                      # 7 diary on the table
-    p.chain(13, [ev(0x03, 50, 0, 0xff, 117)], (5, 8))                                  # 8 chest 117 (key 388 for S'Orel)
+    p.chain(13, [ev(0x03, 50, 0, 0xff, 117 - 1)], (5, 8))                              # 8 chest 117 (key 388 for S'Orel, 0-based index)
     p.chars = [(TWO_GUARDS, GUARD_STAY, G_GUARD, 7, 6), (TWO_GUARDS, GUARD_STAY, G_GUARD, 7, 11)]
     p.header = dict(flags=0x0899, music=22, labdata=NEW_LAB, palette=59, world=2)
     p.texts = SRIEL_TEXTS
@@ -274,25 +285,22 @@ def sriel():
 
 
 def sorel():
-    """S'Orel (barracks): outer corridor with guards and a spike trap (switched off by a hidden button),
-    at the far end the gate to the inner part (key 388 from S'Riel's chest 117). Inside: armoury with weapon
-    racks and chest 118, then the training hall with the big guard group and chest 119 (key 389 for S'Arin)."""
-    p = Proto(488, 21, 21)
+    """S'Orel (sketch of 2026-11-13): round 13x13 temple like S'Riel. The ring corridor is cut in two by the wall (3,7)
+    and the barred gate (11,7). The switch (2,8) in the west corridor lifts the east gate, the north gate (7,4) to the
+    central chamber needs key 388 from S'Riel's chest 117. Bookshelf (2,6) with chest 116 (spell scrolls)."""
+    p = Proto(488, 13, 13)
     floor = set()
-
-    def rect(x0, y0, x1, y1):
-        for y in range(y0, y1 + 1):
-            for x in range(x0, x1 + 1):
-                floor.add((x, y))
-    rect(4, 4, 5, 18)           # outer corridor west
-    rect(17, 4, 18, 18)         # east
-    rect(4, 4, 18, 5)           # north
-    rect(4, 17, 18, 18)         # south
-    rect(7, 7, 15, 8)           # armoury
-    rect(7, 10, 15, 15)         # training hall
-    floor.add((11, 9))          # arch between armoury and hall
-    gate, button = (11, 6), (19, 9)
-    spikes = [(4, 9), (5, 11), (4, 13)]
+    for x in range(4, 11):
+        floor |= {(x, 3), (x, 11)}                  # ring corridor north and south
+    for y in range(4, 11):
+        floor |= {(3, y), (11, y)}                  # west and east
+    floor |= {(4, 4), (10, 4), (4, 10), (10, 10)}   # rounded inner corners of the ring
+    floor |= {(6, 5), (7, 5), (8, 5), (6, 9), (7, 9), (8, 9)}       # central chamber
+    for y in range(6, 9):
+        for x in range(5, 10):
+            floor.add((x, y))
+    floor -= {(3, 7), (11, 7)}                      # wall in the west corridor, barred gate in the east corridor
+    gate_north, gate_east, button, shelf, exit_ = (7, 4), (11, 7), (2, 8), (2, 6), (7, 12)
     for y in range(1, p.h + 1):
         for x in range(1, p.w + 1):
             if (x, y) in floor:
@@ -301,72 +309,68 @@ def sorel():
                 p.tiles[y][x] = W_PLAIN
     walls = {
         # outer wall
-        (11, 3): W_FRAMES_WINDOW, (7, 3): W_FRAMES_CREST, (15, 3): W_FRAMES_CREST,
-        (3, 11): W_FRAMES_WINDOW, (3, 7): W_FRAMES_CREST, (3, 15): W_FRAMES_CREST,
-        (19, 11): W_FRAMES_WINDOW, (19, 7): W_FRAMES_CREST, (19, 15): W_FRAMES_CREST, button: W_SWITCH1,
-        (11, 19): W_DOOR_FRAMED, (10, 19): W_FRIEZE, (12, 19): W_FRIEZE, (7, 19): W_FRAMES_WINDOW, (15, 19): W_FRAMES_WINDOW,
-        # inner building, outside
-        gate: W_GATE, (10, 6): W_FRAME_R, (12, 6): W_FRAME_L, (6, 11): W_PILLAR, (16, 11): W_PILLAR,
-        (11, 16): W_ARCHES_CREST, (8, 16): W_CREST, (14, 16): W_CREST, (6, 8): W_FRIEZE, (16, 8): W_FRIEZE,
-        # inside: wall between armoury and hall
-        (10, 9): W_FRAME_R, (12, 9): W_FRAME_L, (8, 9): W_ARCHES, (14, 9): W_ARCHES,
+        exit_: W_DOOR_FRAMED, (6, 12): W_FRIEZE, (8, 12): W_FRIEZE, (5, 12): W_FRAMES_WINDOW, (9, 12): W_FRAMES_WINDOW,
+        (7, 2): W_FRAMES_CREST, (5, 2): W_FRAMES_WINDOW, (9, 2): W_FRAMES_WINDOW,
+        shelf: W_SHELF1, button: W_PLAIN_SWITCH_OFF, (2, 4): W_FRAMES_WINDOW, (2, 10): W_FRAMES_WINDOW,
+        (12, 5): W_FRAMES_WINDOW, (12, 7): W_FRAMES_CREST, (12, 9): W_FRAMES_WINDOW,
+        (3, 3): W_PILLAR, (11, 3): W_PILLAR, (3, 11): W_PILLAR, (11, 11): W_PILLAR, (3, 7): W_PILLAR,
+        gate_east: W_BARS,
+        # central block (seen from the corridor and from the chamber)
+        gate_north: W_BARS, (6, 4): W_FRAMES, (8, 4): W_FRAMES, (5, 4): W_FRIEZE, (9, 4): W_FRIEZE,
+        (6, 10): W_FRAMES, (8, 10): W_FRAMES, (7, 10): W_CREST, (5, 10): W_FRIEZE, (9, 10): W_FRIEZE,
+        (4, 7): W_CREST, (4, 5): W_PILLAR, (4, 9): W_PILLAR, (10, 7): W_CREST, (10, 5): W_PILLAR, (10, 9): W_PILLAR,
     }
-    for (x, y), tl in walls.items():
-        p.tiles[y][x] = tl
-    objects = {
-        (4, 4): G_ROBE, (18, 4): G_ROBE, (4, 18): G_ROBE, (18, 18): G_ROBE,
-        (7, 7): G_TABLET, (8, 7): G_WEAPONS, (10, 7): G_WEAPONS, (12, 7): G_WEAPONS, (14, 7): G_WEAPONS, (15, 7): G_CHEST,
-        (8, 11): G_COLUMN, (14, 11): G_COLUMN, (8, 14): G_COLUMN, (14, 14): G_COLUMN, (11, 15): G_CHEST,
-        (7, 10): G_GOLEM, (15, 10): G_GOLEM, (11, 12): G_MOSAIC_ORANGE,
-    }
-    for xy in spikes:
-        objects[xy] = G_SPIKES
+    for (x, y), t in walls.items():
+        p.tiles[y][x] = t
+    objects = {xy: G_FIRE_BOWL for xy in ((6, 6), (8, 6), (6, 8), (8, 8))}
+    objects.update({
+        (7, 7): G_TOTEM, (9, 8): G_BED, (7, 9): G_CHEST,
+        (5, 6): G_CRYSTAL_STOOL_SOUTH, (5, 7): G_CRYSTAL_TABLE_CENTRE, (5, 8): G_CRYSTAL_STOOL_NORTH,
+        # carpets
+        (5, 3): G_MOSAIC_GREEN, (9, 3): G_MOSAIC_GREEN, (5, 11): G_MOSAIC_GREEN, (9, 11): G_MOSAIC_GREEN,
+        (3, 5): G_MOSAIC_ORANGE, (3, 9): G_MOSAIC_ORANGE, (11, 4): G_MOSAIC_ORANGE, (11, 9): G_MOSAIC_ORANGE,
+        (7, 5): G_MOSAIC,
+    })
     for (x, y), g in objects.items():
         p.tiles[y][x] = g
 
     text = lambda n, trigger=2: ev(0x04, 0xff, trigger, 0, 0, n)    # noqa: E731
     hand = lambda: ev(0x0d, 0x0e, 1, 0, 0, 0, 0, 0, 0xff, 0xff)    # noqa: E731
-    p.chain(14, [word(ev(0x01, 33, 28, 2, 0xff, 0), 6, 525)], (11, 19))                # 1 exit -> Morag (like 445)
-    trap = p.chain(5, [text(1, 1), ev(0x06, 0x09, 1, 3, 0xff)], *spikes)                # 2 spikes (text and trap of 445)
-    btn = p.chain(7, [], button)                                                       # 3 hidden button
-    p.chains[-1] = (7, [hand(), text(2, 0), word(ev(0x0a, button[0], button[1]), 6, W_SWITCH2),
-                        word(ev(0x0e, 0x01, 1), 6, p.event_bit(btn))]
-                   + [word(ev(0x0a, x, y), 6, 0) for x, y in spikes] + [word(ev(0x0e, 0x01, 1), 6, p.event_bit(trap))])
-    door = p.chain(9, [], gate)                                                        # 4 gate, key 388 (door 33 like 445)
-    p.chains[-1] = (9, [hand(), bytearray.fromhex('026421ffff000184ffffffff'), ev(0x0d, 0x09, 1, 0, 0, 0, 0, 0, 0xff, 0xff),
-                        word(ev(0x0e, 0x01, 1), 6, p.event_bit(door)), word(ev(0x0a, gate[0], gate[1]), 6, 0)])
-    p.chain(0, [text(3)], (7, 7))                                                      # 5 duty roster
-    p.chain(13, [ev(0x03, 85, 0, 0xff, 118)], (15, 7))                                 # 6 chest 118 (armoury)
-    p.chain(13, [ev(0x03, 50, 0, 0xff, 119)], (11, 15))                                # 7 chest 119 (key 389)
-    # monsters that only move when they see the party (flag 0x80), so they don't wander into corners
-    p.chars = [(TWO_GUARDS, GUARD_STAY, G_GUARD, 18, 12), (MAGIC_GUARDS, GUARD_STAY, G_GUARD, 11, 5),
-               (MAGIC_GUARDS, GUARD_STAY, G_GUARD, 5, 7), (SIX_GUARDS, GUARD_STAY, G_GUARD, 11, 13),
-               (TWO_GUARDS, GUARD_STAY, G_GUARD, 9, 8)]
+    p.chain(14, [word(ev(0x01, 33, 28, 2, 0xff, 0), 6, 525)], exit_)                   # 1 exit -> Morag (like 445)
+    btn = p.chain(7, [], button)                                                       # 2 switch lifts the east gate
+    p.chains[-1] = (7, [hand(), text(1, 0), word(ev(0x0a, button[0], button[1]), 6, W_PLAIN_SWITCH_ON),
+                        word(ev(0x0a, gate_east[0], gate_east[1]), 6, 0), word(ev(0x0e, 0x01, 1), 6, p.event_bit(btn))])
+    door = p.chain(9, [], gate_north)                                                  # 3 north gate, key 388 (door 33 like 445)
+    eye_or_hand = word(word(ev(0x0d, 0x17, 1), 6, 0x3), 8, 0xffff)  # multi cursor condition: hand (1) or eye (2)
+    p.chains[-1] = (9, [eye_or_hand, bytearray.fromhex('026421ffff000184ffffffff'), ev(0x0d, 0x09, 1, 0, 0, 0, 0, 0, 0xff, 0xff),
+                        word(ev(0x0e, 0x01, 1), 6, p.event_bit(door)), word(ev(0x0a, gate_north[0], gate_north[1]), 6, 0)])
+    p.chain(0, [text(2)], (5, 7))                                                      # 4 duty roster on the table
+    p.chain(13, [ev(0x03, 50, 0, 0xff, 119 - 1)], (7, 9))                              # 5 chest 119 (key 389, 0-based index)
+    p.chain(0, [ev(0x03, 0, 0, 0xff, 118 - 1)], shelf)                                 # 6 bookshelf: chest 118 with spell scrolls
+    p.chars = [(SIX_GUARDS, GUARD_STAY, G_GUARD, 7, 6), (TWO_GUARDS, GUARD_STAY, G_GUARD, 11, 5)]
     p.header = dict(flags=0x0891, music=18, labdata=NEW_LAB, palette=60, world=2)    # lit, no map (445 was dark)
     p.texts = SOREL_TEXTS
-    p.open_tiles = [gate]
-    p.views = [(11, 18, 0, 'Suedgang, Blick auf das Hallengebaeude', False), (4, 17, 0, 'Westgang mit Spiessfalle', False),
-               (18, 9, 90, 'Ostgang, versteckter Schalter', False), (11, 5, 180, 'Tor zum Innenbereich', False),
-               (7, 8, 90, 'Waffenkammer', True), (11, 10, 180, 'Uebungshalle mit Wachen und Truhe', True)]
+    p.open_tiles = [gate_north, gate_east]
+    p.views = [(7, 11, 0, 'Eingang, Suedgang', False), (3, 10, 0, 'Westgang mit Schalter', False),
+               (3, 4, 180, 'Westgang Nord, Buecherregal', False), (11, 9, 0, 'Ostgang mit Gittertor', False),
+               (7, 3, 180, 'Nordgang, Gittertor zum Zentralraum', False), (7, 9, 0, 'Zentralraum', True)]
     return p
 
 
 SOREL_TEXTS = {
     'de': [
         (445, 0),
-        (445, 1),
-        (445, 2),
+        "ALS ~LEAD~ DEN KNOPF DRÜCKT, HÖRT IHR EIN LAUTES RASSELN. IRGENDWO IM OSTEN HEBT SICH EIN GITTER.",
         "AUF EINER STEINTAFEL STEHT DER DIENSTPLAN DER PALASTWACHE. DARUNTER HAT JEMAND IN EILIGER SCHRIFT ERGÄNZT:^ "
         "\"SEIT S'OREL AUF LYRAMION GEFALLEN IST, ERHALTEN DIE WACHEN IHRE BEFEHLE VON S'ARIN. DEN SCHLÜSSEL ZU SEINEM "
-        "PALAST VERWAHRT DER HAUPTMANN IN DER TRUHE DER ÜBUNGSHALLE.\"",
+        "PALAST VERWAHRT DER HAUPTMANN IN SEINER TRUHE.\"",
     ],
     'en': [
         (445, 0),
-        (445, 1),
-        (445, 2),
+        "AS ~LEAD~ PRESSES THE BUTTON, YOU HEAR A LOUD RATTLING. SOMEWHERE TO THE EAST A GATE IS RAISED.",
         "THE DUTY ROSTER OF THE PALACE GUARD IS WRITTEN ON A STONE TABLET. BELOW IT SOMEONE HAS ADDED IN HASTY LETTERS:^ "
         "\"SINCE S'OREL FELL ON LYRAMION, THE GUARDS RECEIVE THEIR ORDERS FROM S'ARIN. THE CAPTAIN KEEPS THE KEY TO HIS "
-        "PALACE IN THE CHEST OF THE TRAINING HALL.\"",
+        "PALACE IN HIS CHEST.\"",
     ],
 }
 
@@ -474,7 +478,21 @@ def recoloured_graphics(lab):
         rows = [[SWITCH_KNOB.get(v, v) if 17 <= x <= 28 and 10 <= y <= 20 else v for x, v in enumerate(row)]
                 for y, row in enumerate(rows)]
         ovl_files[copy] = tx.encode_texture(rows, 40)
+    src = tx.decode_texture(walls_all()[BARS_SOURCE], 128, 80)
+    gate = [[v or 6 for v in row] for row in tx.decode_texture(wall_files[wall_map[99]], 128, 80)]  # black joints: no holes
+    for y in range(80):
+        xs = [x for x in range(128) if (51 <= x <= 84 and y >= 35) or ((x - 67.5) ** 2 + (y - 35) ** 2 <= 17.5 ** 2)]
+        for x in xs:
+            gate[y][x] = 6 if x - xs[0] < 1 or xs[-1] - x < 1 else src[y][x]
+    wall_files[BARS_TEX] = tx.encode_texture(gate, 128)
     return wall_files, ovl_files, wall_map, ovl_map
+
+
+def walls_all():
+    """2Wall3D.amb completed by 3Wall3D.amb (like the remake)."""
+    walls = dict(amb.read_container(os.path.join(DATA, '3Wall3D.amb')))
+    walls.update({k: v for k, v in amb.read_container(os.path.join(DATA, '2Wall3D.amb')).items() if v})
+    return walls
 
 
 def build_labdata(raw5, wall_map=None, ovl_map=None):
@@ -511,6 +529,12 @@ def build_labdata(raw5, wall_map=None, ovl_map=None):
     group[2:10] = struct.pack('>HHHH', 255, 255, 0, 30)
     lab.object_groups.append(group)
     assert len(lab.object_groups) == G_MORANIAN
+    stool_obj, table_obj = len(lab.objects) - 1, len(lab.objects)       # objects of the groups 43 and 44
+    for x, y, obj in ((255, 255, table_obj), (255, 128, stool_obj), (255, 384, stool_obj)):
+        group = bytearray(66)
+        group[2:10] = struct.pack('>HHHH', x, y, 0, obj)
+        lab.object_groups.append(group)
+    assert len(lab.object_groups) == G_CRYSTAL_STOOL_NORTH
     for tex, flags, automap, colour, overlays in NEW_WALLS:
         header = bytearray(struct.pack('>IBBBB', flags, tex, automap, colour, len(overlays)))
         lab.walls.append((header, [bytearray(o) for o in overlays]))

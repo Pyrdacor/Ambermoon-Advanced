@@ -74,6 +74,7 @@ Die Steinfarben stammen aus einem Helligkeitsabgleich von Wand 99 mit der Sandst
 | 134 | 99 | 24, 25, 74 | | **neu:** Wappen zwischen Säulenrahmen |
 | 135 | 99 | 156 | | **neu:** Grundwand mit Schalter (aus), hinter dem Gemälde in S'Riels Tempel. Overlay 156 = Kopie von 133 mit blaugrünem Knopf |
 | 136 | 99 | 157 | | **neu:** Grundwand mit Schalter (an), Overlay 157 = Kopie von 134 mit blaugrünem Knopf |
+| 137 | 201 | | | **neu:** Gittertor, durchsichtig (Flags 0x40000088 mit Transparenz 0x08, blockiert die Sicht nicht). Textur 201 = Sandsteinwand 195 mit dem Gittertor aus Wandtextur 74 (Bogen x 51–84), die Lücken bleiben Farbe 0 und sind dadurch durchsichtig, das äußerste Pixel links und rechts ist dunkel, die schwarzen Fugen des Sandsteins sind Farbe 6 |
 
 Die Spalte „Textur“ nennt das Original. In den Daten steht bei den kopierten Texturen die Kopie (siehe oben). Im Map-Feld steht die Wandnummer direkt (101 = erste Wand). Weitere Overlays (Schalter, Schilder, Rätselmund, Ketten …) lassen sich jederzeit als neue Wände anhängen. Overlays müssen auf dem Amiga an 8-Pixel-Grenzen liegen (x = 0, 8, 16, …).
 
@@ -117,5 +118,8 @@ Die Bilder oben sind nach **Objekt** nummeriert, die Karte verwendet **Gruppen**
 | 43 | 46 | **neu:** Kristallhocker (Textur 415, aus dem Holzhocker 255 mit den Farben 12/13 und Glanzlichtern 1/2), am linken Feldrand (x = 0), damit er neben dem Tisch steht |
 | 44 | 47 | **neu:** Kristalltisch (Textur 416, Platte 250 zur Ellipse gestaucht auf dem Säulenbein 254, mit Bodenschatten), leicht rechts im Feld (x = 384) |
 | 45 | 30 | **neu:** einzelner Moraner in Robe (Objekt 30 aus Gruppe 28 ohne die Wachen), in S'Riels Tempel bis zum Ankunftstext |
+| 46 | 47 | **neu:** Kristalltisch in der Feldmitte (für Tische mit Hockern davor und dahinter, S'Orel) |
+| 47 | 46 | **neu:** Kristallhocker im südlichen Viertel des Feldes (y = 128), für das Feld nördlich eines Tisches |
+| 48 | 46 | **neu:** Kristallhocker im nördlichen Viertel des Feldes (y = 384), für das Feld südlich eines Tisches |
 
 Für die Wüstentempel gut geeignet sind: Säulen, Mosaike, Statuen, Golems, Kerzen, Tisch, Truhe, Kugel, Steintafeln, Stern, Funkeln und das Schlangentotem. Die Rüstungen (22, 23, 33) und das Schiffsgemälde (118) besser nicht verwenden.
